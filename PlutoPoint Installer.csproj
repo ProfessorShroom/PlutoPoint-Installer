@@ -7,7 +7,7 @@
     <ProjectGuid>{BE5F5489-1412-42DA-8D0C-4022FDCB8446}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <RootNamespace>PlutoPoint_Installer</RootNamespace>
-    <AssemblyName>PlutoPoint Installer</AssemblyName>
+    <AssemblyName>Computer Repair Centre Installer</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

@@ -11,7 +11,7 @@ namespace PlutoPoint_Launcher
     public partial class installerForm : Form
     {
         string rootDir = @"C:\Computer Repair Centre";
-        Uri computerRepairCentreInstallerURL = new Uri("https://raw.githubusercontent.com/charliehoward/NorthPoint-Installer/master/Computer%20Repair%20Centre%20Installer.exe");
+        Uri computerRepairCentreInstallerURL = new Uri("https://raw.githubusercontent.com/charliehoward/PlutoPoint-Installer/master/bin/x64/Release/Computer%20Repair%20Centre%20Installer.exe");
         string computerRepairCentreInstallerFilename = @"C:\Computer Repair Centre\computerRepairCentreInstaller.exe";
 
         public installerForm()

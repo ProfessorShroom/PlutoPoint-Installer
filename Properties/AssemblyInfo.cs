@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("PlutoPoint Installer")]
+[assembly: AssemblyTitle("Computer Repair Centre Installer")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("PlutoPoint Installer")]
+[assembly: AssemblyProduct("Computer Repair Centre Installer")]
 [assembly: AssemblyCopyright("Copyright © Charlie Howard 2024 All rights reserved")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

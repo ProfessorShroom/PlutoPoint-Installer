@@ -1,21 +1,21 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "D:\\NextCloud\\Spyro\\Documents\\Projects\\PlutoPoint Installer\\Launcher\\",
+  "WorkspaceRootPath": "D:\\NextCloud\\Spyro\\Documents\\Projects\\PlutoPoint-Installer\\Launcher\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{BE5F5489-1412-42DA-8D0C-4022FDCB8446}|PlutoPoint Launcher.csproj|d:\\nextcloud\\spyro\\documents\\projects\\plutopoint installer\\launcher\\plutopoint launcher.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{BE5F5489-1412-42DA-8D0C-4022FDCB8446}|PlutoPoint Launcher.csproj|d:\\nextcloud\\spyro\\documents\\projects\\plutopoint-installer\\launcher\\plutopoint launcher.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{BE5F5489-1412-42DA-8D0C-4022FDCB8446}|PlutoPoint Launcher.csproj|solutionrelative:plutopoint launcher.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{BE5F5489-1412-42DA-8D0C-4022FDCB8446}|PlutoPoint Launcher.csproj|D:\\NextCloud\\Spyro\\Documents\\Projects\\PlutoPoint Installer\\Launcher\\plutopoint launcher.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "AbsoluteMoniker": "D:0:0:{BE5F5489-1412-42DA-8D0C-4022FDCB8446}|PlutoPoint Launcher.csproj|D:\\NextCloud\\Spyro\\Documents\\Projects\\PlutoPoint-Installer\\Launcher\\plutopoint launcher.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
       "RelativeMoniker": "D:0:0:{BE5F5489-1412-42DA-8D0C-4022FDCB8446}|PlutoPoint Launcher.csproj|solutionrelative:plutopoint launcher.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{BE5F5489-1412-42DA-8D0C-4022FDCB8446}|PlutoPoint Launcher.csproj|D:\\NextCloud\\Spyro\\Documents\\Projects\\PlutoPoint Installer\\Launcher\\plutopoint launcher.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{BE5F5489-1412-42DA-8D0C-4022FDCB8446}|PlutoPoint Launcher.csproj|D:\\NextCloud\\Spyro\\Documents\\Projects\\PlutoPoint-Installer\\Launcher\\plutopoint launcher.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{BE5F5489-1412-42DA-8D0C-4022FDCB8446}|PlutoPoint Launcher.csproj|solutionrelative:plutopoint launcher.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{BE5F5489-1412-42DA-8D0C-4022FDCB8446}|PlutoPoint Launcher.csproj|D:\\NextCloud\\Spyro\\Documents\\Projects\\PlutoPoint Installer\\Launcher\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{BE5F5489-1412-42DA-8D0C-4022FDCB8446}|PlutoPoint Launcher.csproj|D:\\NextCloud\\Spyro\\Documents\\Projects\\PlutoPoint-Installer\\Launcher\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{BE5F5489-1412-42DA-8D0C-4022FDCB8446}|PlutoPoint Launcher.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
@@ -32,11 +32,11 @@
               "$type": "Document",
               "DocumentIndex": 0,
               "Title": "PlutoPoint Launcher.cs",
-              "DocumentMoniker": "D:\\NextCloud\\Spyro\\Documents\\Projects\\PlutoPoint Installer\\Launcher\\PlutoPoint Launcher.cs",
+              "DocumentMoniker": "D:\\NextCloud\\Spyro\\Documents\\Projects\\PlutoPoint-Installer\\Launcher\\PlutoPoint Launcher.cs",
               "RelativeDocumentMoniker": "PlutoPoint Launcher.cs",
-              "ToolTip": "D:\\NextCloud\\Spyro\\Documents\\Projects\\PlutoPoint Installer\\Launcher\\PlutoPoint Launcher.cs",
+              "ToolTip": "D:\\NextCloud\\Spyro\\Documents\\Projects\\PlutoPoint-Installer\\Launcher\\PlutoPoint Launcher.cs",
               "RelativeToolTip": "PlutoPoint Launcher.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAA2AAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAACUAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-11-05T09:50:33.745Z",
               "EditorCaption": ""
@@ -45,10 +45,10 @@
               "$type": "Document",
               "DocumentIndex": 1,
               "Title": "PlutoPoint Launcher.cs [Design]",
-              "DocumentMoniker": "D:\\NextCloud\\Spyro\\Documents\\Projects\\PlutoPoint Installer\\Launcher\\PlutoPoint Launcher.cs",
+              "DocumentMoniker": "D:\\NextCloud\\Spyro\\Documents\\Projects\\PlutoPoint-Installer\\Launcher\\PlutoPoint Launcher.cs",
               "RelativeDocumentMoniker": "PlutoPoint Launcher.cs",
               "ToolTip": "D:\\NextCloud\\Spyro\\Documents\\Projects\\PlutoPoint Installer\\Launcher\\PlutoPoint Launcher.cs [Design]",
-              "RelativeToolTip": "PlutoPoint Launcher.cs [Design]",
+              "RelativeToolTip": "..\\..\\PlutoPoint Installer\\Launcher\\PlutoPoint Launcher.cs [Design]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-11-05T09:46:14.52Z"
             },
@@ -56,9 +56,9 @@
               "$type": "Document",
               "DocumentIndex": 2,
               "Title": "PlutoPoint Launcher.Designer.cs",
-              "DocumentMoniker": "D:\\NextCloud\\Spyro\\Documents\\Projects\\PlutoPoint Installer\\Launcher\\PlutoPoint Launcher.Designer.cs",
+              "DocumentMoniker": "D:\\NextCloud\\Spyro\\Documents\\Projects\\PlutoPoint-Installer\\Launcher\\PlutoPoint Launcher.Designer.cs",
               "RelativeDocumentMoniker": "PlutoPoint Launcher.Designer.cs",
-              "ToolTip": "D:\\NextCloud\\Spyro\\Documents\\Projects\\PlutoPoint Installer\\Launcher\\PlutoPoint Launcher.Designer.cs",
+              "ToolTip": "D:\\NextCloud\\Spyro\\Documents\\Projects\\PlutoPoint-Installer\\Launcher\\PlutoPoint Launcher.Designer.cs",
               "RelativeToolTip": "PlutoPoint Launcher.Designer.cs",
               "ViewState": "AgIAABoAAAAAAAAAAAAswDgAAAA1AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -68,9 +68,9 @@
               "$type": "Document",
               "DocumentIndex": 3,
               "Title": "Program.cs",
-              "DocumentMoniker": "D:\\NextCloud\\Spyro\\Documents\\Projects\\PlutoPoint Installer\\Launcher\\Program.cs",
+              "DocumentMoniker": "D:\\NextCloud\\Spyro\\Documents\\Projects\\PlutoPoint-Installer\\Launcher\\Program.cs",
               "RelativeDocumentMoniker": "Program.cs",
-              "ToolTip": "D:\\NextCloud\\Spyro\\Documents\\Projects\\PlutoPoint Installer\\Launcher\\Program.cs",
+              "ToolTip": "D:\\NextCloud\\Spyro\\Documents\\Projects\\PlutoPoint-Installer\\Launcher\\Program.cs",
               "RelativeToolTip": "Program.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAqwBMAAAAbAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
