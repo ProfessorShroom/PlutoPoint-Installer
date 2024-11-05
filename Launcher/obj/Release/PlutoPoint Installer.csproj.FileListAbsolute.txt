@@ -1,0 +1,10 @@
+D:\NextCloud\Spyro\Documents\Projects\PlutoPoint Installer\bin\Release\PlutoPoint Installer.exe.config
+D:\NextCloud\Spyro\Documents\Projects\PlutoPoint Installer\bin\Release\PlutoPoint Installer.exe
+D:\NextCloud\Spyro\Documents\Projects\PlutoPoint Installer\bin\Release\PlutoPoint Installer.pdb
+D:\NextCloud\Spyro\Documents\Projects\PlutoPoint Installer\obj\Release\PlutoPoint Installer.csproj.AssemblyReference.cache
+D:\NextCloud\Spyro\Documents\Projects\PlutoPoint Installer\obj\Release\PlutoPoint_Installer.Form1.resources
+D:\NextCloud\Spyro\Documents\Projects\PlutoPoint Installer\obj\Release\PlutoPoint_Installer.Properties.Resources.resources
+D:\NextCloud\Spyro\Documents\Projects\PlutoPoint Installer\obj\Release\PlutoPoint Installer.csproj.GenerateResource.cache
+D:\NextCloud\Spyro\Documents\Projects\PlutoPoint Installer\obj\Release\PlutoPoint Installer.csproj.CoreCompileInputs.cache
+D:\NextCloud\Spyro\Documents\Projects\PlutoPoint Installer\obj\Release\PlutoPoint Installer.exe
+D:\NextCloud\Spyro\Documents\Projects\PlutoPoint Installer\obj\Release\PlutoPoint Installer.pdb

@@ -1,0 +1,3 @@
+D:\NextCloud\Spyro\Documents\Projects\PlutoPoint Installer\obj\x64\Release\PlutoPoint Installer.csproj.AssemblyReference.cache
+D:\NextCloud\Spyro\Documents\Projects\PlutoPoint Installer\obj\x64\Release\PlutoPoint_Installer.installerForm.resources
+D:\NextCloud\Spyro\Documents\Projects\PlutoPoint Installer\obj\x64\Release\PlutoPoint Installer.csproj.GenerateResource.cache
