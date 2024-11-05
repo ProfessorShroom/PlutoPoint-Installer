@@ -1,4 +1,5 @@
-﻿using System.Runtime.Remoting.Activation;
+﻿using System.Reflection;
+using System.Runtime.Remoting.Activation;
 using System.Security.Policy;
 
 namespace PlutoPoint_Installer
@@ -39,6 +40,9 @@ namespace PlutoPoint_Installer
             this.googleChromeCheck = new System.Windows.Forms.CheckBox();
             this.close = new System.Windows.Forms.Button();
             this.restart = new System.Windows.Forms.Button();
+            this.bingWallpapersCheck = new System.Windows.Forms.CheckBox();
+            this.versionLabel = new System.Windows.Forms.LinkLabel();
+            this.restartCheck = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // install
@@ -66,7 +70,7 @@ namespace PlutoPoint_Installer
             this.installerTextBox.Name = "installerTextBox";
             this.installerTextBox.ReadOnly = true;
             this.installerTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.installerTextBox.Size = new System.Drawing.Size(444, 384);
+            this.installerTextBox.Size = new System.Drawing.Size(444, 360);
             this.installerTextBox.TabIndex = 1;
             // 
             // progressBar
@@ -84,7 +88,7 @@ namespace PlutoPoint_Installer
             this.libreOfficeCheck.Checked = true;
             this.libreOfficeCheck.CheckState = System.Windows.Forms.CheckState.Checked;
             this.libreOfficeCheck.Image = global::PlutoPoint_Installer.Properties.Resources.libreOffice;
-            this.libreOfficeCheck.Location = new System.Drawing.Point(12, 70);
+            this.libreOfficeCheck.Location = new System.Drawing.Point(12, 160);
             this.libreOfficeCheck.Name = "libreOfficeCheck";
             this.libreOfficeCheck.Size = new System.Drawing.Size(57, 50);
             this.libreOfficeCheck.TabIndex = 4;
@@ -95,7 +99,7 @@ namespace PlutoPoint_Installer
             this.mozillaFirefoxCheck.Checked = true;
             this.mozillaFirefoxCheck.CheckState = System.Windows.Forms.CheckState.Checked;
             this.mozillaFirefoxCheck.Image = global::PlutoPoint_Installer.Properties.Resources.mozillaFirefox;
-            this.mozillaFirefoxCheck.Location = new System.Drawing.Point(12, 115);
+            this.mozillaFirefoxCheck.Location = new System.Drawing.Point(12, 205);
             this.mozillaFirefoxCheck.Name = "mozillaFirefoxCheck";
             this.mozillaFirefoxCheck.Size = new System.Drawing.Size(57, 50);
             this.mozillaFirefoxCheck.TabIndex = 5;
@@ -106,7 +110,7 @@ namespace PlutoPoint_Installer
             this.googleChromeCheck.Checked = true;
             this.googleChromeCheck.CheckState = System.Windows.Forms.CheckState.Checked;
             this.googleChromeCheck.Image = global::PlutoPoint_Installer.Properties.Resources.googleChrome;
-            this.googleChromeCheck.Location = new System.Drawing.Point(12, 160);
+            this.googleChromeCheck.Location = new System.Drawing.Point(12, 115);
             this.googleChromeCheck.Name = "googleChromeCheck";
             this.googleChromeCheck.Size = new System.Drawing.Size(57, 50);
             this.googleChromeCheck.TabIndex = 5;
@@ -142,12 +146,47 @@ namespace PlutoPoint_Installer
             this.restart.UseVisualStyleBackColor = false;
             this.restart.Click += new System.EventHandler(this.restart_Click);
             // 
+            // bingWallpapersCheck
+            // 
+            this.bingWallpapersCheck.Checked = true;
+            this.bingWallpapersCheck.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.bingWallpapersCheck.Image = global::PlutoPoint_Installer.Properties.Resources.bingWallpaper;
+            this.bingWallpapersCheck.Location = new System.Drawing.Point(12, 70);
+            this.bingWallpapersCheck.Name = "bingWallpapersCheck";
+            this.bingWallpapersCheck.Size = new System.Drawing.Size(57, 50);
+            this.bingWallpapersCheck.TabIndex = 8;
+            this.bingWallpapersCheck.UseVisualStyleBackColor = true;
+            // 
+            // versionLabel
+            // 
+            this.versionLabel.AutoSize = true;
+            this.versionLabel.LinkColor = System.Drawing.Color.White;
+            this.versionLabel.Location = new System.Drawing.Point(12, 425);
+            this.versionLabel.Name = "versionLabel";
+            this.versionLabel.Size = new System.Drawing.Size(84, 13);
+            this.versionLabel.TabIndex = 9;
+            this.versionLabel.TabStop = true;
+            this.versionLabel.Text = "Version 6.0.1.0b";
+            this.versionLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.versionLabel_LinkClicked);
+            // 
+            // restartCheck
+            // 
+            this.restartCheck.Image = global::PlutoPoint_Installer.Properties.Resources.restart;
+            this.restartCheck.Location = new System.Drawing.Point(742, 416);
+            this.restartCheck.Name = "restartCheck";
+            this.restartCheck.Size = new System.Drawing.Size(46, 32);
+            this.restartCheck.TabIndex = 10;
+            this.restartCheck.UseVisualStyleBackColor = true;
+            // 
             // installerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(41)))), ((int)(((byte)(41)))));
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.restartCheck);
+            this.Controls.Add(this.versionLabel);
+            this.Controls.Add(this.bingWallpapersCheck);
             this.Controls.Add(this.restart);
             this.Controls.Add(this.close);
             this.Controls.Add(this.libreOfficeCheck);
@@ -174,6 +213,9 @@ namespace PlutoPoint_Installer
         private System.Windows.Forms.CheckBox googleChromeCheck;
         private System.Windows.Forms.Button close;
         private System.Windows.Forms.Button restart;
+        private System.Windows.Forms.CheckBox bingWallpapersCheck;
+        private System.Windows.Forms.LinkLabel versionLabel;
+        private System.Windows.Forms.CheckBox restartCheck;
     }
 }
 

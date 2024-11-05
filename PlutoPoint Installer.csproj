@@ -106,7 +106,8 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\libreOffice.png" />
+    <None Include="Resources\icons\restart.png" />
+    <None Include="Resources\icons\bingWallpaper.png" />
     <None Include="icons\libreOffice.ico" />
     <None Include="icons\libreOffice.png" />
     <None Include="icons\googleChrome.png" />

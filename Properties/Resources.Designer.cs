@@ -61,6 +61,16 @@ namespace PlutoPoint_Installer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap bingWallpaper {
+            get {
+                object obj = ResourceManager.GetObject("bingWallpaper", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
         internal static System.Drawing.Icon computerRepairCentreIcon {
@@ -96,6 +106,16 @@ namespace PlutoPoint_Installer.Properties {
         internal static System.Drawing.Bitmap mozillaFirefox {
             get {
                 object obj = ResourceManager.GetObject("mozillaFirefox", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap restart {
+            get {
+                object obj = ResourceManager.GetObject("restart", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

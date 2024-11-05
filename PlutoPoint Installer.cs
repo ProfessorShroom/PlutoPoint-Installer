@@ -10,6 +10,7 @@ using Microsoft.Win32;
 using System.IO;
 using System.Xml.Linq;
 using System.Diagnostics.Eventing.Reader;
+using System.Security.Policy;
 
 namespace PlutoPoint_Installer
 {
@@ -19,12 +20,15 @@ namespace PlutoPoint_Installer
         {
             InitializeComponent();
         }
+
+        Uri bingWallpapersURL = new Uri("https://files.crchq.net/installer/bingWallpapers.msi");
+        string bingWallpapersFilename = @"C:\Computer Repair Centre\apps\bingWallpapers.msi";
+        Uri googleChromeURL = new Uri("https://files.crchq.net/installer/chrome.msi");
+        string googleChromeFilename = @"C:\Computer Repair Centre\apps\chrome.msi";
         Uri libreOfficeURL = new Uri("https://files.crchq.net/installer/libreOffice.msi");
         string libreOfficeFilename = @"C:\Computer Repair Centre\apps\libreOffice.msi";
         Uri mozillaFirefoxURL = new Uri("https://files.crchq.net/installer/firefox.msi");
         string mozillaFirefoxFilename = @"C:\Computer Repair Centre\apps\firefox.msi";
-        Uri googleChromeURL = new Uri("https://files.crchq.net/installer/chrome.msi");
-        string googleChromeFilename = @"C:\Computer Repair Centre\apps\chrome.msi";
 
         private async void install_Click(object sender, EventArgs e)
         {
@@ -62,10 +66,101 @@ namespace PlutoPoint_Installer
                     }
                 }
             }
-            if (libreOfficeCheck.Checked) { progressBar.Maximum += 2; }
-            if (mozillaFirefoxCheck.Checked) { progressBar.Maximum += 2; }
+            if (bingWallpapersCheck.Checked) { progressBar.Maximum += 2; }
             if (googleChromeCheck.Checked) { progressBar.Maximum += 2; }
+            if (libreOfficeCheck.Checked) { progressBar.Maximum += 2; }
+            if (mozillaFirefoxCheck.Checked) { progressBar.Maximum += 2; }         
 
+            if (bingWallpapersCheck.Checked)
+            {
+                installerTextBox.AppendText("Bing Wallpapers is selected.");
+                installerTextBox.AppendText(Environment.NewLine);
+                installerTextBox.AppendText("Downloading Bing Wallpapers...");
+                installerTextBox.AppendText(Environment.NewLine);
+                using (WebClient wc = new WebClient())
+                {
+                    wc.DownloadFileCompleted += wc_progressBarStep;
+                    await wc.DownloadFileTaskAsync(bingWallpapersURL, bingWallpapersFilename);
+                }
+                installerTextBox.AppendText("Installing Bing Wallpapers...");
+                installerTextBox.AppendText(Environment.NewLine);
+                await Task.Run(() =>
+                {
+                    using (Process process = new Process())
+                    {
+                        process.StartInfo.FileName = "msiexec";
+                        process.StartInfo.Arguments = $"/package \"{googleChromeFilename}\" /passive";
+                        process.StartInfo.UseShellExecute = false;
+                        process.StartInfo.RedirectStandardOutput = true;
+                        process.StartInfo.RedirectStandardError = true;
+                        process.StartInfo.CreateNoWindow = true;
+                        try
+                        {
+                            process.Start();
+                            string output = process.StandardOutput.ReadToEnd();
+                            string error = process.StandardError.ReadToEnd();
+                            process.WaitForExit();
+                            Console.WriteLine("Output: " + output);
+                            if (!string.IsNullOrEmpty(error))
+                            {
+                                Console.WriteLine("Error: " + error);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine("An error occurred: " + ex.Message);
+                        }
+                    }
+                });
+                installerTextBox.AppendText("Completed installation of Bing Wallpapers.");
+                installerTextBox.AppendText(Environment.NewLine); ;
+                progressBar.Value += 1;
+            }
+            if (googleChromeCheck.Checked)
+            {
+                installerTextBox.AppendText("Google Chrome is selected.");
+                installerTextBox.AppendText(Environment.NewLine);
+                installerTextBox.AppendText("Downloading Google Chrome...");
+                installerTextBox.AppendText(Environment.NewLine);
+                using (WebClient wc = new WebClient())
+                {
+                    wc.DownloadFileCompleted += wc_progressBarStep;
+                    await wc.DownloadFileTaskAsync(googleChromeURL, googleChromeFilename);
+                }
+                installerTextBox.AppendText("Installing Google Chrome...");
+                installerTextBox.AppendText(Environment.NewLine);
+                await Task.Run(() =>
+                {
+                    using (Process process = new Process())
+                    {
+                        process.StartInfo.FileName = "msiexec";
+                        process.StartInfo.Arguments = $"/package \"{googleChromeFilename}\" /passive";
+                        process.StartInfo.UseShellExecute = false;
+                        process.StartInfo.RedirectStandardOutput = true;
+                        process.StartInfo.RedirectStandardError = true;
+                        process.StartInfo.CreateNoWindow = true;
+                        try
+                        {
+                            process.Start();
+                            string output = process.StandardOutput.ReadToEnd();
+                            string error = process.StandardError.ReadToEnd();
+                            process.WaitForExit();
+                            Console.WriteLine("Output: " + output);
+                            if (!string.IsNullOrEmpty(error))
+                            {
+                                Console.WriteLine("Error: " + error);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine("An error occurred: " + ex.Message);
+                        }
+                    }
+                });
+                installerTextBox.AppendText("Completed installation of Google Chrome.");
+                installerTextBox.AppendText(Environment.NewLine); ;
+                progressBar.Value += 1;
+            }
             if (libreOfficeCheck.Checked)
             {
                 installerTextBox.AppendText("LibreOffice is selected.");
@@ -156,53 +251,16 @@ namespace PlutoPoint_Installer
                 installerTextBox.AppendText(Environment.NewLine);
                 progressBar.Value += 1;
             }
-            if (googleChromeCheck.Checked)
+
+
+            if (restartCheck.Checked)
             {
-                installerTextBox.AppendText("Google Chrome is selected.");
+                Process.Start("shutdown", "/r /t 60");
+                installerTextBox.AppendText("System will restart in 60 seconds. Please save any data.");
                 installerTextBox.AppendText(Environment.NewLine);
-                installerTextBox.AppendText("Downloading Google Chrome...");
-                installerTextBox.AppendText(Environment.NewLine);
-                using (WebClient wc = new WebClient())
-                {
-                    wc.DownloadFileCompleted += wc_progressBarStep;
-                    await wc.DownloadFileTaskAsync(mozillaFirefoxURL, mozillaFirefoxFilename);
-                }
-                installerTextBox.AppendText("Installing Google Chrome...");
-                installerTextBox.AppendText(Environment.NewLine);
-                await Task.Run(() =>
-                {
-                    using (Process process = new Process())
-                    {
-                        process.StartInfo.FileName = "msiexec";
-                        process.StartInfo.Arguments = $"/package \"{googleChromeFilename}\" /passive";
-                        process.StartInfo.UseShellExecute = false;
-                        process.StartInfo.RedirectStandardOutput = true;
-                        process.StartInfo.RedirectStandardError = true;
-                        process.StartInfo.CreateNoWindow = true;
-                        try
-                        {
-                            process.Start();
-                            string output = process.StandardOutput.ReadToEnd();
-                            string error = process.StandardError.ReadToEnd();
-                            process.WaitForExit();
-                            Console.WriteLine("Output: " + output);
-                            if (!string.IsNullOrEmpty(error))
-                            {
-                                Console.WriteLine("Error: " + error);
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine("An error occurred: " + ex.Message);
-                        }
-                    }
-                });
-                installerTextBox.AppendText("Completed installation of Google Chrome.");
-                installerTextBox.AppendText(Environment.NewLine); ;
-                progressBar.Value += 1;
             }
 
-            using (RegistryKey key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion"))
+                using (RegistryKey key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion"))
             {
                 if (key != null)
                 {
@@ -259,6 +317,11 @@ namespace PlutoPoint_Installer
         private void restart_Click(object sender, EventArgs e)
         {
             Process.Start("shutdown","/r /t 5");
+        }
+
+        private void versionLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://github.com/charliehoward/PlutoPoint-Installer/blob/main/README.md");
         }
     }
 }
