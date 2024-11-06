@@ -110,6 +110,11 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\icons\mozillaThunderbird.png" />
+    <None Include="Resources\icons\steam.png" />
+    <None Include="Resources\icons\discord.png" />
+    <None Include="Resources\icons\bitDefender.png" />
+    <None Include="Resources\icons\anyDesk.png" />
     <None Include="Resources\icons\power.png" />
     <None Include="Resources\sounds\halloween.wav" />
     <None Include="Resources\sounds\christmas.wav" />

@@ -2,7 +2,6 @@ D:\NextCloud\Spyro\Documents\Projects\PlutoPoint Installer\obj\x64\Release\Pluto
 D:\NextCloud\Spyro\Documents\Projects\PlutoPoint Installer\obj\x64\Release\PlutoPoint_Installer.installerForm.resources
 D:\NextCloud\Spyro\Documents\Projects\PlutoPoint Installer\obj\x64\Release\PlutoPoint Installer.csproj.GenerateResource.cache
 D:\NextCloud\Spyro\Documents\Projects\PlutoPoint-Installer\obj\x64\Release\PlutoPoint Installer.csproj.AssemblyReference.cache
-D:\NextCloud\Spyro\Documents\Projects\PlutoPoint-Installer\obj\x64\Release\PlutoPoint_Installer.installerForm.resources
 D:\NextCloud\Spyro\Documents\Projects\PlutoPoint-Installer\obj\x64\Release\PlutoPoint Installer.csproj.GenerateResource.cache
 D:\NextCloud\Spyro\Documents\Projects\PlutoPoint-Installer\obj\x64\Release\PlutoPoint_Installer.Properties.Resources.resources
 D:\NextCloud\Spyro\Documents\Projects\PlutoPoint-Installer\obj\x64\Release\PlutoPoint Installer.csproj.CoreCompileInputs.cache
@@ -11,3 +10,4 @@ D:\NextCloud\Spyro\Documents\Projects\PlutoPoint-Installer\bin\x64\Release\Compu
 D:\NextCloud\Spyro\Documents\Projects\PlutoPoint-Installer\bin\x64\Release\Computer Repair Centre Installer.pdb
 D:\NextCloud\Spyro\Documents\Projects\PlutoPoint-Installer\obj\x64\Release\Computer Repair Centre Installer.exe
 D:\NextCloud\Spyro\Documents\Projects\PlutoPoint-Installer\obj\x64\Release\Computer Repair Centre Installer.pdb
+D:\NextCloud\Spyro\Documents\Projects\PlutoPoint-Installer\obj\x64\Release\PlutoPoint_Installer.installerForm.resources

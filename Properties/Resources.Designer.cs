@@ -63,6 +63,16 @@ namespace PlutoPoint_Installer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap anyDesk {
+            get {
+                object obj = ResourceManager.GetObject("anyDesk", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap bingWallpaper {
             get {
                 object obj = ResourceManager.GetObject("bingWallpaper", resourceCulture);
@@ -76,6 +86,16 @@ namespace PlutoPoint_Installer.Properties {
         internal static System.IO.UnmanagedMemoryStream birthday {
             get {
                 return ResourceManager.GetStream("birthday", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap bitDefender {
+            get {
+                object obj = ResourceManager.GetObject("bitDefender", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
@@ -105,6 +125,16 @@ namespace PlutoPoint_Installer.Properties {
             get {
                 object obj = ResourceManager.GetObject("computerRepairCentreIcon", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap discord {
+            get {
+                object obj = ResourceManager.GetObject("discord", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
@@ -150,6 +180,16 @@ namespace PlutoPoint_Installer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap mozillaThunderbird {
+            get {
+                object obj = ResourceManager.GetObject("mozillaThunderbird", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap power {
             get {
                 object obj = ResourceManager.GetObject("power", resourceCulture);
@@ -163,6 +203,16 @@ namespace PlutoPoint_Installer.Properties {
         internal static System.Drawing.Bitmap restart {
             get {
                 object obj = ResourceManager.GetObject("restart", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap steam {
+            get {
+                object obj = ResourceManager.GetObject("steam", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

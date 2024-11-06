@@ -20,8 +20,13 @@ using static System.Net.WebRequestMethods;
 
 namespace PlutoPoint_Installer
 {
+
+    using System.Drawing;
+    using System.Drawing.Drawing2D;
+    using System.Windows.Forms;
+
     public partial class installerForm : Form
-    {
+    {      
         public installerForm()
         {
             InitializeComponent();
@@ -188,6 +193,8 @@ namespace PlutoPoint_Installer
             string oemDir = @"C:\Computer Repair Centre\oem";
             string appsDir = @"C:\Computer Repair Centre\apps";
             string scriptsDir = @"C:\Computer Repair Centre\scripts";
+            string bingWallpaperAppPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),@"Microsoft\BingWallpaperApp\BingWallpaperApp.exe"
+);
             if (!Directory.Exists(rootDir))
             {
                 Directory.CreateDirectory(rootDir);
@@ -236,7 +243,7 @@ namespace PlutoPoint_Installer
                     {
                         if (build >= 22000)
                         {
-                            progressBar.Maximum += 12;
+                            progressBar.Maximum += 13;
                             if (romsey == "1") { progressBar.Maximum += 1; };
                             if (highcliffe == "1") { progressBar.Maximum += 1; };
                             installerTextBox.AppendText("This computer is running Windows 11.");
@@ -399,136 +406,163 @@ namespace PlutoPoint_Installer
             {
                 installerTextBox.AppendText("Bing Wallpapers is selected.");
                 installerTextBox.AppendText(Environment.NewLine);
-                installerTextBox.AppendText("Downloading Bing Wallpapers...");
-                installerTextBox.AppendText(Environment.NewLine);
-                using (WebClient wc = new WebClient())
+                if (System.IO.File.Exists(bingWallpaperAppPath))
                 {
-                    wc.DownloadFileCompleted += wc_progressBarStep;
-                    await wc.DownloadFileTaskAsync(bingWallpapersURL, bingWallpapersFilename);
+                    installerTextBox.AppendText("Bing Wallpapers is already installed, skipping installation.");
+                    installerTextBox.AppendText(Environment.NewLine);
+                    progressBar.Value += 2;
                 }
-                installerTextBox.AppendText("Installing Bing Wallpapers...");
-                installerTextBox.AppendText(Environment.NewLine);
-                await Task.Run(() =>
+                else
                 {
-                    using (Process process = new Process())
+                    installerTextBox.AppendText("Downloading Bing Wallpapers...");
+                    installerTextBox.AppendText(Environment.NewLine);
+                    using (WebClient wc = new WebClient())
                     {
-                        process.StartInfo.FileName = "msiexec";
-                        process.StartInfo.Arguments = $"/package \"{bingWallpapersFilename}\" /passive";
-                        process.StartInfo.UseShellExecute = false;
-                        process.StartInfo.RedirectStandardOutput = true;
-                        process.StartInfo.RedirectStandardError = true;
-                        process.StartInfo.CreateNoWindow = true;
-                        try
+                        wc.DownloadFileCompleted += wc_progressBarStep;
+                        await wc.DownloadFileTaskAsync(bingWallpapersURL, bingWallpapersFilename);
+                    }
+                    installerTextBox.AppendText("Installing Bing Wallpapers...");
+                    installerTextBox.AppendText(Environment.NewLine);
+                    await Task.Run(() =>
+                    {
+                        using (Process process = new Process())
                         {
-                            process.Start();
-                            string output = process.StandardOutput.ReadToEnd();
-                            string error = process.StandardError.ReadToEnd();
-                            process.WaitForExit();
-                            Console.WriteLine("Output: " + output);
-                            if (!string.IsNullOrEmpty(error))
+                            process.StartInfo.FileName = "msiexec";
+                            process.StartInfo.Arguments = $"/package \"{bingWallpapersFilename}\" /passive";
+                            process.StartInfo.UseShellExecute = false;
+                            process.StartInfo.RedirectStandardOutput = true;
+                            process.StartInfo.RedirectStandardError = true;
+                            process.StartInfo.CreateNoWindow = true;
+                            try
                             {
-                                Console.WriteLine("Error: " + error);
+                                process.Start();
+                                string output = process.StandardOutput.ReadToEnd();
+                                string error = process.StandardError.ReadToEnd();
+                                process.WaitForExit();
+                                Console.WriteLine("Output: " + output);
+                                if (!string.IsNullOrEmpty(error))
+                                {
+                                    Console.WriteLine("Error: " + error);
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine("An error occurred: " + ex.Message);
                             }
                         }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine("An error occurred: " + ex.Message);
-                        }
-                    }
-                });
-                installerTextBox.AppendText("Completed installation of Bing Wallpapers.");
-                installerTextBox.AppendText(Environment.NewLine); ;
-                progressBar.Value += 1;
+                    });
+                    installerTextBox.AppendText("Completed installation of Bing Wallpapers.");
+                    installerTextBox.AppendText(Environment.NewLine); ;
+                    progressBar.Value += 1;
+                }
             }
             if (googleChromeCheck.Checked)
             {
                 installerTextBox.AppendText("Google Chrome is selected.");
                 installerTextBox.AppendText(Environment.NewLine);
-                installerTextBox.AppendText("Downloading Google Chrome...");
-                installerTextBox.AppendText(Environment.NewLine);
-                using (WebClient wc = new WebClient())
+                if (System.IO.File.Exists(@"C:\Program Files\Google\Chrome\Application\chrome.exe"))
                 {
-                    wc.DownloadFileCompleted += wc_progressBarStep;
-                    await wc.DownloadFileTaskAsync(googleChromeURL, googleChromeFilename);
+                    installerTextBox.AppendText("Google Chrome is already installed, skipping installation.");
+                    installerTextBox.AppendText(Environment.NewLine);
+                    progressBar.Value += 2;
                 }
-                installerTextBox.AppendText("Installing Google Chrome...");
-                installerTextBox.AppendText(Environment.NewLine);
-                await Task.Run(() =>
+                else
                 {
-                    using (Process process = new Process())
+                    installerTextBox.AppendText("Downloading Google Chrome...");
+                    installerTextBox.AppendText(Environment.NewLine);
+                    using (WebClient wc = new WebClient())
                     {
-                        process.StartInfo.FileName = "msiexec";
-                        process.StartInfo.Arguments = $"/package \"{googleChromeFilename}\" /passive";
-                        process.StartInfo.UseShellExecute = false;
-                        process.StartInfo.RedirectStandardOutput = true;
-                        process.StartInfo.RedirectStandardError = true;
-                        process.StartInfo.CreateNoWindow = true;
-                        try
+                        wc.DownloadFileCompleted += wc_progressBarStep;
+                        await wc.DownloadFileTaskAsync(googleChromeURL, googleChromeFilename);
+                    }
+                    installerTextBox.AppendText("Installing Google Chrome...");
+                    installerTextBox.AppendText(Environment.NewLine);
+                    await Task.Run(() =>
+                    {
+                        using (Process process = new Process())
                         {
-                            process.Start();
-                            string output = process.StandardOutput.ReadToEnd();
-                            string error = process.StandardError.ReadToEnd();
-                            process.WaitForExit();
-                            Console.WriteLine("Output: " + output);
-                            if (!string.IsNullOrEmpty(error))
+                            process.StartInfo.FileName = "msiexec";
+                            process.StartInfo.Arguments = $"/package \"{googleChromeFilename}\" /passive";
+                            process.StartInfo.UseShellExecute = false;
+                            process.StartInfo.RedirectStandardOutput = true;
+                            process.StartInfo.RedirectStandardError = true;
+                            process.StartInfo.CreateNoWindow = true;
+                            try
                             {
-                                Console.WriteLine("Error: " + error);
+                                process.Start();
+                                string output = process.StandardOutput.ReadToEnd();
+                                string error = process.StandardError.ReadToEnd();
+                                process.WaitForExit();
+                                Console.WriteLine("Output: " + output);
+                                if (!string.IsNullOrEmpty(error))
+                                {
+                                    Console.WriteLine("Error: " + error);
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine("An error occurred: " + ex.Message);
                             }
                         }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine("An error occurred: " + ex.Message);
-                        }
-                    }
-                });
-                installerTextBox.AppendText("Completed installation of Google Chrome.");
-                installerTextBox.AppendText(Environment.NewLine); ;
-                progressBar.Value += 1;
+                    });
+                    installerTextBox.AppendText("Completed installation of Google Chrome.");
+                    installerTextBox.AppendText(Environment.NewLine); ;
+                    progressBar.Value += 1;
+                }
             }
             if (libreOfficeCheck.Checked)
             {
                 installerTextBox.AppendText("LibreOffice is selected.");
                 installerTextBox.AppendText(Environment.NewLine);
-                installerTextBox.AppendText("Downloading LibreOffice...");
-                installerTextBox.AppendText(Environment.NewLine);
-                using (WebClient wc = new WebClient())
+                if (System.IO.File.Exists(@"C:\Program Files\LibreOffice\program\soffice.exe"))
                 {
-                    wc.DownloadFileCompleted += wc_progressBarStep;
-                    await wc.DownloadFileTaskAsync(libreOfficeURL, libreOfficeFilename);
+                    installerTextBox.AppendText("LibreOffice is already installed, skipping installation.");
+                    installerTextBox.AppendText(Environment.NewLine);
+                    progressBar.Value += 2;
                 }
-                installerTextBox.AppendText("Installing LibreOffice...");
-                installerTextBox.AppendText(Environment.NewLine);
-                await Task.Run(() =>
+                else
                 {
-                    using (Process process = new Process())
+                    installerTextBox.AppendText("Downloading LibreOffice...");
+                    installerTextBox.AppendText(Environment.NewLine);
+                    using (WebClient wc = new WebClient())
                     {
-                        process.StartInfo.FileName = "msiexec";
-                        process.StartInfo.Arguments = $"/package \"{libreOfficeFilename}\" /passive";
-                        process.StartInfo.UseShellExecute = false;
-                        process.StartInfo.RedirectStandardOutput = true;
-                        process.StartInfo.RedirectStandardError = true;
-                        process.StartInfo.CreateNoWindow = true;
-                        try
+                        wc.DownloadFileCompleted += wc_progressBarStep;
+                        await wc.DownloadFileTaskAsync(libreOfficeURL, libreOfficeFilename);
+                    }
+                    installerTextBox.AppendText("Installing LibreOffice...");
+                    installerTextBox.AppendText(Environment.NewLine);
+                    await Task.Run(() =>
+                    {
+                        using (Process process = new Process())
                         {
-                            process.Start();
-                            string output = process.StandardOutput.ReadToEnd();
-                            string error = process.StandardError.ReadToEnd();
-                            process.WaitForExit();
-                            Console.WriteLine("Output: " + output);
-                            if (!string.IsNullOrEmpty(error))
+                            process.StartInfo.FileName = "msiexec";
+                            process.StartInfo.Arguments = $"/package \"{libreOfficeFilename}\" /passive";
+                            process.StartInfo.UseShellExecute = false;
+                            process.StartInfo.RedirectStandardOutput = true;
+                            process.StartInfo.RedirectStandardError = true;
+                            process.StartInfo.CreateNoWindow = true;
+                            try
                             {
-                                Console.WriteLine("Error: " + error);
+                                process.Start();
+                                string output = process.StandardOutput.ReadToEnd();
+                                string error = process.StandardError.ReadToEnd();
+                                process.WaitForExit();
+                                Console.WriteLine("Output: " + output);
+                                if (!string.IsNullOrEmpty(error))
+                                {
+                                    Console.WriteLine("Error: " + error);
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine("An error occurred: " + ex.Message);
                             }
                         }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine("An error occurred: " + ex.Message);
-                        }
-                    }
-                });
-                installerTextBox.AppendText("Completed installation of LibreOffice.");
-                installerTextBox.AppendText(Environment.NewLine);
-                progressBar.Value += 1;
+                    });
+                    installerTextBox.AppendText("Completed installation of LibreOffice.");
+                    installerTextBox.AppendText(Environment.NewLine);
+                    progressBar.Value += 1;
+                }
             }
             if (mozillaFirefoxCheck.Checked)
             {
@@ -538,8 +572,7 @@ namespace PlutoPoint_Installer
                 {
                     installerTextBox.AppendText("Mozilla Firefox is already installed, skipping installation.");
                     installerTextBox.AppendText(Environment.NewLine);
-                    progressBar.Value += 1;
-
+                    progressBar.Value += 2;
                 }
                 else
                 {
