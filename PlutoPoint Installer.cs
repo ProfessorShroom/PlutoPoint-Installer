@@ -14,6 +14,8 @@ using System.Security.Policy;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using System.Net.Http;
 using System.Collections.Generic;
+using System.Threading;
+using System.Media;
 
 namespace PlutoPoint_Installer
 {
@@ -22,9 +24,135 @@ namespace PlutoPoint_Installer
         public installerForm()
         {
             InitializeComponent();
+            CheckChristmas();
+            CheckHalloween();
+            CheckCharlieBirthday();
+            CheckDeanBirthday();
+            CheckSteveBirthday();
+            CheckHowardBirthday();
+            CheckAdamBirthday();
+            CheckGeethBirthday();
         }
 
-        Uri crcOEMURL = new Uri("https://github.com/charliehoward/PlutoPoint-Installer/raw/master/Resources/computerRepairCentre/computerRepairCentreOEM.bmp");
+        string christmas = null;
+        string halloween = null;
+        string birthday = null;
+        string charlieBirthday = null;
+        string deanBirthday = null;
+        string steveBirthday = null;
+        string howardBirthday = null;
+        string adamBirthday = null;
+        string geethBirthday = null;
+        private void CheckChristmas()
+        {
+            if (DateTime.Now.Month == 12)
+            {
+                christmas = "1";
+                this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(130)))), ((int)(((byte)(60)))));
+                install.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(214)))), ((int)(((byte)(0)))), ((int)(((byte)(28)))));
+                install.ForeColor = System.Drawing.Color.White;
+                close.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(214)))), ((int)(((byte)(0)))), ((int)(((byte)(28)))));
+                close.ForeColor = System.Drawing.Color.White;
+                restart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(214)))), ((int)(((byte)(0)))), ((int)(((byte)(28)))));
+                installerTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(135)))), ((int)(((byte)(62)))));
+            }
+        }
+        private void CheckHalloween()
+        {
+            if (DateTime.Now.Month == 10 && (DateTime.Now.Day == 28 || DateTime.Now.Day == 29 || DateTime.Now.Day == 30 || DateTime.Now.Day == 31))
+            {
+                halloween = "1";
+                install.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(252)))), ((int)(((byte)(76)))), ((int)(((byte)(2)))));
+                restart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(252)))), ((int)(((byte)(76)))), ((int)(((byte)(2)))));
+                close.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(252)))), ((int)(((byte)(76)))), ((int)(((byte)(2)))));
+            }
+        }
+        private void CheckCharlieBirthday()
+        {
+            if (DateTime.Now.Month == 4 && DateTime.Now.Day == 6)
+            {
+                birthday = "1";
+                charlieBirthday = "1";
+                this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(155)))), ((int)(((byte)(211)))), ((int)(((byte)(221)))));
+                install.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
+                restart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
+                close.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
+                installerTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
+                installerTextBox.ForeColor = System.Drawing.Color.Black;
+            }
+        }
+        private void CheckDeanBirthday()
+        {
+            if (DateTime.Now.Month == 4 && DateTime.Now.Day == 21)
+            {
+                birthday = "1";
+                charlieBirthday = "1";
+                this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(155)))), ((int)(((byte)(211)))), ((int)(((byte)(221)))));
+                install.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
+                restart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
+                close.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
+                installerTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
+                installerTextBox.ForeColor = System.Drawing.Color.Black;
+            }
+        }
+        private void CheckSteveBirthday()
+        {
+            if (DateTime.Now.Month == 6 && DateTime.Now.Day == 24)
+            {
+                birthday = "1";
+                charlieBirthday = "1";
+                this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(155)))), ((int)(((byte)(211)))), ((int)(((byte)(221)))));
+                install.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
+                restart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
+                close.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
+                installerTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
+                installerTextBox.ForeColor = System.Drawing.Color.Black;
+            }
+        }
+        private void CheckHowardBirthday()
+        {
+            if (DateTime.Now.Month == 5 && DateTime.Now.Day == 16)
+            {
+                birthday = "1";
+                charlieBirthday = "1";
+                this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(155)))), ((int)(((byte)(211)))), ((int)(((byte)(221)))));
+                install.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
+                restart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
+                close.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
+                installerTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
+                installerTextBox.ForeColor = System.Drawing.Color.Black;
+            }
+        }
+        private void CheckAdamBirthday()
+        {
+            if (DateTime.Now.Month == 6 && DateTime.Now.Day == 9)
+            {
+                birthday = "1";
+                charlieBirthday = "1";
+                this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(155)))), ((int)(((byte)(211)))), ((int)(((byte)(221)))));
+                install.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
+                restart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
+                close.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
+                installerTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
+                installerTextBox.ForeColor = System.Drawing.Color.Black;
+            }
+        }
+        private void CheckGeethBirthday()
+        {
+            if (DateTime.Now.Month == 7 && DateTime.Now.Day == 25)
+            {
+                birthday = "1";
+                charlieBirthday = "1";
+                this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(155)))), ((int)(((byte)(211)))), ((int)(((byte)(221)))));
+                install.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
+                restart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
+                close.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
+                installerTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
+                installerTextBox.ForeColor = System.Drawing.Color.Black;
+            }
+        }
+
+        Uri crcOEMURL = new Uri("https://raw.githubusercontent.com/charliehoward/PlutoPoint-Installer/refs/heads/main/Resources/computerRepairCentre/computerRepairCentreOEM.bmp");
         string crcOEMFilename = @"C:\Computer Repair Centre\oem\computerRepairCentreOEM.bmp";
         Uri bingWallpapersURL = new Uri("https://files.crchq.net/installer/bingWallpapers.msi");
         string bingWallpapersFilename = @"C:\Computer Repair Centre\apps\bingWallpapers.msi";
@@ -75,6 +203,8 @@ namespace PlutoPoint_Installer
                 Directory.CreateDirectory(scriptsDir);
             }
 
+            SoundPlayer player;
+
             string publicIP = await GetPublicIPAddressAsync();
             string romsey = null;
             string chandlersFord = null;
@@ -104,24 +234,109 @@ namespace PlutoPoint_Installer
                     {
                         if (build >= 22000)
                         {
-                            progressBar.Maximum += 9;
+                            progressBar.Maximum += 11;
                             if (romsey == "1") { progressBar.Maximum += 1; };
                             if (highcliffe == "1") { progressBar.Maximum += 1; };
-
+                            installerTextBox.AppendText("This computer is running Windows 11.");
+                            installerTextBox.AppendText(Environment.NewLine);
                         }
                         else if (build >= 19041)
                         {
-                            progressBar.Maximum += 0;
+                            progressBar.Maximum += 8;
+                            installerTextBox.AppendText("This computer is running Windows 10.");
+                            installerTextBox.AppendText(Environment.NewLine);
                         }
                     }
                 }
             }
+            if (powerCheck.Checked) { progressBar.Value += 1; }
+            else { progressBar.Value += 2; }
             if (crcCheck.Checked) { progressBar.Maximum += 1; }
             if (bingWallpapersCheck.Checked) { progressBar.Maximum += 2; }
             if (googleChromeCheck.Checked) { progressBar.Maximum += 2; }
             if (libreOfficeCheck.Checked) { progressBar.Maximum += 2; }
             if (mozillaFirefoxCheck.Checked) { progressBar.Maximum += 2; }
 
+            if (christmas == "1")
+            {
+                installerTextBox.AppendText("Merry Christmas!");
+                installerTextBox.AppendText(Environment.NewLine);
+                player = new SoundPlayer(Properties.Resources.christmas);
+            }
+            else if (halloween == "1")
+            {
+                installerTextBox.AppendText("Boo! Happy Halloween!");
+                installerTextBox.AppendText(Environment.NewLine);
+                player = new SoundPlayer(Properties.Resources.halloween);
+            }
+            else if (birthday == "1")
+            {
+                if (charlieBirthday == "1")
+                {
+                    installerTextBox.AppendText("It is Charlie's birthday today!");
+                    installerTextBox.AppendText(Environment.NewLine);
+                    installerTextBox.AppendText("Happy birthday Charlie!");
+                    installerTextBox.AppendText(Environment.NewLine);
+                }
+                else if (deanBirthday == "1")
+                {
+                    installerTextBox.AppendText("It is Dean's birthday today!");
+                    installerTextBox.AppendText(Environment.NewLine);
+                    installerTextBox.AppendText("Happy birthday Dean!");
+                    installerTextBox.AppendText(Environment.NewLine);
+                }
+                else if (steveBirthday == "1")
+                {
+                    installerTextBox.AppendText("It is Steve's birthday today!");
+                    installerTextBox.AppendText(Environment.NewLine);
+                    installerTextBox.AppendText("Happy birthday Steve!");
+                    installerTextBox.AppendText(Environment.NewLine);
+                }
+                else if (howardBirthday == "1")
+                {
+                    installerTextBox.AppendText("It is Howard's birthday today!");
+                    installerTextBox.AppendText(Environment.NewLine);
+                    installerTextBox.AppendText("Happy birthday Howard!");
+                    installerTextBox.AppendText(Environment.NewLine);
+                }
+                else if (adamBirthday == "1")
+                {
+                    installerTextBox.AppendText("It is Adam's birthday today!");
+                    installerTextBox.AppendText(Environment.NewLine);
+                    installerTextBox.AppendText("Happy birthday Adam!");
+                    installerTextBox.AppendText(Environment.NewLine);
+                }
+                else if (geethBirthday == "1")
+                {
+                    installerTextBox.AppendText("It is Geeth's birthday today!");
+                    installerTextBox.AppendText(Environment.NewLine);
+                    installerTextBox.AppendText("Happy birthday Geeth!");
+                    installerTextBox.AppendText(Environment.NewLine);
+                }
+                player = new SoundPlayer(Properties.Resources.birthday);
+            }
+            else
+            {
+                player = new SoundPlayer(Properties.Resources.win98shutdown);
+            }
+
+            if (powerCheck.Checked)
+            {
+                installerTextBox.AppendText("Disable sleep on AC power is selected.");
+                installerTextBox.AppendText(Environment.NewLine);
+                installerTextBox.AppendText("Disabling sleep and screen timeout while on AC power...");
+                installerTextBox.AppendText(Environment.NewLine);
+                Process.Start("powercfg", "/change monitor-timeout-ac 0");
+                Process.Start("powercfg", "/change standby-timeout-ac 0");
+                progressBar.Value += 1;
+            }
+            else
+            {
+                installerTextBox.AppendText("Disabling sleep and screen timeout while on AC power temporarily during install...");
+                installerTextBox.AppendText(Environment.NewLine);
+                progressBar.Value += 1;
+            }
+            
             if (crcCheck.Checked)
             {
                 installerTextBox.AppendText("Computer Repair Centre OEM information is selected.");
@@ -139,7 +354,7 @@ namespace PlutoPoint_Installer
                     }
                     const string oemRegPath = @"SOFTWARE\Microsoft\Windows\CurrentVersion\OEMInformation";
                     const string logoReg = "Logo";
-                    const string logoRegData = @"C:\Computer Repair Centre\computerRepairCentreOEM.bmp";
+                    const string logoRegData = @"C:\Computer Repair Centre\oem\computerRepairCentreOEM.bmp";
                     const string manufacturerReg = "Manufacturer";
                     const string manufacturerRegData = "Computer Repair Centre";
                     const string supportHoursReg = "SupportHours";
@@ -359,15 +574,7 @@ namespace PlutoPoint_Installer
                 progressBar.Value += 1;
             }
 
-
-            if (restartCheck.Checked)
-            {
-                Process.Start("shutdown", "/r /t 60");
-                installerTextBox.AppendText("System will restart in 60 seconds. Please save any data.");
-                installerTextBox.AppendText(Environment.NewLine);
-            }
-
-                using (RegistryKey key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion"))
+            using (RegistryKey key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion"))
             {
                 if (key != null)
                 {
@@ -376,9 +583,6 @@ namespace PlutoPoint_Installer
                     {
                         if (build >= 22000)
                         {
-                            installerTextBox.AppendText("This computer is running Windows 11.");
-                            installerTextBox.AppendText(Environment.NewLine);
-
                             if (romsey == "1") 
                             {
                                 installerTextBox.AppendText("Aligning the taskbar to the left...");
@@ -507,8 +711,87 @@ namespace PlutoPoint_Installer
                         }
                         else if (build >= 19041)
                         {
-                            installerTextBox.AppendText("This computer is running Windows 10.");
+                            installerTextBox.AppendText("Setting explorer to open to This PC...");
                             installerTextBox.AppendText(Environment.NewLine);
+                            const string thisPCRegPath = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced";
+                            const string thisPCReg = "LaunchTo";
+                            const int thisPCRegData = 1;
+                            using (RegistryKey registryKey = Registry.CurrentUser.OpenSubKey(thisPCRegPath, writable: true))
+                            {
+                                registryKey.SetValue(thisPCReg, thisPCRegData, RegistryValueKind.DWord);
+                                Console.WriteLine($"Set '{thisPCReg}' to {thisPCRegData} in '{thisPCRegPath}'.");
+                            }
+                            progressBar.Value += 1;
+
+                            installerTextBox.AppendText("Disabling fastboot mode...");
+                            installerTextBox.AppendText(Environment.NewLine);
+                            const string hiberbootRegPath = @"SYSTEM\CurrentControlSet\Control\Session Manager\Power";
+                            const string hiberbootReg = "HiberbootEnabled";
+                            const int hiberbootRegData = 0;
+                            using (RegistryKey registryKey = Registry.LocalMachine.OpenSubKey(hiberbootRegPath, writable: true))
+                            {
+                                registryKey.SetValue(hiberbootReg, hiberbootRegData, RegistryValueKind.DWord);
+                                Console.WriteLine($"Set '{hiberbootReg}' to {hiberbootRegData} in '{hiberbootRegPath}'.");
+                            }
+                            progressBar.Value += 1;
+
+                            installerTextBox.AppendText("Disabling location tracking...");
+                            installerTextBox.AppendText(Environment.NewLine);
+                            const string locationRegPath1 = @"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Sensor\Overrides\{BFA794E4-F964-4FDB-90F6-51056BFE4B44}";
+                            const string locationReg1 = "SensorPermissionState";
+                            const int locationRegData1 = 0;
+                            const string locationRegPath2 = @"SYSTEM\CurrentControlSet\Services\lfsvc\Service\Configuration";
+                            const string locationReg2 = "Status";
+                            const int locationRegData2 = 0;
+                            using (RegistryKey registryKey = Registry.LocalMachine.OpenSubKey(locationRegPath1, writable: true))
+                            {
+                                registryKey.SetValue(locationReg1, locationRegData1, RegistryValueKind.DWord);
+                                Console.WriteLine($"Set '{locationReg1}' to {locationRegData1} in '{locationRegPath1}'.");
+                            }
+                            progressBar.Value += 1;
+                            using (RegistryKey registryKey = Registry.LocalMachine.OpenSubKey(locationRegPath2, writable: true))
+                            {
+                                registryKey.SetValue(locationReg2, locationRegData2, RegistryValueKind.DWord);
+                                Console.WriteLine($"Set '{locationReg2}' to {locationRegData2} in '{locationRegPath2}'.");
+                            }
+                            progressBar.Value += 1;
+
+                            installerTextBox.AppendText("Disabling People icon...");
+                            installerTextBox.AppendText(Environment.NewLine);
+                            const string peopleRegPath1 = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People";
+                            const string peopleRegPath2 = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People";
+                            const string peopleReg2 = "PeopleBand";
+                            const int peopleRegData2 = 0;
+                            using (RegistryKey registryKey = Registry.CurrentUser.CreateSubKey(peopleRegPath1, writable: true))
+                            {
+                            }
+                            progressBar.Value += 1;
+                            using (RegistryKey registryKey = Registry.CurrentUser.OpenSubKey(peopleRegPath2, writable: true))
+                            {
+                                registryKey.SetValue(peopleReg2, peopleRegData2, RegistryValueKind.DWord);
+                                Console.WriteLine($"Set '{peopleReg2}' to {peopleRegData2} in '{peopleRegPath2}'.");
+                            }
+                            progressBar.Value += 1;
+
+                            installerTextBox.AppendText("Hiding recently used files and folders in File Explorer...");
+                            installerTextBox.AppendText(Environment.NewLine);
+                            const string recentRegPath = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer";
+                            const string recentReg = "ShowRecent";
+                            const int recentRegData = 0;
+                            const string frequentReg = "ShowFrequent";
+                            const int frequentRegData = 0;
+                            using (RegistryKey registryKey = Registry.CurrentUser.OpenSubKey(recentRegPath, writable: true))
+                            {
+                                registryKey.SetValue(recentReg, recentRegData, RegistryValueKind.DWord);
+                                Console.WriteLine($"Set '{recentReg}' to {recentRegData} in '{recentRegPath}'.");
+                            }
+                            progressBar.Value += 1;
+                            using (RegistryKey registryKey = Registry.CurrentUser.OpenSubKey(recentRegPath, writable: true))
+                            {
+                                registryKey.SetValue(frequentReg, frequentRegData, RegistryValueKind.DWord);
+                                Console.WriteLine($"Set '{frequentReg}' to {frequentRegData} in '{recentRegPath}'.");
+                            }
+                            progressBar.Value += 1;
                         }
                         else
                         {
@@ -519,6 +802,25 @@ namespace PlutoPoint_Installer
                 }
             }
 
+
+            if (powerCheck.Checked) { }
+            else
+            {
+                installerTextBox.AppendText("Re-enabling sleep and screen timeout on AC power...");
+                installerTextBox.AppendText(Environment.NewLine);
+                Process.Start("powercfg", "/change monitor-timeout-ac 10");
+                Process.Start("powercfg", "/change standby-timeout-ac 20");
+                progressBar.Value += 1;
+            } 
+            
+            player.Play();
+
+            if (restartCheck.Checked)
+            {
+                Process.Start("shutdown", "/r /t 60");
+                installerTextBox.AppendText("System will restart in 60 seconds. If you need to cancel this press the close button.");
+                installerTextBox.AppendText(Environment.NewLine);
+            }
         }
         private void wc_progressBarStep(object sender, AsyncCompletedEventArgs e)
         {
@@ -534,12 +836,13 @@ namespace PlutoPoint_Installer
 
         private void close_Click(object sender, EventArgs e)
         {
+            Process.Start("shutdown", "/a");
             this.Close();
         }
 
         private void restart_Click(object sender, EventArgs e)
         {
-            Process.Start("shutdown","/r /t 5");
+            Process.Start("shutdown","/r /t 1");
         }
 
         private void versionLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)

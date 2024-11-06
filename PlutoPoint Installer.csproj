@@ -110,6 +110,11 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\icons\power.png" />
+    <None Include="Resources\sounds\halloween.wav" />
+    <None Include="Resources\sounds\christmas.wav" />
+    <None Include="Resources\sounds\birthday.wav" />
+    <None Include="Resources\sounds\win98shutdown.wav" />
     <None Include="Resources\icons\computerRepairCentre.png" />
     <None Include="Resources\icons\googleChrome.png" />
     <None Include="Resources\icons\restart.png" />

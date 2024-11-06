@@ -45,9 +45,10 @@ namespace PlutoPoint_Installer
             this.versionLabel = new System.Windows.Forms.LinkLabel();
             this.restartCheck = new System.Windows.Forms.CheckBox();
             this.crcCheck = new System.Windows.Forms.CheckBox();
+            this.powerCheck = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
-            // Install Button
+            // install
             // 
             this.install.BackColor = System.Drawing.SystemColors.MenuHighlight;
             this.install.FlatAppearance.BorderSize = 0;
@@ -62,22 +63,76 @@ namespace PlutoPoint_Installer
             this.install.UseVisualStyleBackColor = false;
             this.install.Click += new System.EventHandler(this.install_Click);
             // 
-            // Restart Button
+            // installerTextBox
             // 
-            this.restart.BackColor = System.Drawing.Color.OrangeRed;
-            this.restart.FlatAppearance.BorderSize = 0;
-            this.restart.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.restart.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.restart.ForeColor = System.Drawing.Color.White;
-            this.restart.Location = new System.Drawing.Point(123, 14);
-            this.restart.Name = "restart";
-            this.restart.Size = new System.Drawing.Size(66, 24);
-            this.restart.TabIndex = 7;
-            this.restart.Text = "Restart";
-            this.restart.UseVisualStyleBackColor = false;
-            this.restart.Click += new System.EventHandler(this.restart_Click);
+            this.installerTextBox.AcceptsReturn = true;
+            this.installerTextBox.BackColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.installerTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.installerTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.installerTextBox.ForeColor = System.Drawing.SystemColors.Info;
+            this.installerTextBox.Location = new System.Drawing.Point(344, 54);
+            this.installerTextBox.Multiline = true;
+            this.installerTextBox.Name = "installerTextBox";
+            this.installerTextBox.ReadOnly = true;
+            this.installerTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.installerTextBox.Size = new System.Drawing.Size(444, 360);
+            this.installerTextBox.TabIndex = 1;
             // 
-            // Close Button
+            // progressBar
+            // 
+            this.progressBar.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(156)))), ((int)(((byte)(224)))), ((int)(((byte)(250)))));
+            this.progressBar.Location = new System.Drawing.Point(267, 14);
+            this.progressBar.Maximum = 0;
+            this.progressBar.Name = "progressBar";
+            this.progressBar.Size = new System.Drawing.Size(521, 24);
+            this.progressBar.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
+            this.progressBar.TabIndex = 3;
+            // 
+            // crcCheck
+            // 
+            this.crcCheck.Checked = true;
+            this.crcCheck.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.crcCheck.Image = global::PlutoPoint_Installer.Properties.Resources.computerRepairCentre;
+            this.crcCheck.Location = new System.Drawing.Point(12, 70);
+            this.crcCheck.Name = "crcCheck";
+            this.crcCheck.Size = new System.Drawing.Size(57, 50);
+            this.crcCheck.TabIndex = 11;
+            this.crcCheck.UseVisualStyleBackColor = true;
+            // 
+            // libreOfficeCheck
+            // 
+            this.libreOfficeCheck.Checked = true;
+            this.libreOfficeCheck.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.libreOfficeCheck.Image = global::PlutoPoint_Installer.Properties.Resources.libreOffice;
+            this.libreOfficeCheck.Location = new System.Drawing.Point(12, 205);
+            this.libreOfficeCheck.Name = "libreOfficeCheck";
+            this.libreOfficeCheck.Size = new System.Drawing.Size(57, 50);
+            this.libreOfficeCheck.TabIndex = 4;
+            this.libreOfficeCheck.UseVisualStyleBackColor = true;
+            // 
+            // mozillaFirefoxCheck
+            // 
+            this.mozillaFirefoxCheck.Checked = true;
+            this.mozillaFirefoxCheck.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.mozillaFirefoxCheck.Image = global::PlutoPoint_Installer.Properties.Resources.mozillaFirefox;
+            this.mozillaFirefoxCheck.Location = new System.Drawing.Point(12, 250);
+            this.mozillaFirefoxCheck.Name = "mozillaFirefoxCheck";
+            this.mozillaFirefoxCheck.Size = new System.Drawing.Size(57, 50);
+            this.mozillaFirefoxCheck.TabIndex = 5;
+            this.mozillaFirefoxCheck.UseVisualStyleBackColor = true;
+            // 
+            // googleChromeCheck
+            // 
+            this.googleChromeCheck.Checked = true;
+            this.googleChromeCheck.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.googleChromeCheck.Image = global::PlutoPoint_Installer.Properties.Resources.googleChrome;
+            this.googleChromeCheck.Location = new System.Drawing.Point(12, 160);
+            this.googleChromeCheck.Name = "googleChromeCheck";
+            this.googleChromeCheck.Size = new System.Drawing.Size(57, 50);
+            this.googleChromeCheck.TabIndex = 5;
+            this.googleChromeCheck.UseVisualStyleBackColor = true;
+            // 
+            // close
             // 
             this.close.BackColor = System.Drawing.SystemColors.MenuHighlight;
             this.close.FlatAppearance.BorderSize = 0;
@@ -92,40 +147,22 @@ namespace PlutoPoint_Installer
             this.close.UseVisualStyleBackColor = false;
             this.close.Click += new System.EventHandler(this.close_Click);
             // 
-            // Installer Text Box
+            // restart
             // 
-            this.installerTextBox.AcceptsReturn = true;
-            this.installerTextBox.BackColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.installerTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.installerTextBox.Location = new System.Drawing.Point(344, 54);
-            this.installerTextBox.Multiline = true;
-            this.installerTextBox.Name = "installerTextBox";
-            this.installerTextBox.ReadOnly = true;
-            this.installerTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.installerTextBox.Size = new System.Drawing.Size(444, 360);
-            this.installerTextBox.TabIndex = 1;
+            this.restart.BackColor = System.Drawing.Color.OrangeRed;
+            this.restart.FlatAppearance.BorderSize = 0;
+            this.restart.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.restart.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.restart.ForeColor = System.Drawing.Color.White;
+            this.restart.Location = new System.Drawing.Point(123, 14);
+            this.restart.Name = "restart";
+            this.restart.Size = new System.Drawing.Size(66, 24);
+            this.restart.TabIndex = 7;
+            this.restart.Text = "Restart";
+            this.restart.UseVisualStyleBackColor = false;
+            this.restart.Click += new System.EventHandler(this.restart_Click);
             // 
-            // Progress Bar
-            // 
-            this.progressBar.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(156)))), ((int)(((byte)(224)))), ((int)(((byte)(250)))));
-            this.progressBar.Location = new System.Drawing.Point(267, 14);
-            this.progressBar.Maximum = 0;
-            this.progressBar.Name = "progressBar";
-            this.progressBar.Size = new System.Drawing.Size(521, 24);
-            this.progressBar.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
-            this.progressBar.TabIndex = 3;
-            // 
-            // CRC
-            // 
-            this.crcCheck.Checked = true;
-            this.crcCheck.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.crcCheck.Image = global::PlutoPoint_Installer.Properties.Resources.computerRepairCentre;
-            this.crcCheck.Location = new System.Drawing.Point(12, 70);
-            this.crcCheck.Size = new System.Drawing.Size(57, 50);
-            this.crcCheck.TabIndex = 11;
-            this.crcCheck.UseVisualStyleBackColor = true;
-            // 
-            // Bing Wallpapers
+            // bingWallpapersCheck
             // 
             this.bingWallpapersCheck.Checked = true;
             this.bingWallpapersCheck.CheckState = System.Windows.Forms.CheckState.Checked;
@@ -136,49 +173,7 @@ namespace PlutoPoint_Installer
             this.bingWallpapersCheck.TabIndex = 8;
             this.bingWallpapersCheck.UseVisualStyleBackColor = true;
             // 
-            // Google Chrome
-            // 
-            this.googleChromeCheck.Checked = true;
-            this.googleChromeCheck.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.googleChromeCheck.Image = global::PlutoPoint_Installer.Properties.Resources.googleChrome;
-            this.googleChromeCheck.Location = new System.Drawing.Point(12, 160);
-            this.googleChromeCheck.Name = "googleChromeCheck";
-            this.googleChromeCheck.Size = new System.Drawing.Size(57, 50);
-            this.googleChromeCheck.TabIndex = 5;
-            this.googleChromeCheck.UseVisualStyleBackColor = true;
-            // 
-            // LibreOffice
-            // 
-            this.libreOfficeCheck.Checked = true;
-            this.libreOfficeCheck.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.libreOfficeCheck.Image = global::PlutoPoint_Installer.Properties.Resources.libreOffice;
-            this.libreOfficeCheck.Location = new System.Drawing.Point(12, 205);
-            this.libreOfficeCheck.Name = "libreOfficeCheck";
-            this.libreOfficeCheck.Size = new System.Drawing.Size(57, 50);
-            this.libreOfficeCheck.TabIndex = 4;
-            this.libreOfficeCheck.UseVisualStyleBackColor = true;
-            // 
-            // Mozilla Firefox
-            // 
-            this.mozillaFirefoxCheck.Checked = true;
-            this.mozillaFirefoxCheck.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.mozillaFirefoxCheck.Image = global::PlutoPoint_Installer.Properties.Resources.mozillaFirefox;
-            this.mozillaFirefoxCheck.Location = new System.Drawing.Point(12, 250);
-            this.mozillaFirefoxCheck.Name = "mozillaFirefoxCheck";
-            this.mozillaFirefoxCheck.Size = new System.Drawing.Size(57, 50);
-            this.mozillaFirefoxCheck.TabIndex = 5;
-            this.mozillaFirefoxCheck.UseVisualStyleBackColor = true;
-            // 
-            // Restart
-            // 
-            this.restartCheck.Image = ((System.Drawing.Image)(resources.GetObject("restartCheck.Image")));
-            this.restartCheck.Location = new System.Drawing.Point(751, 417);
-            this.restartCheck.Name = "restartCheck";
-            this.restartCheck.Size = new System.Drawing.Size(46, 32);
-            this.restartCheck.TabIndex = 10;
-            this.restartCheck.UseVisualStyleBackColor = true;
-            // 
-            // Version
+            // versionLabel
             // 
             this.versionLabel.AutoSize = true;
             this.versionLabel.LinkColor = System.Drawing.Color.White;
@@ -187,15 +182,35 @@ namespace PlutoPoint_Installer
             this.versionLabel.Size = new System.Drawing.Size(84, 13);
             this.versionLabel.TabIndex = 9;
             this.versionLabel.TabStop = true;
-            this.versionLabel.Text = "Version 6.0.2.0b";
+            this.versionLabel.Text = "Version 6.0.3.0b";
             this.versionLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.versionLabel_LinkClicked);
             // 
-            // Installer Form
+            // restartCheck
+            // 
+            this.restartCheck.Image = Properties.Resources.restart;
+            this.restartCheck.Location = new System.Drawing.Point(751, 417);
+            this.restartCheck.Name = "restartCheck";
+            this.restartCheck.Size = new System.Drawing.Size(46, 32);
+            this.restartCheck.TabIndex = 10;
+            this.restartCheck.UseVisualStyleBackColor = true;
+            
+            // 
+            // powerCheck
+            // 
+            this.powerCheck.Image = Properties.Resources.power;
+            this.powerCheck.Location = new System.Drawing.Point(699, 417);
+            this.powerCheck.Name = "powerCheck";
+            this.powerCheck.Size = new System.Drawing.Size(46, 32);
+            this.powerCheck.TabIndex = 12;
+            this.powerCheck.UseVisualStyleBackColor = true;
+            // 
+            // installerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(41)))), ((int)(((byte)(41)))));
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.powerCheck);
             this.Controls.Add(this.crcCheck);
             this.Controls.Add(this.restartCheck);
             this.Controls.Add(this.versionLabel);
@@ -230,6 +245,7 @@ namespace PlutoPoint_Installer
         private System.Windows.Forms.LinkLabel versionLabel;
         private System.Windows.Forms.CheckBox restartCheck;
         private System.Windows.Forms.CheckBox crcCheck;
+        private System.Windows.Forms.CheckBox powerCheck;
     }
 }
 
