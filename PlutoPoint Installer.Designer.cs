@@ -32,7 +32,6 @@ namespace PlutoPoint_Installer
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(installerForm));
             this.install = new System.Windows.Forms.Button();
             this.installerTextBox = new System.Windows.Forms.TextBox();
             this.progressBar = new System.Windows.Forms.ProgressBar();
@@ -87,17 +86,6 @@ namespace PlutoPoint_Installer
             this.progressBar.Size = new System.Drawing.Size(521, 24);
             this.progressBar.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
             this.progressBar.TabIndex = 3;
-            // 
-            // crcCheck
-            // 
-            this.crcCheck.Checked = true;
-            this.crcCheck.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.crcCheck.Image = global::PlutoPoint_Installer.Properties.Resources.computerRepairCentre;
-            this.crcCheck.Location = new System.Drawing.Point(12, 70);
-            this.crcCheck.Name = "crcCheck";
-            this.crcCheck.Size = new System.Drawing.Size(57, 50);
-            this.crcCheck.TabIndex = 11;
-            this.crcCheck.UseVisualStyleBackColor = true;
             // 
             // libreOfficeCheck
             // 
@@ -182,22 +170,32 @@ namespace PlutoPoint_Installer
             this.versionLabel.Size = new System.Drawing.Size(84, 13);
             this.versionLabel.TabIndex = 9;
             this.versionLabel.TabStop = true;
-            this.versionLabel.Text = "Version 6.0.3.0b";
+            this.versionLabel.Text = "Version 6.0.3.1b";
             this.versionLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.versionLabel_LinkClicked);
             // 
             // restartCheck
             // 
-            this.restartCheck.Image = Properties.Resources.restart;
+            this.restartCheck.Image = global::PlutoPoint_Installer.Properties.Resources.restart;
             this.restartCheck.Location = new System.Drawing.Point(751, 417);
             this.restartCheck.Name = "restartCheck";
             this.restartCheck.Size = new System.Drawing.Size(46, 32);
             this.restartCheck.TabIndex = 10;
             this.restartCheck.UseVisualStyleBackColor = true;
-            
+            // 
+            // crcCheck
+            // 
+            this.crcCheck.Checked = true;
+            this.crcCheck.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.crcCheck.Image = global::PlutoPoint_Installer.Properties.Resources.computerRepairCentre;
+            this.crcCheck.Location = new System.Drawing.Point(12, 70);
+            this.crcCheck.Name = "crcCheck";
+            this.crcCheck.Size = new System.Drawing.Size(57, 50);
+            this.crcCheck.TabIndex = 11;
+            this.crcCheck.UseVisualStyleBackColor = true;
             // 
             // powerCheck
             // 
-            this.powerCheck.Image = Properties.Resources.power;
+            this.powerCheck.Image = global::PlutoPoint_Installer.Properties.Resources.power;
             this.powerCheck.Location = new System.Drawing.Point(699, 417);
             this.powerCheck.Name = "powerCheck";
             this.powerCheck.Size = new System.Drawing.Size(46, 32);
