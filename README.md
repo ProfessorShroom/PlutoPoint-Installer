@@ -1,6 +1,6 @@
  ![Arch](https://img.shields.io/badge/Arch-x86%20|%20AMD64-blue) ![OS](https://img.shields.io/badge/OS-Windows%2010%20|%20Windows%2011-green)
 
-## PlutoPoint Installer Version 6.0.3.1b
+## PlutoPoint Installer Version 6.0.4.0b
 ###### Copyright (c) Charlie Howard 2024 All rights reserved.
 
 A C# based GUI installer for Windows 10/11.
@@ -17,6 +17,12 @@ Disables sleep and screen timeout if plugged into AC power during the install an
 
 ### Changelog
 
+**Update 6.0.4.0b**
+
+Fixed crash.
+
+Will now check is Firefox is installed before installing and skip it if it is, will add this to other software if it works as intended.
+
 **Update 6.0.3.1b**
 
 Fixed URL to OEM BMP.
@@ -24,20 +30,28 @@ Fixed URL to OEM BMP.
 **Update 6.0.3.0b**
 
 Added holiday messages and holiday colours.
+
 Added Windows 10 registry tweaks.
+
 Added option to disable sleep and screen timeout on AC power.
+
 
 **Update 6.0.2.0b**
 
 Added IP checker to check where the installer is being run from.
+
 Added in all of the Windows 11 registry tweaks from the old installer.
+
 Added OEM information, only in Romsey for now for testing.
 
 **Update 6.0.1.0b**
 
 Fixed Google Chrome installation.
+
 Added Bing Wallpapers.
+
 Added restart box but left it unticked by default for now.
+
 Added version number with readme.
 
 **Update 6.0.0.0b**
@@ -47,6 +61,7 @@ Rewritten the installer using C#, the majority of features are being carried ove
 **Update 5.2024.11.03.0**
 
 Moved some scripts to scripts folder.
+
 Now sets LibreOffice default file type to Office 2007-2021 (docx, xlsx, etc.).
 
 **Update 5.2024.11.02.4**
@@ -61,6 +76,7 @@ Changed power times if not not run on a refurb.
 **Update 5.2024.11.02.2**
 
 Fixed a couple of broken icons.
+
 Removed Teams as doesn't seem needed now.
 
 **Update 5.2024.11.02.1**
@@ -70,15 +86,21 @@ Fixed issue with folders not being created.
 **Update 5.2024.11.02.0**
 
 Removed Windows 7 games, as I don't think anyones ever used it.
+
 Added BitDefender as the world is being silly about Kaspersky.
+
 Fixed Office 2007 URL typo.
+
 Updated all the icons.
+
 Added subfolders to 'C:\Computer Repair Centre' to tidy up installation folder.
+
 Removed TeamViewer.
 
 **Update 5.2024.10.31.0**
 
 Made the check for Kaspersky more precise as if run on a system with Kapersky VPN or Kaspersky Password Manager it would skip the installation as it believed Kaspersky was already installed.
+
 Readded Microsoft Office 2007, but will extract to the Desktop. Old people.
 
 **Update 5.2024.10.29.6**

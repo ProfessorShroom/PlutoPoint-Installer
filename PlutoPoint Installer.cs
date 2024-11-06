@@ -16,6 +16,7 @@ using System.Net.Http;
 using System.Collections.Generic;
 using System.Threading;
 using System.Media;
+using static System.Net.WebRequestMethods;
 
 namespace PlutoPoint_Installer
 {
@@ -43,6 +44,7 @@ namespace PlutoPoint_Installer
         string howardBirthday = null;
         string adamBirthday = null;
         string geethBirthday = null;
+
         private void CheckChristmas()
         {
             if (DateTime.Now.Month == 12)
@@ -234,7 +236,7 @@ namespace PlutoPoint_Installer
                     {
                         if (build >= 22000)
                         {
-                            progressBar.Maximum += 11;
+                            progressBar.Maximum += 12;
                             if (romsey == "1") { progressBar.Maximum += 1; };
                             if (highcliffe == "1") { progressBar.Maximum += 1; };
                             installerTextBox.AppendText("This computer is running Windows 11.");
@@ -411,7 +413,7 @@ namespace PlutoPoint_Installer
                     using (Process process = new Process())
                     {
                         process.StartInfo.FileName = "msiexec";
-                        process.StartInfo.Arguments = $"/package \"{googleChromeFilename}\" /passive";
+                        process.StartInfo.Arguments = $"/package \"{bingWallpapersFilename}\" /passive";
                         process.StartInfo.UseShellExecute = false;
                         process.StartInfo.RedirectStandardOutput = true;
                         process.StartInfo.RedirectStandardError = true;
@@ -532,46 +534,57 @@ namespace PlutoPoint_Installer
             {
                 installerTextBox.AppendText("Mozilla Firefox is selected.");
                 installerTextBox.AppendText(Environment.NewLine);
-                installerTextBox.AppendText("Downloading Mozilla Firefox...");
-                installerTextBox.AppendText(Environment.NewLine);
-                using (WebClient wc = new WebClient())
+                if (System.IO.File.Exists(@"C:\Program Files\Mozilla Firefox\firefox.exe"))
                 {
-                    wc.DownloadFileCompleted += wc_progressBarStep;
-                    await wc.DownloadFileTaskAsync(mozillaFirefoxURL, mozillaFirefoxFilename);
+                    installerTextBox.AppendText("Mozilla Firefox is already installed, skipping installation.");
+                    installerTextBox.AppendText(Environment.NewLine);
+                    progressBar.Value += 1;
+
                 }
-                installerTextBox.AppendText("Installing Mozilla Firefox...");
-                installerTextBox.AppendText(Environment.NewLine);
-                await Task.Run(() =>
+                else
                 {
-                    using (Process process = new Process())
+                    installerTextBox.AppendText("Downloading Mozilla Firefox...");
+                    installerTextBox.AppendText(Environment.NewLine);
+                    using (WebClient wc = new WebClient())
                     {
-                        process.StartInfo.FileName = "msiexec";
-                        process.StartInfo.Arguments = $"/package \"{mozillaFirefoxFilename}\" /passive";
-                        process.StartInfo.UseShellExecute = false;
-                        process.StartInfo.RedirectStandardOutput = true;
-                        process.StartInfo.RedirectStandardError = true;
-                        process.StartInfo.CreateNoWindow = true;
-                        try
+                        wc.DownloadFileCompleted += wc_progressBarStep;
+                        await wc.DownloadFileTaskAsync(mozillaFirefoxURL, mozillaFirefoxFilename);
+                    }
+                    installerTextBox.AppendText("Installing Mozilla Firefox...");
+                    installerTextBox.AppendText(Environment.NewLine);
+                    await Task.Run(() =>
+                    {
+                        using (Process process = new Process())
                         {
-                            process.Start();
-                            string output = process.StandardOutput.ReadToEnd();
-                            string error = process.StandardError.ReadToEnd();
-                            process.WaitForExit();
-                            Console.WriteLine("Output: " + output);
-                            if (!string.IsNullOrEmpty(error))
+                            process.StartInfo.FileName = "msiexec";
+                            process.StartInfo.Arguments = $"/package \"{mozillaFirefoxFilename}\" /passive";
+                            process.StartInfo.UseShellExecute = false;
+                            process.StartInfo.RedirectStandardOutput = true;
+                            process.StartInfo.RedirectStandardError = true;
+                            process.StartInfo.CreateNoWindow = true;
+                            try
                             {
-                                Console.WriteLine("Error: " + error);
+                                process.Start();
+                                string output = process.StandardOutput.ReadToEnd();
+                                string error = process.StandardError.ReadToEnd();
+                                process.WaitForExit();
+                                Console.WriteLine("Output: " + output);
+                                if (!string.IsNullOrEmpty(error))
+                                {
+                                    Console.WriteLine("Error: " + error);
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine("An error occurred: " + ex.Message);
                             }
                         }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine("An error occurred: " + ex.Message);
-                        }
-                    }
-                });
-                installerTextBox.AppendText("Completed installation of Mozilla Firefox.");
-                installerTextBox.AppendText(Environment.NewLine);
-                progressBar.Value += 1;
+
+                    });
+                    installerTextBox.AppendText("Completed installation of Mozilla Firefox.");
+                    installerTextBox.AppendText(Environment.NewLine);
+                    progressBar.Value += 1;
+                }
             }
 
             using (RegistryKey key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion"))
