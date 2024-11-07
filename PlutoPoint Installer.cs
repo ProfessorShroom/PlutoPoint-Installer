@@ -235,6 +235,7 @@ namespace PlutoPoint_Installer
 
         private async void install_Click(object sender, EventArgs e)
         {
+            progressBar.Maximum = 0;
             string rootDir = @"C:\Computer Repair Centre";
             string oemDir = @"C:\Computer Repair Centre\oem";
             string appsDir = @"C:\Computer Repair Centre\apps";
@@ -266,7 +267,7 @@ namespace PlutoPoint_Installer
                     {
                         if (build >= 22000)
                         {
-                            progressBar.Maximum += 13;
+                            progressBar.Maximum += 14;
                             if (romsey == "1") { progressBar.Maximum += 1; };
                             if (highcliffe == "1") { progressBar.Maximum += 1; };
                             installerTextBox.AppendText("This computer is running Windows 11.");
@@ -557,6 +558,60 @@ namespace PlutoPoint_Installer
                     installerTextBox.AppendText(Environment.NewLine);
                     Process.Start("powershell", $"-Command Add-AppxPackage -Path '{nanaZipFilename}'");
                     installerTextBox.AppendText("Completed installation of NanaZip.");
+                    installerTextBox.AppendText(Environment.NewLine); ;
+                    progressBar.Value += 1;
+                }
+            }
+            if (anyDeskCheck.Checked)
+            {
+                installerTextBox.AppendText("AnyDesk is selected.");
+                installerTextBox.AppendText(Environment.NewLine);
+                if (System.IO.File.Exists(@"C:\Program Files (x86)\AnyDesk\AnyDesk.exe"))
+                {
+                    installerTextBox.AppendText("AnyDesk is already installed, skipping installation.");
+                    installerTextBox.AppendText(Environment.NewLine);
+                    progressBar.Value += 2;
+                }
+                else
+                {
+                    installerTextBox.AppendText("Downloading AnyDesk...");
+                    installerTextBox.AppendText(Environment.NewLine);
+                    using (WebClient wc = new WebClient())
+                    {
+                        wc.DownloadFileCompleted += wc_progressBarStep;
+                        await wc.DownloadFileTaskAsync(anyDeskURL, anyDeskFilename);
+                    }
+                    installerTextBox.AppendText("Installing AnyDesk...");
+                    installerTextBox.AppendText(Environment.NewLine);
+                    await Task.Run(() =>
+                    {
+                        using (Process process = new Process())
+                        {
+                            process.StartInfo.FileName = "msiexec";
+                            process.StartInfo.Arguments = $"/package \"{anyDeskFilename}\" /passive";
+                            process.StartInfo.UseShellExecute = false;
+                            process.StartInfo.RedirectStandardOutput = true;
+                            process.StartInfo.RedirectStandardError = true;
+                            process.StartInfo.CreateNoWindow = true;
+                            try
+                            {
+                                process.Start();
+                                string output = process.StandardOutput.ReadToEnd();
+                                string error = process.StandardError.ReadToEnd();
+                                process.WaitForExit();
+                                Console.WriteLine("Output: " + output);
+                                if (!string.IsNullOrEmpty(error))
+                                {
+                                    Console.WriteLine("Error: " + error);
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine("An error occurred: " + ex.Message);
+                            }
+                        }
+                    });
+                    installerTextBox.AppendText("Completed installation of AnyDesk.");
                     installerTextBox.AppendText(Environment.NewLine); ;
                     progressBar.Value += 1;
                 }
@@ -1345,7 +1400,6 @@ namespace PlutoPoint_Installer
             Directory.Delete(appsDir, true);
             progressBar.Value += 1;
 
-
             player.Play();
 
             if (restartCheck.Checked)
@@ -1354,7 +1408,12 @@ namespace PlutoPoint_Installer
                 installerTextBox.AppendText("System will restart in 60 seconds. If you need to cancel this press the close button.");
                 installerTextBox.AppendText(Environment.NewLine);
             }
+
+            installerTextBox.AppendText("The installation has completed.");
+            installerTextBox.AppendText(Environment.NewLine);
+
         }
+
         private void wc_progressBarStep(object sender, AsyncCompletedEventArgs e)
         {
             if (progressBar.InvokeRequired)
