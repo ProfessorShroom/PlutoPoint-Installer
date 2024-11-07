@@ -555,7 +555,7 @@ namespace PlutoPoint_Installer
                     }
                     installerTextBox.AppendText("Installing NanaZip...");
                     installerTextBox.AppendText(Environment.NewLine);
-                    Process.Start("Add-AppxPackage", "-Path '{nanaZipFilename}'");
+                    Process.Start("powershell", $"-Command Add-AppxPackage -Path '{nanaZipFilename}'");
                     installerTextBox.AppendText("Completed installation of NanaZip.");
                     installerTextBox.AppendText(Environment.NewLine); ;
                     progressBar.Value += 1;
@@ -872,7 +872,7 @@ namespace PlutoPoint_Installer
                         }
                         installerTextBox.AppendText("Installing NanaZip...");
                         installerTextBox.AppendText(Environment.NewLine);
-                        Process.Start("Add-AppxPackage", "-Path '{nanaZipFilename}'");
+                        Process.Start("powershell", $"-Command Add-AppxPackage -Path '{nanaZipFilename}'");
                         installerTextBox.AppendText("Completed installation of NanaZip.");
                         installerTextBox.AppendText(Environment.NewLine); ;
                     }
@@ -1329,17 +1329,6 @@ namespace PlutoPoint_Installer
                 }
             }
             Directory.Delete(appsDir, true);
-            foreach (var file in Directory.GetFiles(appsDir))
-            {
-                try
-                {
-                    System.IO.File.Delete(file);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Error deleting file {file}: {ex.Message}");
-                }
-            }
             Directory.Delete(appsDir, true);
             progressBar.Value += 1;
 
