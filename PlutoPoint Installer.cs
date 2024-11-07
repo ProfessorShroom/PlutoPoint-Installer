@@ -883,26 +883,40 @@ namespace PlutoPoint_Installer
                     {
                         Directory.CreateDirectory(microsoftOffice2007ExtractPath);
                     }
-                    ProcessStartInfo processStartInfo = new ProcessStartInfo
+                    async Task RunNanaZipExtractionAsync()
                     {
-                        FileName = nanaZipPath,
-                        Arguments = $"x \"{microsoftOffice2007Filename}\" -o\"{microsoftOffice2007ExtractPath}\" -aoa",
-                        UseShellExecute = false,
-                        RedirectStandardOutput = true,
-                        RedirectStandardError = true,
-                        CreateNoWindow = true
-                    };
-                    using (Process process = Process.Start(processStartInfo))
-                    {
-                        string output = process.StandardOutput.ReadToEnd();
-                        string error = process.StandardError.ReadToEnd();
-                        process.WaitForExit();
-                        if (!string.IsNullOrEmpty(error))
+                        ProcessStartInfo processStartInfo = new ProcessStartInfo
                         {
-                            Console.WriteLine($"Error: {error}");
+                            FileName = nanaZipPath,
+                            Arguments = $"x \"{microsoftOffice2007Filename}\" -o\"{microsoftOffice2007ExtractPath}\" -aoa",
+                            UseShellExecute = false,
+                            RedirectStandardOutput = true,
+                            RedirectStandardError = true,
+                            CreateNoWindow = true
+                        };
+                        using (Process process = new Process { StartInfo = processStartInfo })
+                        {
+                            process.Start();
+                            Task<string> outputTask = process.StandardOutput.ReadToEndAsync();
+                            Task<string> errorTask = process.StandardError.ReadToEndAsync();
+                            await Task.Run(() => process.WaitForExit());
+                            string output = await outputTask;
+                            string errors = await errorTask;
+                            if (!string.IsNullOrEmpty(output))
+                            {
+                                installerTextBox.AppendText(output);
+                                installerTextBox.AppendText(Environment.NewLine);
+                            }
+
+                            if (!string.IsNullOrEmpty(errors))
+                            {
+                                installerTextBox.AppendText("Errors: ");
+                                installerTextBox.AppendText(errors);
+                                installerTextBox.AppendText(Environment.NewLine);
+                            }
                         }
-                        Console.WriteLine(output);
                     }
+                    await RunNanaZipExtractionAsync();
                     installerTextBox.AppendText("Completed extraction of Microsoft Office 2007.");
                     installerTextBox.AppendText(Environment.NewLine);
                     progressBar.Value += 1;
@@ -1328,7 +1342,6 @@ namespace PlutoPoint_Installer
                     Console.WriteLine($"Error deleting file {file}: {ex.Message}");
                 }
             }
-            Directory.Delete(appsDir, true);
             Directory.Delete(appsDir, true);
             progressBar.Value += 1;
 
