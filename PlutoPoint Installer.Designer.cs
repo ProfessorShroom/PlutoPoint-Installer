@@ -50,6 +50,8 @@ namespace PlutoPoint_Installer
             this.bitDefenderCheck = new System.Windows.Forms.CheckBox();
             this.discordCheck = new System.Windows.Forms.CheckBox();
             this.steamCheck = new System.Windows.Forms.CheckBox();
+            this.nanaZipCheck = new System.Windows.Forms.CheckBox();
+            this.microsoftOffice2007Check = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // install
@@ -74,12 +76,12 @@ namespace PlutoPoint_Installer
             this.installerTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.installerTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.installerTextBox.ForeColor = System.Drawing.SystemColors.Info;
-            this.installerTextBox.Location = new System.Drawing.Point(344, 54);
+            this.installerTextBox.Location = new System.Drawing.Point(267, 54);
             this.installerTextBox.Multiline = true;
             this.installerTextBox.Name = "installerTextBox";
             this.installerTextBox.ReadOnly = true;
             this.installerTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.installerTextBox.Size = new System.Drawing.Size(444, 360);
+            this.installerTextBox.Size = new System.Drawing.Size(521, 360);
             this.installerTextBox.TabIndex = 1;
             // 
             // progressBar
@@ -96,7 +98,7 @@ namespace PlutoPoint_Installer
             this.libreOfficeCheck.Checked = true;
             this.libreOfficeCheck.CheckState = System.Windows.Forms.CheckState.Checked;
             this.libreOfficeCheck.Image = global::PlutoPoint_Installer.Properties.Resources.libreOffice;
-            this.libreOfficeCheck.Location = new System.Drawing.Point(12, 295);
+            this.libreOfficeCheck.Location = new System.Drawing.Point(12, 340);
             this.libreOfficeCheck.Name = "libreOfficeCheck";
             this.libreOfficeCheck.Size = new System.Drawing.Size(57, 50);
             this.libreOfficeCheck.TabIndex = 4;
@@ -107,7 +109,7 @@ namespace PlutoPoint_Installer
             this.mozillaFirefoxCheck.Checked = true;
             this.mozillaFirefoxCheck.CheckState = System.Windows.Forms.CheckState.Checked;
             this.mozillaFirefoxCheck.Image = global::PlutoPoint_Installer.Properties.Resources.mozillaFirefox;
-            this.mozillaFirefoxCheck.Location = new System.Drawing.Point(12, 340);
+            this.mozillaFirefoxCheck.Location = new System.Drawing.Point(75, 115);
             this.mozillaFirefoxCheck.Name = "mozillaFirefoxCheck";
             this.mozillaFirefoxCheck.Size = new System.Drawing.Size(57, 50);
             this.mozillaFirefoxCheck.TabIndex = 5;
@@ -118,7 +120,7 @@ namespace PlutoPoint_Installer
             this.googleChromeCheck.Checked = true;
             this.googleChromeCheck.CheckState = System.Windows.Forms.CheckState.Checked;
             this.googleChromeCheck.Image = global::PlutoPoint_Installer.Properties.Resources.googleChrome;
-            this.googleChromeCheck.Location = new System.Drawing.Point(12, 250);
+            this.googleChromeCheck.Location = new System.Drawing.Point(12, 295);
             this.googleChromeCheck.Name = "googleChromeCheck";
             this.googleChromeCheck.Size = new System.Drawing.Size(57, 50);
             this.googleChromeCheck.TabIndex = 5;
@@ -174,7 +176,7 @@ namespace PlutoPoint_Installer
             this.versionLabel.Size = new System.Drawing.Size(84, 13);
             this.versionLabel.TabIndex = 9;
             this.versionLabel.TabStop = true;
-            this.versionLabel.Text = "Version 6.0.5.0b";
+            this.versionLabel.Text = "Version 6.0.6.0b";
             this.versionLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.versionLabel_LinkClicked);
             // 
             // restartCheck
@@ -211,7 +213,7 @@ namespace PlutoPoint_Installer
             this.anyDeskCheck.Checked = true;
             this.anyDeskCheck.CheckState = System.Windows.Forms.CheckState.Checked;
             this.anyDeskCheck.Image = global::PlutoPoint_Installer.Properties.Resources.anyDesk;
-            this.anyDeskCheck.Location = new System.Drawing.Point(12, 200);
+            this.anyDeskCheck.Location = new System.Drawing.Point(12, 115);
             this.anyDeskCheck.Name = "anyDeskCheck";
             this.anyDeskCheck.Size = new System.Drawing.Size(57, 50);
             this.anyDeskCheck.TabIndex = 13;
@@ -220,7 +222,7 @@ namespace PlutoPoint_Installer
             // mozillaThunderbirdCheck
             // 
             this.mozillaThunderbirdCheck.Image = global::PlutoPoint_Installer.Properties.Resources.mozillaThunderbird;
-            this.mozillaThunderbirdCheck.Location = new System.Drawing.Point(75, 70);
+            this.mozillaThunderbirdCheck.Location = new System.Drawing.Point(75, 160);
             this.mozillaThunderbirdCheck.Name = "mozillaThunderbirdCheck";
             this.mozillaThunderbirdCheck.Size = new System.Drawing.Size(57, 50);
             this.mozillaThunderbirdCheck.TabIndex = 14;
@@ -229,7 +231,7 @@ namespace PlutoPoint_Installer
             // bitDefenderCheck
             // 
             this.bitDefenderCheck.Image = global::PlutoPoint_Installer.Properties.Resources.bitDefender;
-            this.bitDefenderCheck.Location = new System.Drawing.Point(12, 115);
+            this.bitDefenderCheck.Location = new System.Drawing.Point(12, 205);
             this.bitDefenderCheck.Name = "bitDefenderCheck";
             this.bitDefenderCheck.Size = new System.Drawing.Size(57, 50);
             this.bitDefenderCheck.TabIndex = 15;
@@ -238,7 +240,7 @@ namespace PlutoPoint_Installer
             // discordCheck
             // 
             this.discordCheck.Image = global::PlutoPoint_Installer.Properties.Resources.discord;
-            this.discordCheck.Location = new System.Drawing.Point(12, 205);
+            this.discordCheck.Location = new System.Drawing.Point(12, 250);
             this.discordCheck.Name = "discordCheck";
             this.discordCheck.Size = new System.Drawing.Size(57, 50);
             this.discordCheck.TabIndex = 16;
@@ -247,11 +249,31 @@ namespace PlutoPoint_Installer
             // steamCheck
             // 
             this.steamCheck.Image = global::PlutoPoint_Installer.Properties.Resources.steam;
-            this.steamCheck.Location = new System.Drawing.Point(75, 115);
+            this.steamCheck.Location = new System.Drawing.Point(75, 250);
             this.steamCheck.Name = "steamCheck";
             this.steamCheck.Size = new System.Drawing.Size(57, 50);
             this.steamCheck.TabIndex = 17;
             this.steamCheck.UseVisualStyleBackColor = true;
+            // 
+            // nanaZipCheck
+            // 
+            this.nanaZipCheck.Checked = true;
+            this.nanaZipCheck.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.nanaZipCheck.Image = global::PlutoPoint_Installer.Properties.Resources.nanaZip;
+            this.nanaZipCheck.Location = new System.Drawing.Point(75, 205);
+            this.nanaZipCheck.Name = "nanaZipCheck";
+            this.nanaZipCheck.Size = new System.Drawing.Size(57, 50);
+            this.nanaZipCheck.TabIndex = 18;
+            this.nanaZipCheck.UseVisualStyleBackColor = true;
+            // 
+            // microsoftOffice2007Check
+            // 
+            this.microsoftOffice2007Check.Image = global::PlutoPoint_Installer.Properties.Resources.microsoftOffice2007;
+            this.microsoftOffice2007Check.Location = new System.Drawing.Point(75, 70);
+            this.microsoftOffice2007Check.Name = "microsoftOffice2007Check";
+            this.microsoftOffice2007Check.Size = new System.Drawing.Size(57, 50);
+            this.microsoftOffice2007Check.TabIndex = 19;
+            this.microsoftOffice2007Check.UseVisualStyleBackColor = true;
             // 
             // installerForm
             // 
@@ -259,6 +281,8 @@ namespace PlutoPoint_Installer
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(41)))), ((int)(((byte)(41)))));
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.microsoftOffice2007Check);
+            this.Controls.Add(this.nanaZipCheck);
             this.Controls.Add(this.steamCheck);
             this.Controls.Add(this.discordCheck);
             this.Controls.Add(this.bitDefenderCheck);
@@ -305,6 +329,8 @@ namespace PlutoPoint_Installer
         private System.Windows.Forms.CheckBox bitDefenderCheck;
         private System.Windows.Forms.CheckBox discordCheck;
         private System.Windows.Forms.CheckBox steamCheck;
+        private System.Windows.Forms.CheckBox nanaZipCheck;
+        private System.Windows.Forms.CheckBox microsoftOffice2007Check;
     }
 }
 

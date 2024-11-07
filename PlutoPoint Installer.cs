@@ -38,6 +38,7 @@ namespace PlutoPoint_Installer
             CheckHowardBirthday();
             CheckAdamBirthday();
             CheckGeethBirthday();
+            CheckMicrosoftOffice2007Async();
         }
 
         string christmas = null;
@@ -158,17 +159,59 @@ namespace PlutoPoint_Installer
                 installerTextBox.ForeColor = System.Drawing.Color.Black;
             }
         }
+        string romsey = null;
+        string chandlersFord = null;
+        string highcliffe = null;
+        private async void CheckMicrosoftOffice2007Async()
+        {
+            string publicIP = await GetPublicIPAddressAsync();
+            if (publicIP != null)
+            {
+                switch (publicIP)
+                {
+                    case "81.134.32.116":
+                        //Romsey
+                        romsey = "1";
+                        break;
+                    case "86.12.18.92":
+                        //Chandlers Ford
+                        chandlersFord = "1";
+                        microsoftOffice2007Check.Checked = true;
+                        break;
+                    case "81.130.137.162":
+                        //Highcliffe
+                        highcliffe = "1";
+                        break;
+                }
+            }
+        }
 
         Uri crcOEMURL = new Uri("https://raw.githubusercontent.com/charliehoward/PlutoPoint-Installer/refs/heads/main/Resources/computerRepairCentre/computerRepairCentreOEM.bmp");
         string crcOEMFilename = @"C:\Computer Repair Centre\oem\computerRepairCentreOEM.bmp";
+        Uri anyDeskURL = new Uri("https://files.crchq.net/installer/anyDesk.msi");
+        string anyDeskFilename = @"C:\Computer Repair Centre\apps\anyDesks.msi";
         Uri bingWallpapersURL = new Uri("https://files.crchq.net/installer/bingWallpapers.msi");
         string bingWallpapersFilename = @"C:\Computer Repair Centre\apps\bingWallpapers.msi";
+        Uri bitDefenderURL = new Uri("https://files.crchq.net/installer/bitDefender.exe");
+        string bitDefenderFilename = @"C:\Computer Repair Centre\apps\bitDefender.exe";
+        Uri discordURL = new Uri("https://files.crchq.net/installer/discord.exe");
+        string discordFilename = @"C:\Computer Repair Centre\apps\discord.exe";
         Uri googleChromeURL = new Uri("https://files.crchq.net/installer/chrome.msi");
         string googleChromeFilename = @"C:\Computer Repair Centre\apps\chrome.msi";
         Uri libreOfficeURL = new Uri("https://files.crchq.net/installer/libreOffice.msi");
         string libreOfficeFilename = @"C:\Computer Repair Centre\apps\libreOffice.msi";
-        Uri mozillaFirefoxURL = new Uri("https://files.crchq.net/installer/firefox.msi");
-        string mozillaFirefoxFilename = @"C:\Computer Repair Centre\apps\firefox.msi";
+        Uri microsoftOffice2007URL = new Uri("https://files.crchq.net/installer/office2007.zip");
+        string microsoftOffice2007Filename = @"C:\Computer Repair Centre\apps\office2007.zip";
+        Uri mozillaFirefoxURL = new Uri("https://files.crchq.net/installer/mozillaFirefox.msi");
+        string mozillaFirefoxFilename = @"C:\Computer Repair Centre\apps\mozillaFirefox.msi";
+        Uri mozillaThunderbirdURL = new Uri("https://files.crchq.net/installer/mozillaThunderbird.msi");
+        string mozillaThunderbirdFilename = @"C:\Computer Repair Centre\apps\mozillaThunderbird.msi";
+        Uri nanaZipURL = new Uri("https://files.crchq.net/installer/NanaZip_3.1.1080.0.msixbundle");
+        string nanaZipFilename = @"C:\Computer Repair Centre\apps\NanaZip_3.1.1080.0.msixbundle";
+        Uri steamURL = new Uri("https://files.crchq.net/installer/steam.exe");
+        string steamFilename = @"C:\Computer Repair Centre\apps\steam.exe";
+
+        string nanaZipPath = @"C:\Program Files\WindowsApps\40174MouriNaruto.NanaZip_3.1.1080.0_x64__gnj4mf6z9tkrc\NanaZip.Windows.exe";
 
         private static async Task<string> GetPublicIPAddressAsync()
         {
@@ -187,14 +230,17 @@ namespace PlutoPoint_Installer
                 }
             }
         }
+
         private async void install_Click(object sender, EventArgs e)
         {
             string rootDir = @"C:\Computer Repair Centre";
             string oemDir = @"C:\Computer Repair Centre\oem";
             string appsDir = @"C:\Computer Repair Centre\apps";
             string scriptsDir = @"C:\Computer Repair Centre\scripts";
-            string bingWallpaperAppPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),@"Microsoft\BingWallpaperApp\BingWallpaperApp.exe"
-);
+            string bingWallpaperAppPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"Microsoft\BingWallpaperApp\BingWallpaperApp.exe");
+            string discordAppPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"Discord\Update.exe");
+            string desktopPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop));
+
             if (!Directory.Exists(rootDir))
             {
                 Directory.CreateDirectory(rootDir);
@@ -213,26 +259,6 @@ namespace PlutoPoint_Installer
             }
 
             SoundPlayer player;
-
-            string publicIP = await GetPublicIPAddressAsync();
-            string romsey = null;
-            string chandlersFord = null;
-            string highcliffe = null;
-            if (publicIP != null)
-            {
-                if (publicIP == "81.134.32.116")
-                {
-                    romsey = "1";
-                }
-                if (publicIP == "86.12.18.92")
-                {
-                    chandlersFord = "1";
-                }
-                if (publicIP == "81.130.137.162")
-                {
-                    highcliffe = "1";
-                }
-            }
 
             using (RegistryKey key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion"))
             {
@@ -261,10 +287,17 @@ namespace PlutoPoint_Installer
             if (powerCheck.Checked) { progressBar.Value += 1; }
             else { progressBar.Value += 2; }
             if (crcCheck.Checked) { progressBar.Maximum += 1; }
+            if (anyDeskCheck.Checked) { progressBar.Maximum += 2; }
+            if (nanaZipCheck.Checked) { progressBar.Maximum += 2; }
+            if (bitDefenderCheck.Checked) { progressBar.Maximum += 2; }
             if (bingWallpapersCheck.Checked) { progressBar.Maximum += 2; }
+            if (discordCheck.Checked) { progressBar.Maximum += 2; }
             if (googleChromeCheck.Checked) { progressBar.Maximum += 2; }
             if (libreOfficeCheck.Checked) { progressBar.Maximum += 2; }
+            if (microsoftOffice2007Check.Checked) { progressBar.Maximum += 2; }
             if (mozillaFirefoxCheck.Checked) { progressBar.Maximum += 2; }
+            if (mozillaThunderbirdCheck.Checked) { progressBar.Maximum += 2; }
+            if (steamCheck.Checked) { progressBar.Maximum += 2; }
 
             if (christmas == "1")
             {
@@ -401,6 +434,135 @@ namespace PlutoPoint_Installer
                         Console.WriteLine($"Set '{supportURLReg}' to {supportURLRegData} in '{oemRegPath}'.");
                     }
                 }
+                if (chandlersFord == "1")
+                {
+                    installerTextBox.AppendText("The installer is being run from the Chandlers Ford shop.");
+                    installerTextBox.AppendText(Environment.NewLine);
+                    installerTextBox.AppendText("Installing Chandlers Ford Computer Repair Centre OEM information...");
+                    installerTextBox.AppendText(Environment.NewLine);
+                    using (WebClient wc = new WebClient())
+                    {
+                        wc.DownloadFileCompleted += wc_progressBarStep;
+                        await wc.DownloadFileTaskAsync(crcOEMURL, crcOEMFilename);
+                    }
+                    const string oemRegPath = @"SOFTWARE\Microsoft\Windows\CurrentVersion\OEMInformation";
+                    const string logoReg = "Logo";
+                    const string logoRegData = @"C:\Computer Repair Centre\oem\computerRepairCentreOEM.bmp";
+                    const string manufacturerReg = "Manufacturer";
+                    const string manufacturerRegData = "Computer Repair Centre";
+                    const string supportHoursReg = "SupportHours";
+                    const string supportHoursData = "Mon-Fri 9:00am-5:00pm - Sat 9:00am-4:00pm";
+                    const string supportPhoneReg = "SupportPhone";
+                    const string supportPhoneData = "02380 270271";
+                    const string supportURLReg = "SupportURL";
+                    const string supportURLRegData = "https://www.thecomputerrepaircentre.co.uk/chandlers-ford";
+                    using (RegistryKey registryKey = Registry.LocalMachine.CreateSubKey(oemRegPath, writable: true))
+                    {
+                    }
+                    using (RegistryKey registryKey = Registry.LocalMachine.OpenSubKey(oemRegPath, writable: true))
+                    {
+                        registryKey.SetValue(logoReg, logoRegData, RegistryValueKind.String);
+                        Console.WriteLine($"Set '{logoReg}' to {logoRegData} in '{oemRegPath}'.");
+                    }
+                    using (RegistryKey registryKey = Registry.LocalMachine.OpenSubKey(oemRegPath, writable: true))
+                    {
+                        registryKey.SetValue(manufacturerReg, manufacturerRegData, RegistryValueKind.String);
+                        Console.WriteLine($"Set '{manufacturerReg}' to {manufacturerRegData} in '{oemRegPath}'.");
+                    }
+                    using (RegistryKey registryKey = Registry.LocalMachine.OpenSubKey(oemRegPath, writable: true))
+                    {
+                        registryKey.SetValue(supportHoursReg, supportHoursData, RegistryValueKind.String);
+                        Console.WriteLine($"Set '{supportHoursReg}' to {supportHoursData} in '{oemRegPath}'.");
+                    }
+                    using (RegistryKey registryKey = Registry.LocalMachine.OpenSubKey(oemRegPath, writable: true))
+                    {
+                        registryKey.SetValue(supportPhoneReg, supportPhoneData, RegistryValueKind.String);
+                        Console.WriteLine($"Set '{supportPhoneReg}' to {supportPhoneData} in '{oemRegPath}'.");
+                    }
+                    using (RegistryKey registryKey = Registry.LocalMachine.OpenSubKey(oemRegPath, writable: true))
+                    {
+                        registryKey.SetValue(supportURLReg, supportURLRegData, RegistryValueKind.String);
+                        Console.WriteLine($"Set '{supportURLReg}' to {supportURLRegData} in '{oemRegPath}'.");
+                    }
+                }
+                if (highcliffe == "1")
+                {
+                    installerTextBox.AppendText("The installer is being run from the Romsey shop.");
+                    installerTextBox.AppendText(Environment.NewLine);
+                    installerTextBox.AppendText("Installing Romsey Computer Repair Centre OEM information...");
+                    installerTextBox.AppendText(Environment.NewLine);
+                    using (WebClient wc = new WebClient())
+                    {
+                        wc.DownloadFileCompleted += wc_progressBarStep;
+                        await wc.DownloadFileTaskAsync(crcOEMURL, crcOEMFilename);
+                    }
+                    const string oemRegPath = @"SOFTWARE\Microsoft\Windows\CurrentVersion\OEMInformation";
+                    const string logoReg = "Logo";
+                    const string logoRegData = @"C:\Computer Repair Centre\oem\computerRepairCentreOEM.bmp";
+                    const string manufacturerReg = "Manufacturer";
+                    const string manufacturerRegData = "Computer Repair Centre";
+                    const string supportHoursReg = "SupportHours";
+                    const string supportHoursData = "Mon-Fri 9:15am-5:00pm - Sat 9:15am-2:00pm";
+                    const string supportPhoneReg = "SupportPhone";
+                    const string supportPhoneData = "01425 278579";
+                    const string supportURLReg = "SupportURL";
+                    const string supportURLRegData = "https://www.thecomputerrepaircentre.co.uk/highcliffe";
+                    using (RegistryKey registryKey = Registry.LocalMachine.CreateSubKey(oemRegPath, writable: true))
+                    {
+                    }
+                    using (RegistryKey registryKey = Registry.LocalMachine.OpenSubKey(oemRegPath, writable: true))
+                    {
+                        registryKey.SetValue(logoReg, logoRegData, RegistryValueKind.String);
+                        Console.WriteLine($"Set '{logoReg}' to {logoRegData} in '{oemRegPath}'.");
+                    }
+                    using (RegistryKey registryKey = Registry.LocalMachine.OpenSubKey(oemRegPath, writable: true))
+                    {
+                        registryKey.SetValue(manufacturerReg, manufacturerRegData, RegistryValueKind.String);
+                        Console.WriteLine($"Set '{manufacturerReg}' to {manufacturerRegData} in '{oemRegPath}'.");
+                    }
+                    using (RegistryKey registryKey = Registry.LocalMachine.OpenSubKey(oemRegPath, writable: true))
+                    {
+                        registryKey.SetValue(supportHoursReg, supportHoursData, RegistryValueKind.String);
+                        Console.WriteLine($"Set '{supportHoursReg}' to {supportHoursData} in '{oemRegPath}'.");
+                    }
+                    using (RegistryKey registryKey = Registry.LocalMachine.OpenSubKey(oemRegPath, writable: true))
+                    {
+                        registryKey.SetValue(supportPhoneReg, supportPhoneData, RegistryValueKind.String);
+                        Console.WriteLine($"Set '{supportPhoneReg}' to {supportPhoneData} in '{oemRegPath}'.");
+                    }
+                    using (RegistryKey registryKey = Registry.LocalMachine.OpenSubKey(oemRegPath, writable: true))
+                    {
+                        registryKey.SetValue(supportURLReg, supportURLRegData, RegistryValueKind.String);
+                        Console.WriteLine($"Set '{supportURLReg}' to {supportURLRegData} in '{oemRegPath}'.");
+                    }
+                }
+            }
+            if (nanaZipCheck.Checked)
+            {
+                installerTextBox.AppendText("NanaZip is selected.");
+                installerTextBox.AppendText(Environment.NewLine);
+                if (System.IO.File.Exists(@"C:\Program Files\WindowsApps\40174MouriNaruto.NanaZip_3.1.1080.0_x64__gnj4mf6z9tkrc\NanaZip.Windows.exe"))
+                {
+                    installerTextBox.AppendText("NanaZip is already installed, skipping installation.");
+                    installerTextBox.AppendText(Environment.NewLine);
+                    progressBar.Value += 2;
+                }
+                else
+                {
+                    installerTextBox.AppendText("Downloading NanaZip...");
+                    installerTextBox.AppendText(Environment.NewLine);
+                    using (WebClient wc = new WebClient())
+                    {
+                        wc.DownloadFileCompleted += wc_progressBarStep;
+                        await wc.DownloadFileTaskAsync(nanaZipURL, nanaZipFilename);
+                    }
+                    installerTextBox.AppendText("Installing NanaZip...");
+                    installerTextBox.AppendText(Environment.NewLine);
+                    Process.Start("Add-AppxPackage", "-Path '{nanaZipFilename}'");
+                    installerTextBox.AppendText("Completed installation of NanaZip.");
+                    installerTextBox.AppendText(Environment.NewLine); ;
+                    progressBar.Value += 1;
+                }
             }
             if (bingWallpapersCheck.Checked)
             {
@@ -453,6 +615,120 @@ namespace PlutoPoint_Installer
                     });
                     installerTextBox.AppendText("Completed installation of Bing Wallpapers.");
                     installerTextBox.AppendText(Environment.NewLine); ;
+                    progressBar.Value += 1;
+                }
+            }
+            if (bitDefenderCheck.Checked)
+            {
+                installerTextBox.AppendText("BitDefender is selected.");
+                installerTextBox.AppendText(Environment.NewLine);
+                if (System.IO.File.Exists(@"C:\Program Files\Bitdefender\Bitdefender Security App\seccenter.exe"))
+                {
+                    installerTextBox.AppendText("BitDefender is already installed, skipping installation.");
+                    installerTextBox.AppendText(Environment.NewLine);
+                    progressBar.Value += 2;
+                }
+                else
+                {
+                    installerTextBox.AppendText("Downloading BitDefender...");
+                    installerTextBox.AppendText(Environment.NewLine);
+                    using (WebClient wc = new WebClient())
+                    {
+                        wc.DownloadFileCompleted += wc_progressBarStep;
+                        await wc.DownloadFileTaskAsync(steamURL, steamFilename);
+                    }
+                    installerTextBox.AppendText("Installing BitDefender...");
+                    installerTextBox.AppendText(Environment.NewLine);
+                    await Task.Run(() =>
+                    {
+                        ProcessStartInfo startInfo = new ProcessStartInfo
+                        {
+                            FileName = bitDefenderFilename,
+                            Arguments = "/bdparams /silent",
+                            UseShellExecute = true,
+                            Verb = "runas"
+                        };
+                        try
+                        {
+                            using (Process process = Process.Start(startInfo))
+                            {
+                                process.WaitForExit();
+                                int exitCode = process.ExitCode;
+                                if (exitCode == 0)
+                                {
+                                    Console.WriteLine("Installation successful.");
+                                }
+                                else
+                                {
+                                    Console.WriteLine($"Installation exited with code: {exitCode}");
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"An error occurred: {ex.Message}");
+                        }
+
+                    });
+                    installerTextBox.AppendText("Completed installation of BitDefender.");
+                    installerTextBox.AppendText(Environment.NewLine);
+                    progressBar.Value += 1;
+                }
+            }
+            if (discordCheck.Checked)
+            {
+                installerTextBox.AppendText("Discord is selected.");
+                installerTextBox.AppendText(Environment.NewLine);
+                if (System.IO.File.Exists(discordAppPath))
+                {
+                    installerTextBox.AppendText("Discord is already installed, skipping installation.");
+                    installerTextBox.AppendText(Environment.NewLine);
+                    progressBar.Value += 2;
+                }
+                else
+                {
+                    installerTextBox.AppendText("Downloading Discord...");
+                    installerTextBox.AppendText(Environment.NewLine);
+                    using (WebClient wc = new WebClient())
+                    {
+                        wc.DownloadFileCompleted += wc_progressBarStep;
+                        await wc.DownloadFileTaskAsync(discordURL, discordFilename);
+                    }
+                    installerTextBox.AppendText("Installing Discord...");
+                    installerTextBox.AppendText(Environment.NewLine);
+                    await Task.Run(() =>
+                    {
+                        ProcessStartInfo startInfo = new ProcessStartInfo
+                        {
+                            FileName = discordFilename,
+                            Arguments = "-s",
+                            UseShellExecute = true,
+                            Verb = "runas"
+                        };
+                        try
+                        {
+                            using (Process process = Process.Start(startInfo))
+                            {
+                                process.WaitForExit();
+                                int exitCode = process.ExitCode;
+                                if (exitCode == 0)
+                                {
+                                    Console.WriteLine("Installation successful.");
+                                }
+                                else
+                                {
+                                    Console.WriteLine($"Installation exited with code: {exitCode}");
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"An error occurred: {ex.Message}");
+                        }
+
+                    });
+                    installerTextBox.AppendText("Completed installation of Discord.");
+                    installerTextBox.AppendText(Environment.NewLine);
                     progressBar.Value += 1;
                 }
             }
@@ -564,6 +840,77 @@ namespace PlutoPoint_Installer
                     progressBar.Value += 1;
                 }
             }
+            if (microsoftOffice2007Check.Checked)
+            {
+                installerTextBox.AppendText("Microsoft Office 2007 is selected.");
+                installerTextBox.AppendText(Environment.NewLine);
+                if (System.IO.File.Exists(@"C:\Program Files (x86)\Microsoft Office\Office12\WINWORD.EXE"))
+                {
+                    installerTextBox.AppendText("Microsoft Office 2007 is already installed, skipping installation.");
+                    installerTextBox.AppendText(Environment.NewLine);
+                    progressBar.Value += 2;
+                }
+                else
+                {
+                    installerTextBox.AppendText("Downloading Microsoft Office 2007...");
+                    installerTextBox.AppendText(Environment.NewLine);
+                    using (WebClient wc = new WebClient())
+                    {
+                        wc.DownloadFileCompleted += wc_progressBarStep;
+                        await wc.DownloadFileTaskAsync(microsoftOffice2007URL, microsoftOffice2007Filename);
+                    }
+                    installerTextBox.AppendText("Checking if NanaZip is installed...");
+                    installerTextBox.AppendText(Environment.NewLine);
+                    if (System.IO.File.Exists(@"C:\Program Files\WindowsApps\40174MouriNaruto.NanaZip_3.1.1080.0_x64__gnj4mf6z9tkrc\NanaZip.Windows.exe"))
+                    { }
+                    else
+                    {
+                        installerTextBox.AppendText("NanaZip is not installed and is required for extraction.");
+                        installerTextBox.AppendText(Environment.NewLine);
+                        installerTextBox.AppendText("Downloading NanaZip...");
+                        installerTextBox.AppendText(Environment.NewLine);
+                        using (WebClient wc = new WebClient())
+                        {
+                            await wc.DownloadFileTaskAsync(nanaZipURL, nanaZipFilename);
+                        }
+                        installerTextBox.AppendText("Installing NanaZip...");
+                        installerTextBox.AppendText(Environment.NewLine);
+                        Process.Start("Add-AppxPackage", "-Path '{nanaZipFilename}'");
+                        installerTextBox.AppendText("Completed installation of NanaZip.");
+                        installerTextBox.AppendText(Environment.NewLine); ;
+                    }
+                    installerTextBox.AppendText("Extracing Microsoft Office 2007 to the Desktop...");
+                    installerTextBox.AppendText(Environment.NewLine);
+                    string microsoftOffice2007ExtractPath = Path.Combine(desktopPath, "Office2007");
+                    if (!Directory.Exists(microsoftOffice2007ExtractPath))
+                    {
+                        Directory.CreateDirectory(microsoftOffice2007ExtractPath);
+                    }
+                    ProcessStartInfo processStartInfo = new ProcessStartInfo
+                    {
+                        FileName = nanaZipPath,
+                        Arguments = $"x \"{microsoftOffice2007Filename}\" -o\"{microsoftOffice2007ExtractPath}\" -aoa",
+                        UseShellExecute = false,
+                        RedirectStandardOutput = true,
+                        RedirectStandardError = true,
+                        CreateNoWindow = true
+                    };
+                    using (Process process = Process.Start(processStartInfo))
+                    {
+                        string output = process.StandardOutput.ReadToEnd();
+                        string error = process.StandardError.ReadToEnd();
+                        process.WaitForExit();
+                        if (!string.IsNullOrEmpty(error))
+                        {
+                            Console.WriteLine($"Error: {error}");
+                        }
+                        Console.WriteLine(output);
+                    }
+                    installerTextBox.AppendText("Completed extraction of Microsoft Office 2007.");
+                    installerTextBox.AppendText(Environment.NewLine);
+                    progressBar.Value += 1;
+                }
+            }
             if (mozillaFirefoxCheck.Checked)
             {
                 installerTextBox.AppendText("Mozilla Firefox is selected.");
@@ -615,6 +962,118 @@ namespace PlutoPoint_Installer
 
                     });
                     installerTextBox.AppendText("Completed installation of Mozilla Firefox.");
+                    installerTextBox.AppendText(Environment.NewLine);
+                    progressBar.Value += 1;
+                }
+            }
+            if (mozillaThunderbirdCheck.Checked)
+            {
+                installerTextBox.AppendText("Mozilla Thunderbird is selected.");
+                installerTextBox.AppendText(Environment.NewLine);
+                if (System.IO.File.Exists(@"C:\Program Files\Mozilla Thunderbird\thunderbird.exe"))
+                {
+                    installerTextBox.AppendText("Mozilla Thunderbird is already installed, skipping installation.");
+                    installerTextBox.AppendText(Environment.NewLine);
+                    progressBar.Value += 2;
+                }
+                else
+                {
+                    installerTextBox.AppendText("Downloading Mozilla Thunderbird...");
+                    installerTextBox.AppendText(Environment.NewLine);
+                    using (WebClient wc = new WebClient())
+                    {
+                        wc.DownloadFileCompleted += wc_progressBarStep;
+                        await wc.DownloadFileTaskAsync(mozillaThunderbirdURL, mozillaThunderbirdFilename);
+                    }
+                    installerTextBox.AppendText("Installing Mozilla Thunderbird...");
+                    installerTextBox.AppendText(Environment.NewLine);
+                    await Task.Run(() =>
+                    {
+                        using (Process process = new Process())
+                        {
+                            process.StartInfo.FileName = "msiexec";
+                            process.StartInfo.Arguments = $"/package \"{mozillaThunderbirdFilename}\" /passive";
+                            process.StartInfo.UseShellExecute = false;
+                            process.StartInfo.RedirectStandardOutput = true;
+                            process.StartInfo.RedirectStandardError = true;
+                            process.StartInfo.CreateNoWindow = true;
+                            try
+                            {
+                                process.Start();
+                                string output = process.StandardOutput.ReadToEnd();
+                                string error = process.StandardError.ReadToEnd();
+                                process.WaitForExit();
+                                Console.WriteLine("Output: " + output);
+                                if (!string.IsNullOrEmpty(error))
+                                {
+                                    Console.WriteLine("Error: " + error);
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine("An error occurred: " + ex.Message);
+                            }
+                        }
+
+                    });
+                    installerTextBox.AppendText("Completed installation of Mozilla Thunderbird.");
+                    installerTextBox.AppendText(Environment.NewLine);
+                    progressBar.Value += 1;
+                }
+            }
+            if (steamCheck.Checked)
+            {
+                installerTextBox.AppendText("Steam is selected.");
+                installerTextBox.AppendText(Environment.NewLine);
+                if (System.IO.File.Exists(@"C:\Program Files (x86)\Steam\Steam.exe"))
+                {
+                    installerTextBox.AppendText("Steam is already installed, skipping installation.");
+                    installerTextBox.AppendText(Environment.NewLine);
+                    progressBar.Value += 2;
+                }
+                else
+                {
+                    installerTextBox.AppendText("Downloading Steam...");
+                    installerTextBox.AppendText(Environment.NewLine);
+                    using (WebClient wc = new WebClient())
+                    {
+                        wc.DownloadFileCompleted += wc_progressBarStep;
+                        await wc.DownloadFileTaskAsync(steamURL, steamFilename);
+                    }
+                    installerTextBox.AppendText("Installing Steam...");
+                    installerTextBox.AppendText(Environment.NewLine);
+                    await Task.Run(() =>
+                    {
+                        ProcessStartInfo startInfo = new ProcessStartInfo
+                        {
+                            FileName = steamFilename,
+                            Arguments = "/S",
+                            UseShellExecute = true,
+                            Verb = "runas"
+                        };
+                        try
+                        {
+                             using (Process process = Process.Start(startInfo))
+                            {
+                                process.WaitForExit();
+                                int exitCode = process.ExitCode;
+                                if (exitCode == 0)
+                                {
+                                    Console.WriteLine("Installation successful.");
+                                }
+                                else
+                                {
+                                    Console.WriteLine($"Installation exited with code: {exitCode}");
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"An error occurred: {ex.Message}");
+                        }
+
+                    });
+                    installerTextBox.AppendText("Completed installation of Steam.");
                     installerTextBox.AppendText(Environment.NewLine);
                     progressBar.Value += 1;
                 }

@@ -170,6 +170,16 @@ namespace PlutoPoint_Installer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap microsoftOffice2007 {
+            get {
+                object obj = ResourceManager.GetObject("microsoftOffice2007", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap mozillaFirefox {
             get {
                 object obj = ResourceManager.GetObject("mozillaFirefox", resourceCulture);
@@ -183,6 +193,16 @@ namespace PlutoPoint_Installer.Properties {
         internal static System.Drawing.Bitmap mozillaThunderbird {
             get {
                 object obj = ResourceManager.GetObject("mozillaThunderbird", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap nanaZip {
+            get {
+                object obj = ResourceManager.GetObject("nanaZip", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

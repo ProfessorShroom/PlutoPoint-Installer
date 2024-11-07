@@ -3,11 +3,11 @@
   "WorkspaceRootPath": "D:\\NextCloud\\Spyro\\Documents\\Projects\\PlutoPoint-Installer\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\NextCloud\\Spyro\\Documents\\Projects\\PlutoPoint-Installer\\README.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:README.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+      "AbsoluteMoniker": "D:0:0:{BE5F5489-1412-42DA-8D0C-4022FDCB8446}|PlutoPoint Installer.csproj|d:\\nextcloud\\spyro\\documents\\projects\\plutopoint-installer\\plutopoint installer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BE5F5489-1412-42DA-8D0C-4022FDCB8446}|PlutoPoint Installer.csproj|solutionrelative:plutopoint installer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{BE5F5489-1412-42DA-8D0C-4022FDCB8446}|PlutoPoint Installer.csproj|d:\\nextcloud\\spyro\\documents\\projects\\plutopoint-installer\\plutopoint installer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "AbsoluteMoniker": "D:0:0:{BE5F5489-1412-42DA-8D0C-4022FDCB8446}|PlutoPoint Installer.csproj|D:\\NextCloud\\Spyro\\Documents\\Projects\\PlutoPoint-Installer\\plutopoint installer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
       "RelativeMoniker": "D:0:0:{BE5F5489-1412-42DA-8D0C-4022FDCB8446}|PlutoPoint Installer.csproj|solutionrelative:plutopoint installer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
     {
@@ -15,8 +15,8 @@
       "RelativeMoniker": "D:0:0:{BE5F5489-1412-42DA-8D0C-4022FDCB8446}|PlutoPoint Installer.csproj|solutionrelative:plutopoint installer.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{BE5F5489-1412-42DA-8D0C-4022FDCB8446}|PlutoPoint Installer.csproj|D:\\NextCloud\\Spyro\\Documents\\Projects\\PlutoPoint-Installer\\plutopoint installer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BE5F5489-1412-42DA-8D0C-4022FDCB8446}|PlutoPoint Installer.csproj|solutionrelative:plutopoint installer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\NextCloud\\Spyro\\Documents\\Projects\\PlutoPoint-Installer\\README.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:README.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{BE5F5489-1412-42DA-8D0C-4022FDCB8446}|PlutoPoint Installer.csproj|D:\\NextCloud\\Spyro\\Documents\\Projects\\PlutoPoint-Installer\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -30,7 +30,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Document",
@@ -47,13 +47,13 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 3,
               "Title": "README.md",
               "DocumentMoniker": "D:\\NextCloud\\Spyro\\Documents\\Projects\\PlutoPoint-Installer\\README.md",
               "RelativeDocumentMoniker": "README.md",
               "ToolTip": "D:\\NextCloud\\Spyro\\Documents\\Projects\\PlutoPoint-Installer\\README.md",
               "RelativeToolTip": "README.md",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAABAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABgAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
               "WhenOpened": "2024-11-05T11:19:40.664Z",
               "IsPinned": true,
@@ -61,13 +61,13 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 0,
               "Title": "PlutoPoint Installer.cs",
               "DocumentMoniker": "D:\\NextCloud\\Spyro\\Documents\\Projects\\PlutoPoint-Installer\\PlutoPoint Installer.cs",
               "RelativeDocumentMoniker": "PlutoPoint Installer.cs",
               "ToolTip": "D:\\NextCloud\\Spyro\\Documents\\Projects\\PlutoPoint-Installer\\PlutoPoint Installer.cs",
               "RelativeToolTip": "PlutoPoint Installer.cs",
-              "ViewState": "AgIAABYAAAAAAAAAAAAmwBwAAAAFAAAAAAAAAA==",
+              "ViewState": "AgIAAEcDAAAAAAAAAAAAAFYDAAA2AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-05-02T18:07:36.079Z",
               "IsPinned": true,
@@ -94,7 +94,7 @@
               "RelativeDocumentMoniker": "PlutoPoint Installer.Designer.cs",
               "ToolTip": "D:\\NextCloud\\Spyro\\Documents\\Projects\\PlutoPoint-Installer\\PlutoPoint Installer.Designer.cs",
               "RelativeToolTip": "PlutoPoint Installer.Designer.cs",
-              "ViewState": "AgIAAEMAAAAAAAAAAAAAAFwAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABkBAAAtAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-11-05T18:46:09.292Z",
               "EditorCaption": ""
