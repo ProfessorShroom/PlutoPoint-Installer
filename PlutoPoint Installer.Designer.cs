@@ -87,7 +87,7 @@ namespace PlutoPoint_Installer
             // progressBar
             // 
             this.progressBar.Location = new System.Drawing.Point(267, 14);
-            this.progressBar.Maximum = 0;
+            this.progressBar.Maximum = 1;
             this.progressBar.Name = "progressBar";
             this.progressBar.Size = new System.Drawing.Size(521, 24);
             this.progressBar.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
@@ -176,11 +176,13 @@ namespace PlutoPoint_Installer
             this.versionLabel.Size = new System.Drawing.Size(84, 13);
             this.versionLabel.TabIndex = 9;
             this.versionLabel.TabStop = true;
-            this.versionLabel.Text = "Version 6.0.6.0b";
+            this.versionLabel.Text = "Version 6.0.7.0b";
             this.versionLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.versionLabel_LinkClicked);
             // 
             // restartCheck
             // 
+            this.restartCheck.Checked = true;
+            this.restartCheck.CheckState = System.Windows.Forms.CheckState.Checked;
             this.restartCheck.Image = global::PlutoPoint_Installer.Properties.Resources.restart;
             this.restartCheck.Location = new System.Drawing.Point(751, 417);
             this.restartCheck.Name = "restartCheck";

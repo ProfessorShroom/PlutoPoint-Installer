@@ -186,6 +186,8 @@ namespace PlutoPoint_Installer
             }
         }
 
+        Uri cleanupURL = new Uri("https://raw.githubusercontent.com/charliehoward/PlutoPoint-Installer/master/Cleanup/bin/x64/Release/Computer%20Repair%20Centre%20Cleanup.exe");
+        string cleanupFilename = @"C:\Computer Repair Centre\cleanup.exe";
         Uri crcOEMURL = new Uri("https://raw.githubusercontent.com/charliehoward/PlutoPoint-Installer/refs/heads/main/Resources/computerRepairCentre/computerRepairCentreOEM.bmp");
         string crcOEMFilename = @"C:\Computer Repair Centre\oem\computerRepairCentreOEM.bmp";
         Uri anyDeskURL = new Uri("https://files.crchq.net/installer/anyDesk.msi");
@@ -236,7 +238,6 @@ namespace PlutoPoint_Installer
             string rootDir = @"C:\Computer Repair Centre";
             string oemDir = @"C:\Computer Repair Centre\oem";
             string appsDir = @"C:\Computer Repair Centre\apps";
-            string scriptsDir = @"C:\Computer Repair Centre\scripts";
             string bingWallpaperAppPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"Microsoft\BingWallpaperApp\BingWallpaperApp.exe");
             string discordAppPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"Discord\Update.exe");
             string desktopPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop));
@@ -252,10 +253,6 @@ namespace PlutoPoint_Installer
             if (!Directory.Exists(appsDir))
             {
                 Directory.CreateDirectory(appsDir);
-            }
-            if (!Directory.Exists(scriptsDir))
-            {
-                Directory.CreateDirectory(scriptsDir);
             }
 
             SoundPlayer player;
@@ -1316,8 +1313,37 @@ namespace PlutoPoint_Installer
                 Process.Start("powercfg", "/change monitor-timeout-ac 10");
                 Process.Start("powercfg", "/change standby-timeout-ac 20");
                 progressBar.Value += 1;
-            } 
-            
+            }
+
+            installerTextBox.AppendText("Cleaning up installation files...");
+            installerTextBox.AppendText(Environment.NewLine);
+            foreach (var file in Directory.GetFiles(appsDir))
+            {
+                try
+                {
+                    System.IO.File.Delete(file);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error deleting file {file}: {ex.Message}");
+                }
+            }
+            Directory.Delete(appsDir, true);
+            foreach (var file in Directory.GetFiles(appsDir))
+            {
+                try
+                {
+                    System.IO.File.Delete(file);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error deleting file {file}: {ex.Message}");
+                }
+            }
+            Directory.Delete(appsDir, true);
+            progressBar.Value += 1;
+
+
             player.Play();
 
             if (restartCheck.Checked)
