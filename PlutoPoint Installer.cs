@@ -320,7 +320,7 @@ namespace PlutoPoint_Installer
             if (mozillaFirefoxCheck.Checked) { progressBar.Maximum += 2; }
             if (mozillaThunderbirdCheck.Checked) { progressBar.Maximum += 2; }
             if (steamCheck.Checked) { progressBar.Maximum += 2; }
-            if (hpEliteBook == "1") { progressBar.Maximum += 3; }
+            if (hpEliteBook == "1") { progressBar.Maximum += 4; }
 
             if (christmas == "1")
             {
@@ -572,16 +572,25 @@ namespace PlutoPoint_Installer
                 }
                 else
                 {
-                    installerTextBox.AppendText("Downloading NanaZip...");
-                    installerTextBox.AppendText(Environment.NewLine);
                     using (WebClient wc = new WebClient())
                     {
-                        wc.DownloadFileCompleted += wc_progressBarStep;
                         await wc.DownloadFileTaskAsync(nanaZipURL, nanaZipFilename);
                     }
                     installerTextBox.AppendText("Installing NanaZip...");
                     installerTextBox.AppendText(Environment.NewLine);
-                    Process.Start("powershell", $"-Command Add-AppxPackage -Path '{nanaZipFilename}'");
+                    Process nanaZipInstallProcess = Process.Start(new ProcessStartInfo
+                    {
+                        FileName = "powershell",
+                        Arguments = $"-Command Add-AppxPackage -Path '{nanaZipFilename}'",
+                        UseShellExecute = false,
+                        RedirectStandardOutput = true,
+                        RedirectStandardError = true,
+                        CreateNoWindow = true
+                    });
+                    if (nanaZipInstallProcess != null)
+                    {
+                        await Task.Run(() => nanaZipInstallProcess.WaitForExit());
+                    }
                     installerTextBox.AppendText("Completed installation of NanaZip.");
                     installerTextBox.AppendText(Environment.NewLine); ;
                     progressBar.Value += 1;
@@ -928,6 +937,7 @@ namespace PlutoPoint_Installer
             {
                 installerTextBox.AppendText("Microsoft Office 2007 is selected.");
                 installerTextBox.AppendText(Environment.NewLine);
+
                 if (System.IO.File.Exists(@"C:\Program Files (x86)\Microsoft Office\Office12\WINWORD.EXE"))
                 {
                     installerTextBox.AppendText("Microsoft Office 2007 is already installed, skipping installation.");
@@ -945,8 +955,11 @@ namespace PlutoPoint_Installer
                     }
                     installerTextBox.AppendText("Checking if NanaZip is installed...");
                     installerTextBox.AppendText(Environment.NewLine);
-                    if (System.IO.File.Exists(@"C:\Program Files\WindowsApps\40174MouriNaruto.NanaZip_3.1.1080.0_x64__gnj4mf6z9tkrc\NanaZip.Windows.exe"))
-                    { }
+                    if (!System.IO.File.Exists(@"C:\Program Files\WindowsApps\40174MouriNaruto.NanaZip_3.1.1080.0_x64__gnj4mf6z9tkrc\NanaZip.Windows.exe"))
+                    {
+                        installerTextBox.AppendText("NanaZip is already installed, proceeding with extraction.");
+                        installerTextBox.AppendText(Environment.NewLine);
+                    }
                     else
                     {
                         installerTextBox.AppendText("NanaZip is not installed and is required for extraction.");
@@ -956,14 +969,25 @@ namespace PlutoPoint_Installer
                         using (WebClient wc = new WebClient())
                         {
                             await wc.DownloadFileTaskAsync(nanaZipURL, nanaZipFilename);
-                        }
-                        installerTextBox.AppendText("Installing NanaZip...");
+                        }                        installerTextBox.AppendText("Installing NanaZip...");
                         installerTextBox.AppendText(Environment.NewLine);
-                        Process.Start("powershell", $"-Command Add-AppxPackage -Path '{nanaZipFilename}'");
+                        Process nanaZipInstallProcess = Process.Start(new ProcessStartInfo
+                        {
+                            FileName = "powershell",
+                            Arguments = $"-Command Add-AppxPackage -Path '{nanaZipFilename}'",
+                            UseShellExecute = false,
+                            RedirectStandardOutput = true,
+                            RedirectStandardError = true,
+                            CreateNoWindow = true
+                        });
+                        if (nanaZipInstallProcess != null)
+                        {
+                            await Task.Run(() => nanaZipInstallProcess.WaitForExit());
+                        }
                         installerTextBox.AppendText("Completed installation of NanaZip.");
-                        installerTextBox.AppendText(Environment.NewLine); ;
+                        installerTextBox.AppendText(Environment.NewLine);
                     }
-                    installerTextBox.AppendText("Extracing Microsoft Office 2007 to the Desktop...");
+                    installerTextBox.AppendText("Extracting Microsoft Office 2007 to the Desktop...");
                     installerTextBox.AppendText(Environment.NewLine);
                     string microsoftOffice2007ExtractPath = Path.Combine(desktopPath, "Office2007");
                     if (!Directory.Exists(microsoftOffice2007ExtractPath))
@@ -989,6 +1013,7 @@ namespace PlutoPoint_Installer
                             await Task.Run(() => process.WaitForExit());
                             string output = await outputTask;
                             string errors = await errorTask;
+
                             if (!string.IsNullOrEmpty(output))
                             {
                                 installerTextBox.AppendText(output);
@@ -1008,6 +1033,7 @@ namespace PlutoPoint_Installer
                     installerTextBox.AppendText(Environment.NewLine);
                     progressBar.Value += 1;
                 }
+
             }
             if (mozillaFirefoxCheck.Checked)
             {
@@ -1189,8 +1215,11 @@ namespace PlutoPoint_Installer
                 }
                 installerTextBox.AppendText("Checking if NanaZip is installed...");
                 installerTextBox.AppendText(Environment.NewLine);
-                if (System.IO.File.Exists(@"C:\Program Files\WindowsApps\40174MouriNaruto.NanaZip_3.1.1080.0_x64__gnj4mf6z9tkrc\NanaZip.Windows.exe"))
-                { }
+                if (!System.IO.File.Exists(@"C:\Program Files\WindowsApps\40174MouriNaruto.NanaZip_3.1.1080.0_x64__gnj4mf6z9tkrc\NanaZip.Windows.exe"))
+                {
+                    installerTextBox.AppendText("NanaZip is already installed, proceeding with extraction.");
+                    installerTextBox.AppendText(Environment.NewLine);
+                }
                 else
                 {
                     installerTextBox.AppendText("NanaZip is not installed and is required for extraction.");
@@ -1203,9 +1232,21 @@ namespace PlutoPoint_Installer
                     }
                     installerTextBox.AppendText("Installing NanaZip...");
                     installerTextBox.AppendText(Environment.NewLine);
-                    Process.Start("powershell", $"-Command Add-AppxPackage -Path '{nanaZipFilename}'");
+                    Process nanaZipInstallProcess = Process.Start(new ProcessStartInfo
+                    {
+                        FileName = "powershell",
+                        Arguments = $"-Command Add-AppxPackage -Path '{nanaZipFilename}'",
+                        UseShellExecute = false,
+                        RedirectStandardOutput = true,
+                        RedirectStandardError = true,
+                        CreateNoWindow = true
+                    });
+                    if (nanaZipInstallProcess != null)
+                    {
+                        await Task.Run(() => nanaZipInstallProcess.WaitForExit());
+                    }
                     installerTextBox.AppendText("Completed installation of NanaZip.");
-                    installerTextBox.AppendText(Environment.NewLine); ;
+                    installerTextBox.AppendText(Environment.NewLine);
                 }
                 installerTextBox.AppendText("Extracing HP Hotkey Support...");
                 installerTextBox.AppendText(Environment.NewLine);
