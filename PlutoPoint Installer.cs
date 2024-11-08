@@ -17,16 +17,18 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Media;
 using static System.Net.WebRequestMethods;
+using System.Management;
 
 namespace PlutoPoint_Installer
 {
 
     using System.Drawing;
     using System.Drawing.Drawing2D;
+    using System.Management;
     using System.Windows.Forms;
 
     public partial class installerForm : Form
-    {      
+    {
         public installerForm()
         {
             InitializeComponent();
@@ -39,6 +41,7 @@ namespace PlutoPoint_Installer
             CheckAdamBirthday();
             CheckGeethBirthday();
             CheckMicrosoftOffice2007Async();
+            CheckEliteBook();
         }
 
         string christmas = null;
@@ -50,6 +53,23 @@ namespace PlutoPoint_Installer
         string howardBirthday = null;
         string adamBirthday = null;
         string geethBirthday = null;
+        string hpEliteBook = null;
+
+        private void CheckEliteBook()
+        {
+            using (ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT Model FROM Win32_ComputerSystem"))
+            {
+                foreach (ManagementObject computerSystem in searcher.Get())
+                {
+                    string model = computerSystem["Model"]?.ToString() ?? "";
+                    if (model.Contains("EliteBook"))
+                    {
+                        hpEliteBook = "1";
+                        break;
+                    }
+                }
+            }
+        }
 
         private void CheckChristmas()
         {
@@ -214,6 +234,8 @@ namespace PlutoPoint_Installer
         string nanaZipFilename = @"C:\Computer Repair Centre\apps\NanaZip_3.1.1080.0.msixbundle";
         Uri steamURL = new Uri("https://files.crchq.net/installer/steam.exe");
         string steamFilename = @"C:\Computer Repair Centre\apps\steam.exe";
+        Uri hpHotkeySupportURL = new Uri("https://files.crchq.net/installer/HPHotkey.zip");
+        string hpHotkeySupportFilename = @"C:\Computer Repair Centre\apps\hpHotkeySupport.zip";
 
         string nanaZipPath = @"C:\Program Files\WindowsApps\40174MouriNaruto.NanaZip_3.1.1080.0_x64__gnj4mf6z9tkrc\NanaZip.Windows.exe";
 
@@ -298,6 +320,7 @@ namespace PlutoPoint_Installer
             if (mozillaFirefoxCheck.Checked) { progressBar.Maximum += 2; }
             if (mozillaThunderbirdCheck.Checked) { progressBar.Maximum += 2; }
             if (steamCheck.Checked) { progressBar.Maximum += 2; }
+            if (hpEliteBook == "1") { progressBar.Maximum += 3; }
 
             if (christmas == "1")
             {
@@ -378,7 +401,7 @@ namespace PlutoPoint_Installer
                 installerTextBox.AppendText(Environment.NewLine);
                 progressBar.Value += 1;
             }
-            
+
             if (crcCheck.Checked)
             {
                 installerTextBox.AppendText("Computer Repair Centre OEM information is selected.");
@@ -1128,7 +1151,7 @@ namespace PlutoPoint_Installer
                         };
                         try
                         {
-                             using (Process process = Process.Start(startInfo))
+                            using (Process process = Process.Start(startInfo))
                             {
                                 process.WaitForExit();
                                 int exitCode = process.ExitCode;
@@ -1152,6 +1175,150 @@ namespace PlutoPoint_Installer
                     installerTextBox.AppendText(Environment.NewLine);
                     progressBar.Value += 1;
                 }
+            }
+            if (hpEliteBook == "1")
+            {
+                installerTextBox.AppendText("The installer is being run on a HP EliteBook.");
+                installerTextBox.AppendText(Environment.NewLine);
+                installerTextBox.AppendText("Downloading HP Hotkey Support...");
+                installerTextBox.AppendText(Environment.NewLine);
+                using (WebClient wc = new WebClient())
+                {
+                    wc.DownloadFileCompleted += wc_progressBarStep;
+                    await wc.DownloadFileTaskAsync(hpHotkeySupportURL, hpHotkeySupportFilename);
+                }
+                installerTextBox.AppendText("Checking if NanaZip is installed...");
+                installerTextBox.AppendText(Environment.NewLine);
+                if (System.IO.File.Exists(@"C:\Program Files\WindowsApps\40174MouriNaruto.NanaZip_3.1.1080.0_x64__gnj4mf6z9tkrc\NanaZip.Windows.exe"))
+                { }
+                else
+                {
+                    installerTextBox.AppendText("NanaZip is not installed and is required for extraction.");
+                    installerTextBox.AppendText(Environment.NewLine);
+                    installerTextBox.AppendText("Downloading NanaZip...");
+                    installerTextBox.AppendText(Environment.NewLine);
+                    using (WebClient wc = new WebClient())
+                    {
+                        await wc.DownloadFileTaskAsync(nanaZipURL, nanaZipFilename);
+                    }
+                    installerTextBox.AppendText("Installing NanaZip...");
+                    installerTextBox.AppendText(Environment.NewLine);
+                    Process.Start("powershell", $"-Command Add-AppxPackage -Path '{nanaZipFilename}'");
+                    installerTextBox.AppendText("Completed installation of NanaZip.");
+                    installerTextBox.AppendText(Environment.NewLine); ;
+                }
+                installerTextBox.AppendText("Extracing HP Hotkey Support...");
+                installerTextBox.AppendText(Environment.NewLine);
+                string hpHotkeySupportExtractPath = @"C:\Computer Repair Centre\apps\hpHotkeySupport";
+                if (!Directory.Exists(hpHotkeySupportExtractPath))
+                {
+                    Directory.CreateDirectory(hpHotkeySupportExtractPath);
+                }
+                async Task RunNanaZipExtractionAsync()
+                {
+                    ProcessStartInfo processStartInfo = new ProcessStartInfo
+                    {
+                        FileName = nanaZipPath,
+                        Arguments = $"x \"{hpHotkeySupportFilename}\" -o\"{hpHotkeySupportExtractPath}\" -aoa",
+                        UseShellExecute = false,
+                        RedirectStandardOutput = true,
+                        RedirectStandardError = true,
+                        CreateNoWindow = true
+                    };
+                    using (Process process = new Process { StartInfo = processStartInfo })
+                    {
+                        process.Start();
+                        Task<string> outputTask = process.StandardOutput.ReadToEndAsync();
+                        Task<string> errorTask = process.StandardError.ReadToEndAsync();
+                        await Task.Run(() => process.WaitForExit());
+                        string output = await outputTask;
+                        string errors = await errorTask;
+                        if (!string.IsNullOrEmpty(output))
+                        {
+                            installerTextBox.AppendText(output);
+                            installerTextBox.AppendText(Environment.NewLine);
+                        }
+
+                        if (!string.IsNullOrEmpty(errors))
+                        {
+                            installerTextBox.AppendText("Errors: ");
+                            installerTextBox.AppendText(errors);
+                            installerTextBox.AppendText(Environment.NewLine);
+                        }
+                    }
+                }
+                await RunNanaZipExtractionAsync();
+                installerTextBox.AppendText("Completed extraction of HP Hotkey Support.");
+                installerTextBox.AppendText(Environment.NewLine);
+                progressBar.Value += 1;
+                installerTextBox.AppendText("Installing HP Hotkey Support...");
+                installerTextBox.AppendText(Environment.NewLine);
+                async Task InstallHPHotkeySupport()
+                {
+                    try
+                    {
+                        ProcessStartInfo processInfo = new ProcessStartInfo
+                        {
+                            FileName = @"C:\Computer Repair Centre\apps\hpHotkeySupport\SP103615\src\install.cmd",
+                            UseShellExecute = false
+                        };
+                        using (Process process = Process.Start(processInfo))
+                        {
+                            if (process != null)
+                            {
+                                await Task.Run(() => process.WaitForExit());
+                                Console.WriteLine("Process completed successfully.");
+                            }
+                            else
+                            {
+                                Console.WriteLine("Failed to start the process.");
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("An error occurred: " + ex.Message);
+                    }
+                }
+                async Task InstallHPramework()
+                {
+                    await StartProcessAsync(@"C:\Computer Repair Centre\SP103615\src\install.cmd");
+                }
+                async Task StartProcessAsync(string filePath)
+                {
+                    try
+                    {
+                        ProcessStartInfo processInfo = new ProcessStartInfo
+                        {
+                            FileName = filePath,
+                            UseShellExecute = false
+                        };
+                        using (Process process = Process.Start(processInfo))
+                        {
+                            if (process != null)
+                            {
+                                await Task.Run(() => process.WaitForExit());
+                                Console.WriteLine("Process completed successfully.");
+                            }
+                            else
+                            {
+                                Console.WriteLine("Failed to start the process.");
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("An error occurred: " + ex.Message);
+                    }
+                }
+                await InstallHPHotkeySupport();
+                progressBar.Value += 1;
+                installerTextBox.AppendText("Installing HP Framework...");
+                installerTextBox.AppendText(Environment.NewLine);
+                await InstallHPramework();
+                progressBar.Value += 1;
+                installerTextBox.AppendText("Completed installation of HP Hotkey Support.");
+                installerTextBox.AppendText(Environment.NewLine);
             }
 
             using (RegistryKey key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion"))
