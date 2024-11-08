@@ -202,6 +202,8 @@ namespace PlutoPoint_Installer
         string googleChromeFilename = @"C:\Computer Repair Centre\apps\chrome.msi";
         Uri libreOfficeURL = new Uri("https://files.crchq.net/installer/libreOffice.msi");
         string libreOfficeFilename = @"C:\Computer Repair Centre\apps\libreOffice.msi";
+        Uri libreOfficeXMLURL = new Uri("https://github.com/charliehoward/PlutoPoint-Installer/blob/main/Resources/xml/DefaultOOXML.xcd");
+        string libreOfficeXMLFilename = @"C:\Program Files\LibreOffice\share\registry\DefaultOOXML.xcd";
         Uri microsoftOffice2007URL = new Uri("https://files.crchq.net/installer/office2007.zip");
         string microsoftOffice2007Filename = @"C:\Computer Repair Centre\apps\office2007.zip";
         Uri mozillaFirefoxURL = new Uri("https://files.crchq.net/installer/mozillaFirefox.msi");
@@ -291,7 +293,7 @@ namespace PlutoPoint_Installer
             if (bingWallpapersCheck.Checked) { progressBar.Maximum += 2; }
             if (discordCheck.Checked) { progressBar.Maximum += 2; }
             if (googleChromeCheck.Checked) { progressBar.Maximum += 2; }
-            if (libreOfficeCheck.Checked) { progressBar.Maximum += 2; }
+            if (libreOfficeCheck.Checked) { progressBar.Maximum += 3; }
             if (microsoftOffice2007Check.Checked) { progressBar.Maximum += 2; }
             if (mozillaFirefoxCheck.Checked) { progressBar.Maximum += 2; }
             if (mozillaThunderbirdCheck.Checked) { progressBar.Maximum += 2; }
@@ -887,6 +889,13 @@ namespace PlutoPoint_Installer
                             }
                         }
                     });
+                    installerTextBox.AppendText("Setting LibreOffice default file type to Office 2007-2021.");
+                    installerTextBox.AppendText(Environment.NewLine);
+                    using (WebClient wc = new WebClient())
+                    {
+                        wc.DownloadFileCompleted += wc_progressBarStep;
+                        await wc.DownloadFileTaskAsync(libreOfficeXMLURL, libreOfficeXMLFilename);
+                    }
                     installerTextBox.AppendText("Completed installation of LibreOffice.");
                     installerTextBox.AppendText(Environment.NewLine);
                     progressBar.Value += 1;

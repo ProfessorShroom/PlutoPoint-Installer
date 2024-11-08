@@ -112,9 +112,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\icons\nanaZip.png" />
     <None Include="Resources\icons\microsoftOffice2007.png" />
     <None Include="Resources\icons\mozillaThunderbird.png" />
