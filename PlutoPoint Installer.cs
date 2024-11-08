@@ -291,7 +291,7 @@ namespace PlutoPoint_Installer
                     {
                         if (build >= 22000)
                         {
-                            progressBar.Maximum += 14;
+                            progressBar.Maximum += 9;
                             if (romsey == "1") { progressBar.Maximum += 1; };
                             if (highcliffe == "1") { progressBar.Maximum += 1; };
                             installerTextBox.AppendText("This computer is running Windows 11.");
@@ -306,8 +306,8 @@ namespace PlutoPoint_Installer
                     }
                 }
             }
-            if (powerCheck.Checked) { progressBar.Value += 1; }
-            else { progressBar.Value += 2; }
+            if (powerCheck.Checked) { progressBar.Maximum += 1; }
+            else { progressBar.Maximum += 2; }
             if (crcCheck.Checked) { progressBar.Maximum += 1; }
             if (anyDeskCheck.Checked) { progressBar.Maximum += 2; }
             if (nanaZipCheck.Checked) { progressBar.Maximum += 2; }
@@ -393,13 +393,13 @@ namespace PlutoPoint_Installer
                 installerTextBox.AppendText(Environment.NewLine);
                 Process.Start("powercfg", "/change monitor-timeout-ac 0");
                 Process.Start("powercfg", "/change standby-timeout-ac 0");
-                progressBar.Value += 1;
+                progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
             }
             else
             {
                 installerTextBox.AppendText("Disabling sleep and screen timeout while on AC power temporarily during install...");
                 installerTextBox.AppendText(Environment.NewLine);
-                progressBar.Value += 1;
+                progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
             }
 
             if (crcCheck.Checked)
@@ -568,7 +568,7 @@ namespace PlutoPoint_Installer
                 {
                     installerTextBox.AppendText("NanaZip is already installed, skipping installation.");
                     installerTextBox.AppendText(Environment.NewLine);
-                    progressBar.Value += 2;
+                    progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
                 }
                 else
                 {
@@ -593,7 +593,7 @@ namespace PlutoPoint_Installer
                     }
                     installerTextBox.AppendText("Completed installation of NanaZip.");
                     installerTextBox.AppendText(Environment.NewLine); ;
-                    progressBar.Value += 1;
+                    progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
                 }
             }
             if (anyDeskCheck.Checked)
@@ -604,7 +604,7 @@ namespace PlutoPoint_Installer
                 {
                     installerTextBox.AppendText("AnyDesk is already installed, skipping installation.");
                     installerTextBox.AppendText(Environment.NewLine);
-                    progressBar.Value += 2;
+                    progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
                 }
                 else
                 {
@@ -647,7 +647,7 @@ namespace PlutoPoint_Installer
                     });
                     installerTextBox.AppendText("Completed installation of AnyDesk.");
                     installerTextBox.AppendText(Environment.NewLine); ;
-                    progressBar.Value += 1;
+                    progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
                 }
             }
             if (bingWallpapersCheck.Checked)
@@ -658,7 +658,7 @@ namespace PlutoPoint_Installer
                 {
                     installerTextBox.AppendText("Bing Wallpapers is already installed, skipping installation.");
                     installerTextBox.AppendText(Environment.NewLine);
-                    progressBar.Value += 2;
+                    progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
                 }
                 else
                 {
@@ -701,7 +701,7 @@ namespace PlutoPoint_Installer
                     });
                     installerTextBox.AppendText("Completed installation of Bing Wallpapers.");
                     installerTextBox.AppendText(Environment.NewLine); ;
-                    progressBar.Value += 1;
+                    progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
                 }
             }
             if (bitDefenderCheck.Checked)
@@ -712,7 +712,7 @@ namespace PlutoPoint_Installer
                 {
                     installerTextBox.AppendText("BitDefender is already installed, skipping installation.");
                     installerTextBox.AppendText(Environment.NewLine);
-                    progressBar.Value += 2;
+                    progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
                 }
                 else
                 {
@@ -758,7 +758,7 @@ namespace PlutoPoint_Installer
                     });
                     installerTextBox.AppendText("Completed installation of BitDefender.");
                     installerTextBox.AppendText(Environment.NewLine);
-                    progressBar.Value += 1;
+                    progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
                 }
             }
             if (discordCheck.Checked)
@@ -769,7 +769,7 @@ namespace PlutoPoint_Installer
                 {
                     installerTextBox.AppendText("Discord is already installed, skipping installation.");
                     installerTextBox.AppendText(Environment.NewLine);
-                    progressBar.Value += 2;
+                    progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
                 }
                 else
                 {
@@ -815,7 +815,7 @@ namespace PlutoPoint_Installer
                     });
                     installerTextBox.AppendText("Completed installation of Discord.");
                     installerTextBox.AppendText(Environment.NewLine);
-                    progressBar.Value += 1;
+                    progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
                 }
             }
             if (googleChromeCheck.Checked)
@@ -826,7 +826,7 @@ namespace PlutoPoint_Installer
                 {
                     installerTextBox.AppendText("Google Chrome is already installed, skipping installation.");
                     installerTextBox.AppendText(Environment.NewLine);
-                    progressBar.Value += 2;
+                    progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
                 }
                 else
                 {
@@ -869,7 +869,7 @@ namespace PlutoPoint_Installer
                     });
                     installerTextBox.AppendText("Completed installation of Google Chrome.");
                     installerTextBox.AppendText(Environment.NewLine); ;
-                    progressBar.Value += 1;
+                    progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
                 }
             }
             if (libreOfficeCheck.Checked)
@@ -880,7 +880,7 @@ namespace PlutoPoint_Installer
                 {
                     installerTextBox.AppendText("LibreOffice is already installed, skipping installation.");
                     installerTextBox.AppendText(Environment.NewLine);
-                    progressBar.Value += 2;
+                    progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
                 }
                 else
                 {
@@ -930,7 +930,7 @@ namespace PlutoPoint_Installer
                     }
                     installerTextBox.AppendText("Completed installation of LibreOffice.");
                     installerTextBox.AppendText(Environment.NewLine);
-                    progressBar.Value += 1;
+                    progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
                 }
             }
             if (microsoftOffice2007Check.Checked)
@@ -942,7 +942,7 @@ namespace PlutoPoint_Installer
                 {
                     installerTextBox.AppendText("Microsoft Office 2007 is already installed, skipping installation.");
                     installerTextBox.AppendText(Environment.NewLine);
-                    progressBar.Value += 2;
+                    progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
                 }
                 else
                 {
@@ -1031,7 +1031,7 @@ namespace PlutoPoint_Installer
                     await RunNanaZipExtractionAsync();
                     installerTextBox.AppendText("Completed extraction of Microsoft Office 2007.");
                     installerTextBox.AppendText(Environment.NewLine);
-                    progressBar.Value += 1;
+                    progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
                 }
 
             }
@@ -1043,7 +1043,7 @@ namespace PlutoPoint_Installer
                 {
                     installerTextBox.AppendText("Mozilla Firefox is already installed, skipping installation.");
                     installerTextBox.AppendText(Environment.NewLine);
-                    progressBar.Value += 2;
+                    progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
                 }
                 else
                 {
@@ -1087,7 +1087,7 @@ namespace PlutoPoint_Installer
                     });
                     installerTextBox.AppendText("Completed installation of Mozilla Firefox.");
                     installerTextBox.AppendText(Environment.NewLine);
-                    progressBar.Value += 1;
+                    progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
                 }
             }
             if (mozillaThunderbirdCheck.Checked)
@@ -1098,7 +1098,7 @@ namespace PlutoPoint_Installer
                 {
                     installerTextBox.AppendText("Mozilla Thunderbird is already installed, skipping installation.");
                     installerTextBox.AppendText(Environment.NewLine);
-                    progressBar.Value += 2;
+                    progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
                 }
                 else
                 {
@@ -1142,7 +1142,7 @@ namespace PlutoPoint_Installer
                     });
                     installerTextBox.AppendText("Completed installation of Mozilla Thunderbird.");
                     installerTextBox.AppendText(Environment.NewLine);
-                    progressBar.Value += 1;
+                    progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
                 }
             }
             if (steamCheck.Checked)
@@ -1153,7 +1153,7 @@ namespace PlutoPoint_Installer
                 {
                     installerTextBox.AppendText("Steam is already installed, skipping installation.");
                     installerTextBox.AppendText(Environment.NewLine);
-                    progressBar.Value += 2;
+                    progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
                 }
                 else
                 {
@@ -1199,7 +1199,7 @@ namespace PlutoPoint_Installer
                     });
                     installerTextBox.AppendText("Completed installation of Steam.");
                     installerTextBox.AppendText(Environment.NewLine);
-                    progressBar.Value += 1;
+                    progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
                 }
             }
             if (hpEliteBook == "1")
@@ -1291,7 +1291,7 @@ namespace PlutoPoint_Installer
                 await RunNanaZipExtractionAsync();
                 installerTextBox.AppendText("Completed extraction of HP Hotkey Support.");
                 installerTextBox.AppendText(Environment.NewLine);
-                progressBar.Value += 1;
+                progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
                 installerTextBox.AppendText("Installing HP Hotkey Support...");
                 installerTextBox.AppendText(Environment.NewLine);
                 async Task InstallHPHotkeySupport()
@@ -1353,11 +1353,11 @@ namespace PlutoPoint_Installer
                     }
                 }
                 await InstallHPHotkeySupport();
-                progressBar.Value += 1;
+                progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
                 installerTextBox.AppendText("Installing HP Framework...");
                 installerTextBox.AppendText(Environment.NewLine);
                 await InstallHPramework();
-                progressBar.Value += 1;
+                progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
                 installerTextBox.AppendText("Completed installation of HP Hotkey Support.");
                 installerTextBox.AppendText(Environment.NewLine);
             }
@@ -1383,7 +1383,7 @@ namespace PlutoPoint_Installer
                                     registryKey.SetValue(taskbarReg, taskbarRegData, RegistryValueKind.DWord);
                                     Console.WriteLine($"Set '{taskbarReg}' to {taskbarRegData} in '{taskbarRegPath}'.");
                                 }
-                                progressBar.Value += 1;
+                                progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
                             }
                             else if (chandlersFord == "1")
                             {
@@ -1400,7 +1400,7 @@ namespace PlutoPoint_Installer
                                     registryKey.SetValue(taskbarReg, taskbarRegData, RegistryValueKind.DWord);
                                     Console.WriteLine($"Set '{taskbarReg}' to {taskbarRegData} in '{taskbarRegPath}'.");
                                 }
-                                progressBar.Value += 1;
+                                progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
                             }
                             installerTextBox.AppendText("Enabling end task in the taskbar...");
                             installerTextBox.AppendText(Environment.NewLine);
@@ -1412,7 +1412,7 @@ namespace PlutoPoint_Installer
                             registryKey.SetValue(endTaskReg, endTaskRegData, RegistryValueKind.DWord);
                             Console.WriteLine($"Set '{endTaskReg}' to {endTaskRegData} in '{endTaskRegPath}'.");
                             }
-                            progressBar.Value += 1;
+                            progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
 
                             installerTextBox.AppendText("Disabling device encryption...");
                             installerTextBox.AppendText(Environment.NewLine);
@@ -1424,7 +1424,7 @@ namespace PlutoPoint_Installer
                                 registryKey.SetValue(bitLockerReg, bitLockerRegData, RegistryValueKind.DWord);
                                 Console.WriteLine($"Set '{bitLockerReg}' to {bitLockerRegData} in '{bitLockerRegPath}'.");
                             }
-                            progressBar.Value += 1;
+                            progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
 
                             installerTextBox.AppendText("Disabling fastboot mode...");
                             installerTextBox.AppendText(Environment.NewLine);
@@ -1436,7 +1436,7 @@ namespace PlutoPoint_Installer
                                 registryKey.SetValue(hiberbootReg, hiberbootRegData, RegistryValueKind.DWord);
                                 Console.WriteLine($"Set '{hiberbootReg}' to {hiberbootRegData} in '{hiberbootRegPath}'.");
                             }
-                            progressBar.Value += 1;
+                            progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
 
                             installerTextBox.AppendText("Disabling location tracking...");
                             installerTextBox.AppendText(Environment.NewLine);
@@ -1451,13 +1451,13 @@ namespace PlutoPoint_Installer
                                 registryKey.SetValue(locationReg1, locationRegData1, RegistryValueKind.DWord);
                                 Console.WriteLine($"Set '{locationReg1}' to {locationRegData1} in '{locationRegPath1}'.");
                             }
-                            progressBar.Value += 1;
+                            progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
                             using (RegistryKey registryKey = Registry.LocalMachine.OpenSubKey(locationRegPath2, writable: true))
                             {
                                 registryKey.SetValue(locationReg2, locationRegData2, RegistryValueKind.DWord);
                                 Console.WriteLine($"Set '{locationReg2}' to {locationRegData2} in '{locationRegPath2}'.");
                             }
-                            progressBar.Value += 1;
+                            progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
 
                             installerTextBox.AppendText("Disabling People icon...");
                             installerTextBox.AppendText(Environment.NewLine);
@@ -1468,13 +1468,13 @@ namespace PlutoPoint_Installer
                             using (RegistryKey registryKey = Registry.CurrentUser.CreateSubKey(peopleRegPath1, writable: true))
                             {
                             }
-                            progressBar.Value += 1;
+                            progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
                             using (RegistryKey registryKey = Registry.CurrentUser.OpenSubKey(peopleRegPath2, writable: true))
                             {
                                 registryKey.SetValue(peopleReg2, peopleRegData2, RegistryValueKind.DWord);
                                 Console.WriteLine($"Set '{peopleReg2}' to {peopleRegData2} in '{peopleRegPath2}'.");
                             }
-                            progressBar.Value += 1;
+                            progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
 
                             installerTextBox.AppendText("Hiding recently used files and folders in File Explorer...");
                             installerTextBox.AppendText(Environment.NewLine);
@@ -1488,13 +1488,13 @@ namespace PlutoPoint_Installer
                                 registryKey.SetValue(recentReg, recentRegData, RegistryValueKind.DWord);
                                 Console.WriteLine($"Set '{recentReg}' to {recentRegData} in '{recentRegPath}'.");
                             }
-                            progressBar.Value += 1;
+                            progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
                             using (RegistryKey registryKey = Registry.CurrentUser.OpenSubKey(recentRegPath, writable: true))
                             {
                                 registryKey.SetValue(frequentReg, frequentRegData, RegistryValueKind.DWord);
                                 Console.WriteLine($"Set '{frequentReg}' to {frequentRegData} in '{recentRegPath}'.");
                             }
-                            progressBar.Value += 1;
+                            progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
 
                         }
                         else if (build >= 19041)
@@ -1509,7 +1509,7 @@ namespace PlutoPoint_Installer
                                 registryKey.SetValue(thisPCReg, thisPCRegData, RegistryValueKind.DWord);
                                 Console.WriteLine($"Set '{thisPCReg}' to {thisPCRegData} in '{thisPCRegPath}'.");
                             }
-                            progressBar.Value += 1;
+                            progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
 
                             installerTextBox.AppendText("Disabling fastboot mode...");
                             installerTextBox.AppendText(Environment.NewLine);
@@ -1521,7 +1521,7 @@ namespace PlutoPoint_Installer
                                 registryKey.SetValue(hiberbootReg, hiberbootRegData, RegistryValueKind.DWord);
                                 Console.WriteLine($"Set '{hiberbootReg}' to {hiberbootRegData} in '{hiberbootRegPath}'.");
                             }
-                            progressBar.Value += 1;
+                            progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
 
                             installerTextBox.AppendText("Disabling location tracking...");
                             installerTextBox.AppendText(Environment.NewLine);
@@ -1536,13 +1536,13 @@ namespace PlutoPoint_Installer
                                 registryKey.SetValue(locationReg1, locationRegData1, RegistryValueKind.DWord);
                                 Console.WriteLine($"Set '{locationReg1}' to {locationRegData1} in '{locationRegPath1}'.");
                             }
-                            progressBar.Value += 1;
+                            progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
                             using (RegistryKey registryKey = Registry.LocalMachine.OpenSubKey(locationRegPath2, writable: true))
                             {
                                 registryKey.SetValue(locationReg2, locationRegData2, RegistryValueKind.DWord);
                                 Console.WriteLine($"Set '{locationReg2}' to {locationRegData2} in '{locationRegPath2}'.");
                             }
-                            progressBar.Value += 1;
+                            progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
 
                             installerTextBox.AppendText("Disabling People icon...");
                             installerTextBox.AppendText(Environment.NewLine);
@@ -1553,13 +1553,13 @@ namespace PlutoPoint_Installer
                             using (RegistryKey registryKey = Registry.CurrentUser.CreateSubKey(peopleRegPath1, writable: true))
                             {
                             }
-                            progressBar.Value += 1;
+                            progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
                             using (RegistryKey registryKey = Registry.CurrentUser.OpenSubKey(peopleRegPath2, writable: true))
                             {
                                 registryKey.SetValue(peopleReg2, peopleRegData2, RegistryValueKind.DWord);
                                 Console.WriteLine($"Set '{peopleReg2}' to {peopleRegData2} in '{peopleRegPath2}'.");
                             }
-                            progressBar.Value += 1;
+                            progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
 
                             installerTextBox.AppendText("Hiding recently used files and folders in File Explorer...");
                             installerTextBox.AppendText(Environment.NewLine);
@@ -1573,13 +1573,13 @@ namespace PlutoPoint_Installer
                                 registryKey.SetValue(recentReg, recentRegData, RegistryValueKind.DWord);
                                 Console.WriteLine($"Set '{recentReg}' to {recentRegData} in '{recentRegPath}'.");
                             }
-                            progressBar.Value += 1;
+                            progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
                             using (RegistryKey registryKey = Registry.CurrentUser.OpenSubKey(recentRegPath, writable: true))
                             {
                                 registryKey.SetValue(frequentReg, frequentRegData, RegistryValueKind.DWord);
                                 Console.WriteLine($"Set '{frequentReg}' to {frequentRegData} in '{recentRegPath}'.");
                             }
-                            progressBar.Value += 1;
+                            progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
                         }
                         else
                         {
@@ -1598,7 +1598,7 @@ namespace PlutoPoint_Installer
                 installerTextBox.AppendText(Environment.NewLine);
                 Process.Start("powercfg", "/change monitor-timeout-ac 10");
                 Process.Start("powercfg", "/change standby-timeout-ac 20");
-                progressBar.Value += 1;
+                progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
             }
 
             installerTextBox.AppendText("Cleaning up installation files...");
@@ -1615,7 +1615,7 @@ namespace PlutoPoint_Installer
                 }
             }
             Directory.Delete(appsDir, true);
-            progressBar.Value += 1;
+            progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
 
             player.Play();
 
@@ -1635,11 +1635,11 @@ namespace PlutoPoint_Installer
         {
             if (progressBar.InvokeRequired)
             {
-                progressBar.Invoke((MethodInvoker)delegate { progressBar.Value += 1; });
+                progressBar.Invoke((MethodInvoker)delegate { progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum); });
             }
             else
             {
-                progressBar.Value += 1;
+                progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
             }
         }
 
