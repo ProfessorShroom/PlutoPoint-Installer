@@ -655,6 +655,12 @@ namespace PlutoPoint_Installer
                     installerTextBox.AppendText(Environment.NewLine);
                     progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
                 }
+                else if (System.IO.File.Exists(@"C:\Program Files (x86)\AnyDesk\AnyDesk.exe"))
+                {
+                    installerTextBox.AppendText("AnyDesk is already installed, skipping installation.");
+                    installerTextBox.AppendText(Environment.NewLine);
+                    progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
+                }
                 else
                 {
                     installerTextBox.AppendText("Downloading AnyDesk...");

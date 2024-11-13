@@ -1,6 +1,6 @@
  ![Arch](https://img.shields.io/badge/Arch-AMD64-blue) ![OS](https://img.shields.io/badge/OS-Windows%2010%20|%20Windows%2011-green)
 
-## PlutoPoint Installer Version 6.1.2.4
+## PlutoPoint Installer Version 6.1.2.5
 ###### Copyright (c) Charlie Howard 2024 All rights reserved.
 
 A C# based GUI installer for Windows 10/11.
@@ -15,6 +15,10 @@ Disables sleep and screen timeout if plugged into AC power during the install an
 
 ### Changelog
 
+**Update 6.1.2.5**
+
+Added a check for the EXE version of AnyDesk too just incase it is already installed, no point having both.
+Fixed BitDefender crash.
 
 **Update 6.1.2.4**
 
