@@ -30,6 +30,9 @@ namespace PlutoPoint_Installer
 
     public partial class installerForm : Form
     {
+
+        string updateDate = "13th of November 2024";
+
         public installerForm()
         {
             InitializeComponent();
@@ -261,6 +264,7 @@ namespace PlutoPoint_Installer
         public class DesktopArranger
         {
             private const int WM_COMMAND = 0x0111;
+            private const int LVM_ARRANGE = 0x1015;
             [DllImport("user32.dll")]
             private static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
             [DllImport("user32.dll")]
@@ -272,21 +276,26 @@ namespace PlutoPoint_Installer
                 await Task.Run(() =>
                 {
                     IntPtr hWndProgman = FindWindow("Progman", null);
+                    IntPtr hWndDesktop = IntPtr.Zero;
                     IntPtr hWndWorkerW = FindWindowEx(IntPtr.Zero, IntPtr.Zero, "WorkerW", null);
-                    if (hWndWorkerW == IntPtr.Zero)
+                    while (hWndWorkerW != IntPtr.Zero)
                     {
-                        Console.WriteLine("Failed to find the desktop icon window.");
-                        return;
+                        IntPtr hWndSHELLDLL_DefView = FindWindowEx(hWndWorkerW, IntPtr.Zero, "SHELLDLL_DefView", null);
+                        if (hWndSHELLDLL_DefView != IntPtr.Zero)
+                        {
+                            hWndDesktop = FindWindowEx(hWndSHELLDLL_DefView, IntPtr.Zero, "SysListView32", null);
+                            break;
+                        }
+                        hWndWorkerW = FindWindowEx(IntPtr.Zero, hWndWorkerW, "WorkerW", null);
                     }
-                    IntPtr result = SendMessage(hWndWorkerW, WM_COMMAND, (IntPtr)0x7402, IntPtr.Zero);
-
-                    if (result != IntPtr.Zero)
+                    if (hWndDesktop != IntPtr.Zero)
                     {
+                        SendMessage(hWndDesktop, LVM_ARRANGE, (IntPtr)0, IntPtr.Zero);
                         Console.WriteLine("Desktop icons arranged.");
                     }
                     else
                     {
-                        Console.WriteLine("Command failed or not supported.");
+                        Console.WriteLine("Failed to find the desktop icons window.");
                     }
                 });
             }
@@ -302,6 +311,9 @@ namespace PlutoPoint_Installer
             string discordAppPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"Discord\Update.exe");
             string desktopPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop));
             string launcherPath = $"{desktopPath}\\Computer Repair Centre Installer Launcher.exe";
+
+            installerTextBox.AppendText($"Last updated on {updateDate}.");
+            installerTextBox.AppendText(Environment.NewLine);
 
 
             if (!Directory.Exists(rootDir))
