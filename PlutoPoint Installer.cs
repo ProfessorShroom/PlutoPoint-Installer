@@ -26,6 +26,7 @@ namespace PlutoPoint_Installer
     using System.Drawing.Drawing2D;
     using System.Management;
     using System.Windows.Forms;
+    using File = System.IO.File;
 
     public partial class installerForm : Form
     {
@@ -257,6 +258,32 @@ namespace PlutoPoint_Installer
             }
         }
 
+        public class DesktopArranger
+        {
+            private const int WM_COMMAND = 0x111;
+            private const int AUTO_ARRANGE_COMMAND = 0x7402;
+            [DllImport("user32.dll")]
+            private static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
+            [DllImport("user32.dll")]
+            private static extern IntPtr SendMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
+            public static async Task AutoArrangeDesktopIconsAsync()
+            {
+                await Task.Run(() =>
+                {
+                    IntPtr hWnd = FindWindow("Progman", null);
+                    if (hWnd != IntPtr.Zero)
+                    {
+                        SendMessage(hWnd, WM_COMMAND, (IntPtr)AUTO_ARRANGE_COMMAND, IntPtr.Zero);
+                        Console.WriteLine("Desktop icons arranged.");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Failed to find the desktop window.");
+                    }
+                });
+            }
+        }
+
         private async void install_Click(object sender, EventArgs e)
         {
             progressBar.Maximum = 0;
@@ -266,6 +293,8 @@ namespace PlutoPoint_Installer
             string bingWallpaperAppPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"Microsoft\BingWallpaperApp\BingWallpaperApp.exe");
             string discordAppPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"Discord\Update.exe");
             string desktopPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop));
+            string launcherPath = $"{desktopPath}\\Computer Repair Centre Launcher.exe";
+
 
             if (!Directory.Exists(rootDir))
             {
@@ -291,7 +320,7 @@ namespace PlutoPoint_Installer
                     {
                         if (build >= 22000)
                         {
-                            progressBar.Maximum += 9;
+                            progressBar.Maximum += 10;
                             if (romsey == "1") { progressBar.Maximum += 1; };
                             if (highcliffe == "1") { progressBar.Maximum += 1; };
                             installerTextBox.AppendText("This computer is running Windows 11.");
@@ -1402,6 +1431,12 @@ namespace PlutoPoint_Installer
                                 }
                                 progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
                             }
+
+                            installerTextBox.AppendText("Auto arranging Desktop icons...");
+                            installerTextBox.AppendText(Environment.NewLine);
+                            await DesktopArranger.AutoArrangeDesktopIconsAsync();
+                            progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
+
                             installerTextBox.AppendText("Enabling end task in the taskbar...");
                             installerTextBox.AppendText(Environment.NewLine);
                             const string endTaskRegPath = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\TaskbarDeveloperSettings";
@@ -1615,6 +1650,22 @@ namespace PlutoPoint_Installer
                 }
             }
             Directory.Delete(appsDir, true);
+            if (System.IO.File.Exists(launcherPath))
+            {
+                try
+                {
+                    File.Delete(launcherPath);
+                    Console.WriteLine("File deleted successfully.");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error deleting file: {ex.Message}");
+                }
+            }
+            else
+            {
+                Console.WriteLine("File does not exist.");
+            }
             progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
 
             player.Play();
