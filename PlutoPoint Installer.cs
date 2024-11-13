@@ -301,7 +301,7 @@ namespace PlutoPoint_Installer
             string bingWallpaperAppPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"Microsoft\BingWallpaperApp\BingWallpaperApp.exe");
             string discordAppPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"Discord\Update.exe");
             string desktopPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop));
-            string launcherPath = $"{desktopPath}\\Computer Repair Centre Launcher.exe";
+            string launcherPath = $"{desktopPath}\\Computer Repair Centre Installer Launcher.exe";
 
 
             if (!Directory.Exists(rootDir))
