@@ -649,7 +649,7 @@ namespace PlutoPoint_Installer
             {
                 installerTextBox.AppendText("AnyDesk is selected.");
                 installerTextBox.AppendText(Environment.NewLine);
-                if (System.IO.File.Exists(@"C:\Program Files (x86)\AnyDesk\AnyDesk.exe"))
+                if (System.IO.File.Exists(@"C:\Program Files (x86)\AnyDeskMSI\AnyDeskMSI.exe"))
                 {
                     installerTextBox.AppendText("AnyDesk is already installed, skipping installation.");
                     installerTextBox.AppendText(Environment.NewLine);
@@ -770,7 +770,7 @@ namespace PlutoPoint_Installer
                     using (WebClient wc = new WebClient())
                     {
                         wc.DownloadFileCompleted += wc_progressBarStep;
-                        await wc.DownloadFileTaskAsync(steamURL, steamFilename);
+                        await wc.DownloadFileTaskAsync(bitDefenderURL, bitDefenderFilename);
                     }
                     installerTextBox.AppendText("Installing BitDefender...");
                     installerTextBox.AppendText(Environment.NewLine);
