@@ -261,43 +261,50 @@ namespace PlutoPoint_Installer
             }
         }
 
-        public class DesktopArranger
+        public class FileDeletionHelper
         {
-            private const int WM_COMMAND = 0x0111;
-            private const int LVM_ARRANGE = 0x1015;
-            [DllImport("user32.dll")]
-            private static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
-            [DllImport("user32.dll")]
-            private static extern IntPtr FindWindowEx(IntPtr parentHandle, IntPtr childAfter, string className, string windowTitle);
-            [DllImport("user32.dll")]
-            private static extern IntPtr SendMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
-            public static async Task AutoArrangeDesktopIconsAsync()
+            public async Task DeleteFilesAndDirectoryAsync(string appsDir, string launcherPath)
             {
-                await Task.Run(() =>
+                var deleteFileTasks = new List<Task>();
+                foreach (var file in Directory.EnumerateFiles(appsDir))
                 {
-                    IntPtr hWndProgman = FindWindow("Progman", null);
-                    IntPtr hWndDesktop = IntPtr.Zero;
-                    IntPtr hWndWorkerW = FindWindowEx(IntPtr.Zero, IntPtr.Zero, "WorkerW", null);
-                    while (hWndWorkerW != IntPtr.Zero)
+                    deleteFileTasks.Add(Task.Run(() =>
                     {
-                        IntPtr hWndSHELLDLL_DefView = FindWindowEx(hWndWorkerW, IntPtr.Zero, "SHELLDLL_DefView", null);
-                        if (hWndSHELLDLL_DefView != IntPtr.Zero)
+                        try
                         {
-                            hWndDesktop = FindWindowEx(hWndSHELLDLL_DefView, IntPtr.Zero, "SysListView32", null);
-                            break;
+                            System.IO.File.Delete(file);
                         }
-                        hWndWorkerW = FindWindowEx(IntPtr.Zero, hWndWorkerW, "WorkerW", null);
-                    }
-                    if (hWndDesktop != IntPtr.Zero)
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"Error deleting file {file}: {ex.Message}");
+                        }
+                    }));
+                }
+                await Task.WhenAll(deleteFileTasks);
+                try
+                {
+                    await Task.Run(() => Directory.Delete(appsDir, true));
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error deleting directory {appsDir}: {ex.Message}");
+                }
+                if (System.IO.File.Exists(launcherPath))
+                {
+                    try
                     {
-                        SendMessage(hWndDesktop, LVM_ARRANGE, (IntPtr)0, IntPtr.Zero);
-                        Console.WriteLine("Desktop icons arranged.");
+                        await Task.Run(() => System.IO.File.Delete(launcherPath));
+                        Console.WriteLine("File deleted successfully.");
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        Console.WriteLine("Failed to find the desktop icons window.");
+                        Console.WriteLine($"Error deleting file: {ex.Message}");
                     }
-                });
+                }
+                else
+                {
+                    Console.WriteLine("File does not exist.");
+                }
             }
         }
 
@@ -340,7 +347,7 @@ namespace PlutoPoint_Installer
                     {
                         if (build >= 22000)
                         {
-                            progressBar.Maximum += 10;
+                            progressBar.Maximum += 9;
                             if (romsey == "1") { progressBar.Maximum += 1; };
                             if (highcliffe == "1") { progressBar.Maximum += 1; };
                             installerTextBox.AppendText("This computer is running Windows 11.");
@@ -1458,11 +1465,6 @@ namespace PlutoPoint_Installer
                                 progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
                             }
 
-                            installerTextBox.AppendText("Auto arranging Desktop icons...");
-                            installerTextBox.AppendText(Environment.NewLine);
-                            await DesktopArranger.AutoArrangeDesktopIconsAsync();
-                            progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
-
                             installerTextBox.AppendText("Enabling end task in the taskbar...");
                             installerTextBox.AppendText(Environment.NewLine);
                             const string endTaskRegPath = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\TaskbarDeveloperSettings";
@@ -1664,34 +1666,8 @@ namespace PlutoPoint_Installer
 
             installerTextBox.AppendText("Cleaning up installation files...");
             installerTextBox.AppendText(Environment.NewLine);
-            foreach (var file in Directory.GetFiles(appsDir))
-            {
-                try
-                {
-                    System.IO.File.Delete(file);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Error deleting file {file}: {ex.Message}");
-                }
-            }
-            Directory.Delete(appsDir, true);
-            if (System.IO.File.Exists(launcherPath))
-            {
-                try
-                {
-                    System.IO.File.Delete(launcherPath);
-                    Console.WriteLine("File deleted successfully.");
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Error deleting file: {ex.Message}");
-                }
-            }
-            else
-            {
-                Console.WriteLine("File does not exist.");
-            }
+            var deletionHelper = new FileDeletionHelper();
+            await deletionHelper.DeleteFilesAndDirectoryAsync(appsDir, launcherPath);
             progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
 
             player.Play();
