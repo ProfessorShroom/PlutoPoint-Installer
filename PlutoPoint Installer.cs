@@ -260,25 +260,33 @@ namespace PlutoPoint_Installer
 
         public class DesktopArranger
         {
-            private const int WM_COMMAND = 0x111;
-            private const int AUTO_ARRANGE_COMMAND = 0x7402;
+            private const int WM_COMMAND = 0x0111;
             [DllImport("user32.dll")]
             private static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
+            [DllImport("user32.dll")]
+            private static extern IntPtr FindWindowEx(IntPtr parentHandle, IntPtr childAfter, string className, string windowTitle);
             [DllImport("user32.dll")]
             private static extern IntPtr SendMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
             public static async Task AutoArrangeDesktopIconsAsync()
             {
                 await Task.Run(() =>
                 {
-                    IntPtr hWnd = FindWindow("Progman", null);
-                    if (hWnd != IntPtr.Zero)
+                    IntPtr hWndProgman = FindWindow("Progman", null);
+                    IntPtr hWndWorkerW = FindWindowEx(IntPtr.Zero, IntPtr.Zero, "WorkerW", null);
+                    if (hWndWorkerW == IntPtr.Zero)
                     {
-                        SendMessage(hWnd, WM_COMMAND, (IntPtr)AUTO_ARRANGE_COMMAND, IntPtr.Zero);
+                        Console.WriteLine("Failed to find the desktop icon window.");
+                        return;
+                    }
+                    IntPtr result = SendMessage(hWndWorkerW, WM_COMMAND, (IntPtr)0x7402, IntPtr.Zero);
+
+                    if (result != IntPtr.Zero)
+                    {
                         Console.WriteLine("Desktop icons arranged.");
                     }
                     else
                     {
-                        Console.WriteLine("Failed to find the desktop window.");
+                        Console.WriteLine("Command failed or not supported.");
                     }
                 });
             }
@@ -1654,7 +1662,7 @@ namespace PlutoPoint_Installer
             {
                 try
                 {
-                    File.Delete(launcherPath);
+                    System.IO.File.Delete(launcherPath);
                     Console.WriteLine("File deleted successfully.");
                 }
                 catch (Exception ex)
