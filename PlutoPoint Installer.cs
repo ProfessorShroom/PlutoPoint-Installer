@@ -31,7 +31,7 @@ namespace PlutoPoint_Installer
     public partial class installerForm : Form
     {
 
-        string updateDate = "13th of November 2024";
+        string updateDate = "20th of November 2024";
 
         public installerForm()
         {
@@ -317,7 +317,7 @@ namespace PlutoPoint_Installer
             string bingWallpaperAppPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"Microsoft\BingWallpaperApp\BingWallpaperApp.exe");
             string discordAppPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"Discord\Update.exe");
             string desktopPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop));
-            string launcherPath = $"{desktopPath}\\Computer Repair Centre Installer Launcher.exe";
+            string launcherPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), @"Computer Repair Centre Installer Launcher.exe");
 
             installerTextBox.AppendText($"Last updated on {updateDate}.");
             installerTextBox.AppendText(Environment.NewLine);
