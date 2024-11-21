@@ -177,7 +177,7 @@ namespace PlutoPoint_Installer
             this.versionLabel.Size = new System.Drawing.Size(78, 13);
             this.versionLabel.TabIndex = 9;
             this.versionLabel.TabStop = true;
-            this.versionLabel.Text = "Version 6.1.2.7";
+            this.versionLabel.Text = "Version 6.1.2.8";
             this.versionLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.versionLabel_LinkClicked);
             // 
             // restartCheck
