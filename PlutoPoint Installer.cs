@@ -31,7 +31,7 @@ namespace PlutoPoint_Installer
     public partial class installerForm : Form
     {
 
-        string updateDate = "21st of November 2024";
+        string updateDate = "11th of December 2024";
 
         public installerForm()
         {
@@ -1006,84 +1006,11 @@ namespace PlutoPoint_Installer
                         wc.DownloadFileCompleted += wc_progressBarStep;
                         await wc.DownloadFileTaskAsync(microsoftOffice2007URL, microsoftOffice2007Filename);
                     }
-                    installerTextBox.AppendText("Checking if NanaZip is installed...");
-                    installerTextBox.AppendText(Environment.NewLine);
-                    if (!System.IO.File.Exists(@"C:\Program Files\WindowsApps\40174MouriNaruto.NanaZip_3.1.1080.0_x64__gnj4mf6z9tkrc\NanaZip.Windows.exe"))
-                    {
-                        installerTextBox.AppendText("NanaZip is already installed, proceeding with extraction.");
-                        installerTextBox.AppendText(Environment.NewLine);
-                    }
-                    else
-                    {
-                        installerTextBox.AppendText("NanaZip is not installed and is required for extraction.");
-                        installerTextBox.AppendText(Environment.NewLine);
-                        installerTextBox.AppendText("Downloading NanaZip...");
-                        installerTextBox.AppendText(Environment.NewLine);
-                        using (WebClient wc = new WebClient())
-                        {
-                            await wc.DownloadFileTaskAsync(nanaZipURL, nanaZipFilename);
-                        }                        installerTextBox.AppendText("Installing NanaZip...");
-                        installerTextBox.AppendText(Environment.NewLine);
-                        Process nanaZipInstallProcess = Process.Start(new ProcessStartInfo
-                        {
-                            FileName = "powershell",
-                            Arguments = $"-Command Add-AppxPackage -Path '{nanaZipFilename}'",
-                            UseShellExecute = false,
-                            RedirectStandardOutput = true,
-                            RedirectStandardError = true,
-                            CreateNoWindow = true
-                        });
-                        if (nanaZipInstallProcess != null)
-                        {
-                            await Task.Run(() => nanaZipInstallProcess.WaitForExit());
-                        }
-                        installerTextBox.AppendText("Completed installation of NanaZip.");
-                        installerTextBox.AppendText(Environment.NewLine);
-                    }
-                    installerTextBox.AppendText("Extracting Microsoft Office 2007 to the Desktop...");
+                    installerTextBox.AppendText("Moving Microsoft Office 2007 to the Desktop...");
                     installerTextBox.AppendText(Environment.NewLine);
                     string microsoftOffice2007ExtractPath = Path.Combine(desktopPath, "Office2007");
-                    if (!Directory.Exists(microsoftOffice2007ExtractPath))
-                    {
-                        Directory.CreateDirectory(microsoftOffice2007ExtractPath);
-                    }
-                    async Task RunNanaZipExtractionAsync()
-                    {
-                        ProcessStartInfo processStartInfo = new ProcessStartInfo
-                        {
-                            FileName = nanaZipPath,
-                            Arguments = $"x \"{microsoftOffice2007Filename}\" -o\"{microsoftOffice2007ExtractPath}\" -aoa",
-                            UseShellExecute = false,
-                            RedirectStandardOutput = true,
-                            RedirectStandardError = true,
-                            CreateNoWindow = true
-                        };
-                        using (Process process = new Process { StartInfo = processStartInfo })
-                        {
-                            process.Start();
-                            Task<string> outputTask = process.StandardOutput.ReadToEndAsync();
-                            Task<string> errorTask = process.StandardError.ReadToEndAsync();
-                            await Task.Run(() => process.WaitForExit());
-                            string output = await outputTask;
-                            string errors = await errorTask;
-
-                            if (!string.IsNullOrEmpty(output))
-                            {
-                                installerTextBox.AppendText(output);
-                                installerTextBox.AppendText(Environment.NewLine);
-                            }
-
-                            if (!string.IsNullOrEmpty(errors))
-                            {
-                                installerTextBox.AppendText("Errors: ");
-                                installerTextBox.AppendText(errors);
-                                installerTextBox.AppendText(Environment.NewLine);
-                            }
-                        }
-                    }
-                    await RunNanaZipExtractionAsync();
-                    installerTextBox.AppendText("Completed extraction of Microsoft Office 2007.");
-                    installerTextBox.AppendText(Environment.NewLine);
+                    Directory.CreateDirectory(microsoftOffice2007ExtractPath);
+                    File.Move(microsoftOffice2007Filename, microsoftOffice2007ExtractPath);
                     progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
                 }
 
