@@ -1,6 +1,6 @@
  ![Arch](https://img.shields.io/badge/Arch-AMD64-blue) ![OS](https://img.shields.io/badge/OS-Windows%2010%20|%20Windows%2011-green)
 
-## PlutoPoint Installer Version 6.1.3.0
+## PlutoPoint Installer Version 6.1.4.0
 ###### Copyright (c) Charlie Howard 2024 All rights reserved.
 
 A C# based GUI installer for Windows 10/11.
@@ -9,11 +9,16 @@ Gives you the option to install the Computer Repair Centre OEM information, Bing
 
 If run on Windows 10 or Windows 11 it disables hibernation mode and Wi-Fi sense.
 
-If run on Windows 11 it will disable automatic device encryption and add "end task" to the programs in the taskbar.
+If run on Windows 11 it will disable automatic device encryption.
 
 Disables sleep and screen timeout if plugged into AC power during the install and then revert it once it has completed to prevent the computer going to sleep during the install which can cause issues, you also get the option to prevent sleep on AC power permanently with the "Refurb" box.
 
 ### Changelog
+
+**Update 6.1.4.0**
+
+Reverted to 6.1.2.8 as Office was not causing the crash.
+Removed end task in the taskbar as that seemed to be causing issues, I may add it back in when I find out why.
 
 **Update 6.1.3.0**
 

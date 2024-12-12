@@ -31,7 +31,7 @@ namespace PlutoPoint_Installer
     public partial class installerForm : Form
     {
 
-        string updateDate = "11th of December 2024";
+        string updateDate = "12th of December 2024";
 
         public installerForm()
         {
@@ -345,7 +345,7 @@ namespace PlutoPoint_Installer
                     {
                         if (build >= 22000)
                         {
-                            progressBar.Maximum += 9;
+                            progressBar.Maximum += 8;
                             if (romsey == "1") { progressBar.Maximum += 1; };
                             if (highcliffe == "1") { progressBar.Maximum += 1; };
                             installerTextBox.AppendText("This computer is running Windows 11.");
@@ -1006,11 +1006,84 @@ namespace PlutoPoint_Installer
                         wc.DownloadFileCompleted += wc_progressBarStep;
                         await wc.DownloadFileTaskAsync(microsoftOffice2007URL, microsoftOffice2007Filename);
                     }
-                    installerTextBox.AppendText("Moving Microsoft Office 2007 to the Desktop...");
+                    installerTextBox.AppendText("Checking if NanaZip is installed...");
+                    installerTextBox.AppendText(Environment.NewLine);
+                    if (!System.IO.File.Exists(@"C:\Program Files\WindowsApps\40174MouriNaruto.NanaZip_3.1.1080.0_x64__gnj4mf6z9tkrc\NanaZip.Windows.exe"))
+                    {
+                        installerTextBox.AppendText("NanaZip is already installed, proceeding with extraction.");
+                        installerTextBox.AppendText(Environment.NewLine);
+                    }
+                    else
+                    {
+                        installerTextBox.AppendText("NanaZip is not installed and is required for extraction.");
+                        installerTextBox.AppendText(Environment.NewLine);
+                        installerTextBox.AppendText("Downloading NanaZip...");
+                        installerTextBox.AppendText(Environment.NewLine);
+                        using (WebClient wc = new WebClient())
+                        {
+                            await wc.DownloadFileTaskAsync(nanaZipURL, nanaZipFilename);
+                        }                        installerTextBox.AppendText("Installing NanaZip...");
+                        installerTextBox.AppendText(Environment.NewLine);
+                        Process nanaZipInstallProcess = Process.Start(new ProcessStartInfo
+                        {
+                            FileName = "powershell",
+                            Arguments = $"-Command Add-AppxPackage -Path '{nanaZipFilename}'",
+                            UseShellExecute = false,
+                            RedirectStandardOutput = true,
+                            RedirectStandardError = true,
+                            CreateNoWindow = true
+                        });
+                        if (nanaZipInstallProcess != null)
+                        {
+                            await Task.Run(() => nanaZipInstallProcess.WaitForExit());
+                        }
+                        installerTextBox.AppendText("Completed installation of NanaZip.");
+                        installerTextBox.AppendText(Environment.NewLine);
+                    }
+                    installerTextBox.AppendText("Extracting Microsoft Office 2007 to the Desktop...");
                     installerTextBox.AppendText(Environment.NewLine);
                     string microsoftOffice2007ExtractPath = Path.Combine(desktopPath, "Office2007");
-                    Directory.CreateDirectory(microsoftOffice2007ExtractPath);
-                    File.Move(microsoftOffice2007Filename, microsoftOffice2007ExtractPath);
+                    if (!Directory.Exists(microsoftOffice2007ExtractPath))
+                    {
+                        Directory.CreateDirectory(microsoftOffice2007ExtractPath);
+                    }
+                    async Task RunNanaZipExtractionAsync()
+                    {
+                        ProcessStartInfo processStartInfo = new ProcessStartInfo
+                        {
+                            FileName = nanaZipPath,
+                            Arguments = $"x \"{microsoftOffice2007Filename}\" -o\"{microsoftOffice2007ExtractPath}\" -aoa",
+                            UseShellExecute = false,
+                            RedirectStandardOutput = true,
+                            RedirectStandardError = true,
+                            CreateNoWindow = true
+                        };
+                        using (Process process = new Process { StartInfo = processStartInfo })
+                        {
+                            process.Start();
+                            Task<string> outputTask = process.StandardOutput.ReadToEndAsync();
+                            Task<string> errorTask = process.StandardError.ReadToEndAsync();
+                            await Task.Run(() => process.WaitForExit());
+                            string output = await outputTask;
+                            string errors = await errorTask;
+
+                            if (!string.IsNullOrEmpty(output))
+                            {
+                                installerTextBox.AppendText(output);
+                                installerTextBox.AppendText(Environment.NewLine);
+                            }
+
+                            if (!string.IsNullOrEmpty(errors))
+                            {
+                                installerTextBox.AppendText("Errors: ");
+                                installerTextBox.AppendText(errors);
+                                installerTextBox.AppendText(Environment.NewLine);
+                            }
+                        }
+                    }
+                    await RunNanaZipExtractionAsync();
+                    installerTextBox.AppendText("Completed extraction of Microsoft Office 2007.");
+                    installerTextBox.AppendText(Environment.NewLine);
                     progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
                 }
 
@@ -1383,17 +1456,17 @@ namespace PlutoPoint_Installer
                                 progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
                             }
 
-                            installerTextBox.AppendText("Enabling end task in the taskbar...");
-                            installerTextBox.AppendText(Environment.NewLine);
-                            const string endTaskRegPath = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\TaskbarDeveloperSettings";
-                            const string endTaskReg = "TaskbarEndTask";
-                            const int endTaskRegData = 1;
-                            using (RegistryKey registryKey = Registry.CurrentUser.OpenSubKey(endTaskRegPath, writable: true))
-                            {                             
-                            registryKey.SetValue(endTaskReg, endTaskRegData, RegistryValueKind.DWord);
-                            Console.WriteLine($"Set '{endTaskReg}' to {endTaskRegData} in '{endTaskRegPath}'.");
-                            }
-                            progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
+                            //installerTextBox.AppendText("Enabling end task in the taskbar...");
+                            //installerTextBox.AppendText(Environment.NewLine);
+                            //const string endTaskRegPath = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\TaskbarDeveloperSettings";
+                            //const string endTaskReg = "TaskbarEndTask";
+                            //const int endTaskRegData = 1;
+                            //using (RegistryKey registryKey = Registry.CurrentUser.OpenSubKey(endTaskRegPath, writable: true))
+                            //{                             
+                            //registryKey.SetValue(endTaskReg, endTaskRegData, RegistryValueKind.DWord);
+                            //Console.WriteLine($"Set '{endTaskReg}' to {endTaskRegData} in '{endTaskRegPath}'.");
+                            //}
+                            //progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
 
                             installerTextBox.AppendText("Disabling device encryption...");
                             installerTextBox.AppendText(Environment.NewLine);
