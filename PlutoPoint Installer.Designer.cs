@@ -83,7 +83,7 @@ namespace PlutoPoint_Installer
             this.installerTextBox.Name = "installerTextBox";
             this.installerTextBox.ReadOnly = true;
             this.installerTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.installerTextBox.Size = new System.Drawing.Size(521, 360);
+            this.installerTextBox.Size = new System.Drawing.Size(521, 349);
             this.installerTextBox.TabIndex = 1;
             // 
             // progressBar
@@ -179,17 +179,15 @@ namespace PlutoPoint_Installer
             this.versionLabel.Size = new System.Drawing.Size(78, 13);
             this.versionLabel.TabIndex = 9;
             this.versionLabel.TabStop = true;
-            this.versionLabel.Text = "Version 6.1.6.0";
+            this.versionLabel.Text = "Version 6.1.6.1";
             this.versionLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.versionLabel_LinkClicked);
             // 
             // restartCheck
             // 
-            this.restartCheck.Checked = true;
-            this.restartCheck.CheckState = System.Windows.Forms.CheckState.Checked;
             this.restartCheck.Image = global::PlutoPoint_Installer.Properties.Resources.restart;
-            this.restartCheck.Location = new System.Drawing.Point(751, 417);
+            this.restartCheck.Location = new System.Drawing.Point(732, 406);
             this.restartCheck.Name = "restartCheck";
-            this.restartCheck.Size = new System.Drawing.Size(46, 32);
+            this.restartCheck.Size = new System.Drawing.Size(64, 42);
             this.restartCheck.TabIndex = 10;
             this.restartCheck.UseVisualStyleBackColor = true;
             // 
@@ -207,9 +205,9 @@ namespace PlutoPoint_Installer
             // powerCheck
             // 
             this.powerCheck.Image = global::PlutoPoint_Installer.Properties.Resources.power;
-            this.powerCheck.Location = new System.Drawing.Point(699, 417);
+            this.powerCheck.Location = new System.Drawing.Point(662, 406);
             this.powerCheck.Name = "powerCheck";
-            this.powerCheck.Size = new System.Drawing.Size(46, 32);
+            this.powerCheck.Size = new System.Drawing.Size(64, 42);
             this.powerCheck.TabIndex = 12;
             this.powerCheck.UseVisualStyleBackColor = true;
             // 
