@@ -19,6 +19,8 @@ using System.Media;
 using static System.Net.WebRequestMethods;
 using System.Management;
 
+// Copyright © Charlie Howard 2025 All rights reserved.
+
 namespace PlutoPoint_Installer
 {
 
@@ -31,7 +33,7 @@ namespace PlutoPoint_Installer
     public partial class installerForm : Form
     {
 
-        string updateDate = "12th of December 2024";
+        string updateDate = "13th of February 2025";
 
         public installerForm()
         {
@@ -239,7 +241,7 @@ namespace PlutoPoint_Installer
         Uri hpHotkeySupportURL = new Uri("https://files.crchq.net/installer/HPHotkey.zip");
         string hpHotkeySupportFilename = @"C:\Computer Repair Centre\apps\hpHotkeySupport.zip";
 
-        string nanaZipPath = @"C:\Program Files\WindowsApps\40174MouriNaruto.NanaZip_3.1.1080.0_x64__gnj4mf6z9tkrc\NanaZip.Windows.exe";
+        string nanaZipPath = @"C:\Program Files\WindowsApps\40174MouriNaruto.NanaZip_5.0.1252.0_x64__gnj4mf6z9tkrc\NanaZip.Windows.exe";
 
         private static async Task<string> GetPublicIPAddressAsync()
         {
@@ -618,7 +620,7 @@ namespace PlutoPoint_Installer
             {
                 installerTextBox.AppendText("NanaZip is selected.");
                 installerTextBox.AppendText(Environment.NewLine);
-                if (System.IO.File.Exists(@"C:\Program Files\WindowsApps\40174MouriNaruto.NanaZip_3.1.1080.0_x64__gnj4mf6z9tkrc\NanaZip.Windows.exe"))
+                if (System.IO.File.Exists(@"C:\Program Files\WindowsApps\40174MouriNaruto.NanaZip_5.0.1252.0_x64__gnj4mf6z9tkrc\NanaZip.Windows.exe"))
                 {
                     installerTextBox.AppendText("NanaZip is already installed, skipping installation.");
                     installerTextBox.AppendText(Environment.NewLine);
@@ -1008,7 +1010,7 @@ namespace PlutoPoint_Installer
                     }
                     installerTextBox.AppendText("Checking if NanaZip is installed...");
                     installerTextBox.AppendText(Environment.NewLine);
-                    if (!System.IO.File.Exists(@"C:\Program Files\WindowsApps\40174MouriNaruto.NanaZip_3.1.1080.0_x64__gnj4mf6z9tkrc\NanaZip.Windows.exe"))
+                    if (!System.IO.File.Exists(@"C:\Program Files\WindowsApps\40174MouriNaruto.NanaZip_5.0.1252.0_x64__gnj4mf6z9tkrc\NanaZip.Windows.exe"))
                     {
                         installerTextBox.AppendText("NanaZip is already installed, proceeding with extraction.");
                         installerTextBox.AppendText(Environment.NewLine);
@@ -1042,12 +1044,8 @@ namespace PlutoPoint_Installer
                     }
                     installerTextBox.AppendText("Extracting Microsoft Office 2007 to the Desktop...");
                     installerTextBox.AppendText(Environment.NewLine);
-                    string microsoftOffice2007ExtractPath = Path.Combine(desktopPath, "Office2007");
-                    if (!Directory.Exists(microsoftOffice2007ExtractPath))
-                    {
-                        Directory.CreateDirectory(microsoftOffice2007ExtractPath);
-                    }
-                    async Task RunNanaZipExtractionAsync()
+                    string microsoftOffice2007ExtractPath = Path.Combine(desktopPath, "Microsoft Office 2007");
+                    async Task RunNanaZipExtractionOfficeAsync()
                     {
                         ProcessStartInfo processStartInfo = new ProcessStartInfo
                         {
@@ -1058,30 +1056,44 @@ namespace PlutoPoint_Installer
                             RedirectStandardError = true,
                             CreateNoWindow = true
                         };
-                        using (Process process = new Process { StartInfo = processStartInfo })
+                        try
                         {
-                            process.Start();
-                            Task<string> outputTask = process.StandardOutput.ReadToEndAsync();
-                            Task<string> errorTask = process.StandardError.ReadToEndAsync();
-                            await Task.Run(() => process.WaitForExit());
-                            string output = await outputTask;
-                            string errors = await errorTask;
-
-                            if (!string.IsNullOrEmpty(output))
+                            using (Process process = new Process { StartInfo = processStartInfo })
                             {
-                                installerTextBox.AppendText(output);
-                                installerTextBox.AppendText(Environment.NewLine);
-                            }
+                                process.Start();
+                                Task<string> outputTask = process.StandardOutput.ReadToEndAsync();
+                                Task<string> errorTask = process.StandardError.ReadToEndAsync();
 
-                            if (!string.IsNullOrEmpty(errors))
-                            {
-                                installerTextBox.AppendText("Errors: ");
-                                installerTextBox.AppendText(errors);
-                                installerTextBox.AppendText(Environment.NewLine);
+                                await Task.Run(() => process.WaitForExit());
+
+                                string output = await outputTask;
+                                string errors = await errorTask;
+
+                                if (!string.IsNullOrEmpty(output))
+                                {
+                                    installerTextBox.AppendText(output);
+                                    installerTextBox.AppendText(Environment.NewLine);
+                                }
+
+                                if (!string.IsNullOrEmpty(errors))
+                                {
+                                    installerTextBox.AppendText("Errors: ");
+                                    installerTextBox.AppendText(errors);
+                                    installerTextBox.AppendText(Environment.NewLine);
+                                }
                             }
                         }
+                        catch (Exception ex)
+                        {
+                            installerTextBox.AppendText("Exception: " + ex.Message);
+                            installerTextBox.AppendText(Environment.NewLine);
+                        }
                     }
-                    await RunNanaZipExtractionAsync();
+                    if (!Directory.Exists(microsoftOffice2007ExtractPath))
+                    {
+                        Directory.CreateDirectory(microsoftOffice2007ExtractPath);
+                    }
+                    await RunNanaZipExtractionOfficeAsync();
                     installerTextBox.AppendText("Completed extraction of Microsoft Office 2007.");
                     installerTextBox.AppendText(Environment.NewLine);
                     progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
@@ -1268,7 +1280,7 @@ namespace PlutoPoint_Installer
                 }
                 installerTextBox.AppendText("Checking if NanaZip is installed...");
                 installerTextBox.AppendText(Environment.NewLine);
-                if (!System.IO.File.Exists(@"C:\Program Files\WindowsApps\40174MouriNaruto.NanaZip_3.1.1080.0_x64__gnj4mf6z9tkrc\NanaZip.Windows.exe"))
+                if (!System.IO.File.Exists(@"C:\Program Files\WindowsApps\40174MouriNaruto.NanaZip_5.0.1252.0_x64__gnj4mf6z9tkrc\NanaZip.Windows.exe"))
                 {
                     installerTextBox.AppendText("NanaZip is already installed, proceeding with extraction.");
                     installerTextBox.AppendText(Environment.NewLine);
@@ -1304,13 +1316,10 @@ namespace PlutoPoint_Installer
                 installerTextBox.AppendText("Extracing HP Hotkey Support...");
                 installerTextBox.AppendText(Environment.NewLine);
                 string hpHotkeySupportExtractPath = @"C:\Computer Repair Centre\apps\hpHotkeySupport";
-                if (!Directory.Exists(hpHotkeySupportExtractPath))
+
+                async Task RunHpHotkeySupportExtractionAsync()
                 {
-                    Directory.CreateDirectory(hpHotkeySupportExtractPath);
-                }
-                async Task RunNanaZipExtractionAsync()
-                {
-                    ProcessStartInfo processStartInfo = new ProcessStartInfo
+                     ProcessStartInfo processStartInfo = new ProcessStartInfo
                     {
                         FileName = nanaZipPath,
                         Arguments = $"x \"{hpHotkeySupportFilename}\" -o\"{hpHotkeySupportExtractPath}\" -aoa",
@@ -1319,29 +1328,44 @@ namespace PlutoPoint_Installer
                         RedirectStandardError = true,
                         CreateNoWindow = true
                     };
-                    using (Process process = new Process { StartInfo = processStartInfo })
+                    try
                     {
-                        process.Start();
-                        Task<string> outputTask = process.StandardOutput.ReadToEndAsync();
-                        Task<string> errorTask = process.StandardError.ReadToEndAsync();
-                        await Task.Run(() => process.WaitForExit());
-                        string output = await outputTask;
-                        string errors = await errorTask;
-                        if (!string.IsNullOrEmpty(output))
+                        using (Process process = new Process { StartInfo = processStartInfo })
                         {
-                            installerTextBox.AppendText(output);
-                            installerTextBox.AppendText(Environment.NewLine);
-                        }
+                            process.Start();
+                            Task<string> outputTask = process.StandardOutput.ReadToEndAsync();
+                            Task<string> errorTask = process.StandardError.ReadToEndAsync();
 
-                        if (!string.IsNullOrEmpty(errors))
-                        {
-                            installerTextBox.AppendText("Errors: ");
-                            installerTextBox.AppendText(errors);
-                            installerTextBox.AppendText(Environment.NewLine);
+                            await Task.Run(() => process.WaitForExit());
+
+                            string output = await outputTask;
+                            string errors = await errorTask;
+
+                            if (!string.IsNullOrEmpty(output))
+                            {
+                                installerTextBox.AppendText(output);
+                                installerTextBox.AppendText(Environment.NewLine);
+                            }
+
+                            if (!string.IsNullOrEmpty(errors))
+                            {
+                                installerTextBox.AppendText("Errors: ");
+                                installerTextBox.AppendText(errors);
+                                installerTextBox.AppendText(Environment.NewLine);
+                            }
                         }
                     }
+                    catch (Exception ex)
+                    {
+                        installerTextBox.AppendText("Exception: " + ex.Message);
+                        installerTextBox.AppendText(Environment.NewLine);
+                    }
                 }
-                await RunNanaZipExtractionAsync();
+                if (!Directory.Exists(hpHotkeySupportExtractPath))
+                {
+                    Directory.CreateDirectory(hpHotkeySupportExtractPath);
+                }
+                await RunHpHotkeySupportExtractionAsync();
                 installerTextBox.AppendText("Completed extraction of HP Hotkey Support.");
                 installerTextBox.AppendText(Environment.NewLine);
                 progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);

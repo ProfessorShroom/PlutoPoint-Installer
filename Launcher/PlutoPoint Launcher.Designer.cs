@@ -3,6 +3,8 @@ using System.Runtime.Remoting.Activation;
 using System.Security.Policy;
 using System.Windows.Forms;
 
+// Copyright © Charlie Howard 2025 All rights reserved.
+
 namespace PlutoPoint_Launcher
 {
     partial class installerForm

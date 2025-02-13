@@ -2,6 +2,8 @@
 using System.Runtime.Remoting.Activation;
 using System.Security.Policy;
 
+// Copyright © Charlie Howard 2025 All rights reserved.
+
 namespace PlutoPoint_Installer
 {
     partial class installerForm
@@ -177,7 +179,7 @@ namespace PlutoPoint_Installer
             this.versionLabel.Size = new System.Drawing.Size(78, 13);
             this.versionLabel.TabIndex = 9;
             this.versionLabel.TabStop = true;
-            this.versionLabel.Text = "Version 6.1.4.0";
+            this.versionLabel.Text = "Version 6.1.5.0";
             this.versionLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.versionLabel_LinkClicked);
             // 
             // restartCheck

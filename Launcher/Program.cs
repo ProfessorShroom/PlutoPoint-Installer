@@ -5,6 +5,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+// Copyright © Charlie Howard 2025 All rights reserved.
+
 namespace PlutoPoint_Installer
 {
     internal static class Program
