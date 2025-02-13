@@ -40,6 +40,7 @@ namespace PlutoPoint_Installer
             InitializeComponent();
             CheckChristmas();
             CheckHalloween();
+            CheckValentines();
             CheckCharlieBirthday();
             CheckDeanBirthday();
             CheckSteveBirthday();
@@ -52,6 +53,7 @@ namespace PlutoPoint_Installer
 
         string christmas = null;
         string halloween = null;
+        string valentines = null;
         string birthday = null;
         string charlieBirthday = null;
         string deanBirthday = null;
@@ -89,6 +91,7 @@ namespace PlutoPoint_Installer
                 close.ForeColor = System.Drawing.Color.White;
                 restart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(214)))), ((int)(((byte)(0)))), ((int)(((byte)(28)))));
                 installerTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(135)))), ((int)(((byte)(62)))));
+                this.Invalidate();
             }
         }
         private void CheckHalloween()
@@ -99,6 +102,21 @@ namespace PlutoPoint_Installer
                 install.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(252)))), ((int)(((byte)(76)))), ((int)(((byte)(2)))));
                 restart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(252)))), ((int)(((byte)(76)))), ((int)(((byte)(2)))));
                 close.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(252)))), ((int)(((byte)(76)))), ((int)(((byte)(2)))));
+                this.Invalidate();
+            }
+        }
+        private void CheckValentines()
+        {
+            if (DateTime.Now.Month == 2 && DateTime.Now.Day == 14)
+            {
+                valentines = "1";
+                this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(200)))), ((int)(((byte)(213)))));
+                install.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(160)))), ((int)(((byte)(0)))), ((int)(((byte)(28)))));
+                restart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(160)))), ((int)(((byte)(0)))), ((int)(((byte)(28)))));
+                close.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(160)))), ((int)(((byte)(0)))), ((int)(((byte)(28)))));
+                installerTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(200)))), ((int)(((byte)(213)))));
+                installerTextBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(160)))), ((int)(((byte)(0)))), ((int)(((byte)(28)))));
+                this.Invalidate();
             }
         }
         private void CheckCharlieBirthday()
@@ -113,6 +131,7 @@ namespace PlutoPoint_Installer
                 close.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
                 installerTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
                 installerTextBox.ForeColor = System.Drawing.Color.Black;
+                this.Invalidate();
             }
         }
         private void CheckDeanBirthday()
@@ -127,6 +146,7 @@ namespace PlutoPoint_Installer
                 close.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
                 installerTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
                 installerTextBox.ForeColor = System.Drawing.Color.Black;
+                this.Invalidate();
             }
         }
         private void CheckSteveBirthday()
@@ -141,6 +161,7 @@ namespace PlutoPoint_Installer
                 close.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
                 installerTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
                 installerTextBox.ForeColor = System.Drawing.Color.Black;
+                this.Invalidate();
             }
         }
         private void CheckHowardBirthday()
@@ -155,6 +176,7 @@ namespace PlutoPoint_Installer
                 close.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
                 installerTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
                 installerTextBox.ForeColor = System.Drawing.Color.Black;
+                this.Invalidate();
             }
         }
         private void CheckAdamBirthday()
@@ -169,6 +191,7 @@ namespace PlutoPoint_Installer
                 close.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
                 installerTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
                 installerTextBox.ForeColor = System.Drawing.Color.Black;
+                this.Invalidate();
             }
         }
         private void CheckGeethBirthday()
@@ -183,8 +206,108 @@ namespace PlutoPoint_Installer
                 close.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
                 installerTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
                 installerTextBox.ForeColor = System.Drawing.Color.Black;
+                this.Invalidate();
             }
         }
+
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            base.OnPaint(e);
+            if (christmas == "1")
+            {
+                try
+                {
+                    Image heartImage = Properties.Resources.christmasTree;
+                    int newWidth = 100;
+                    int newHeight = 100;
+                    int x = 165;
+                    int y = 320;
+                    e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+                    e.Graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                    e.Graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                    GraphicsState state = e.Graphics.Save();
+                    e.Graphics.TranslateTransform(x + newWidth / 2, y + newHeight / 2);
+                    e.Graphics.TranslateTransform(-(x + newWidth / 2), -(y + newHeight / 2));
+                    e.Graphics.DrawImage(heartImage, new Rectangle(x, y, newWidth, newHeight));
+                    e.Graphics.Restore(state);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error loading image: " + ex.Message);
+                }
+            }
+            if (halloween == "1")
+            {
+                try
+                {
+                    Image heartImage = Properties.Resources.pumpkin;
+                    int newWidth = 100;
+                    int newHeight = 100;
+                    int x = 165;
+                    int y = 320;
+                    e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+                    e.Graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                    e.Graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                    GraphicsState state = e.Graphics.Save();
+                    e.Graphics.TranslateTransform(x + newWidth / 2, y + newHeight / 2);
+                    e.Graphics.TranslateTransform(-(x + newWidth / 2), -(y + newHeight / 2));
+                    e.Graphics.DrawImage(heartImage, new Rectangle(x, y, newWidth, newHeight));
+                    e.Graphics.Restore(state);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error loading image: " + ex.Message);
+                }
+            }
+            if (valentines == "1")
+            {
+                try
+                {
+                    Image heartImage = Properties.Resources.heart;
+                    int newWidth = 100;
+                    int newHeight = 100;
+                    int x = 165;
+                    int y = 320;
+                    e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+                    e.Graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                    e.Graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                    GraphicsState state = e.Graphics.Save();
+                    e.Graphics.TranslateTransform(x + newWidth / 2, y + newHeight / 2);
+                    e.Graphics.RotateTransform(30);
+                    e.Graphics.TranslateTransform(-(x + newWidth / 2), -(y + newHeight / 2));
+                    e.Graphics.DrawImage(heartImage, new Rectangle(x, y, newWidth, newHeight));
+                    e.Graphics.Restore(state);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error loading image: " + ex.Message);
+                }
+            }
+            if (birthday == "1")
+            {
+                try
+                {
+                    Image heartImage = Properties.Resources.present;
+                    int newWidth = 100;
+                    int newHeight = 100;
+                    int x = 165;
+                    int y = 320;
+                    e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+                    e.Graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                    e.Graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                    GraphicsState state = e.Graphics.Save();
+                    e.Graphics.TranslateTransform(x + newWidth / 2, y + newHeight / 2);
+                    e.Graphics.TranslateTransform(-(x + newWidth / 2), -(y + newHeight / 2));
+                    e.Graphics.DrawImage(heartImage, new Rectangle(x, y, newWidth, newHeight));
+                    e.Graphics.Restore(state);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error loading image: " + ex.Message);
+                }
+            }
+        }
+
         string romsey = null;
         string chandlersFord = null;
         string highcliffe = null;
@@ -212,8 +335,6 @@ namespace PlutoPoint_Installer
             }
         }
 
-        Uri cleanupURL = new Uri("https://raw.githubusercontent.com/charliehoward/PlutoPoint-Installer/master/Cleanup/bin/x64/Release/Computer%20Repair%20Centre%20Cleanup.exe");
-        string cleanupFilename = @"C:\Computer Repair Centre\cleanup.exe";
         Uri crcOEMURL = new Uri("https://raw.githubusercontent.com/charliehoward/PlutoPoint-Installer/refs/heads/main/Resources/computerRepairCentre/computerRepairCentreOEM.bmp");
         string crcOEMFilename = @"C:\Computer Repair Centre\oem\computerRepairCentreOEM.bmp";
         Uri anyDeskURL = new Uri("https://files.crchq.net/installer/anyDesk.msi");
@@ -389,6 +510,12 @@ namespace PlutoPoint_Installer
                 installerTextBox.AppendText("Boo! Happy Halloween!");
                 installerTextBox.AppendText(Environment.NewLine);
                 player = new SoundPlayer(Properties.Resources.halloween);
+            }
+            else if (valentines == "1")
+            { 
+                installerTextBox.AppendText("Happy Valentines day!");
+                installerTextBox.AppendText(Environment.NewLine);
+                player = new SoundPlayer(Properties.Resources.valentines);
             }
             else if (birthday == "1")
             {
@@ -1316,8 +1443,7 @@ namespace PlutoPoint_Installer
                 installerTextBox.AppendText("Extracing HP Hotkey Support...");
                 installerTextBox.AppendText(Environment.NewLine);
                 string hpHotkeySupportExtractPath = @"C:\Computer Repair Centre\apps\hpHotkeySupport";
-
-                async Task RunHpHotkeySupportExtractionAsync()
+                async Task RunNanaZipExtractionHPAsync()
                 {
                      ProcessStartInfo processStartInfo = new ProcessStartInfo
                     {
@@ -1365,7 +1491,7 @@ namespace PlutoPoint_Installer
                 {
                     Directory.CreateDirectory(hpHotkeySupportExtractPath);
                 }
-                await RunHpHotkeySupportExtractionAsync();
+                await RunNanaZipExtractionHPAsync();
                 installerTextBox.AppendText("Completed extraction of HP Hotkey Support.");
                 installerTextBox.AppendText(Environment.NewLine);
                 progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);

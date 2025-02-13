@@ -113,6 +113,11 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\images\pumpkin.png" />
+    <None Include="Resources\images\present.png" />
+    <None Include="Resources\images\christmas.png" />
+    <None Include="Resources\images\heart.png" />
+    <None Include="Resources\sounds\valentines.wav" />
     <None Include="Resources\icons\nanaZip.png" />
     <None Include="Resources\icons\microsoftOffice2007.png" />
     <None Include="Resources\icons\mozillaThunderbird.png" />
