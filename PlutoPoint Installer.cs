@@ -33,7 +33,7 @@ namespace PlutoPoint_Installer
     public partial class installerForm : Form
     {
 
-        string updateDate = "13th of February 2025";
+        string updateDate = "14th of February 2025";
 
         public installerForm()
         {
@@ -220,7 +220,7 @@ namespace PlutoPoint_Installer
                     Image heartImage = Properties.Resources.christmasTree;
                     int newWidth = 100;
                     int newHeight = 100;
-                    int x = 165;
+                    int x = 160;
                     int y = 320;
                     e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
                     e.Graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
@@ -243,7 +243,7 @@ namespace PlutoPoint_Installer
                     Image heartImage = Properties.Resources.pumpkin;
                     int newWidth = 100;
                     int newHeight = 100;
-                    int x = 165;
+                    int x = 160;
                     int y = 320;
                     e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
                     e.Graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
@@ -266,7 +266,7 @@ namespace PlutoPoint_Installer
                     Image heartImage = Properties.Resources.heart;
                     int newWidth = 100;
                     int newHeight = 100;
-                    int x = 165;
+                    int x = 160;
                     int y = 320;
                     e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
                     e.Graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
@@ -290,7 +290,7 @@ namespace PlutoPoint_Installer
                     Image heartImage = Properties.Resources.present;
                     int newWidth = 100;
                     int newHeight = 100;
-                    int x = 165;
+                    int x = 160;
                     int y = 320;
                     e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
                     e.Graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
