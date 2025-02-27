@@ -1527,7 +1527,7 @@ namespace PlutoPoint_Installer
                     progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
                 }
             }
-            if (mozillaThunderbirdCheck.Checked)
+            if (vlcMediaPlayerCheck.Checked)
             {
                 installerTextBox.AppendText("📌 VLC Media Player is selected.");
                 installerTextBox.AppendText(Environment.NewLine);
