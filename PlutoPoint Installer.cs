@@ -41,6 +41,7 @@ namespace PlutoPoint_Installer
             CheckChristmas();
             CheckHalloween();
             CheckValentines();
+            CheckPancake();
             CheckCharlieBirthday();
             CheckDeanBirthday();
             CheckSteveBirthday();
@@ -55,6 +56,7 @@ namespace PlutoPoint_Installer
         string halloween = null;
         string valentines = null;
         string birthday = null;
+        string pancake = null;
         string charlieBirthday = null;
         string deanBirthday = null;
         string steveBirthday = null;
@@ -116,6 +118,20 @@ namespace PlutoPoint_Installer
                 close.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(160)))), ((int)(((byte)(0)))), ((int)(((byte)(28)))));
                 installerTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(200)))), ((int)(((byte)(213)))));
                 installerTextBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(160)))), ((int)(((byte)(0)))), ((int)(((byte)(28)))));
+                this.Invalidate();
+            }
+        }
+        private void CheckPancake()
+        {
+            if (DateTime.Now.Month == 3 && DateTime.Now.Day == 12)
+            {
+                pancake = "1";
+                this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(183)))), ((int)(((byte)(139)))));
+                install.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(214)))), ((int)(((byte)(154)))), ((int)(((byte)(108)))));
+                restart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(214)))), ((int)(((byte)(154)))), ((int)(((byte)(108)))));
+                close.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(214)))), ((int)(((byte)(154)))), ((int)(((byte)(108)))));
+                installerTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(183)))), ((int)(((byte)(139)))));
+                installerTextBox.ForeColor = Color.Black;
                 this.Invalidate();
             }
         }
@@ -274,6 +290,29 @@ namespace PlutoPoint_Installer
                     GraphicsState state = e.Graphics.Save();
                     e.Graphics.TranslateTransform(x + newWidth / 2, y + newHeight / 2);
                     e.Graphics.RotateTransform(30);
+                    e.Graphics.TranslateTransform(-(x + newWidth / 2), -(y + newHeight / 2));
+                    e.Graphics.DrawImage(heartImage, new Rectangle(x, y, newWidth, newHeight));
+                    e.Graphics.Restore(state);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error loading image: " + ex.Message);
+                }
+            }
+            if (pancake == "1")
+            {
+                try
+                {
+                    Image heartImage = Properties.Resources.pancake;
+                    int newWidth = 100;
+                    int newHeight = 100;
+                    int x = 160;
+                    int y = 320;
+                    e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+                    e.Graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                    e.Graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                    GraphicsState state = e.Graphics.Save();
+                    e.Graphics.TranslateTransform(x + newWidth / 2, y + newHeight / 2);
                     e.Graphics.TranslateTransform(-(x + newWidth / 2), -(y + newHeight / 2));
                     e.Graphics.DrawImage(heartImage, new Rectangle(x, y, newWidth, newHeight));
                     e.Graphics.Restore(state);
@@ -510,10 +549,18 @@ namespace PlutoPoint_Installer
                 player = new SoundPlayer(Properties.Resources.halloween);
             }
             else if (valentines == "1")
-            { 
+            {
                 installerTextBox.AppendText("Happy Valentines day!");
                 installerTextBox.AppendText(Environment.NewLine);
                 player = new SoundPlayer(Properties.Resources.valentines);
+            }
+            else if (pancake == "1")
+            {
+                installerTextBox.AppendText("It's pancake day!");
+                installerTextBox.AppendText(Environment.NewLine);
+                installerTextBox.AppendText("Don't forget to eat pancakes you fat bastard!");
+                installerTextBox.AppendText(Environment.NewLine);
+                player = new SoundPlayer(Properties.Resources.win98shutdown);
             }
             else if (birthday == "1")
             {
@@ -759,7 +806,7 @@ namespace PlutoPoint_Installer
                     if (files.Length > 0)
                     {
                         nanaZipPath = files[0];
-                        installerTextBox.AppendText($"✅ NanaZip found.");
+                        installerTextBox.AppendText($"✅ NanaZip is already installed.");
                         installerTextBox.AppendText(Environment.NewLine);
                         progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
                     }
@@ -1182,7 +1229,7 @@ namespace PlutoPoint_Installer
                         if (files.Length > 0)
                         {
                             nanaZipPath = files[0];
-                            installerTextBox.AppendText($"✅ NanaZip found.");
+                            installerTextBox.AppendText($"✅ NanaZip is already installed.");
                             installerTextBox.AppendText(Environment.NewLine);
                         }
                     }
@@ -1231,7 +1278,7 @@ namespace PlutoPoint_Installer
                             if (files.Length > 0)
                             {
                                 nanaZipPath = files[0];
-                                installerTextBox.AppendText($"✅ NanaZip found.");
+                                installerTextBox.AppendText($"✅ NanaZip is already installed.");
                                 installerTextBox.AppendText(Environment.NewLine);
                             }
                             else
@@ -1505,7 +1552,7 @@ namespace PlutoPoint_Installer
                     if (files.Length > 0)
                     {
                         nanaZipPath = files[0];
-                        installerTextBox.AppendText($"✅ NanaZip found.");
+                        installerTextBox.AppendText($"✅ NanaZip is already installed.");
                         installerTextBox.AppendText(Environment.NewLine);
                     }
                 }
@@ -1554,7 +1601,7 @@ namespace PlutoPoint_Installer
                         if (files.Length > 0)
                         {
                             nanaZipPath = files[0];
-                            installerTextBox.AppendText($"✅ NanaZip found.");
+                            installerTextBox.AppendText($"✅ NanaZip is already installed.");
                             installerTextBox.AppendText(Environment.NewLine);
                         }
                         else

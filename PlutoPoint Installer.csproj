@@ -113,6 +113,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\images\pancake.png" />
     <None Include="Resources\images\pumpkin.png" />
     <None Include="Resources\images\present.png" />
     <None Include="Resources\images\christmas.png" />
