@@ -54,6 +54,7 @@ namespace PlutoPoint_Installer
             this.steamCheck = new System.Windows.Forms.CheckBox();
             this.nanaZipCheck = new System.Windows.Forms.CheckBox();
             this.microsoftOffice2007Check = new System.Windows.Forms.CheckBox();
+            this.vlcMediaPlayerCheck = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // install
@@ -278,12 +279,22 @@ namespace PlutoPoint_Installer
             this.microsoftOffice2007Check.TabIndex = 19;
             this.microsoftOffice2007Check.UseVisualStyleBackColor = true;
             // 
+            // vlcMediaPlayerCheck
+            // 
+            this.vlcMediaPlayerCheck.Image = global::PlutoPoint_Installer.Properties.Resources.vlcMediaPlayer;
+            this.vlcMediaPlayerCheck.Location = new System.Drawing.Point(75, 295);
+            this.vlcMediaPlayerCheck.Name = "vlcMediaPlayerCheck";
+            this.vlcMediaPlayerCheck.Size = new System.Drawing.Size(57, 50);
+            this.vlcMediaPlayerCheck.TabIndex = 20;
+            this.vlcMediaPlayerCheck.UseVisualStyleBackColor = true;
+            // 
             // installerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(41)))), ((int)(((byte)(41)))));
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.vlcMediaPlayerCheck);
             this.Controls.Add(this.microsoftOffice2007Check);
             this.Controls.Add(this.nanaZipCheck);
             this.Controls.Add(this.steamCheck);
@@ -334,6 +345,7 @@ namespace PlutoPoint_Installer
         private System.Windows.Forms.CheckBox steamCheck;
         private System.Windows.Forms.CheckBox nanaZipCheck;
         private System.Windows.Forms.CheckBox microsoftOffice2007Check;
+        private System.Windows.Forms.CheckBox vlcMediaPlayerCheck;
     }
 }
 

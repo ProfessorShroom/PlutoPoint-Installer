@@ -123,7 +123,7 @@ namespace PlutoPoint_Installer
         }
         private void CheckPancake()
         {
-            if (DateTime.Now.Month == 3 && DateTime.Now.Day == 12)
+            if (DateTime.Now.Month == 3 && DateTime.Now.Day == 12 && DateTime.Now.Year == 2025 || DateTime.Now.Month == 2 && DateTime.Now.Day == 17 && DateTime.Now.Year == 2026 || DateTime.Now.Month == 2 && DateTime.Now.Day == 9 && DateTime.Now.Year == 2027 || DateTime.Now.Month == 2 && DateTime.Now.Day == 29 && DateTime.Now.Year == 2028)
             {
                 pancake = "1";
                 this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(183)))), ((int)(((byte)(139)))));
@@ -400,6 +400,8 @@ namespace PlutoPoint_Installer
         string steamFilename = @"C:\Computer Repair Centre\apps\steam.exe";
         Uri hpHotkeySupportURL = new Uri("https://files.crchq.net/installer/HPHotkey.zip");
         string hpHotkeySupportFilename = @"C:\Computer Repair Centre\apps\hpHotkeySupport.zip";
+        Uri vlcMediaPlayerURL = new Uri("https://files.crchq.net/installer/vlcMediaPlayer.msi");
+        string vlcMediaPlayerFilename = @"C:\Computer Repair Centre\apps\vlcMediaPlayer.msi";
 
         private static async Task<string> GetPublicIPAddressAsync()
         {
@@ -1521,6 +1523,61 @@ namespace PlutoPoint_Installer
 
                     });
                     installerTextBox.AppendText("✅ Completed installation of Steam.");
+                    installerTextBox.AppendText(Environment.NewLine);
+                    progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
+                }
+            }
+            if (mozillaThunderbirdCheck.Checked)
+            {
+                installerTextBox.AppendText("📌 VLC Media Player is selected.");
+                installerTextBox.AppendText(Environment.NewLine);
+                if (System.IO.File.Exists(@"C:\Program Files\VideoLAN\VLC\vlc.exe"))
+                {
+                    installerTextBox.AppendText("✅ VLC Media Player is already installed, skipping installation.");
+                    installerTextBox.AppendText(Environment.NewLine);
+                    progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
+                }
+                else
+                {
+                    installerTextBox.AppendText("🔄 Downloading VLC Media Player...");
+                    installerTextBox.AppendText(Environment.NewLine);
+                    using (WebClient wc = new WebClient())
+                    {
+                        wc.DownloadFileCompleted += wc_progressBarStep;
+                        await wc.DownloadFileTaskAsync(vlcMediaPlayerURL, vlcMediaPlayerFilename);
+                    }
+                    installerTextBox.AppendText("Installing VLC Media Player...");
+                    installerTextBox.AppendText(Environment.NewLine);
+                    await Task.Run(() =>
+                    {
+                        using (Process process = new Process())
+                        {
+                            process.StartInfo.FileName = "msiexec";
+                            process.StartInfo.Arguments = $"/package \"{vlcMediaPlayerFilename}\" /passive";
+                            process.StartInfo.UseShellExecute = false;
+                            process.StartInfo.RedirectStandardOutput = true;
+                            process.StartInfo.RedirectStandardError = true;
+                            process.StartInfo.CreateNoWindow = true;
+                            try
+                            {
+                                process.Start();
+                                string output = process.StandardOutput.ReadToEnd();
+                                string error = process.StandardError.ReadToEnd();
+                                process.WaitForExit();
+                                Console.WriteLine("Output: " + output);
+                                if (!string.IsNullOrEmpty(error))
+                                {
+                                    Console.WriteLine("Error: " + error);
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine("An error occurred: " + ex.Message);
+                            }
+                        }
+
+                    });
+                    installerTextBox.AppendText("✅ Completed installation of VLC Media Player.");
                     installerTextBox.AppendText(Environment.NewLine);
                     progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
                 }
