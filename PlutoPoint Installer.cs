@@ -33,7 +33,7 @@ namespace PlutoPoint_Installer
     public partial class installerForm : Form
     {
 
-        string updateDate = "14th of February 2025";
+        string updateDate = "27th of February 2025";
 
         public installerForm()
         {
@@ -355,14 +355,12 @@ namespace PlutoPoint_Installer
         string mozillaFirefoxFilename = @"C:\Computer Repair Centre\apps\mozillaFirefox.msi";
         Uri mozillaThunderbirdURL = new Uri("https://files.crchq.net/installer/mozillaThunderbird.msi");
         string mozillaThunderbirdFilename = @"C:\Computer Repair Centre\apps\mozillaThunderbird.msi";
-        Uri nanaZipURL = new Uri("https://files.crchq.net/installer/NanaZip_3.1.1080.0.msixbundle");
-        string nanaZipFilename = @"C:\Computer Repair Centre\apps\NanaZip_3.1.1080.0.msixbundle";
+        Uri nanaZipURL = new Uri("https://files.crchq.net/installer/NanaZip_5.0.1263.0.msixbundle");
+        string nanaZipFilename = @"C:\Computer Repair Centre\apps\NanaZip_5.0.1263.0.msixbundle";
         Uri steamURL = new Uri("https://files.crchq.net/installer/steam.exe");
         string steamFilename = @"C:\Computer Repair Centre\apps\steam.exe";
         Uri hpHotkeySupportURL = new Uri("https://files.crchq.net/installer/HPHotkey.zip");
         string hpHotkeySupportFilename = @"C:\Computer Repair Centre\apps\hpHotkeySupport.zip";
-
-        string nanaZipPath = @"C:\Program Files\WindowsApps\40174MouriNaruto.NanaZip_5.0.1252.0_x64__gnj4mf6z9tkrc\NanaZip.Windows.exe";
 
         private static async Task<string> GetPublicIPAddressAsync()
         {
@@ -570,7 +568,7 @@ namespace PlutoPoint_Installer
 
             if (powerCheck.Checked)
             {
-                installerTextBox.AppendText("Disable sleep on AC power is selected.");
+                installerTextBox.AppendText("📌 Disable sleep on AC power is selected.");
                 installerTextBox.AppendText(Environment.NewLine);
                 installerTextBox.AppendText("Disabling sleep and screen timeout while on AC power...");
                 installerTextBox.AppendText(Environment.NewLine);
@@ -587,13 +585,13 @@ namespace PlutoPoint_Installer
 
             if (crcCheck.Checked)
             {
-                installerTextBox.AppendText("Computer Repair Centre OEM information is selected.");
+                installerTextBox.AppendText("📌 Computer Repair Centre OEM information is selected.");
                 installerTextBox.AppendText(Environment.NewLine);
                 if (romsey == "1")
                 {
                     installerTextBox.AppendText("The installer is being run from the Romsey shop.");
                     installerTextBox.AppendText(Environment.NewLine);
-                    installerTextBox.AppendText("Installing Romsey Computer Repair Centre OEM information...");
+                    installerTextBox.AppendText("✅ Installing Romsey Computer Repair Centre OEM information...");
                     installerTextBox.AppendText(Environment.NewLine);
                     using (WebClient wc = new WebClient())
                     {
@@ -644,7 +642,7 @@ namespace PlutoPoint_Installer
                 {
                     installerTextBox.AppendText("The installer is being run from the Chandlers Ford shop.");
                     installerTextBox.AppendText(Environment.NewLine);
-                    installerTextBox.AppendText("Installing Chandlers Ford Computer Repair Centre OEM information...");
+                    installerTextBox.AppendText("✅ Installing Chandlers Ford Computer Repair Centre OEM information...");
                     installerTextBox.AppendText(Environment.NewLine);
                     using (WebClient wc = new WebClient())
                     {
@@ -657,7 +655,7 @@ namespace PlutoPoint_Installer
                     const string manufacturerReg = "Manufacturer";
                     const string manufacturerRegData = "Computer Repair Centre";
                     const string supportHoursReg = "SupportHours";
-                    const string supportHoursData = "Mon-Fri 9:00am-5:00pm - Sat 9:00am-4:00pm";
+                    const string supportHoursData = "Mon-Fri 9:00am-5:30pm - Sat 9:00am-2:00pm";
                     const string supportPhoneReg = "SupportPhone";
                     const string supportPhoneData = "02380 270271";
                     const string supportURLReg = "SupportURL";
@@ -695,7 +693,7 @@ namespace PlutoPoint_Installer
                 {
                     installerTextBox.AppendText("The installer is being run from the Romsey shop.");
                     installerTextBox.AppendText(Environment.NewLine);
-                    installerTextBox.AppendText("Installing Romsey Computer Repair Centre OEM information...");
+                    installerTextBox.AppendText("✅ Installing Romsey Computer Repair Centre OEM information...");
                     installerTextBox.AppendText(Environment.NewLine);
                     using (WebClient wc = new WebClient())
                     {
@@ -745,47 +743,80 @@ namespace PlutoPoint_Installer
             }
             if (nanaZipCheck.Checked)
             {
-                installerTextBox.AppendText("NanaZip is selected.");
+                installerTextBox.AppendText("📌 NanaZip is selected.");
                 installerTextBox.AppendText(Environment.NewLine);
-                if (System.IO.File.Exists(@"C:\Program Files\WindowsApps\40174MouriNaruto.NanaZip_5.0.1252.0_x64__gnj4mf6z9tkrc\NanaZip.Windows.exe"))
+
+                string nanaZipExe = "NanaZip.Windows.exe";
+                string windowsAppsPath = @"C:\Program Files\WindowsApps";
+                string nanaZipPath = null;
+
+                installerTextBox.AppendText("Checking if NanaZip is installed...");
+                installerTextBox.AppendText(Environment.NewLine);
+
+                try
                 {
-                    installerTextBox.AppendText("NanaZip is already installed, skipping installation.");
-                    installerTextBox.AppendText(Environment.NewLine);
-                    progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
+                    var files = Directory.GetFiles(windowsAppsPath, nanaZipExe, SearchOption.AllDirectories);
+                    if (files.Length > 0)
+                    {
+                        nanaZipPath = files[0];
+                        installerTextBox.AppendText($"✅ NanaZip found.");
+                        installerTextBox.AppendText(Environment.NewLine);
+                        progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
+                    }
+                    else
+                    {
+                        installerTextBox.AppendText("❌ NanaZip not found, proceeding with installation.");
+                        installerTextBox.AppendText(Environment.NewLine);
+
+                        installerTextBox.AppendText("🔄 Downloading NanaZip...");
+                        installerTextBox.AppendText(Environment.NewLine);
+
+                        using (WebClient wc = new WebClient())
+                        {
+                            await wc.DownloadFileTaskAsync(nanaZipURL, nanaZipFilename);
+                        }
+
+                        installerTextBox.AppendText("Installing NanaZip...");
+                        installerTextBox.AppendText(Environment.NewLine);
+
+                        Process nanaZipInstallProcess = Process.Start(new ProcessStartInfo
+                        {
+                            FileName = "powershell",
+                            Arguments = $"-Command Add-AppxPackage -Path '{nanaZipFilename}'",
+                            UseShellExecute = false,
+                            RedirectStandardOutput = true,
+                            RedirectStandardError = true,
+                            CreateNoWindow = true
+                        });
+
+                        if (nanaZipInstallProcess != null)
+                        {
+                            await Task.Run(() => nanaZipInstallProcess.WaitForExit());
+                        }
+
+                        installerTextBox.AppendText("✅ Completed installation of NanaZip.");
+                        installerTextBox.AppendText(Environment.NewLine);
+                        progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
+                    }
                 }
-                else
+                catch (UnauthorizedAccessException)
                 {
-                    using (WebClient wc = new WebClient())
-                    {
-                        await wc.DownloadFileTaskAsync(nanaZipURL, nanaZipFilename);
-                    }
-                    installerTextBox.AppendText("Installing NanaZip...");
+                    installerTextBox.AppendText("⚠️ Access denied to WindowsApps. Try running as Administrator.");
                     installerTextBox.AppendText(Environment.NewLine);
-                    Process nanaZipInstallProcess = Process.Start(new ProcessStartInfo
-                    {
-                        FileName = "powershell",
-                        Arguments = $"-Command Add-AppxPackage -Path '{nanaZipFilename}'",
-                        UseShellExecute = false,
-                        RedirectStandardOutput = true,
-                        RedirectStandardError = true,
-                        CreateNoWindow = true
-                    });
-                    if (nanaZipInstallProcess != null)
-                    {
-                        await Task.Run(() => nanaZipInstallProcess.WaitForExit());
-                    }
-                    installerTextBox.AppendText("Completed installation of NanaZip.");
-                    installerTextBox.AppendText(Environment.NewLine); ;
-                    progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
+                }
+                catch (Exception ex)
+                {
+                    installerTextBox.AppendText("❌ Error: " + ex.Message);
+                    installerTextBox.AppendText(Environment.NewLine);
                 }
             }
             if (anyDeskCheck.Checked)
             {
-                installerTextBox.AppendText("AnyDesk is selected.");
+                installerTextBox.AppendText("📌 AnyDesk is selected.");
                 installerTextBox.AppendText(Environment.NewLine);
                 if (System.IO.File.Exists(@"C:\Program Files (x86)\AnyDeskMSI\AnyDeskMSI.exe"))
                 {
-                    installerTextBox.AppendText("AnyDesk is already installed, skipping installation.");
+                    installerTextBox.AppendText("✅ AnyDesk is already installed, skipping installation.");
                     installerTextBox.AppendText(Environment.NewLine);
                     progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
                 }
@@ -797,7 +828,7 @@ namespace PlutoPoint_Installer
                 }
                 else
                 {
-                    installerTextBox.AppendText("Downloading AnyDesk...");
+                    installerTextBox.AppendText("🔄 Downloading AnyDesk...");
                     installerTextBox.AppendText(Environment.NewLine);
                     using (WebClient wc = new WebClient())
                     {
@@ -834,24 +865,24 @@ namespace PlutoPoint_Installer
                             }
                         }
                     });
-                    installerTextBox.AppendText("Completed installation of AnyDesk.");
+                    installerTextBox.AppendText("✅ Completed installation of AnyDesk.");
                     installerTextBox.AppendText(Environment.NewLine); ;
                     progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
                 }
             }
             if (bingWallpapersCheck.Checked)
             {
-                installerTextBox.AppendText("Bing Wallpapers is selected.");
+                installerTextBox.AppendText("📌 Bing Wallpapers is selected.");
                 installerTextBox.AppendText(Environment.NewLine);
                 if (System.IO.File.Exists(bingWallpaperAppPath))
                 {
-                    installerTextBox.AppendText("Bing Wallpapers is already installed, skipping installation.");
+                    installerTextBox.AppendText("✅ Bing Wallpapers is already installed, skipping installation.");
                     installerTextBox.AppendText(Environment.NewLine);
                     progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
                 }
                 else
                 {
-                    installerTextBox.AppendText("Downloading Bing Wallpapers...");
+                    installerTextBox.AppendText("🔄 Downloading Bing Wallpapers...");
                     installerTextBox.AppendText(Environment.NewLine);
                     using (WebClient wc = new WebClient())
                     {
@@ -888,24 +919,24 @@ namespace PlutoPoint_Installer
                             }
                         }
                     });
-                    installerTextBox.AppendText("Completed installation of Bing Wallpapers.");
+                    installerTextBox.AppendText("✅ Completed installation of Bing Wallpapers.");
                     installerTextBox.AppendText(Environment.NewLine); ;
                     progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
                 }
             }
             if (bitDefenderCheck.Checked)
             {
-                installerTextBox.AppendText("BitDefender is selected.");
+                installerTextBox.AppendText("📌 BitDefender is selected.");
                 installerTextBox.AppendText(Environment.NewLine);
                 if (System.IO.File.Exists(@"C:\Program Files\Bitdefender\Bitdefender Security App\seccenter.exe"))
                 {
-                    installerTextBox.AppendText("BitDefender is already installed, skipping installation.");
+                    installerTextBox.AppendText("✅ BitDefender is already installed, skipping installation.");
                     installerTextBox.AppendText(Environment.NewLine);
                     progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
                 }
                 else
                 {
-                    installerTextBox.AppendText("Downloading BitDefender...");
+                    installerTextBox.AppendText("🔄 Downloading BitDefender...");
                     installerTextBox.AppendText(Environment.NewLine);
                     using (WebClient wc = new WebClient())
                     {
@@ -945,24 +976,24 @@ namespace PlutoPoint_Installer
                         }
 
                     });
-                    installerTextBox.AppendText("Completed installation of BitDefender.");
+                    installerTextBox.AppendText("✅ Completed installation of BitDefender.");
                     installerTextBox.AppendText(Environment.NewLine);
                     progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
                 }
             }
             if (discordCheck.Checked)
             {
-                installerTextBox.AppendText("Discord is selected.");
+                installerTextBox.AppendText("📌 Discord is selected.");
                 installerTextBox.AppendText(Environment.NewLine);
                 if (System.IO.File.Exists(discordAppPath))
                 {
-                    installerTextBox.AppendText("Discord is already installed, skipping installation.");
+                    installerTextBox.AppendText("✅ Discord is already installed, skipping installation.");
                     installerTextBox.AppendText(Environment.NewLine);
                     progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
                 }
                 else
                 {
-                    installerTextBox.AppendText("Downloading Discord...");
+                    installerTextBox.AppendText("🔄 Downloading Discord...");
                     installerTextBox.AppendText(Environment.NewLine);
                     using (WebClient wc = new WebClient())
                     {
@@ -1002,24 +1033,24 @@ namespace PlutoPoint_Installer
                         }
 
                     });
-                    installerTextBox.AppendText("Completed installation of Discord.");
+                    installerTextBox.AppendText("✅ Completed installation of Discord.");
                     installerTextBox.AppendText(Environment.NewLine);
                     progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
                 }
             }
             if (googleChromeCheck.Checked)
             {
-                installerTextBox.AppendText("Google Chrome is selected.");
+                installerTextBox.AppendText("📌 Google Chrome is selected.");
                 installerTextBox.AppendText(Environment.NewLine);
                 if (System.IO.File.Exists(@"C:\Program Files\Google\Chrome\Application\chrome.exe"))
                 {
-                    installerTextBox.AppendText("Google Chrome is already installed, skipping installation.");
+                    installerTextBox.AppendText("✅ Google Chrome is already installed, skipping installation.");
                     installerTextBox.AppendText(Environment.NewLine);
                     progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
                 }
                 else
                 {
-                    installerTextBox.AppendText("Downloading Google Chrome...");
+                    installerTextBox.AppendText("🔄 Downloading Google Chrome...");
                     installerTextBox.AppendText(Environment.NewLine);
                     using (WebClient wc = new WebClient())
                     {
@@ -1056,24 +1087,24 @@ namespace PlutoPoint_Installer
                             }
                         }
                     });
-                    installerTextBox.AppendText("Completed installation of Google Chrome.");
+                    installerTextBox.AppendText("✅ Completed installation of Google Chrome.");
                     installerTextBox.AppendText(Environment.NewLine); ;
                     progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
                 }
             }
             if (libreOfficeCheck.Checked)
             {
-                installerTextBox.AppendText("LibreOffice is selected.");
+                installerTextBox.AppendText("📌 LibreOffice is selected.");
                 installerTextBox.AppendText(Environment.NewLine);
                 if (System.IO.File.Exists(@"C:\Program Files\LibreOffice\program\soffice.exe"))
                 {
-                    installerTextBox.AppendText("LibreOffice is already installed, skipping installation.");
+                    installerTextBox.AppendText("✅ LibreOffice is already installed, skipping installation.");
                     installerTextBox.AppendText(Environment.NewLine);
                     progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
                 }
                 else
                 {
-                    installerTextBox.AppendText("Downloading LibreOffice...");
+                    installerTextBox.AppendText("🔄 Downloading LibreOffice...");
                     installerTextBox.AppendText(Environment.NewLine);
                     using (WebClient wc = new WebClient())
                     {
@@ -1110,49 +1141,72 @@ namespace PlutoPoint_Installer
                             }
                         }
                     });
-                    installerTextBox.AppendText("Completed installation of LibreOffice.");
+                    installerTextBox.AppendText("✅ Completed installation of LibreOffice.");
                     installerTextBox.AppendText(Environment.NewLine);
                     progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
                 }
             }
             if (microsoftOffice2007Check.Checked)
             {
-                installerTextBox.AppendText("Microsoft Office 2007 is selected.");
+                installerTextBox.AppendText("📌 Microsoft Office 2007 is selected.");
                 installerTextBox.AppendText(Environment.NewLine);
 
-                if (System.IO.File.Exists(@"C:\Program Files (x86)\Microsoft Office\Office12\WINWORD.EXE"))
+                string officePath = @"C:\Program Files (x86)\Microsoft Office\Office12\WINWORD.EXE";
+                string windowsAppsPath = @"C:\Program Files\WindowsApps";
+                string nanaZipExe = "NanaZip.Windows.exe";
+                string nanaZipPath = null;
+
+                if (File.Exists(officePath))
                 {
-                    installerTextBox.AppendText("Microsoft Office 2007 is already installed, skipping installation.");
+                    installerTextBox.AppendText("✅ Microsoft Office 2007 is already installed, skipping installation.");
                     installerTextBox.AppendText(Environment.NewLine);
                     progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
                 }
                 else
                 {
-                    installerTextBox.AppendText("Downloading Microsoft Office 2007...");
+                    installerTextBox.AppendText("🔄 Downloading Microsoft Office 2007...");
                     installerTextBox.AppendText(Environment.NewLine);
+
                     using (WebClient wc = new WebClient())
                     {
                         wc.DownloadFileCompleted += wc_progressBarStep;
                         await wc.DownloadFileTaskAsync(microsoftOffice2007URL, microsoftOffice2007Filename);
                     }
-                    installerTextBox.AppendText("Checking if NanaZip is installed...");
+
+                    installerTextBox.AppendText("🔎 Checking if NanaZip is installed...");
                     installerTextBox.AppendText(Environment.NewLine);
-                    if (!System.IO.File.Exists(@"C:\Program Files\WindowsApps\40174MouriNaruto.NanaZip_5.0.1252.0_x64__gnj4mf6z9tkrc\NanaZip.Windows.exe"))
+
+                    try
                     {
-                        installerTextBox.AppendText("NanaZip is already installed, proceeding with extraction.");
+                        var files = Directory.GetFiles(windowsAppsPath, nanaZipExe, SearchOption.AllDirectories);
+                        if (files.Length > 0)
+                        {
+                            nanaZipPath = files[0];
+                            installerTextBox.AppendText($"✅ NanaZip found.");
+                            installerTextBox.AppendText(Environment.NewLine);
+                        }
+                    }
+                    catch (UnauthorizedAccessException)
+                    {
+                        installerTextBox.AppendText("⚠️ Access denied to WindowsApps. Try running as Administrator.");
                         installerTextBox.AppendText(Environment.NewLine);
                     }
-                    else
+
+                    if (string.IsNullOrEmpty(nanaZipPath))
                     {
-                        installerTextBox.AppendText("NanaZip is not installed and is required for extraction.");
+                        installerTextBox.AppendText("🚀 NanaZip is not installed and is required for extraction.");
                         installerTextBox.AppendText(Environment.NewLine);
-                        installerTextBox.AppendText("Downloading NanaZip...");
+                        installerTextBox.AppendText("📥 Downloading NanaZip...");
                         installerTextBox.AppendText(Environment.NewLine);
+
                         using (WebClient wc = new WebClient())
                         {
                             await wc.DownloadFileTaskAsync(nanaZipURL, nanaZipFilename);
-                        }                        installerTextBox.AppendText("Installing NanaZip...");
+                        }
+
+                        installerTextBox.AppendText("📦 Installing NanaZip...");
                         installerTextBox.AppendText(Environment.NewLine);
+
                         Process nanaZipInstallProcess = Process.Start(new ProcessStartInfo
                         {
                             FileName = "powershell",
@@ -1162,16 +1216,49 @@ namespace PlutoPoint_Installer
                             RedirectStandardError = true,
                             CreateNoWindow = true
                         });
+
                         if (nanaZipInstallProcess != null)
                         {
                             await Task.Run(() => nanaZipInstallProcess.WaitForExit());
                         }
-                        installerTextBox.AppendText("Completed installation of NanaZip.");
+
+                        installerTextBox.AppendText("✅ NanaZip installation completed.");
                         installerTextBox.AppendText(Environment.NewLine);
+
+                        try
+                        {
+                            var files = Directory.GetFiles(windowsAppsPath, nanaZipExe, SearchOption.AllDirectories);
+                            if (files.Length > 0)
+                            {
+                                nanaZipPath = files[0];
+                                installerTextBox.AppendText($"✅ NanaZip found.");
+                                installerTextBox.AppendText(Environment.NewLine);
+                            }
+                            else
+                            {
+                                installerTextBox.AppendText("❌ Failed to find NanaZip after installation.");
+                                installerTextBox.AppendText(Environment.NewLine);
+                                return;
+                            }
+                        }
+                        catch (UnauthorizedAccessException)
+                        {
+                            installerTextBox.AppendText("⚠️ Access denied while searching for NanaZip after installation.");
+                            installerTextBox.AppendText(Environment.NewLine);
+                            return;
+                        }
                     }
-                    installerTextBox.AppendText("Extracting Microsoft Office 2007 to the Desktop...");
-                    installerTextBox.AppendText(Environment.NewLine);
+
                     string microsoftOffice2007ExtractPath = Path.Combine(desktopPath, "Microsoft Office 2007");
+
+                    if (!Directory.Exists(microsoftOffice2007ExtractPath))
+                    {
+                        Directory.CreateDirectory(microsoftOffice2007ExtractPath);
+                    }
+
+                    installerTextBox.AppendText("📂 Extracting Microsoft Office 2007 to Desktop...");
+                    installerTextBox.AppendText(Environment.NewLine);
+
                     async Task RunNanaZipExtractionOfficeAsync()
                     {
                         ProcessStartInfo processStartInfo = new ProcessStartInfo
@@ -1183,6 +1270,7 @@ namespace PlutoPoint_Installer
                             RedirectStandardError = true,
                             CreateNoWindow = true
                         };
+
                         try
                         {
                             using (Process process = new Process { StartInfo = processStartInfo })
@@ -1204,42 +1292,38 @@ namespace PlutoPoint_Installer
 
                                 if (!string.IsNullOrEmpty(errors))
                                 {
-                                    installerTextBox.AppendText("Errors: ");
-                                    installerTextBox.AppendText(errors);
+                                    installerTextBox.AppendText("⚠️ Errors: " + errors);
                                     installerTextBox.AppendText(Environment.NewLine);
                                 }
                             }
                         }
                         catch (Exception ex)
                         {
-                            installerTextBox.AppendText("Exception: " + ex.Message);
+                            installerTextBox.AppendText("❌ Exception: " + ex.Message);
                             installerTextBox.AppendText(Environment.NewLine);
                         }
                     }
-                    if (!Directory.Exists(microsoftOffice2007ExtractPath))
-                    {
-                        Directory.CreateDirectory(microsoftOffice2007ExtractPath);
-                    }
+
                     await RunNanaZipExtractionOfficeAsync();
-                    installerTextBox.AppendText("Completed extraction of Microsoft Office 2007.");
+
+                    installerTextBox.AppendText("✅ Completed extraction of Microsoft Office 2007.");
                     installerTextBox.AppendText(Environment.NewLine);
                     progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
                 }
-
             }
             if (mozillaFirefoxCheck.Checked)
             {
-                installerTextBox.AppendText("Mozilla Firefox is selected.");
+                installerTextBox.AppendText("📌 Mozilla Firefox is selected.");
                 installerTextBox.AppendText(Environment.NewLine);
                 if (System.IO.File.Exists(@"C:\Program Files\Mozilla Firefox\firefox.exe"))
                 {
-                    installerTextBox.AppendText("Mozilla Firefox is already installed, skipping installation.");
+                    installerTextBox.AppendText("✅ Mozilla Firefox is already installed, skipping installation.");
                     installerTextBox.AppendText(Environment.NewLine);
                     progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
                 }
                 else
                 {
-                    installerTextBox.AppendText("Downloading Mozilla Firefox...");
+                    installerTextBox.AppendText("🔄 Downloading Mozilla Firefox...");
                     installerTextBox.AppendText(Environment.NewLine);
                     using (WebClient wc = new WebClient())
                     {
@@ -1277,24 +1361,24 @@ namespace PlutoPoint_Installer
                         }
 
                     });
-                    installerTextBox.AppendText("Completed installation of Mozilla Firefox.");
+                    installerTextBox.AppendText("✅ Completed installation of Mozilla Firefox.");
                     installerTextBox.AppendText(Environment.NewLine);
                     progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
                 }
             }
             if (mozillaThunderbirdCheck.Checked)
             {
-                installerTextBox.AppendText("Mozilla Thunderbird is selected.");
+                installerTextBox.AppendText("📌 Mozilla Thunderbird is selected.");
                 installerTextBox.AppendText(Environment.NewLine);
                 if (System.IO.File.Exists(@"C:\Program Files\Mozilla Thunderbird\thunderbird.exe"))
                 {
-                    installerTextBox.AppendText("Mozilla Thunderbird is already installed, skipping installation.");
+                    installerTextBox.AppendText("✅ Mozilla Thunderbird is already installed, skipping installation.");
                     installerTextBox.AppendText(Environment.NewLine);
                     progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
                 }
                 else
                 {
-                    installerTextBox.AppendText("Downloading Mozilla Thunderbird...");
+                    installerTextBox.AppendText("🔄 Downloading Mozilla Thunderbird...");
                     installerTextBox.AppendText(Environment.NewLine);
                     using (WebClient wc = new WebClient())
                     {
@@ -1332,24 +1416,24 @@ namespace PlutoPoint_Installer
                         }
 
                     });
-                    installerTextBox.AppendText("Completed installation of Mozilla Thunderbird.");
+                    installerTextBox.AppendText("✅ Completed installation of Mozilla Thunderbird.");
                     installerTextBox.AppendText(Environment.NewLine);
                     progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
                 }
             }
             if (steamCheck.Checked)
             {
-                installerTextBox.AppendText("Steam is selected.");
+                installerTextBox.AppendText("📌 Steam is selected.");
                 installerTextBox.AppendText(Environment.NewLine);
                 if (System.IO.File.Exists(@"C:\Program Files (x86)\Steam\Steam.exe"))
                 {
-                    installerTextBox.AppendText("Steam is already installed, skipping installation.");
+                    installerTextBox.AppendText("✅ Steam is already installed, skipping installation.");
                     installerTextBox.AppendText(Environment.NewLine);
                     progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
                 }
                 else
                 {
-                    installerTextBox.AppendText("Downloading Steam...");
+                    installerTextBox.AppendText("🔄 Downloading Steam...");
                     installerTextBox.AppendText(Environment.NewLine);
                     using (WebClient wc = new WebClient())
                     {
@@ -1389,41 +1473,63 @@ namespace PlutoPoint_Installer
                         }
 
                     });
-                    installerTextBox.AppendText("Completed installation of Steam.");
+                    installerTextBox.AppendText("✅ Completed installation of Steam.");
                     installerTextBox.AppendText(Environment.NewLine);
                     progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
                 }
             }
             if (hpEliteBook == "1")
             {
-                installerTextBox.AppendText("The installer is being run on a HP EliteBook.");
+                installerTextBox.AppendText("The installer is being run on an HP EliteBook.");
                 installerTextBox.AppendText(Environment.NewLine);
-                installerTextBox.AppendText("Downloading HP Hotkey Support...");
+
+                installerTextBox.AppendText("🔄 Downloading HP Hotkey Support...");
                 installerTextBox.AppendText(Environment.NewLine);
+
                 using (WebClient wc = new WebClient())
                 {
                     wc.DownloadFileCompleted += wc_progressBarStep;
                     await wc.DownloadFileTaskAsync(hpHotkeySupportURL, hpHotkeySupportFilename);
                 }
+
                 installerTextBox.AppendText("Checking if NanaZip is installed...");
                 installerTextBox.AppendText(Environment.NewLine);
-                if (!System.IO.File.Exists(@"C:\Program Files\WindowsApps\40174MouriNaruto.NanaZip_5.0.1252.0_x64__gnj4mf6z9tkrc\NanaZip.Windows.exe"))
+
+                string windowsAppsPath = @"C:\Program Files\WindowsApps";
+                string nanaZipExe = "NanaZip.Windows.exe";
+                string nanaZipPath = null;
+
+                try
                 {
-                    installerTextBox.AppendText("NanaZip is already installed, proceeding with extraction.");
+                    var files = Directory.GetFiles(windowsAppsPath, nanaZipExe, SearchOption.AllDirectories);
+                    if (files.Length > 0)
+                    {
+                        nanaZipPath = files[0];
+                        installerTextBox.AppendText($"✅ NanaZip found.");
+                        installerTextBox.AppendText(Environment.NewLine);
+                    }
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    installerTextBox.AppendText("⚠️ Access denied to WindowsApps. Try running as Administrator.");
                     installerTextBox.AppendText(Environment.NewLine);
                 }
-                else
+
+                if (string.IsNullOrEmpty(nanaZipPath))
                 {
                     installerTextBox.AppendText("NanaZip is not installed and is required for extraction.");
                     installerTextBox.AppendText(Environment.NewLine);
-                    installerTextBox.AppendText("Downloading NanaZip...");
+                    installerTextBox.AppendText("🔄 Downloading NanaZip...");
                     installerTextBox.AppendText(Environment.NewLine);
+
                     using (WebClient wc = new WebClient())
                     {
                         await wc.DownloadFileTaskAsync(nanaZipURL, nanaZipFilename);
                     }
+
                     installerTextBox.AppendText("Installing NanaZip...");
                     installerTextBox.AppendText(Environment.NewLine);
+
                     Process nanaZipInstallProcess = Process.Start(new ProcessStartInfo
                     {
                         FileName = "powershell",
@@ -1433,19 +1539,47 @@ namespace PlutoPoint_Installer
                         RedirectStandardError = true,
                         CreateNoWindow = true
                     });
+
                     if (nanaZipInstallProcess != null)
                     {
                         await Task.Run(() => nanaZipInstallProcess.WaitForExit());
                     }
-                    installerTextBox.AppendText("Completed installation of NanaZip.");
+
+                    installerTextBox.AppendText("✅ Completed installation of NanaZip.");
                     installerTextBox.AppendText(Environment.NewLine);
+
+                    try
+                    {
+                        var files = Directory.GetFiles(windowsAppsPath, nanaZipExe, SearchOption.AllDirectories);
+                        if (files.Length > 0)
+                        {
+                            nanaZipPath = files[0];
+                            installerTextBox.AppendText($"✅ NanaZip found.");
+                            installerTextBox.AppendText(Environment.NewLine);
+                        }
+                        else
+                        {
+                            installerTextBox.AppendText("❌ Failed to find NanaZip after installation.");
+                            installerTextBox.AppendText(Environment.NewLine);
+                            return;
+                        }
+                    }
+                    catch (UnauthorizedAccessException)
+                    {
+                        installerTextBox.AppendText("⚠️ Access denied while searching for NanaZip after installation.");
+                        installerTextBox.AppendText(Environment.NewLine);
+                        return;
+                    }
                 }
-                installerTextBox.AppendText("Extracing HP Hotkey Support...");
+
+                installerTextBox.AppendText("📂 Extracting HP Hotkey Support...");
                 installerTextBox.AppendText(Environment.NewLine);
+
                 string hpHotkeySupportExtractPath = @"C:\Computer Repair Centre\apps\hpHotkeySupport";
+
                 async Task RunNanaZipExtractionHPAsync()
                 {
-                     ProcessStartInfo processStartInfo = new ProcessStartInfo
+                    ProcessStartInfo processStartInfo = new ProcessStartInfo
                     {
                         FileName = nanaZipPath,
                         Arguments = $"x \"{hpHotkeySupportFilename}\" -o\"{hpHotkeySupportExtractPath}\" -aoa",
@@ -1454,6 +1588,7 @@ namespace PlutoPoint_Installer
                         RedirectStandardError = true,
                         CreateNoWindow = true
                     };
+
                     try
                     {
                         using (Process process = new Process { StartInfo = processStartInfo })
@@ -1475,8 +1610,7 @@ namespace PlutoPoint_Installer
 
                             if (!string.IsNullOrEmpty(errors))
                             {
-                                installerTextBox.AppendText("Errors: ");
-                                installerTextBox.AppendText(errors);
+                                installerTextBox.AppendText("Errors: " + errors);
                                 installerTextBox.AppendText(Environment.NewLine);
                             }
                         }
@@ -1487,47 +1621,31 @@ namespace PlutoPoint_Installer
                         installerTextBox.AppendText(Environment.NewLine);
                     }
                 }
+
                 if (!Directory.Exists(hpHotkeySupportExtractPath))
                 {
                     Directory.CreateDirectory(hpHotkeySupportExtractPath);
                 }
+
                 await RunNanaZipExtractionHPAsync();
-                installerTextBox.AppendText("Completed extraction of HP Hotkey Support.");
+
+                installerTextBox.AppendText("✅ Completed extraction of HP Hotkey Support.");
                 installerTextBox.AppendText(Environment.NewLine);
                 progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
+
                 installerTextBox.AppendText("Installing HP Hotkey Support...");
                 installerTextBox.AppendText(Environment.NewLine);
+
                 async Task InstallHPHotkeySupport()
                 {
-                    try
-                    {
-                        ProcessStartInfo processInfo = new ProcessStartInfo
-                        {
-                            FileName = @"C:\Computer Repair Centre\apps\hpHotkeySupport\SP103615\src\install.cmd",
-                            UseShellExecute = false
-                        };
-                        using (Process process = Process.Start(processInfo))
-                        {
-                            if (process != null)
-                            {
-                                await Task.Run(() => process.WaitForExit());
-                                Console.WriteLine("Process completed successfully.");
-                            }
-                            else
-                            {
-                                Console.WriteLine("Failed to start the process.");
-                            }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine("An error occurred: " + ex.Message);
-                    }
+                    await StartProcessAsync(@"C:\Computer Repair Centre\apps\hpHotkeySupport\SP103615\src\install.cmd");
                 }
-                async Task InstallHPramework()
+
+                async Task InstallHPFramework()
                 {
                     await StartProcessAsync(@"C:\Computer Repair Centre\SP103615\src\install.cmd");
                 }
+
                 async Task StartProcessAsync(string filePath)
                 {
                     try
@@ -1537,34 +1655,41 @@ namespace PlutoPoint_Installer
                             FileName = filePath,
                             UseShellExecute = false
                         };
+
                         using (Process process = Process.Start(processInfo))
                         {
                             if (process != null)
                             {
                                 await Task.Run(() => process.WaitForExit());
-                                Console.WriteLine("Process completed successfully.");
+                                installerTextBox.AppendText($"Process completed successfully for {filePath}.");
+                                installerTextBox.AppendText(Environment.NewLine);
                             }
                             else
                             {
-                                Console.WriteLine("Failed to start the process.");
+                                installerTextBox.AppendText($"❌ Failed to start the process: {filePath}.");
+                                installerTextBox.AppendText(Environment.NewLine);
                             }
                         }
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine("An error occurred: " + ex.Message);
+                        installerTextBox.AppendText("An error occurred: " + ex.Message);
+                        installerTextBox.AppendText(Environment.NewLine);
                     }
                 }
+
                 await InstallHPHotkeySupport();
                 progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
+
                 installerTextBox.AppendText("Installing HP Framework...");
                 installerTextBox.AppendText(Environment.NewLine);
-                await InstallHPramework();
+
+                await InstallHPFramework();
                 progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
-                installerTextBox.AppendText("Completed installation of HP Hotkey Support.");
+
+                installerTextBox.AppendText("✅ Completed installation of HP Hotkey Support.");
                 installerTextBox.AppendText(Environment.NewLine);
             }
-
             using (RegistryKey key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion"))
             {
                 if (key != null)
@@ -1576,7 +1701,7 @@ namespace PlutoPoint_Installer
                         {
                             if (romsey == "1") 
                             {
-                                installerTextBox.AppendText("Aligning the taskbar to the left...");
+                                installerTextBox.AppendText("✅ Aligning the taskbar to the left...");
                                 installerTextBox.AppendText(Environment.NewLine);
                                 const string taskbarRegPath = @"SOFTWARE\microsoft\windows\currentversion\explorer\advanced";
                                 const string taskbarReg = "TaskbarAl";
@@ -1593,7 +1718,7 @@ namespace PlutoPoint_Installer
                             }
                             else if (highcliffe == "1")
                             {
-                                installerTextBox.AppendText("Aligning the taskbar to the left...");
+                                installerTextBox.AppendText("✅ Aligning the taskbar to the left...");
                                 installerTextBox.AppendText(Environment.NewLine);
                                 const string taskbarRegPath = @"SOFTWARE\microsoft\windows\currentversion\explorer\advanced";
                                 const string taskbarReg = "TaskbarAl";
@@ -1605,20 +1730,7 @@ namespace PlutoPoint_Installer
                                 }
                                 progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
                             }
-
-                            //installerTextBox.AppendText("Enabling end task in the taskbar...");
-                            //installerTextBox.AppendText(Environment.NewLine);
-                            //const string endTaskRegPath = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\TaskbarDeveloperSettings";
-                            //const string endTaskReg = "TaskbarEndTask";
-                            //const int endTaskRegData = 1;
-                            //using (RegistryKey registryKey = Registry.CurrentUser.OpenSubKey(endTaskRegPath, writable: true))
-                            //{                             
-                            //registryKey.SetValue(endTaskReg, endTaskRegData, RegistryValueKind.DWord);
-                            //Console.WriteLine($"Set '{endTaskReg}' to {endTaskRegData} in '{endTaskRegPath}'.");
-                            //}
-                            //progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
-
-                            installerTextBox.AppendText("Disabling device encryption...");
+                            installerTextBox.AppendText("✅ Disabling device encryption...");
                             installerTextBox.AppendText(Environment.NewLine);
                             const string bitLockerRegPath = @"SYSTEM\CurrentControlSet\Control\BitLocker";
                             const string bitLockerReg = "PreventDeviceEncryption";
@@ -1630,7 +1742,7 @@ namespace PlutoPoint_Installer
                             }
                             progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
 
-                            installerTextBox.AppendText("Disabling fastboot mode...");
+                            installerTextBox.AppendText("✅ Disabling fastboot mode...");
                             installerTextBox.AppendText(Environment.NewLine);
                             const string hiberbootRegPath = @"SYSTEM\CurrentControlSet\Control\Session Manager\Power";
                             const string hiberbootReg = "HiberbootEnabled";
@@ -1642,7 +1754,7 @@ namespace PlutoPoint_Installer
                             }
                             progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
 
-                            installerTextBox.AppendText("Disabling location tracking...");
+                            installerTextBox.AppendText("✅ Disabling location tracking...");
                             installerTextBox.AppendText(Environment.NewLine);
                             const string locationRegPath1 = @"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Sensor\Overrides\{BFA794E4-F964-4FDB-90F6-51056BFE4B44}";
                             const string locationReg1 = "SensorPermissionState";
@@ -1663,7 +1775,7 @@ namespace PlutoPoint_Installer
                             }
                             progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
 
-                            installerTextBox.AppendText("Disabling People icon...");
+                            installerTextBox.AppendText("✅ Disabling People icon...");
                             installerTextBox.AppendText(Environment.NewLine);
                             const string peopleRegPath1 = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People";
                             const string peopleRegPath2 = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People";
@@ -1680,7 +1792,7 @@ namespace PlutoPoint_Installer
                             }
                             progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
 
-                            installerTextBox.AppendText("Hiding recently used files and folders in File Explorer...");
+                            installerTextBox.AppendText("✅ Hiding recently used files and folders in File Explorer...");
                             installerTextBox.AppendText(Environment.NewLine);
                             const string recentRegPath = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer";
                             const string recentReg = "ShowRecent";
@@ -1703,7 +1815,7 @@ namespace PlutoPoint_Installer
                         }
                         else if (build >= 19041)
                         {
-                            installerTextBox.AppendText("Setting explorer to open to This PC...");
+                            installerTextBox.AppendText("✅ Setting explorer to open to This PC...");
                             installerTextBox.AppendText(Environment.NewLine);
                             const string thisPCRegPath = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced";
                             const string thisPCReg = "LaunchTo";
@@ -1715,7 +1827,7 @@ namespace PlutoPoint_Installer
                             }
                             progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
 
-                            installerTextBox.AppendText("Disabling fastboot mode...");
+                            installerTextBox.AppendText("✅ Disabling fastboot mode...");
                             installerTextBox.AppendText(Environment.NewLine);
                             const string hiberbootRegPath = @"SYSTEM\CurrentControlSet\Control\Session Manager\Power";
                             const string hiberbootReg = "HiberbootEnabled";
@@ -1727,7 +1839,7 @@ namespace PlutoPoint_Installer
                             }
                             progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
 
-                            installerTextBox.AppendText("Disabling location tracking...");
+                            installerTextBox.AppendText("✅ Disabling location tracking...");
                             installerTextBox.AppendText(Environment.NewLine);
                             const string locationRegPath1 = @"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Sensor\Overrides\{BFA794E4-F964-4FDB-90F6-51056BFE4B44}";
                             const string locationReg1 = "SensorPermissionState";
@@ -1748,7 +1860,7 @@ namespace PlutoPoint_Installer
                             }
                             progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
 
-                            installerTextBox.AppendText("Disabling People icon...");
+                            installerTextBox.AppendText("✅ Disabling People icon...");
                             installerTextBox.AppendText(Environment.NewLine);
                             const string peopleRegPath1 = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People";
                             const string peopleRegPath2 = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People";
@@ -1765,7 +1877,7 @@ namespace PlutoPoint_Installer
                             }
                             progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
 
-                            installerTextBox.AppendText("Hiding recently used files and folders in File Explorer...");
+                            installerTextBox.AppendText("✅ Hiding recently used files and folders in File Explorer...");
                             installerTextBox.AppendText(Environment.NewLine);
                             const string recentRegPath = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer";
                             const string recentReg = "ShowRecent";
@@ -1798,14 +1910,14 @@ namespace PlutoPoint_Installer
             if (powerCheck.Checked) { }
             else
             {
-                installerTextBox.AppendText("Re-enabling sleep and screen timeout on AC power...");
+                installerTextBox.AppendText("✅ Re-enabling sleep and screen timeout on AC power...");
                 installerTextBox.AppendText(Environment.NewLine);
                 Process.Start("powercfg", "/change monitor-timeout-ac 10");
                 Process.Start("powercfg", "/change standby-timeout-ac 20");
                 progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
             }
 
-            installerTextBox.AppendText("Cleaning up installation files...");
+            installerTextBox.AppendText("✅ Cleaning up installation files...");
             installerTextBox.AppendText(Environment.NewLine);
             var deletionHelper = new FileDeletionHelper();
             await deletionHelper.DeleteFilesAndDirectoryAsync(appsDir, launcherPath);
@@ -1820,7 +1932,7 @@ namespace PlutoPoint_Installer
                 installerTextBox.AppendText(Environment.NewLine);
             }
 
-            installerTextBox.AppendText("The installation has completed.");
+            installerTextBox.AppendText("✅ The installation has completed.");
             installerTextBox.AppendText(Environment.NewLine);
 
         }
