@@ -33,7 +33,7 @@ namespace PlutoPoint_Installer
     public partial class installerForm : Form
     {
 
-        string updateDate = "27th of February 2025";
+        string updateDate = "1st of March 2025";
 
         public installerForm()
         {
@@ -384,8 +384,8 @@ namespace PlutoPoint_Installer
         string bitDefenderFilename = @"C:\Computer Repair Centre\apps\bitDefender.exe";
         Uri discordURL = new Uri("https://files.crchq.net/installer/discord.exe");
         string discordFilename = @"C:\Computer Repair Centre\apps\discord.exe";
-        Uri googleChromeURL = new Uri("https://files.crchq.net/installer/chrome.msi");
-        string googleChromeFilename = @"C:\Computer Repair Centre\apps\chrome.msi";
+        Uri googleChromeURL = new Uri("https://files.crchq.net/installer/googleChrome.msi");
+        string googleChromeFilename = @"C:\Computer Repair Centre\apps\googleChrome.msi";
         Uri libreOfficeURL = new Uri("https://files.crchq.net/installer/libreOffice.msi");
         string libreOfficeFilename = @"C:\Computer Repair Centre\apps\libreOffice.msi";
         Uri microsoftOffice2007URL = new Uri("https://files.crchq.net/installer/office2007.zip");
@@ -394,8 +394,8 @@ namespace PlutoPoint_Installer
         string mozillaFirefoxFilename = @"C:\Computer Repair Centre\apps\mozillaFirefox.msi";
         Uri mozillaThunderbirdURL = new Uri("https://files.crchq.net/installer/mozillaThunderbird.msi");
         string mozillaThunderbirdFilename = @"C:\Computer Repair Centre\apps\mozillaThunderbird.msi";
-        Uri nanaZipURL = new Uri("https://files.crchq.net/installer/NanaZip_5.0.1263.0.msixbundle");
-        string nanaZipFilename = @"C:\Computer Repair Centre\apps\NanaZip_5.0.1263.0.msixbundle";
+        Uri nanaZipURL = new Uri("https://files.crchq.net/installer/nanaZip.msixbundle");
+        string nanaZipFilename = @"C:\Computer Repair Centre\apps\nanaZip.msixbundle";
         Uri steamURL = new Uri("https://files.crchq.net/installer/steam.exe");
         string steamFilename = @"C:\Computer Repair Centre\apps\steam.exe";
         Uri hpHotkeySupportURL = new Uri("https://files.crchq.net/installer/HPHotkey.zip");

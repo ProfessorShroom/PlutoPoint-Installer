@@ -1,6 +1,6 @@
  ![Arch](https://img.shields.io/badge/Arch-AMD64-blue) ![OS](https://img.shields.io/badge/OS-Windows%2010%20|%20Windows%2011-green)
 
-## PlutoPoint Installer Version 6.1.8.1
+## PlutoPoint Installer Version 6.1.8.2
 ###### Copyright © Charlie Howard 2025 All rights reserved.
 
 A C# based GUI installer for Windows 10/11.
@@ -15,7 +15,13 @@ Disables sleep and screen timeout if plugged into AC power during the install an
 
 ### Changelog
 
-**Update 6.1.8.0**
+**Update 6.1.8.2**
+
+Changed Google Chrome and NanaZip file names to make future updates easier.
+Updated Google Chrome.
+Updated VLC Media Player.
+
+**Update 6.1.8.1**
 
 Fixed a typo in VLC Media Players installation.
 
@@ -30,9 +36,9 @@ Changed some text in NanaZip to make it align better with other text.
 
 **Update 6.1.7.0**
 
-Updated Firefox.
 Updated LibreOffice.
-Updated ThunderBird.
+Updated Mozilla Firefox.
+Updated Mozilla ThunderBird.
 Updated NanaZip.
 NanaZip now checks the installation folder dynamically which should allow NanaZip to update and not break the current scripts.
 
