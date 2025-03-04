@@ -33,7 +33,7 @@ namespace PlutoPoint_Installer
     public partial class installerForm : Form
     {
 
-        string updateDate = "1st of March 2025";
+        string updateDate = "4th of March 2025";
 
         public installerForm()
         {
@@ -123,7 +123,7 @@ namespace PlutoPoint_Installer
         }
         private void CheckPancake()
         {
-            if (DateTime.Now.Month == 3 && DateTime.Now.Day == 12 && DateTime.Now.Year == 2025 || DateTime.Now.Month == 2 && DateTime.Now.Day == 17 && DateTime.Now.Year == 2026 || DateTime.Now.Month == 2 && DateTime.Now.Day == 9 && DateTime.Now.Year == 2027 || DateTime.Now.Month == 2 && DateTime.Now.Day == 29 && DateTime.Now.Year == 2028)
+            if (DateTime.Now.Month == 3 && DateTime.Now.Day == 4 && DateTime.Now.Year == 2025 || DateTime.Now.Month == 2 && DateTime.Now.Day == 17 && DateTime.Now.Year == 2026 || DateTime.Now.Month == 2 && DateTime.Now.Day == 9 && DateTime.Now.Year == 2027 || DateTime.Now.Month == 2 && DateTime.Now.Day == 29 && DateTime.Now.Year == 2028)
             {
                 pancake = "1";
                 this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(183)))), ((int)(((byte)(139)))));
