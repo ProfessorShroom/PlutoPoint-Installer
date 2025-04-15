@@ -33,7 +33,7 @@ namespace PlutoPoint_Installer
     public partial class installerForm : Form
     {
 
-        string updateDate = "4th of March 2025";
+        string updateDate = "15th of April 2025";
 
         public installerForm()
         {
@@ -42,6 +42,7 @@ namespace PlutoPoint_Installer
             CheckHalloween();
             CheckValentines();
             CheckPancake();
+            CheckPuffin();
             CheckCharlieBirthday();
             CheckDeanBirthday();
             CheckSteveBirthday();
@@ -57,6 +58,7 @@ namespace PlutoPoint_Installer
         string valentines = null;
         string birthday = null;
         string pancake = null;
+        string puffin = null;
         string charlieBirthday = null;
         string deanBirthday = null;
         string steveBirthday = null;
@@ -132,6 +134,20 @@ namespace PlutoPoint_Installer
                 close.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(214)))), ((int)(((byte)(154)))), ((int)(((byte)(108)))));
                 installerTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(183)))), ((int)(((byte)(139)))));
                 installerTextBox.ForeColor = Color.Black;
+                this.Invalidate();
+            }
+        }
+        private void CheckPuffin()
+        {
+            if (DateTime.Now.Month == 4 && DateTime.Now.Day == 14)
+            {
+                puffin = "1";
+                install.BackColor = System.Drawing.Color.White;
+                restart.BackColor = System.Drawing.Color.White;
+                close.BackColor = System.Drawing.Color.White;
+                install.ForeColor = System.Drawing.Color.Black;
+                restart.ForeColor = System.Drawing.Color.Black;
+                close.ForeColor = System.Drawing.Color.Black;
                 this.Invalidate();
             }
         }
@@ -304,6 +320,29 @@ namespace PlutoPoint_Installer
                 try
                 {
                     Image heartImage = Properties.Resources.pancake;
+                    int newWidth = 100;
+                    int newHeight = 100;
+                    int x = 160;
+                    int y = 320;
+                    e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+                    e.Graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                    e.Graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                    GraphicsState state = e.Graphics.Save();
+                    e.Graphics.TranslateTransform(x + newWidth / 2, y + newHeight / 2);
+                    e.Graphics.TranslateTransform(-(x + newWidth / 2), -(y + newHeight / 2));
+                    e.Graphics.DrawImage(heartImage, new Rectangle(x, y, newWidth, newHeight));
+                    e.Graphics.Restore(state);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error loading image: " + ex.Message);
+                }
+            }
+            if (puffin == "1")
+            {
+                try
+                {
+                    Image heartImage = Properties.Resources.puffin;
                     int newWidth = 100;
                     int newHeight = 100;
                     int x = 160;
@@ -561,6 +600,12 @@ namespace PlutoPoint_Installer
                 installerTextBox.AppendText("It's pancake day!");
                 installerTextBox.AppendText(Environment.NewLine);
                 installerTextBox.AppendText("Don't forget to eat pancakes you fat bastard!");
+                installerTextBox.AppendText(Environment.NewLine);
+                player = new SoundPlayer(Properties.Resources.win98shutdown);
+            }
+            else if (puffin == "1")
+            {
+                installerTextBox.AppendText("Today is national Puffin day!");
                 installerTextBox.AppendText(Environment.NewLine);
                 player = new SoundPlayer(Properties.Resources.win98shutdown);
             }
