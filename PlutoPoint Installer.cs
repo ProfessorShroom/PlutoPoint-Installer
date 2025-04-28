@@ -33,7 +33,7 @@ namespace PlutoPoint_Installer
     public partial class installerForm : Form
     {
 
-        string updateDate = "15th of April 2025";
+        string updateDate = "28th of April 2025";
 
         public installerForm()
         {
@@ -396,7 +396,7 @@ namespace PlutoPoint_Installer
             {
                 switch (publicIP)
                 {
-                    case "81.134.32.116":
+                    case "62.31.75.58":
                         //Romsey
                         romsey = "1";
                         break;
