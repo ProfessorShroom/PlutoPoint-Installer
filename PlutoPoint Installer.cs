@@ -53,6 +53,7 @@ namespace PlutoPoint_Installer
             CheckMicrosoftOffice2007Async();
             CheckEliteBook();
             CheckForNvidiaGPU();
+            GetLibreOfficeVersion();
         }
 
         string christmas = null;
@@ -424,15 +425,14 @@ namespace PlutoPoint_Installer
         string bingWallpapersFilename = @"C:\Computer Repair Centre\apps\bingWallpapers.msi";
         Uri bitDefenderURL = new Uri("https://files.crchq.net/installer/bitDefender.exe");
         string bitDefenderFilename = @"C:\Computer Repair Centre\apps\bitDefender.exe";
-        Uri discordURL = new Uri("https://files.crchq.net/installer/discord.exe");
+        Uri discordURL = new Uri("https://discord.com/api/download?platform=win");
         string discordFilename = @"C:\Computer Repair Centre\apps\discord.exe";
         Uri googleChromeURL = new Uri("https://files.crchq.net/installer/googleChrome.msi");
         string googleChromeFilename = @"C:\Computer Repair Centre\apps\googleChrome.msi";
-        Uri libreOfficeURL = new Uri("https://files.crchq.net/installer/libreOffice.msi");
         string libreOfficeFilename = @"C:\Computer Repair Centre\apps\libreOffice.msi";
         Uri microsoftOffice2007URL = new Uri("https://files.crchq.net/installer/office2007.zip");
         string microsoftOffice2007Filename = @"C:\Computer Repair Centre\apps\office2007.zip";
-        Uri mozillaFirefoxURL = new Uri("https://files.crchq.net/installer/mozillaFirefox.msi");
+        Uri mozillaFirefoxURL = new Uri("https://download.mozilla.org/?product=firefox-msi-latest-ssl&os=win64&lang=en-GB");
         string mozillaFirefoxFilename = @"C:\Computer Repair Centre\apps\mozillaFirefox.msi";
         Uri mozillaThunderbirdURL = new Uri("https://files.crchq.net/installer/mozillaThunderbird.msi");
         string mozillaThunderbirdFilename = @"C:\Computer Repair Centre\apps\mozillaThunderbird.msi";
@@ -463,7 +463,6 @@ namespace PlutoPoint_Installer
                 }
             }
         }
-
         public class FileDeletionHelper
         {
             public async Task DeleteFilesAndDirectoryAsync(string appsDir, string launcherPath)
@@ -513,15 +512,11 @@ namespace PlutoPoint_Installer
 
         private void CheckForNvidiaGPU()
         {
-            // Create a ManagementObjectSearcher to query for video adapters
             var searcher = new ManagementObjectSearcher("SELECT * FROM Win32_VideoController");
-
             foreach (ManagementObject queryObj in searcher.Get())
             {
-                // Check if "Caption" is a string
                 if (queryObj["Caption"] is string caption)
                 {
-                    // Use IndexOf for case-insensitive comparison (works in .NET Framework 4.8)
                     if (caption.IndexOf("NVIDIA", StringComparison.OrdinalIgnoreCase) >= 0)
                     {
                         nvidiaCheckStatus = "1";
@@ -533,10 +528,41 @@ namespace PlutoPoint_Installer
             nvidiaCheckStatus = "0";
             nvidiaAppCheck.Checked = false;
         }
+        private string GetLibreOfficeVersion()
+        {
+            string url = "https://www.libreoffice.org/download/download-libreoffice/";
 
+            try
+            {
+                var request = WebRequest.Create(url);
+                using (var response = request.GetResponse())
+                using (var stream = response.GetResponseStream())
+                using (var reader = new StreamReader(stream))
+                {
+                    string html = reader.ReadToEnd();
 
+                    // Look for "Our latest stable release"
+                    int index = html.IndexOf("Our latest stable release", StringComparison.OrdinalIgnoreCase);
+                    if (index != -1)
+                    {
+                        string snippet = html.Substring(index, Math.Min(1000, html.Length - index));
 
+                        // Extract version number
+                        var versionMatch = Regex.Match(snippet, @"\b\d+\.\d+\.\d+\b");
+                        if (versionMatch.Success)
+                        {
+                            return versionMatch.Value;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+            }
 
+            return null; // or throw or fallback
+        }
         private async void install_Click(object sender, EventArgs e)
         {
             progressBar.Maximum = 0;
@@ -1236,13 +1262,24 @@ namespace PlutoPoint_Installer
                 {
                     installerTextBox.AppendText("🔄 Downloading LibreOffice...");
                     installerTextBox.AppendText(Environment.NewLine);
+                    string libreOfficeVersion = GetLibreOfficeVersion();
+                    if (string.IsNullOrEmpty(libreOfficeVersion))
+                    {
+                        MessageBox.Show("Could not determine the latest LibreOffice version.");
+                        return;
+                    }
+
+                    string libreOfficeDownloadUrl = $"https://www.mirrorservice.org/sites/download.documentfoundation.org/tdf/libreoffice/stable/{libreOfficeVersion}/win/x86_64/LibreOffice_{libreOfficeVersion}_Win_x86-64.msi";    
+                    Uri libreOfficeURL = new Uri(libreOfficeDownloadUrl);
                     using (WebClient wc = new WebClient())
                     {
                         wc.DownloadFileCompleted += wc_progressBarStep;
                         await wc.DownloadFileTaskAsync(libreOfficeURL, libreOfficeFilename);
                     }
+
                     installerTextBox.AppendText("Installing LibreOffice...");
                     installerTextBox.AppendText(Environment.NewLine);
+
                     await Task.Run(() =>
                     {
                         using (Process process = new Process())
@@ -1271,6 +1308,7 @@ namespace PlutoPoint_Installer
                             }
                         }
                     });
+
                     installerTextBox.AppendText("✅ Completed installation of LibreOffice.");
                     installerTextBox.AppendText(Environment.NewLine);
                     progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);

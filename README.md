@@ -1,6 +1,6 @@
  ![Arch](https://img.shields.io/badge/Arch-AMD64-blue) ![OS](https://img.shields.io/badge/OS-Windows%2010%20|%20Windows%2011-green)
 
-## PlutoPoint Installer Version 6.1.9.1
+## PlutoPoint Installer Version 6.1.10.0
 ###### Copyright © Charlie Howard 2025 All rights reserved.
 
 A C# based GUI installer for Windows 10/11.
@@ -14,6 +14,12 @@ If run on Windows 11 it will disable automatic device encryption.
 Disables sleep and screen timeout if plugged into AC power during the install and then revert it once it has completed to prevent the computer going to sleep during the install which can cause issues, you also get the option to prevent sleep on AC power permanently with the "Refurb" box.
 
 ### Changelog
+
+**Update 6.1.10.0**
+
+Added LibreOffice version checker with the same logic used for Nvidia App to download the latest version.
+Changed Discord URL to Discord's own latest download link.
+Changed Mozilla Firefox URL to Mozilla's own latest download link.
 
 **Update 6.1.9.1**
 
