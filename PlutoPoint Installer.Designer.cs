@@ -55,6 +55,7 @@ namespace PlutoPoint_Installer
             this.nanaZipCheck = new System.Windows.Forms.CheckBox();
             this.microsoftOffice2007Check = new System.Windows.Forms.CheckBox();
             this.vlcMediaPlayerCheck = new System.Windows.Forms.CheckBox();
+            this.nvidiaAppCheck = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // install
@@ -113,7 +114,7 @@ namespace PlutoPoint_Installer
             this.mozillaFirefoxCheck.Checked = true;
             this.mozillaFirefoxCheck.CheckState = System.Windows.Forms.CheckState.Checked;
             this.mozillaFirefoxCheck.Image = global::PlutoPoint_Installer.Properties.Resources.mozillaFirefox;
-            this.mozillaFirefoxCheck.Location = new System.Drawing.Point(75, 115);
+            this.mozillaFirefoxCheck.Location = new System.Drawing.Point(75, 160);
             this.mozillaFirefoxCheck.Name = "mozillaFirefoxCheck";
             this.mozillaFirefoxCheck.Size = new System.Drawing.Size(57, 50);
             this.mozillaFirefoxCheck.TabIndex = 5;
@@ -180,7 +181,7 @@ namespace PlutoPoint_Installer
             this.versionLabel.Size = new System.Drawing.Size(78, 13);
             this.versionLabel.TabIndex = 9;
             this.versionLabel.TabStop = true;
-            this.versionLabel.Text = "Version 6.1.8.5";
+            this.versionLabel.Text = "Version 6.1.9.0";
             this.versionLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.versionLabel_LinkClicked);
             // 
             // restartCheck
@@ -226,7 +227,7 @@ namespace PlutoPoint_Installer
             // mozillaThunderbirdCheck
             // 
             this.mozillaThunderbirdCheck.Image = global::PlutoPoint_Installer.Properties.Resources.mozillaThunderbird;
-            this.mozillaThunderbirdCheck.Location = new System.Drawing.Point(75, 160);
+            this.mozillaThunderbirdCheck.Location = new System.Drawing.Point(75, 205);
             this.mozillaThunderbirdCheck.Name = "mozillaThunderbirdCheck";
             this.mozillaThunderbirdCheck.Size = new System.Drawing.Size(57, 50);
             this.mozillaThunderbirdCheck.TabIndex = 14;
@@ -253,7 +254,7 @@ namespace PlutoPoint_Installer
             // steamCheck
             // 
             this.steamCheck.Image = global::PlutoPoint_Installer.Properties.Resources.steam;
-            this.steamCheck.Location = new System.Drawing.Point(75, 250);
+            this.steamCheck.Location = new System.Drawing.Point(75, 295);
             this.steamCheck.Name = "steamCheck";
             this.steamCheck.Size = new System.Drawing.Size(57, 50);
             this.steamCheck.TabIndex = 17;
@@ -264,7 +265,7 @@ namespace PlutoPoint_Installer
             this.nanaZipCheck.Checked = true;
             this.nanaZipCheck.CheckState = System.Windows.Forms.CheckState.Checked;
             this.nanaZipCheck.Image = global::PlutoPoint_Installer.Properties.Resources.nanaZip;
-            this.nanaZipCheck.Location = new System.Drawing.Point(75, 205);
+            this.nanaZipCheck.Location = new System.Drawing.Point(75, 250);
             this.nanaZipCheck.Name = "nanaZipCheck";
             this.nanaZipCheck.Size = new System.Drawing.Size(57, 50);
             this.nanaZipCheck.TabIndex = 18;
@@ -282,11 +283,20 @@ namespace PlutoPoint_Installer
             // vlcMediaPlayerCheck
             // 
             this.vlcMediaPlayerCheck.Image = global::PlutoPoint_Installer.Properties.Resources.vlcMediaPlayer;
-            this.vlcMediaPlayerCheck.Location = new System.Drawing.Point(75, 295);
+            this.vlcMediaPlayerCheck.Location = new System.Drawing.Point(75, 340);
             this.vlcMediaPlayerCheck.Name = "vlcMediaPlayerCheck";
             this.vlcMediaPlayerCheck.Size = new System.Drawing.Size(57, 50);
             this.vlcMediaPlayerCheck.TabIndex = 20;
             this.vlcMediaPlayerCheck.UseVisualStyleBackColor = true;
+            // 
+            // nvidiaAppCheck
+            // 
+            this.nvidiaAppCheck.Image = global::PlutoPoint_Installer.Properties.Resources.nvidiaApp;
+            this.nvidiaAppCheck.Location = new System.Drawing.Point(75, 115);
+            this.nvidiaAppCheck.Name = "nvidiaAppCheck";
+            this.nvidiaAppCheck.Size = new System.Drawing.Size(57, 50);
+            this.nvidiaAppCheck.TabIndex = 21;
+            this.nvidiaAppCheck.UseVisualStyleBackColor = true;
             // 
             // installerForm
             // 
@@ -294,6 +304,7 @@ namespace PlutoPoint_Installer
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(41)))), ((int)(((byte)(41)))));
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.nvidiaAppCheck);
             this.Controls.Add(this.vlcMediaPlayerCheck);
             this.Controls.Add(this.microsoftOffice2007Check);
             this.Controls.Add(this.nanaZipCheck);
@@ -346,6 +357,7 @@ namespace PlutoPoint_Installer
         private System.Windows.Forms.CheckBox nanaZipCheck;
         private System.Windows.Forms.CheckBox microsoftOffice2007Check;
         private System.Windows.Forms.CheckBox vlcMediaPlayerCheck;
+        private System.Windows.Forms.CheckBox nvidiaAppCheck;
     }
 }
 

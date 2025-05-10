@@ -27,13 +27,14 @@ namespace PlutoPoint_Installer
     using System.Drawing;
     using System.Drawing.Drawing2D;
     using System.Management;
+    using System.Text.RegularExpressions;
     using System.Windows.Forms;
     using File = System.IO.File;
 
     public partial class installerForm : Form
     {
 
-        string updateDate = "28th of April 2025";
+        string updateDate = "10th of May 2025";
 
         public installerForm()
         {
@@ -51,6 +52,7 @@ namespace PlutoPoint_Installer
             CheckGeethBirthday();
             CheckMicrosoftOffice2007Async();
             CheckEliteBook();
+            CheckForNvidiaGPU();
         }
 
         string christmas = null;
@@ -66,6 +68,7 @@ namespace PlutoPoint_Installer
         string adamBirthday = null;
         string geethBirthday = null;
         string hpEliteBook = null;
+        string nvidiaCheckStatus = null;
 
         private void CheckEliteBook()
         {
@@ -441,6 +444,7 @@ namespace PlutoPoint_Installer
         string hpHotkeySupportFilename = @"C:\Computer Repair Centre\apps\hpHotkeySupport.zip";
         Uri vlcMediaPlayerURL = new Uri("https://files.crchq.net/installer/vlcMediaPlayer.msi");
         string vlcMediaPlayerFilename = @"C:\Computer Repair Centre\apps\vlcMediaPlayer.msi";
+        string nvidiaAppFilename = @"C:\Computer Repair Centre\apps\nvidiaApp.exe";
 
         private static async Task<string> GetPublicIPAddressAsync()
         {
@@ -506,6 +510,32 @@ namespace PlutoPoint_Installer
                 }
             }
         }
+
+        private void CheckForNvidiaGPU()
+        {
+            // Create a ManagementObjectSearcher to query for video adapters
+            var searcher = new ManagementObjectSearcher("SELECT * FROM Win32_VideoController");
+
+            foreach (ManagementObject queryObj in searcher.Get())
+            {
+                // Check if "Caption" is a string
+                if (queryObj["Caption"] is string caption)
+                {
+                    // Use IndexOf for case-insensitive comparison (works in .NET Framework 4.8)
+                    if (caption.IndexOf("NVIDIA", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        nvidiaCheckStatus = "1";
+                        nvidiaAppCheck.Checked = true;
+                        return;
+                    }
+                }
+            }
+            nvidiaCheckStatus = "0";
+            nvidiaAppCheck.Checked = false;
+        }
+
+
+
 
         private async void install_Click(object sender, EventArgs e)
         {
@@ -659,7 +689,13 @@ namespace PlutoPoint_Installer
             {
                 player = new SoundPlayer(Properties.Resources.win98shutdown);
             }
-
+            if (nvidiaCheckStatus == "1")
+            {
+                installerTextBox.AppendText("Nvidia GPU has been detected, Nvidia App will be installed.");
+                installerTextBox.AppendText(Environment.NewLine);
+                installerTextBox.AppendText("You can uncheck this if you want.");
+                installerTextBox.AppendText(Environment.NewLine);
+            }
             if (powerCheck.Checked)
             {
                 installerTextBox.AppendText("📌 Disable sleep on AC power is selected.");
@@ -1405,6 +1441,79 @@ namespace PlutoPoint_Installer
                     progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
                 }
             }
+
+            if (nvidiaAppCheck.Checked)
+            {
+                installerTextBox.AppendText("📌 Nvidia App is selected.");
+                installerTextBox.AppendText(Environment.NewLine);
+                string edition = "Public";
+                string baseUrl = edition.Equals("Enterprise", StringComparison.OrdinalIgnoreCase)
+                    ? "https://www.nvidia.com/en-us/software/nvidia-app-enterprise/"
+                    : "https://www.nvidia.com/en-us/software/nvidia-app/";
+                string targetFolder = @"C:\Computer Repair Centre\apps";
+                Directory.CreateDirectory(targetFolder);
+                installerTextBox.AppendText("🔄 Downloading Nvidia App...");
+                installerTextBox.AppendText(Environment.NewLine);
+                try
+                {
+                    using (HttpClient client = new HttpClient())
+                    {
+                        string htmlContent = await client.GetStringAsync(baseUrl);
+                        string pattern = @"https:\/\/us\.download\.nvidia\.com\/nvapp\/client\/[\d\.]+\/NVIDIA_app_v[\d\.]+\.exe";
+                        Match match = Regex.Match(htmlContent, pattern);
+                        if (match.Success)
+                        {
+                            string downloadUrl = match.Value;
+                            string fileName = "nvidiaAppCheck.exe";
+                            string nvidiaAppPath = Path.Combine(targetFolder, fileName);
+                            byte[] fileBytes = await client.GetByteArrayAsync(downloadUrl);
+                            File.WriteAllBytes(nvidiaAppPath, fileBytes);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error downloading NVIDIA App:\n{ex.Message}", "Error");
+                }
+                installerTextBox.AppendText("Installing Nvidia App...");
+                installerTextBox.AppendText(Environment.NewLine);
+                await Task.Run(() =>
+                {
+                    ProcessStartInfo startInfo = new ProcessStartInfo
+                    {
+                        FileName = nvidiaAppFilename,
+                        Arguments = "-s -noreboot -noeula -nofinish -nosplash",
+                        UseShellExecute = true,
+                        Verb = "runas"
+                    };
+                    try
+                    {
+                        using (Process process = Process.Start(startInfo))
+                        {
+                            process.WaitForExit();
+                            int exitCode = process.ExitCode;
+                            if (exitCode == 0)
+                            {
+                                Console.WriteLine("Installation successful.");
+                            }
+                            else
+                            {
+                                Console.WriteLine($"Installation exited with code: {exitCode}");
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"An error occurred: {ex.Message}");
+                    }
+
+                });
+                installerTextBox.AppendText("✅ Completed installation of Nvidia App.");
+                installerTextBox.AppendText(Environment.NewLine);
+                progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
+
+            }
+
             if (mozillaFirefoxCheck.Checked)
             {
                 installerTextBox.AppendText("📌 Mozilla Firefox is selected.");

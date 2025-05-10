@@ -1,6 +1,6 @@
  ![Arch](https://img.shields.io/badge/Arch-AMD64-blue) ![OS](https://img.shields.io/badge/OS-Windows%2010%20|%20Windows%2011-green)
 
-## PlutoPoint Installer Version 6.1.8.5
+## PlutoPoint Installer Version 6.1.9.0
 ###### Copyright © Charlie Howard 2025 All rights reserved.
 
 A C# based GUI installer for Windows 10/11.
@@ -14,6 +14,10 @@ If run on Windows 11 it will disable automatic device encryption.
 Disables sleep and screen timeout if plugged into AC power during the install and then revert it once it has completed to prevent the computer going to sleep during the install which can cause issues, you also get the option to prevent sleep on AC power permanently with the "Refurb" box.
 
 ### Changelog
+
+**Update 6.1.9.0**
+
+Installer will check if the computer has an Nvidia GPU and install the Nvidia App if it does. This can be disabled if the user wants.
 
 **Update 6.1.8.5**
 
