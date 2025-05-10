@@ -1464,7 +1464,7 @@ namespace PlutoPoint_Installer
                         if (match.Success)
                         {
                             string downloadUrl = match.Value;
-                            string fileName = "nvidiaAppCheck.exe";
+                            string fileName = "nvidiaApp.exe";
                             string nvidiaAppPath = Path.Combine(targetFolder, fileName);
                             byte[] fileBytes = await client.GetByteArrayAsync(downloadUrl);
                             File.WriteAllBytes(nvidiaAppPath, fileBytes);
