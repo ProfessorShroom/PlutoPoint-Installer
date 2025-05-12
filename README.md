@@ -1,6 +1,6 @@
  ![Arch](https://img.shields.io/badge/Arch-AMD64-blue) ![OS](https://img.shields.io/badge/OS-Windows%2010%20|%20Windows%2011-green)
 
-## PlutoPoint Installer Version 6.1.10.0
+## PlutoPoint Installer Version 6.1.11.0
 ###### Copyright © Charlie Howard 2025 All rights reserved.
 
 A C# based GUI installer for Windows 10/11.
@@ -15,10 +15,18 @@ Disables sleep and screen timeout if plugged into AC power during the install an
 
 ### Changelog
 
+**Update 6.1.11.0**
+
+Changed Google Chrome URL to Google's own latest enterprise download link.
+
+Changed Mozilla Thunderbird URL to Mozilla's own latest download link.
+
 **Update 6.1.10.0**
 
 Added LibreOffice version checker with the same logic used for Nvidia App to download the latest version.
+
 Changed Discord URL to Discord's own latest download link.
+
 Changed Mozilla Firefox URL to Mozilla's own latest download link.
 
 **Update 6.1.9.1**
@@ -44,7 +52,9 @@ Fixed pancake day date.
 **Update 6.1.8.2**
 
 Changed Google Chrome and NanaZip file names to make future updates easier.
+
 Updated Google Chrome.
+
 Updated VLC Media Player.
 
 **Update 6.1.8.1**
@@ -63,9 +73,13 @@ Changed some text in NanaZip to make it align better with other text.
 **Update 6.1.7.0**
 
 Updated LibreOffice.
+
 Updated Mozilla Firefox.
+
 Updated Mozilla ThunderBird.
+
 Updated NanaZip.
+
 NanaZip now checks the installation folder dynamically which should allow NanaZip to update and not break the current scripts.
 
 **Update 6.1.6.2**
@@ -88,6 +102,7 @@ Fixed Microsoft Office 2007 causing an error when extracting - will now compelte
 **Update 6.1.4.0**
 
 Reverted to 6.1.2.8 as Office was not causing the crash.
+
 Removed end task in the taskbar as that seemed to be causing issues, I may add it back in when I find out why.
 
 **Update 6.1.3.0**
@@ -105,22 +120,27 @@ Tried to fix the installer not being deleted on the Desktop.
 **Update 6.1.2.6**
 
 Made file deleted async to avoid hanging on larger files like BitDefender.exe.
+
 Removed auto arrange Desktop icons as I cannot get it to work, I don't think it's possible.
 
 **Update 6.1.2.5**
 
 Added a check for the EXE version of AnyDesk too just incase it is already installed, no point having both.
+
 Fixed BitDefender crash.
 
 **Update 6.1.2.4**
 
 Fixed BitDefender URL being incorrect so not installing.
+
 Fixed AnyDesk installation check, the MSI installer installs to a different location than the EXE for some reason.
 
 **Update 6.1.2.3**
 
 Updated power icon.
+
 Tried another fix for auto arrange Desktop icons.
+
 Added line to state the last date the installer was updated.
 
 **Update 6.1.2.2**
@@ -130,11 +150,13 @@ Fixed a typo in the launcherPath causing the launcher not to delete on the Deskt
 **Update 6.1.2.1**
 
 Attempted to fix deleting the launcher on the Desktop.
+
 Attempted to fix auto arrange Desktop icons.
 
 **Update 6.1.2.0**
 
 Will now delete launcher file on the Desktop if it exists.
+
 Attempted to auto arrange Desktop icons for a cleaner look, unsure if this will work, if it doesn't work I will remove it.
 
 **Update 6.1.1.2**

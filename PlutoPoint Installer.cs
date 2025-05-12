@@ -34,7 +34,7 @@ namespace PlutoPoint_Installer
     public partial class installerForm : Form
     {
 
-        string updateDate = "10th of May 2025";
+        string updateDate = "12th of May 2025";
 
         public installerForm()
         {
@@ -427,14 +427,14 @@ namespace PlutoPoint_Installer
         string bitDefenderFilename = @"C:\Computer Repair Centre\apps\bitDefender.exe";
         Uri discordURL = new Uri("https://discord.com/api/download?platform=win");
         string discordFilename = @"C:\Computer Repair Centre\apps\discord.exe";
-        Uri googleChromeURL = new Uri("https://files.crchq.net/installer/googleChrome.msi");
+        Uri googleChromeURL = new Uri("https://dl.google.com/tag/s/appguid%3D%7B8A69D345-D564-463c-AFF1-A69D9E530F96%7D&iid=&lang=en&browser=4&usagestats=0&appname=Google%2520Chrome%2520Enterprise&needsadmin=false/edgedl/chrome/install/GoogleChromeStandaloneEnterprise64.msi");
         string googleChromeFilename = @"C:\Computer Repair Centre\apps\googleChrome.msi";
         string libreOfficeFilename = @"C:\Computer Repair Centre\apps\libreOffice.msi";
         Uri microsoftOffice2007URL = new Uri("https://files.crchq.net/installer/office2007.zip");
         string microsoftOffice2007Filename = @"C:\Computer Repair Centre\apps\office2007.zip";
         Uri mozillaFirefoxURL = new Uri("https://download.mozilla.org/?product=firefox-msi-latest-ssl&os=win64&lang=en-GB");
         string mozillaFirefoxFilename = @"C:\Computer Repair Centre\apps\mozillaFirefox.msi";
-        Uri mozillaThunderbirdURL = new Uri("https://files.crchq.net/installer/mozillaThunderbird.msi");
+        Uri mozillaThunderbirdURL = new Uri("https://download.mozilla.org/?product=thunderbird-msi-latest-ssl&os=win64&lang=en-GB");
         string mozillaThunderbirdFilename = @"C:\Computer Repair Centre\apps\mozillaThunderbird.msi";
         Uri nanaZipURL = new Uri("https://files.crchq.net/installer/nanaZip.msixbundle");
         string nanaZipFilename = @"C:\Computer Repair Centre\apps\nanaZip.msixbundle";
@@ -627,6 +627,7 @@ namespace PlutoPoint_Installer
             if (discordCheck.Checked) { progressBar.Maximum += 2; }
             if (googleChromeCheck.Checked) { progressBar.Maximum += 2; }
             if (libreOfficeCheck.Checked) { progressBar.Maximum += 2; }
+            if (nvidiaAppCheck.Checked) { progressBar.Maximum += 2; }
             if (microsoftOffice2007Check.Checked) { progressBar.Maximum += 2; }
             if (mozillaFirefoxCheck.Checked) { progressBar.Maximum += 2; }
             if (mozillaThunderbirdCheck.Checked) { progressBar.Maximum += 2; }
@@ -1513,6 +1514,7 @@ namespace PlutoPoint_Installer
                 {
                     Console.WriteLine($"Error downloading NVIDIA App:\n{ex.Message}", "Error");
                 }
+                progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
                 installerTextBox.AppendText("Installing Nvidia App...");
                 installerTextBox.AppendText(Environment.NewLine);
                 await Task.Run(() =>
@@ -1549,7 +1551,6 @@ namespace PlutoPoint_Installer
                 installerTextBox.AppendText("✅ Completed installation of Nvidia App.");
                 installerTextBox.AppendText(Environment.NewLine);
                 progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
-
             }
 
             if (mozillaFirefoxCheck.Checked)
