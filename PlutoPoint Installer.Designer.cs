@@ -178,10 +178,10 @@ namespace PlutoPoint_Installer
             this.versionLabel.LinkColor = System.Drawing.Color.White;
             this.versionLabel.Location = new System.Drawing.Point(12, 425);
             this.versionLabel.Name = "versionLabel";
-            this.versionLabel.Size = new System.Drawing.Size(78, 13);
+            this.versionLabel.Size = new System.Drawing.Size(84, 13);
             this.versionLabel.TabIndex = 9;
             this.versionLabel.TabStop = true;
-            this.versionLabel.Text = "Version 6.1.11.0";
+            this.versionLabel.Text = "Version 6.1.11.1";
             this.versionLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.versionLabel_LinkClicked);
             // 
             // restartCheck

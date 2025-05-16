@@ -34,7 +34,7 @@ namespace PlutoPoint_Installer
     public partial class installerForm : Form
     {
 
-        string updateDate = "12th of May 2025";
+        string updateDate = "16th of May 2025";
 
         public installerForm()
         {
@@ -175,7 +175,7 @@ namespace PlutoPoint_Installer
             if (DateTime.Now.Month == 4 && DateTime.Now.Day == 21)
             {
                 birthday = "1";
-                charlieBirthday = "1";
+                deanBirthday = "1";
                 this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(155)))), ((int)(((byte)(211)))), ((int)(((byte)(221)))));
                 install.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
                 restart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
@@ -190,7 +190,7 @@ namespace PlutoPoint_Installer
             if (DateTime.Now.Month == 6 && DateTime.Now.Day == 24)
             {
                 birthday = "1";
-                charlieBirthday = "1";
+                steveBirthday = "1";
                 this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(155)))), ((int)(((byte)(211)))), ((int)(((byte)(221)))));
                 install.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
                 restart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
@@ -205,7 +205,7 @@ namespace PlutoPoint_Installer
             if (DateTime.Now.Month == 5 && DateTime.Now.Day == 16)
             {
                 birthday = "1";
-                charlieBirthday = "1";
+                howardBirthday = "1";
                 this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(155)))), ((int)(((byte)(211)))), ((int)(((byte)(221)))));
                 install.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
                 restart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
@@ -220,7 +220,7 @@ namespace PlutoPoint_Installer
             if (DateTime.Now.Month == 6 && DateTime.Now.Day == 9)
             {
                 birthday = "1";
-                charlieBirthday = "1";
+                adamBirthday = "1";
                 this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(155)))), ((int)(((byte)(211)))), ((int)(((byte)(221)))));
                 install.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
                 restart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
@@ -235,7 +235,7 @@ namespace PlutoPoint_Installer
             if (DateTime.Now.Month == 7 && DateTime.Now.Day == 25)
             {
                 birthday = "1";
-                charlieBirthday = "1";
+                geethBirthday = "1";
                 this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(155)))), ((int)(((byte)(211)))), ((int)(((byte)(221)))));
                 install.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
                 restart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
