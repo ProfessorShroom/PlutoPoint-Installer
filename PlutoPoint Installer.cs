@@ -34,7 +34,7 @@ namespace PlutoPoint_Installer
     public partial class installerForm : Form
     {
 
-        string updateDate = "16th of May 2025";
+        string updateDate = "6th of June 2025";
 
         public installerForm()
         {
@@ -1269,8 +1269,7 @@ namespace PlutoPoint_Installer
                         MessageBox.Show("Could not determine the latest LibreOffice version.");
                         return;
                     }
-
-                    string libreOfficeDownloadUrl = $"https://www.mirrorservice.org/sites/download.documentfoundation.org/tdf/libreoffice/stable/{libreOfficeVersion}/win/x86_64/LibreOffice_{libreOfficeVersion}_Win_x86-64.msi";    
+                    string libreOfficeDownloadUrl = $"https://download.documentfoundation.org/libreoffice/stable/{libreOfficeVersion}/win/x86_64/LibreOffice_{libreOfficeVersion}_Win_x86-64.msi";
                     Uri libreOfficeURL = new Uri(libreOfficeDownloadUrl);
                     using (WebClient wc = new WebClient())
                     {
