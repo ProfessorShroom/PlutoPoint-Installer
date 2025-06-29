@@ -13,7 +13,7 @@ namespace PlutoPoint_Launcher
     public partial class installerForm : Form
     {
         string rootDir = @"C:\Computer Repair Centre";
-        Uri computerRepairCentreInstallerURL = new Uri("https://raw.githubusercontent.com/charliehoward/PlutoPoint-Installer/master/bin/x64/Release/Computer%20Repair%20Centre%20Installer.exe");
+        Uri computerRepairCentreInstallerURL = new Uri("http://crcinstaller.professorshroom.com");
         string computerRepairCentreInstallerFilename = @"C:\Computer Repair Centre\computerRepairCentreInstaller.exe";
 
         public installerForm()
@@ -39,6 +39,8 @@ namespace PlutoPoint_Launcher
 
             using (WebClient wc = new WebClient())
             {
+                // Set a User-Agent header to avoid GitHub 403 errors
+                wc.Headers.Add(HttpRequestHeader.UserAgent, "Mozilla/5.0 (Windows NT 10.0; Win64; x64)");
                 try
                 {
                     await wc.DownloadFileTaskAsync(computerRepairCentreInstallerURL, computerRepairCentreInstallerFilename);

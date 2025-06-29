@@ -12,7 +12,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Computer Repair Centre Installer Launcher")]
-[assembly: AssemblyCopyright("Copyright © Charlie Howard 2024")]
+[assembly: AssemblyCopyright("Copyright © Charlie Howard 2025")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

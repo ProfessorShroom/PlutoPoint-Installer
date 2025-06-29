@@ -1,13 +1,3 @@
-D:\NextCloud\Spyro\Documents\Projects\PlutoPoint Installer\Launcher\obj\x64\Release\PlutoPoint Launcher.csproj.AssemblyReference.cache
-D:\NextCloud\Spyro\Documents\Projects\PlutoPoint Installer\Launcher\obj\x64\Release\PlutoPoint_Launcher.installerForm.resources
-D:\NextCloud\Spyro\Documents\Projects\PlutoPoint Installer\Launcher\obj\x64\Release\PlutoPoint_Launcher.Properties.Resources.resources
-D:\NextCloud\Spyro\Documents\Projects\PlutoPoint Installer\Launcher\obj\x64\Release\PlutoPoint Launcher.csproj.GenerateResource.cache
-D:\NextCloud\Spyro\Documents\Projects\PlutoPoint Installer\Launcher\obj\x64\Release\PlutoPoint Launcher.csproj.CoreCompileInputs.cache
-D:\NextCloud\Spyro\Documents\Projects\PlutoPoint Installer\Launcher\bin\x64\Release\PlutoPoint Launcher.exe.config
-D:\NextCloud\Spyro\Documents\Projects\PlutoPoint Installer\Launcher\bin\x64\Release\PlutoPoint Launcher.exe
-D:\NextCloud\Spyro\Documents\Projects\PlutoPoint Installer\Launcher\bin\x64\Release\PlutoPoint Launcher.pdb
-D:\NextCloud\Spyro\Documents\Projects\PlutoPoint Installer\Launcher\obj\x64\Release\PlutoPoint Launcher.exe
-D:\NextCloud\Spyro\Documents\Projects\PlutoPoint Installer\Launcher\obj\x64\Release\PlutoPoint Launcher.pdb
 D:\NextCloud\Spyro\Documents\Projects\PlutoPoint-Installer\Launcher\bin\x64\Release\PlutoPoint Launcher.exe.config
 D:\NextCloud\Spyro\Documents\Projects\PlutoPoint-Installer\Launcher\bin\x64\Release\PlutoPoint Launcher.exe
 D:\NextCloud\Spyro\Documents\Projects\PlutoPoint-Installer\Launcher\bin\x64\Release\PlutoPoint Launcher.pdb
