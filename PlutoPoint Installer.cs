@@ -34,7 +34,7 @@ namespace PlutoPoint_Installer
     public partial class installerForm : Form
     {
 
-        string updateDate = "6th of June 2025";
+        string updateDate = "5th of July 2025";
 
         public installerForm()
         {
@@ -417,7 +417,7 @@ namespace PlutoPoint_Installer
             }
         }
 
-        Uri crcOEMURL = new Uri("https://raw.githubusercontent.com/charliehoward/PlutoPoint-Installer/refs/heads/main/Resources/computerRepairCentre/computerRepairCentreOEM.bmp");
+        Uri crcOEMURL = new Uri("https://raw.githubusercontent.com/professorshroom/PlutoPoint-Installer/refs/heads/main/Resources/computerRepairCentre/computerRepairCentreOEM.bmp");
         string crcOEMFilename = @"C:\Computer Repair Centre\oem\computerRepairCentreOEM.bmp";
         Uri anyDeskURL = new Uri("https://files.crchq.net/installer/anyDesk.msi");
         string anyDeskFilename = @"C:\Computer Repair Centre\apps\anyDesks.msi";
@@ -2258,7 +2258,7 @@ namespace PlutoPoint_Installer
 
         private void versionLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            System.Diagnostics.Process.Start("https://github.com/charliehoward/PlutoPoint-Installer/blob/main/README.md");
+            System.Diagnostics.Process.Start("https://github.com/professorshroom/PlutoPoint-Installer/blob/main/README.md");
         }
     }
 }
