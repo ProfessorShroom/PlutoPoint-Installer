@@ -27,6 +27,7 @@ namespace PlutoPoint_Installer
     using System.Drawing;
     using System.Drawing.Drawing2D;
     using System.Management;
+    using System.Reflection;
     using System.Text.RegularExpressions;
     using System.Windows.Forms;
     using File = System.IO.File;
@@ -34,7 +35,7 @@ namespace PlutoPoint_Installer
     public partial class installerForm : Form
     {
 
-        string updateDate = "5th of July 2025";
+        DateTime buildDate = File.GetLastWriteTime(Assembly.GetExecutingAssembly().Location);
 
         public installerForm()
         {
@@ -54,6 +55,8 @@ namespace PlutoPoint_Installer
             CheckEliteBook();
             CheckForNvidiaGPU();
             GetLibreOfficeVersion();
+            Version version = Assembly.GetExecutingAssembly().GetName().Version;
+            this.versionLabel.Text = $"Version {version}";
         }
 
         string christmas = null;
@@ -574,7 +577,7 @@ namespace PlutoPoint_Installer
             string desktopPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop));
             string launcherPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), @"Computer Repair Centre Installer Launcher.exe");
 
-            installerTextBox.AppendText($"Last updated on {updateDate}.");
+            installerTextBox.AppendText($"Last updated on {buildDate:dd MMMM yyyy}.");
             installerTextBox.AppendText(Environment.NewLine);
 
 
