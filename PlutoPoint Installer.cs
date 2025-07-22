@@ -45,6 +45,7 @@ namespace PlutoPoint_Installer
             CheckValentines();
             CheckPancake();
             CheckPuffin();
+            CheckDachshund();
             CheckCharlieBirthday();
             CheckDeanBirthday();
             CheckSteveBirthday();
@@ -65,6 +66,7 @@ namespace PlutoPoint_Installer
         string birthday = null;
         string pancake = null;
         string puffin = null;
+        string dachshund = null;
         string charlieBirthday = null;
         string deanBirthday = null;
         string steveBirthday = null;
@@ -155,6 +157,24 @@ namespace PlutoPoint_Installer
                 install.ForeColor = System.Drawing.Color.Black;
                 restart.ForeColor = System.Drawing.Color.Black;
                 close.ForeColor = System.Drawing.Color.Black;
+                this.Invalidate();
+            }
+        }
+        private void CheckDachshund()
+        {
+            if (DateTime.Now.Month == 7 && DateTime.Now.Day == 22)
+            {
+                dachshund = "1";
+                this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(224)))), ((int)(((byte)(205)))));
+                install.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(167)))), ((int)(((byte)(121)))), ((int)(((byte)(87)))));
+                restart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(167)))), ((int)(((byte)(121)))), ((int)(((byte)(87)))));
+                close.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(167)))), ((int)(((byte)(121)))), ((int)(((byte)(87)))));
+                install.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(224)))), ((int)(((byte)(205)))));
+                restart.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(224)))), ((int)(((byte)(205)))));
+                close.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(224)))), ((int)(((byte)(205)))));
+                installerTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(167)))), ((int)(((byte)(121)))), ((int)(((byte)(87)))));
+                installerTextBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(224)))), ((int)(((byte)(205)))));
+                versionLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(167)))), ((int)(((byte)(121)))), ((int)(((byte)(87)))));
                 this.Invalidate();
             }
         }
@@ -352,7 +372,30 @@ namespace PlutoPoint_Installer
                     Image heartImage = Properties.Resources.puffin;
                     int newWidth = 100;
                     int newHeight = 100;
-                    int x = 160;
+                    int x = 320;
+                    int y = 320;
+                    e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+                    e.Graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                    e.Graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                    GraphicsState state = e.Graphics.Save();
+                    e.Graphics.TranslateTransform(x + newWidth / 2, y + newHeight / 2);
+                    e.Graphics.TranslateTransform(-(x + newWidth / 2), -(y + newHeight / 2));
+                    e.Graphics.DrawImage(heartImage, new Rectangle(x, y, newWidth, newHeight));
+                    e.Graphics.Restore(state);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error loading image: " + ex.Message);
+                }
+            }
+            if (dachshund == "1")
+            {
+                try
+                {
+                    Image heartImage = Properties.Resources.pluto;
+                    int newWidth = 130;
+                    int newHeight = 100;
+                    int x = 140;
                     int y = 320;
                     e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
                     e.Graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
@@ -666,6 +709,12 @@ namespace PlutoPoint_Installer
             else if (puffin == "1")
             {
                 installerTextBox.AppendText("Today is national Puffin day!");
+                installerTextBox.AppendText(Environment.NewLine);
+                player = new SoundPlayer(Properties.Resources.win98shutdown);
+            }
+            else if (dachshund == "1")
+            {
+                installerTextBox.AppendText("Today is national Dachshund day!");
                 installerTextBox.AppendText(Environment.NewLine);
                 player = new SoundPlayer(Properties.Resources.win98shutdown);
             }
