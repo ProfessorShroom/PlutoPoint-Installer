@@ -162,7 +162,7 @@ namespace PlutoPoint_Installer
         }
         private void CheckDachshund()
         {
-            if (DateTime.Now.Month == 7 && DateTime.Now.Day == 22)
+            if (DateTime.Now.Month == 6 && DateTime.Now.Day == 21)
             {
                 dachshund = "1";
                 this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(224)))), ((int)(((byte)(205)))));
