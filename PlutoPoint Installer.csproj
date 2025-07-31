@@ -113,6 +113,8 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\images\rhino.png" />
+    <None Include="Resources\images\hippo.png" />
     <None Include="Resources\images\pluto.png" />
     <None Include="Resources\icons\nvidiaApp.png" />
     <None Include="Resources\images\puffin.png" />

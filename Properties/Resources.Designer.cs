@@ -180,6 +180,16 @@ namespace PlutoPoint_Installer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap hippo {
+            get {
+                object obj = ResourceManager.GetObject("hippo", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap libreOffice {
             get {
                 object obj = ResourceManager.GetObject("libreOffice", resourceCulture);
@@ -303,6 +313,16 @@ namespace PlutoPoint_Installer.Properties {
         internal static System.Drawing.Bitmap restart {
             get {
                 object obj = ResourceManager.GetObject("restart", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap rhino {
+            get {
+                object obj = ResourceManager.GetObject("rhino", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
