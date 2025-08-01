@@ -40,6 +40,20 @@ namespace PlutoPoint_Installer
         public installerForm()
         {
             InitializeComponent();
+            
+            // Button sound effects
+            hoverSound = new SoundPlayer(Properties.Resources.buttonHover);
+            clickSound = new SoundPlayer(Properties.Resources.buttonClick);
+
+            // Attach to buttons
+            install.MouseEnter += (s, e) => hoverSound.Play();
+            install.Click += (s, e) => clickSound.Play();
+            restart.MouseEnter += (s, e) => hoverSound.Play();
+            restart.Click += (s, e) => clickSound.Play();
+            close.MouseEnter += (s, e) => hoverSound.Play();
+            close.Click += (s, e) => clickSound.Play();
+
+            // Date checks
             CheckChristmas();
             CheckHalloween();
             CheckValentines();
@@ -577,6 +591,8 @@ namespace PlutoPoint_Installer
         Uri vlcMediaPlayerURL = new Uri("https://files.crchq.net/installer/vlcMediaPlayer.msi");
         string vlcMediaPlayerFilename = @"C:\Computer Repair Centre\apps\vlcMediaPlayer.msi";
         string nvidiaAppFilename = @"C:\Computer Repair Centre\apps\nvidiaApp.exe";
+        private SoundPlayer hoverSound;
+        private SoundPlayer clickSound;
 
         private static async Task<string> GetPublicIPAddressAsync()
         {
@@ -2395,8 +2411,9 @@ namespace PlutoPoint_Installer
             }
         }
 
-        private void close_Click(object sender, EventArgs e)
+        private async void close_Click(object sender, EventArgs e)
         {
+            await Task.Delay(325);
             Process.Start("shutdown", "/a");
             this.Close();
         }

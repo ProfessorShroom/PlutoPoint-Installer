@@ -113,6 +113,8 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\sounds\buttonHover.wav" />
+    <None Include="Resources\sounds\buttonClick.wav" />
     <None Include="Resources\images\rhino.png" />
     <None Include="Resources\images\hippo.png" />
     <None Include="Resources\images\pluto.png" />
