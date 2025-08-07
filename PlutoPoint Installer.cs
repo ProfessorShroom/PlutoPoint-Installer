@@ -1,23 +1,24 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Diagnostics.Eventing.Reader;
+using System.IO;
+using System.Management;
+using System.Media;
 using System.Net;
+using System.Net.Http;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography;
+using System.Security.Policy;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Collections;
-using Microsoft.Win32;
-using System.IO;
 using System.Xml.Linq;
-using System.Diagnostics.Eventing.Reader;
-using System.Security.Policy;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
-using System.Net.Http;
-using System.Collections.Generic;
-using System.Threading;
-using System.Media;
 using static System.Net.WebRequestMethods;
-using System.Management;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 // Copyright © Charlie Howard 2025 All rights reserved.
 
@@ -26,25 +27,22 @@ namespace PlutoPoint_Installer
 
     using System.Drawing;
     using System.Drawing.Drawing2D;
+    using System.Drawing.Text;
     using System.Management;
     using System.Reflection;
+    using System.Text;
     using System.Text.RegularExpressions;
     using System.Windows.Forms;
     using File = System.IO.File;
-
     public partial class installerForm : Form
     {
-
         DateTime buildDate = File.GetLastWriteTime(Assembly.GetExecutingAssembly().Location);
-
         public installerForm()
         {
-            InitializeComponent();
-            
+            InitializeComponent(); 
             // Button sound effects
             hoverSound = new SoundPlayer(Properties.Resources.buttonHover);
             clickSound = new SoundPlayer(Properties.Resources.buttonClick);
-
             // Attach to buttons
             install.MouseEnter += (s, e) => hoverSound.Play();
             install.Click += (s, e) => clickSound.Play();
@@ -52,7 +50,6 @@ namespace PlutoPoint_Installer
             restart.Click += (s, e) => clickSound.Play();
             close.MouseEnter += (s, e) => hoverSound.Play();
             close.Click += (s, e) => clickSound.Play();
-
             // Date checks
             CheckChristmas();
             CheckHalloween();
@@ -68,14 +65,14 @@ namespace PlutoPoint_Installer
             CheckHowardBirthday();
             CheckAdamBirthday();
             CheckGeethBirthday();
-            CheckMicrosoftOffice2007Async();
+            checkIP();
             CheckEliteBook();
             CheckForNvidiaGPU();
             GetLibreOfficeVersion();
             Version version = Assembly.GetExecutingAssembly().GetName().Version;
             this.versionLabel.Text = $"Version {version}";
         }
-
+        // Set strings
         string christmas = null;
         string halloween = null;
         string valentines = null;
@@ -93,7 +90,16 @@ namespace PlutoPoint_Installer
         string geethBirthday = null;
         string hpEliteBook = null;
         string nvidiaCheckStatus = null;
-
+        string safeLocation = "0";
+        string romsey = null;
+        string chandlersFord = null;
+        string highcliffe = null;
+        string charlieHome = null;
+        private const string StoredPasswordHash = "61a8b0026371a90d41b114644694485ecdaf999473977a125d028e39cb6d77b2";
+        string romseyHash = "aebeec856af3585448c3d5cc72dc93f29d56fa7191027a35c345eba670c533b3";
+        string chandlersFordHash = "668cc649b9638504fe7d36a29637e740d44bd8ec2d8839e156c22b8f7a155b43";
+        string highcliffeHash = "a9c9ca550056bb3e3062acf0327f99f0e2959ad2421a5745687a49140aa9c4bc";
+        string charlieHomeHash = "980752625289e182433c3609667f014fd3fa6201b621a8e3b02caeafb3bacfde";
         private void CheckEliteBook()
         {
             using (ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT Model FROM Win32_ComputerSystem"))
@@ -109,7 +115,6 @@ namespace PlutoPoint_Installer
                 }
             }
         }
-
         private void CheckChristmas()
         {
             if (DateTime.Now.Month == 12)
@@ -322,7 +327,6 @@ namespace PlutoPoint_Installer
                 this.Invalidate();
             }
         }
-
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
@@ -535,34 +539,47 @@ namespace PlutoPoint_Installer
                 }
             }
         }
+        private string HashIP(string ip)
+        {
+            using (var sha256 = SHA256.Create())
+            {
+                byte[] bytes = Encoding.UTF8.GetBytes(ip.Trim());
+                byte[] hash = sha256.ComputeHash(bytes);
 
-        string romsey = null;
-        string chandlersFord = null;
-        string highcliffe = null;
-        private async void CheckMicrosoftOffice2007Async()
+                // Convert to lowercase hex string
+                return BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
+            }
+        }
+        private async void checkIP()
         {
             string publicIP = await GetPublicIPAddressAsync();
             if (publicIP != null)
             {
-                switch (publicIP)
+                string publicIPHash = HashIP(publicIP);
+
+                if (publicIPHash == romseyHash)
                 {
-                    case "62.31.75.58":
-                        //Romsey
-                        romsey = "1";
-                        break;
-                    case "86.12.18.92":
-                        //Chandlers Ford
-                        chandlersFord = "1";
-                        microsoftOffice2007Check.Checked = true;
-                        break;
-                    case "81.130.137.162":
-                        //Highcliffe
-                        highcliffe = "1";
-                        break;
+                    romsey = "1";
+                    safeLocation = "1";
+                }
+                else if (publicIPHash == chandlersFordHash)
+                {
+                    chandlersFord = "1";
+                    safeLocation = "1";
+                    microsoftOffice2007Check.Checked = true;
+                }
+                else if (publicIPHash == highcliffeHash)
+                {
+                    highcliffe = "1";
+                    safeLocation = "1";
+                }
+                else if (publicIPHash == charlieHomeHash)
+                {
+                    charlieHome = "1";
+                    safeLocation = "1";
                 }
             }
         }
-
         Uri crcOEMURL = new Uri("https://raw.githubusercontent.com/professorshroom/PlutoPoint-Installer/refs/heads/main/Resources/computerRepairCentre/computerRepairCentreOEM.bmp");
         string crcOEMFilename = @"C:\Computer Repair Centre\oem\computerRepairCentreOEM.bmp";
         Uri anyDeskURL = new Uri("https://files.crchq.net/installer/anyDesk.msi");
@@ -593,7 +610,6 @@ namespace PlutoPoint_Installer
         string nvidiaAppFilename = @"C:\Computer Repair Centre\apps\nvidiaApp.exe";
         private SoundPlayer hoverSound;
         private SoundPlayer clickSound;
-
         private static async Task<string> GetPublicIPAddressAsync()
         {
             using (HttpClient client = new HttpClient())
@@ -657,7 +673,6 @@ namespace PlutoPoint_Installer
                 }
             }
         }
-
         private void CheckForNvidiaGPU()
         {
             var searcher = new ManagementObjectSearcher("SELECT * FROM Win32_VideoController");
@@ -713,6 +728,27 @@ namespace PlutoPoint_Installer
         }
         private async void install_Click(object sender, EventArgs e)
         {
+            if (safeLocation == "0")
+            {
+                using (PasswordForm pf = new PasswordForm())
+                {
+                    if (pf.ShowDialog() == DialogResult.OK)
+                    {
+                        string enteredHash = ComputeSHA256(pf.EnteredPassword);
+
+                         if (enteredHash != StoredPasswordHash)
+                        {
+                            MessageBox.Show("Incorrect password. Exiting.");
+                            this.Close();
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("Password required. Exiting installer.");
+                        Environment.Exit(0);
+                    }
+                }
+            }
             progressBar.Maximum = 0;
             string rootDir = @"C:\Computer Repair Centre";
             string oemDir = @"C:\Computer Repair Centre\oem";
@@ -721,11 +757,8 @@ namespace PlutoPoint_Installer
             string discordAppPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"Discord\Update.exe");
             string desktopPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop));
             string launcherPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), @"Computer Repair Centre Installer Launcher.exe");
-
             installerTextBox.AppendText($"Last updated on {buildDate:dd MMMM yyyy}.");
             installerTextBox.AppendText(Environment.NewLine);
-
-
             if (!Directory.Exists(rootDir))
             {
                 Directory.CreateDirectory(rootDir);
@@ -738,9 +771,7 @@ namespace PlutoPoint_Installer
             {
                 Directory.CreateDirectory(appsDir);
             }
-
             SoundPlayer player;
-
             using (RegistryKey key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion"))
             {
                 if (key != null)
@@ -781,7 +812,6 @@ namespace PlutoPoint_Installer
             if (mozillaThunderbirdCheck.Checked) { progressBar.Maximum += 2; }
             if (steamCheck.Checked) { progressBar.Maximum += 2; }
             if (hpEliteBook == "1") { progressBar.Maximum += 4; }
-
             if (christmas == "1")
             {
                 installerTextBox.AppendText("Merry Christmas!");
@@ -2427,5 +2457,55 @@ namespace PlutoPoint_Installer
         {
             System.Diagnostics.Process.Start("https://github.com/professorshroom/PlutoPoint-Installer/blob/main/README.md");
         }
+        private static string ComputeSHA256(string input)
+        {
+            using (SHA256 sha = SHA256.Create())
+            {
+                byte[] bytes = sha.ComputeHash(System.Text.Encoding.UTF8.GetBytes(input));
+                StringBuilder builder = new StringBuilder();
+                foreach (byte b in bytes)
+                    builder.Append(b.ToString("x2"));
+                return builder.ToString();
+            }
+        }
+        private class PasswordForm : Form
+        {
+            public string EnteredPassword { get; private set; }
+            private TextBox txtPassword;
+            private Button btnOK, btnCancel;
+            private Label passwordText;
+
+            public PasswordForm()
+            {
+                this.Text = "Password Required.";
+                this.Width = 300;
+                this.Height = 160;
+                this.FormBorderStyle = FormBorderStyle.FixedDialog;
+                this.StartPosition = FormStartPosition.CenterParent;
+                this.MaximizeBox = false;
+                this.MinimizeBox = false;
+                this.Icon = global::PlutoPoint_Installer.Properties.Resources.computerRepairCentreIcon;
+                passwordText = new Label()
+                {
+                    Text = "The installer is not being run from a safe location, please enter password to continue.",
+                    Left = 10,
+                    Top = 10,
+                    Width = 260,
+                    Height = 40,
+                    ForeColor = Color.Red,
+                    TextAlign = ContentAlignment.MiddleLeft
+                };
+                Label lbl = new Label() { Text = "Password:", Left = 10, Top = 55, Width = 70 };
+                txtPassword = new TextBox() { Left = 85, Top = 52, Width = 180, PasswordChar = '*' };
+                btnOK = new Button() { Text = "OK", Left = 185, Width = 80, Top = 85, DialogResult = DialogResult.OK };
+                btnOK.Click += (s, e) => { EnteredPassword = txtPassword.Text; };
+                this.Controls.Add(passwordText);
+                this.Controls.Add(lbl);
+                this.Controls.Add(txtPassword);
+                this.Controls.Add(btnOK);
+                this.AcceptButton = btnOK;
+            }
+        }
+
     }
 }
