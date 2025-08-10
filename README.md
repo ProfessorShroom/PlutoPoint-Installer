@@ -1,6 +1,6 @@
  ![Arch](https://img.shields.io/badge/Arch-AMD64-blue) ![OS](https://img.shields.io/badge/OS-Windows%2010%20|%20Windows%2011-green)
 
-## PlutoPoint Installer Version 6.1.14.0
+## PlutoPoint Installer Version 6.1.14.1
 ###### Copyright © Charlie Howard 2025 All rights reserved.
 
 A C# based GUI installer for Windows 10/11.
@@ -15,9 +15,14 @@ Disables sleep and screen timeout if plugged into AC power during the install an
 
 ### Changelog
 
+**Update 6.1.14.1**
+
+Added multiple password support for IP check, this will allow temporary usaged by multiple different people if needed.
+
 **Update 6.1.14.0**
 
 IP addresses are now encrypted.
+
 Added password protection if the installer is run from a different IP address from one of the listed safe IP's.
 
 **Update 6.1.13.0**

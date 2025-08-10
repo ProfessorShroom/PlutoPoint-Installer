@@ -95,7 +95,8 @@ namespace PlutoPoint_Installer
         string chandlersFord = null;
         string highcliffe = null;
         string charlieHome = null;
-        private const string StoredPasswordHash = "61a8b0026371a90d41b114644694485ecdaf999473977a125d028e39cb6d77b2";
+        private const string charliePasswordHash = "61a8b0026371a90d41b114644694485ecdaf999473977a125d028e39cb6d77b2";
+        private const string CRCPasswordHash = "1c98fa014f3400abee047920e535036a74661fa0c88f34d24ebed7866a1fc630";
         string romseyHash = "aebeec856af3585448c3d5cc72dc93f29d56fa7191027a35c345eba670c533b3";
         string chandlersFordHash = "668cc649b9638504fe7d36a29637e740d44bd8ec2d8839e156c22b8f7a155b43";
         string highcliffeHash = "a9c9ca550056bb3e3062acf0327f99f0e2959ad2421a5745687a49140aa9c4bc";
@@ -736,7 +737,7 @@ namespace PlutoPoint_Installer
                     {
                         string enteredHash = ComputeSHA256(pf.EnteredPassword);
 
-                         if (enteredHash != StoredPasswordHash)
+                        if (enteredHash != charliePasswordHash && enteredHash != CRCPasswordHash)
                         {
                             MessageBox.Show("Incorrect password. Exiting.");
                             this.Close();
