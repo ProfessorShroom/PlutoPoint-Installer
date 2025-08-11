@@ -45,6 +45,7 @@ namespace PlutoPoint_Installer
             this.restart = new System.Windows.Forms.Button();
             this.bingWallpapersCheck = new System.Windows.Forms.CheckBox();
             this.versionLabel = new System.Windows.Forms.LinkLabel();
+            this.locationLabel = new System.Windows.Forms.Label();
             this.restartCheck = new System.Windows.Forms.CheckBox();
             this.crcCheck = new System.Windows.Forms.CheckBox();
             this.powerCheck = new System.Windows.Forms.CheckBox();
@@ -184,6 +185,16 @@ namespace PlutoPoint_Installer
             this.versionLabel.TabStop = true;
             this.versionLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.versionLabel_LinkClicked);
             // 
+            // locationLabel
+            // 
+            this.locationLabel.AutoSize = true;
+            this.locationLabel.ForeColor = System.Drawing.Color.White;
+            this.locationLabel.Location = new System.Drawing.Point(100, 425);
+            this.locationLabel.Name = "locationLabel";
+            this.locationLabel.Size = new System.Drawing.Size(84, 13);
+            this.locationLabel.TabIndex = 9;
+            this.locationLabel.TabStop = true;
+            // 
             // restartCheck
             // 
             this.restartCheck.Image = global::PlutoPoint_Installer.Properties.Resources.restart;
@@ -317,6 +328,7 @@ namespace PlutoPoint_Installer
             this.Controls.Add(this.crcCheck);
             this.Controls.Add(this.restartCheck);
             this.Controls.Add(this.versionLabel);
+            this.Controls.Add(this.locationLabel);
             this.Controls.Add(this.bingWallpapersCheck);
             this.Controls.Add(this.restart);
             this.Controls.Add(this.close);
@@ -346,6 +358,7 @@ namespace PlutoPoint_Installer
         private System.Windows.Forms.Button restart;
         private System.Windows.Forms.CheckBox bingWallpapersCheck;
         private System.Windows.Forms.LinkLabel versionLabel;
+        private System.Windows.Forms.Label locationLabel;
         private System.Windows.Forms.CheckBox restartCheck;
         private System.Windows.Forms.CheckBox crcCheck;
         private System.Windows.Forms.CheckBox powerCheck;

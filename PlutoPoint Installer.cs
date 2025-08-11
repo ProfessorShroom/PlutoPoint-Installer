@@ -16,6 +16,7 @@ using System.Security.Policy;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Timers;
 using System.Xml.Linq;
 using static System.Net.WebRequestMethods;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
@@ -37,19 +38,42 @@ namespace PlutoPoint_Installer
     public partial class installerForm : Form
     {
         DateTime buildDate = File.GetLastWriteTime(Assembly.GetExecutingAssembly().Location);
+
+        private bool isClickPlaying = false;
+
         public installerForm()
         {
-            InitializeComponent(); 
-            // Button sound effects
-            hoverSound = new SoundPlayer(Properties.Resources.buttonHover);
-            clickSound = new SoundPlayer(Properties.Resources.buttonClick);
-            // Attach to buttons
-            install.MouseEnter += (s, e) => hoverSound.Play();
-            install.Click += (s, e) => clickSound.Play();
-            restart.MouseEnter += (s, e) => hoverSound.Play();
-            restart.Click += (s, e) => clickSound.Play();
-            close.MouseEnter += (s, e) => hoverSound.Play();
-            close.Click += (s, e) => clickSound.Play();
+            InitializeComponent();
+            // Preload button sound effects from resources
+            SoundPlayer hoverSound = new SoundPlayer(Properties.Resources.buttonHover);
+            SoundPlayer clickSound = new SoundPlayer(Properties.Resources.buttonClick);
+            void PlayHover()
+            {
+                if (isClickPlaying) return;
+                hoverSound.Stop();
+                hoverSound.Play();
+            }
+            void PlayClick()
+            {
+                hoverSound.Stop();
+                clickSound.Stop();
+                clickSound.Play();
+                isClickPlaying = true;
+                var t = new System.Timers.Timer(150);
+                t.AutoReset = false;
+                t.Elapsed += (s, e) =>
+                {
+                    isClickPlaying = false;
+                    t.Dispose();
+                };
+                t.Start();
+            }
+            install.MouseEnter += (s, e) => PlayHover();
+            install.Click += (s, e) => PlayClick();
+            restart.MouseEnter += (s, e) => PlayHover();
+            restart.Click += (s, e) => PlayClick();
+            close.MouseEnter += (s, e) => PlayHover();
+            close.Click += (s, e) => PlayClick();
             // Date checks
             CheckChristmas();
             CheckHalloween();
@@ -65,7 +89,7 @@ namespace PlutoPoint_Installer
             CheckHowardBirthday();
             CheckAdamBirthday();
             CheckGeethBirthday();
-            checkIP();
+            CheckIP();
             CheckEliteBook();
             CheckForNvidiaGPU();
             GetLibreOfficeVersion();
@@ -91,6 +115,7 @@ namespace PlutoPoint_Installer
         string hpEliteBook = null;
         string nvidiaCheckStatus = null;
         string safeLocation = "0";
+        string location = null;
         string romsey = null;
         string chandlersFord = null;
         string highcliffe = null;
@@ -551,7 +576,7 @@ namespace PlutoPoint_Installer
                 return BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
             }
         }
-        private async void checkIP()
+        private async void CheckIP()
         {
             string publicIP = await GetPublicIPAddressAsync();
             if (publicIP != null)
@@ -580,6 +605,31 @@ namespace PlutoPoint_Installer
                     safeLocation = "1";
                 }
             }
+            UpdateLocation();
+        }
+        private void UpdateLocation()
+        {
+            if (romsey == "1")
+            {
+                location = "Romsey";
+            }
+            else if (chandlersFord == "1")
+            {
+                location = "Chandler's Ford";
+            }
+            else if (highcliffe == "1")
+            {
+                location = "Highcliffe";
+            }
+            else if (charlieHome == "1")
+            {
+                location = "Charlie's House";
+            }
+            else
+            {
+                location = "Unknown";
+            }
+            locationLabel.Text = "Current location: " + location;
         }
         Uri crcOEMURL = new Uri("https://raw.githubusercontent.com/professorshroom/PlutoPoint-Installer/refs/heads/main/Resources/computerRepairCentre/computerRepairCentreOEM.bmp");
         string crcOEMFilename = @"C:\Computer Repair Centre\oem\computerRepairCentreOEM.bmp";
@@ -611,6 +661,9 @@ namespace PlutoPoint_Installer
         string nvidiaAppFilename = @"C:\Computer Repair Centre\apps\nvidiaApp.exe";
         private SoundPlayer hoverSound;
         private SoundPlayer clickSound;
+
+        public bool IsClickPlaying { get; private set; }
+
         private static async Task<string> GetPublicIPAddressAsync()
         {
             using (HttpClient client = new HttpClient())
