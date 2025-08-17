@@ -85,6 +85,7 @@
     <Compile Include="PlutoPoint Installer.Designer.cs">
       <DependentUpon>PlutoPoint Installer.cs</DependentUpon>
     </Compile>
+    <Compile Include="AssemblyUpdateDateAttribute.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="PlutoPoint Installer.resx">

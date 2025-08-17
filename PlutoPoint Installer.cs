@@ -15,8 +15,8 @@ using System.Security.Cryptography;
 using System.Security.Policy;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using System.Timers;
+using System.Windows.Forms;
 using System.Xml.Linq;
 using static System.Net.WebRequestMethods;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
@@ -29,6 +29,7 @@ namespace PlutoPoint_Installer
     using System.Drawing;
     using System.Drawing.Drawing2D;
     using System.Drawing.Text;
+    using System.Linq;
     using System.Management;
     using System.Reflection;
     using System.Text;
@@ -811,7 +812,41 @@ namespace PlutoPoint_Installer
             string discordAppPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"Discord\Update.exe");
             string desktopPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop));
             string launcherPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), @"Computer Repair Centre Installer Launcher.exe");
-            installerTextBox.AppendText($"Last updated on {buildDate:dd MMMM yyyy}.");
+            Func<int, string> WithDaySuffix = day =>
+            {
+                if (day >= 11 && day <= 13) return day + "th";
+                switch (day % 10)
+                {
+                    case 1: return day + "st";
+                    case 2: return day + "nd";
+                    case 3: return day + "rd";
+                    default: return day + "th";
+                }
+            };
+            var assembly = Assembly.GetExecutingAssembly();
+            var updateAttr = assembly
+                .GetCustomAttributes(typeof(AssemblyUpdateDateAttribute), false)
+                .Cast<AssemblyUpdateDateAttribute>()
+                .FirstOrDefault();
+            DateTime dateToUse;
+            if (updateAttr != null &&
+                DateTime.TryParseExact(updateAttr.Date, "dd/MM/yyyy",
+                                       System.Globalization.CultureInfo.InvariantCulture,
+                                       System.Globalization.DateTimeStyles.None,
+                                       out DateTime parsedDate))
+            {
+                dateToUse = parsedDate;
+            }
+            else
+            {
+                dateToUse = DateTime.Today; // fallback
+            }
+
+            string formatted = string.Format("{0} of {1} {2}",
+                WithDaySuffix(dateToUse.Day),
+                dateToUse.ToString("MMMM"),
+                dateToUse.Year);
+            installerTextBox.AppendText("Last updated on " + formatted + ".");
             installerTextBox.AppendText(Environment.NewLine);
             if (!Directory.Exists(rootDir))
             {
