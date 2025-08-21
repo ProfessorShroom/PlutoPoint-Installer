@@ -47,7 +47,7 @@ namespace PlutoPoint_Installer
             InitializeComponent();
             // Preload button sound effects from resources
             SoundPlayer hoverSound = new SoundPlayer(Properties.Resources.buttonHover);
-            SoundPlayer clickSound = new SoundPlayer(Properties.Resources.buttonClick);
+            SoundPlayer clickSound = new SoundPlayer(Properties.Resources.buttonHover);
             void PlayHover()
             {
                 if (isClickPlaying) return;
