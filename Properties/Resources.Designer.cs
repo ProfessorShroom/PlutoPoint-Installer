@@ -63,6 +63,16 @@ namespace PlutoPoint_Installer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap amd {
+            get {
+                object obj = ResourceManager.GetObject("amd", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap anyDesk {
             get {
                 object obj = ResourceManager.GetObject("anyDesk", resourceCulture);
@@ -312,6 +322,16 @@ namespace PlutoPoint_Installer.Properties {
         internal static System.Drawing.Bitmap pumpkin {
             get {
                 object obj = ResourceManager.GetObject("pumpkin", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap recycleBin {
+            get {
+                object obj = ResourceManager.GetObject("recycleBin", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

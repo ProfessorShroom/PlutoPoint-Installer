@@ -114,6 +114,8 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\icons\amd.png" />
+    <None Include="Resources\icons\recycleBin.png" />
     <None Include="Resources\sounds\buttonHover.wav" />
     <None Include="Resources\sounds\buttonClick.wav" />
     <None Include="Resources\images\rhino.png" />

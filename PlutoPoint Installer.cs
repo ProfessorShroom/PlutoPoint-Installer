@@ -42,6 +42,12 @@ namespace PlutoPoint_Installer
 
         private bool isClickPlaying = false;
 
+        [DllImport("Shell32.dll", CharSet = CharSet.Unicode)]
+        private static extern uint SHEmptyRecycleBin(IntPtr hwnd, string pszRootPath, uint dwFlags);
+        private const uint SHERB_NOCONFIRMATION = 0x00000001;
+        private const uint SHERB_NOPROGRESSUI = 0x00000002;
+        private const uint SHERB_NOSOUND = 0x00000004;
+
         public installerForm()
         {
             InitializeComponent();
@@ -93,6 +99,7 @@ namespace PlutoPoint_Installer
             CheckIP();
             CheckEliteBook();
             CheckForNvidiaGPU();
+            CheckforAMDHardware();
             GetLibreOfficeVersion();
             Version version = Assembly.GetExecutingAssembly().GetName().Version;
             this.versionLabel.Text = $"Version {version}";
@@ -115,6 +122,7 @@ namespace PlutoPoint_Installer
         string geethBirthday = null;
         string hpEliteBook = null;
         string nvidiaCheckStatus = null;
+        string amdCheckStatus = null;
         string safeLocation = "0";
         string location = null;
         string romsey = null;
@@ -660,6 +668,7 @@ namespace PlutoPoint_Installer
         Uri vlcMediaPlayerURL = new Uri("https://files.crchq.net/installer/vlcMediaPlayer.msi");
         string vlcMediaPlayerFilename = @"C:\Computer Repair Centre\apps\vlcMediaPlayer.msi";
         string nvidiaAppFilename = @"C:\Computer Repair Centre\apps\nvidiaApp.exe";
+        string amdFilename = @"C:\Computer Repair Centre\apps\amdApp.exe";
         private SoundPlayer hoverSound;
         private SoundPlayer clickSound;
 
@@ -745,6 +754,58 @@ namespace PlutoPoint_Installer
             }
             nvidiaCheckStatus = "0";
             nvidiaAppCheck.Checked = false;
+        }
+        private void CheckforAMDHardware()
+        {
+            bool hasAmdGpu = false;
+            bool hasAmdCpu = false;
+            // --- Check for AMD GPU ---
+            var gpuSearcher = new ManagementObjectSearcher("SELECT * FROM Win32_VideoController");
+            foreach (ManagementObject queryObj in gpuSearcher.Get())
+            {
+                if (queryObj["Caption"] is string caption)
+                {
+                    if (caption.IndexOf("AMD", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                        caption.IndexOf("Radeon", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                        caption.IndexOf("Advanced Micro Devices", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        hasAmdGpu = true;
+                        break;
+                    }
+                }
+            }
+            // --- Check for AMD CPU ---
+            var cpuSearcher = new ManagementObjectSearcher("SELECT * FROM Win32_Processor");
+            foreach (ManagementObject queryObj in cpuSearcher.Get())
+            {
+                if (queryObj["Name"] is string name)
+                {
+                    if (name.IndexOf("AMD", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                        name.IndexOf("Ryzen", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                        name.IndexOf("Threadripper", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        hasAmdCpu = true;
+                        break;
+                    }
+                }
+            }
+            // --- Update UI or variables accordingly ---
+            if (hasAmdGpu || hasAmdCpu)
+            {
+                amdCheckStatus = "1";
+                amdCheck.Checked = true;
+                if (hasAmdGpu && hasAmdCpu)
+                    installerTextBox.AppendText("🧠 + 🎮 AMD CPU and GPU detected." + Environment.NewLine);
+                else if (hasAmdGpu)
+                    installerTextBox.AppendText("🎮 AMD GPU detected." + Environment.NewLine);
+                else
+                    installerTextBox.AppendText("🧠 AMD CPU detected." + Environment.NewLine);
+            }
+            else
+            {
+                amdCheckStatus = "0";
+                amdCheck.Checked = false;
+            }
         }
         private string GetLibreOfficeVersion()
         {
@@ -896,6 +957,7 @@ namespace PlutoPoint_Installer
             if (googleChromeCheck.Checked) { progressBar.Maximum += 2; }
             if (libreOfficeCheck.Checked) { progressBar.Maximum += 2; }
             if (nvidiaAppCheck.Checked) { progressBar.Maximum += 2; }
+            if (amdCheck.Checked) { progressBar.Maximum += 2; }
             if (microsoftOffice2007Check.Checked) { progressBar.Maximum += 2; }
             if (mozillaFirefoxCheck.Checked) { progressBar.Maximum += 2; }
             if (mozillaThunderbirdCheck.Checked) { progressBar.Maximum += 2; }
@@ -1251,6 +1313,67 @@ namespace PlutoPoint_Installer
                     installerTextBox.AppendText("❌ Error: " + ex.Message);
                     installerTextBox.AppendText(Environment.NewLine);
                 }
+            }
+            if (amdCheck.Checked)
+            {
+                installerTextBox.AppendText("📌 AMD Software is selected.");
+                installerTextBox.AppendText(Environment.NewLine);
+
+                installerTextBox.AppendText("🔄 Downloading AMD Auto-Detect and Install tool...");
+                installerTextBox.AppendText(Environment.NewLine);
+
+                try
+                {
+                    using (HttpClient client = new HttpClient())
+                    {
+                        string downloadUrl = "https://drivers.amd.com/drivers/installer/amd-software-installer.exe";
+                        byte[] fileBytes = await client.GetByteArrayAsync(downloadUrl);
+                        File.WriteAllBytes(amdFilename, fileBytes);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error downloading AMD Software:\n{ex.Message}", "Error");
+                }
+
+                progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
+                installerTextBox.AppendText("Installing AMD Software silently...");
+                installerTextBox.AppendText(Environment.NewLine);
+
+                await Task.Run(() =>
+                {
+                    ProcessStartInfo startInfo = new ProcessStartInfo
+                    {
+                        FileName = amdFilename,
+                        Arguments = "/INSTALL /SILENT /NOREBOOT",
+                        UseShellExecute = true,
+                        Verb = "runas"
+                    };
+                    try
+                    {
+                        using (Process process = Process.Start(startInfo))
+                        {
+                            process.WaitForExit();
+                            int exitCode = process.ExitCode;
+                            if (exitCode == 0)
+                            {
+                                Console.WriteLine("Installation successful.");
+                            }
+                            else
+                            {
+                                Console.WriteLine($"Installation exited with code: {exitCode}");
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"An error occurred: {ex.Message}");
+                    }
+                });
+
+                installerTextBox.AppendText("✅ Completed installation of AMD Software.");
+                installerTextBox.AppendText(Environment.NewLine);
+                progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
             }
             if (anyDeskCheck.Checked)
             {
@@ -2503,6 +2626,27 @@ namespace PlutoPoint_Installer
             var deletionHelper = new FileDeletionHelper();
             await deletionHelper.DeleteFilesAndDirectoryAsync(appsDir, launcherPath);
             progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
+
+            if (recycleBinCheck.Checked)
+            {
+                installerTextBox.AppendText("✅ Empty Recycle Bin is checked.");
+                installerTextBox.AppendText(Environment.NewLine);
+                installerTextBox.AppendText("Emptying Recycle Bin...");
+                installerTextBox.AppendText(Environment.NewLine);
+
+                try
+                {
+                    SHEmptyRecycleBin(IntPtr.Zero, null, SHERB_NOCONFIRMATION | SHERB_NOPROGRESSUI | SHERB_NOSOUND);
+                    installerTextBox.AppendText("✅ Recycle Bin emptied successfully.");
+                }
+                catch (Exception ex)
+                {
+                    installerTextBox.AppendText($"⚠️ Failed to empty Recycle Bin: {ex.Message}");
+                }
+
+                installerTextBox.AppendText(Environment.NewLine);
+            }
+
 
             player.Play();
 
