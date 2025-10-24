@@ -1152,6 +1152,13 @@ namespace PlutoPoint_Installer
             {
                 player = new SoundPlayer(Properties.Resources.win98shutdown);
             }
+            if (amdCheck.Checked)
+            {
+                installerTextBox.AppendText("AMD CPU/GPU has been detected, AMD software will be installed.");
+                installerTextBox.AppendText(Environment.NewLine);
+                installerTextBox.AppendText("You can uncheck this if you want.");
+                installerTextBox.AppendText(Environment.NewLine);
+            }
             if (nvidiaAppCheck.Checked)
             {
                 installerTextBox.AppendText("Nvidia GPU has been detected, Nvidia App will be installed.");
@@ -1407,22 +1414,41 @@ namespace PlutoPoint_Installer
             {
                 installerTextBox.AppendText("📌 AMD Software is selected.");
                 installerTextBox.AppendText(Environment.NewLine);
-
-                installerTextBox.AppendText("🔄 Downloading AMD Auto-Detect and Install tool...");
+                installerTextBox.AppendText("🔄 Searching for latest AMD Auto-Detect installer...");
                 installerTextBox.AppendText(Environment.NewLine);
 
                 try
                 {
                     using (HttpClient client = new HttpClient())
                     {
-                        string downloadUrl = "https://drivers.amd.com/drivers/installer/amd-software-installer.exe";
-                        byte[] fileBytes = await client.GetByteArrayAsync(downloadUrl);
-                        File.WriteAllBytes(amdFilename, fileBytes);
+                        string htmlContent = await client.GetStringAsync("https://www.amd.com/en/support");
+                        // Look for something like:
+                        // https://drivers.amd.com/drivers/installer/25.10/whql/amd-software-adrenalin-edition-25.9.1-minimalsetup-250901_web.exe
+                        string pattern = @"https:\/\/drivers\.amd\.com\/drivers\/installer\/[\w\.\/-]*?-minimalsetup-[\w]+_web\.exe";
+                        Match match = Regex.Match(htmlContent, pattern, RegexOptions.IgnoreCase);
+
+                        if (match.Success)
+                        {
+                            string downloadUrl = match.Value;
+                            installerTextBox.AppendText($"🔗 Found latest AMD installer: {downloadUrl}");
+                            installerTextBox.AppendText(Environment.NewLine);
+
+                            byte[] fileBytes = await client.GetByteArrayAsync(downloadUrl);
+                            File.WriteAllBytes(amdFilename, fileBytes);
+                        }
+                        else
+                        {
+                            installerTextBox.AppendText("⚠️ Could not find the AMD installer link on the page.");
+                            installerTextBox.AppendText(Environment.NewLine);
+                            return;
+                        }
                     }
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Error downloading AMD Software:\n{ex.Message}", "Error");
+                    installerTextBox.AppendText($"⚠️ Error downloading AMD Software: {ex.Message}");
+                    installerTextBox.AppendText(Environment.NewLine);
+                    return;
                 }
 
                 progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
@@ -1438,25 +1464,23 @@ namespace PlutoPoint_Installer
                         UseShellExecute = true,
                         Verb = "runas"
                     };
+
                     try
                     {
                         using (Process process = Process.Start(startInfo))
                         {
                             process.WaitForExit();
                             int exitCode = process.ExitCode;
-                            if (exitCode == 0)
-                            {
-                                Console.WriteLine("Installation successful.");
-                            }
-                            else
-                            {
-                                Console.WriteLine($"Installation exited with code: {exitCode}");
-                            }
+                            installerTextBox.AppendText(exitCode == 0
+                                ? "✅ Installation successful."
+                                : $"⚠️ Installation exited with code: {exitCode}");
+                            installerTextBox.AppendText(Environment.NewLine);
                         }
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine($"An error occurred: {ex.Message}");
+                        installerTextBox.AppendText($"⚠️ Installation failed: {ex.Message}");
+                        installerTextBox.AppendText(Environment.NewLine);
                     }
                 });
 
@@ -1464,6 +1488,7 @@ namespace PlutoPoint_Installer
                 installerTextBox.AppendText(Environment.NewLine);
                 progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
             }
+
             if (anyDeskCheck.Checked)
             {
                 installerTextBox.AppendText("📌 AnyDesk is selected.");
@@ -1981,69 +2006,82 @@ namespace PlutoPoint_Installer
             {
                 installerTextBox.AppendText("📌 Nvidia App is selected.");
                 installerTextBox.AppendText(Environment.NewLine);
-                string edition = "Public";
-                string baseUrl = edition.Equals("Enterprise", StringComparison.OrdinalIgnoreCase)
-                    ? "https://www.nvidia.com/en-us/software/nvidia-app-enterprise/"
-                    : "https://www.nvidia.com/en-us/software/nvidia-app/";
-                string targetFolder = @"C:\Computer Repair Centre\apps";
-                Directory.CreateDirectory(targetFolder);
-                installerTextBox.AppendText("🔄 Downloading Nvidia App...");
+                installerTextBox.AppendText("🔄 Searching for latest Nvidia App installer...");
                 installerTextBox.AppendText(Environment.NewLine);
+
                 try
                 {
                     using (HttpClient client = new HttpClient())
                     {
+                        string edition = "Public";
+                        string baseUrl = edition.Equals("Enterprise", StringComparison.OrdinalIgnoreCase)
+                            ? "https://www.nvidia.com/en-us/software/nvidia-app-enterprise/"
+                            : "https://www.nvidia.com/en-us/software/nvidia-app/";
+
                         string htmlContent = await client.GetStringAsync(baseUrl);
+
+                        // Look for something like:
+                        // https://us.download.nvidia.com/nvapp/client/1.2.3/NVIDIA_app_v1.2.3.exe
                         string pattern = @"https:\/\/us\.download\.nvidia\.com\/nvapp\/client\/[\d\.]+\/NVIDIA_app_v[\d\.]+\.exe";
-                        Match match = Regex.Match(htmlContent, pattern);
+                        Match match = Regex.Match(htmlContent, pattern, RegexOptions.IgnoreCase);
+
                         if (match.Success)
                         {
                             string downloadUrl = match.Value;
-                            string fileName = "nvidiaApp.exe";
-                            string nvidiaAppPath = Path.Combine(targetFolder, fileName);
+                            installerTextBox.AppendText($"🔗 Found latest Nvidia installer: {downloadUrl}");
+                            installerTextBox.AppendText(Environment.NewLine);
+
                             byte[] fileBytes = await client.GetByteArrayAsync(downloadUrl);
-                            File.WriteAllBytes(nvidiaAppPath, fileBytes);
+                            File.WriteAllBytes(nvidiaAppFilename, fileBytes);
+                        }
+                        else
+                        {
+                            installerTextBox.AppendText("⚠️ Could not find Nvidia App download link.");
+                            installerTextBox.AppendText(Environment.NewLine);
+                            return;
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Error downloading NVIDIA App:\n{ex.Message}", "Error");
+                    installerTextBox.AppendText($"⚠️ Error downloading Nvidia App: {ex.Message}");
+                    installerTextBox.AppendText(Environment.NewLine);
+                    return;
                 }
+
                 progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
-                installerTextBox.AppendText("📦 Installing Nvidia App...");
+                installerTextBox.AppendText("📦 Installing Nvidia App silently...");
                 installerTextBox.AppendText(Environment.NewLine);
+
                 await Task.Run(() =>
                 {
                     ProcessStartInfo startInfo = new ProcessStartInfo
                     {
                         FileName = nvidiaAppFilename,
-                        Arguments = "-s -noreboot -noeula -nofinish -nosplash",
+                        Arguments = "/S",
                         UseShellExecute = true,
                         Verb = "runas"
                     };
+
                     try
                     {
                         using (Process process = Process.Start(startInfo))
                         {
                             process.WaitForExit();
                             int exitCode = process.ExitCode;
-                            if (exitCode == 0)
-                            {
-                                Console.WriteLine("Installation successful.");
-                            }
-                            else
-                            {
-                                Console.WriteLine($"Installation exited with code: {exitCode}");
-                            }
+                            installerTextBox.AppendText(exitCode == 0
+                                ? "✅ Installation successful."
+                                : $"⚠️ Installation exited with code: {exitCode}");
+                            installerTextBox.AppendText(Environment.NewLine);
                         }
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine($"An error occurred: {ex.Message}");
+                        installerTextBox.AppendText($"⚠️ Installation failed: {ex.Message}");
+                        installerTextBox.AppendText(Environment.NewLine);
                     }
-
                 });
+
                 installerTextBox.AppendText("✅ Completed installation of Nvidia App.");
                 installerTextBox.AppendText(Environment.NewLine);
                 progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
