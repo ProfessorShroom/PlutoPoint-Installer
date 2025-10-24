@@ -98,8 +98,10 @@ namespace PlutoPoint_Installer
             CheckGeethBirthday();
             CheckIP();
             CheckEliteBook();
-            CheckForNvidiaGPU();
+            CheckWindowsVersion();
+            CheckForIntelHardware();
             CheckforAMDHardware();
+            CheckForNvidiaGPU();
             GetLibreOfficeVersion();
             Version version = Assembly.GetExecutingAssembly().GetName().Version;
             this.versionLabel.Text = $"Version {version}";
@@ -121,14 +123,17 @@ namespace PlutoPoint_Installer
         string adamBirthday = null;
         string geethBirthday = null;
         string hpEliteBook = null;
-        string nvidiaCheckStatus = null;
-        string amdCheckStatus = null;
-        string safeLocation = "0";
+        string safeLocation = null;
         string location = null;
         string romsey = null;
         string chandlersFord = null;
         string highcliffe = null;
         string charlieHome = null;
+        string windows7 = null;
+        string windows8 = null;
+        string windows81 = null;
+        string windows10 = null;
+        string windows11 = null;
         private const string charliePasswordHash = "61a8b0026371a90d41b114644694485ecdaf999473977a125d028e39cb6d77b2";
         private const string CRCPasswordHash = "1c98fa014f3400abee047920e535036a74661fa0c88f34d24ebed7866a1fc630";
         string romseyHash = "aebeec856af3585448c3d5cc72dc93f29d56fa7191027a35c345eba670c533b3";
@@ -613,6 +618,10 @@ namespace PlutoPoint_Installer
                     charlieHome = "1";
                     safeLocation = "1";
                 }
+                else
+                {
+                    safeLocation = "0";
+                }
             }
             UpdateLocation();
         }
@@ -737,6 +746,114 @@ namespace PlutoPoint_Installer
                 }
             }
         }
+        private void CheckWindowsVersion()
+        {
+            try
+            {
+                using (var key = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(@"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion"))
+                {
+                    if (key != null)
+                    {
+                        string buildNumber = key.GetValue("CurrentBuild")?.ToString();
+
+                        if (int.TryParse(buildNumber, out int build))
+                        {
+                            string versionText;
+
+                            if (build >= 22000)
+                            {
+                                versionText = "🪟 Windows 11 detected.";
+                                windows11 = "1";
+                            }
+                            else if (build >= 10240)
+                            {
+                                versionText = "🪟 Windows 10 detected. Time to move on grandad.";
+                                windows10 = "1";
+                            }
+                            else if (build >= 9600)
+                            {
+                                versionText = "🪟 Windows 8.1 detected. Why?";
+                                windows81 = "1";
+                            }
+                            else if (build >= 9200)
+                            {
+                                versionText = "🪟 Windows 8 detected. No really, why?";
+                                windows8 = "1";
+                            }
+                            else if (build >= 7600)
+                            {
+                                versionText = "🪟 Windows 7 detected. No it really is time to move on grandad.";
+                                windows7 = "1";
+                            }
+                            else
+                            {
+                                versionText = "🪟 Older or unknown Windows version detected.";
+                            }
+                            installerTextBox.AppendText(versionText + Environment.NewLine);
+                            return;
+                        }
+                    }
+                    installerTextBox.AppendText("⚠️ Unable to determine Windows version." + Environment.NewLine);
+                }
+            }
+            catch (Exception ex)
+            {
+                installerTextBox.AppendText("❌ Error checking Windows version: " + ex.Message + Environment.NewLine);
+            }
+        }
+        private void CheckForIntelHardware()
+        {
+            bool hasIntelGpu = false;
+            bool hasIntelCpu = false;
+
+            var gpuSearcher = new ManagementObjectSearcher("SELECT * FROM Win32_VideoController");
+            foreach (ManagementObject queryObj in gpuSearcher.Get())
+            {
+                if (queryObj["Caption"] is string caption)
+                {
+                    if (caption.IndexOf("Intel", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                        caption.IndexOf("Iris", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                        caption.IndexOf("UHD", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                        caption.IndexOf("Xe", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                        caption.IndexOf("Arc", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        hasIntelGpu = true;
+                        break;
+                    }
+                }
+            }
+            var cpuSearcher = new ManagementObjectSearcher("SELECT * FROM Win32_Processor");
+            foreach (ManagementObject queryObj in cpuSearcher.Get())
+            {
+                if (queryObj["Name"] is string name)
+                {
+                    if (name.IndexOf("Intel", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                        name.IndexOf("Core", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                        name.IndexOf("Xeon", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                        name.IndexOf("Pentium", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                        name.IndexOf("Celeron", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        hasIntelCpu = true;
+                        break;
+                    }
+                }
+            }
+            if (hasIntelGpu || hasIntelCpu)
+            {
+//                intelCheck.Checked = true;
+
+                if (hasIntelGpu && hasIntelCpu)
+                    installerTextBox.AppendText("🧠 + 🎮 Intel CPU and GPU detected." + Environment.NewLine);
+                else if (hasIntelGpu)
+                    installerTextBox.AppendText("🎮 Intel GPU detected." + Environment.NewLine);
+                else
+                    installerTextBox.AppendText("🧠 Intel CPU detected." + Environment.NewLine);
+            }
+            else
+            {
+//                intelCheck.Checked = false;
+            }
+        }
         private void CheckForNvidiaGPU()
         {
             var searcher = new ManagementObjectSearcher("SELECT * FROM Win32_VideoController");
@@ -746,20 +863,18 @@ namespace PlutoPoint_Installer
                 {
                     if (caption.IndexOf("NVIDIA", StringComparison.OrdinalIgnoreCase) >= 0)
                     {
-                        nvidiaCheckStatus = "1";
                         nvidiaAppCheck.Checked = true;
+                        installerTextBox.AppendText("🎮 Nvidia GPU detected." + Environment.NewLine);
                         return;
                     }
                 }
             }
-            nvidiaCheckStatus = "0";
             nvidiaAppCheck.Checked = false;
         }
         private void CheckforAMDHardware()
         {
             bool hasAmdGpu = false;
             bool hasAmdCpu = false;
-            // --- Check for AMD GPU ---
             var gpuSearcher = new ManagementObjectSearcher("SELECT * FROM Win32_VideoController");
             foreach (ManagementObject queryObj in gpuSearcher.Get())
             {
@@ -774,7 +889,6 @@ namespace PlutoPoint_Installer
                     }
                 }
             }
-            // --- Check for AMD CPU ---
             var cpuSearcher = new ManagementObjectSearcher("SELECT * FROM Win32_Processor");
             foreach (ManagementObject queryObj in cpuSearcher.Get())
             {
@@ -789,10 +903,8 @@ namespace PlutoPoint_Installer
                     }
                 }
             }
-            // --- Update UI or variables accordingly ---
             if (hasAmdGpu || hasAmdCpu)
             {
-                amdCheckStatus = "1";
                 amdCheck.Checked = true;
                 if (hasAmdGpu && hasAmdCpu)
                     installerTextBox.AppendText("🧠 + 🎮 AMD CPU and GPU detected." + Environment.NewLine);
@@ -803,7 +915,6 @@ namespace PlutoPoint_Installer
             }
             else
             {
-                amdCheckStatus = "0";
                 amdCheck.Checked = false;
             }
         }
@@ -819,14 +930,10 @@ namespace PlutoPoint_Installer
                 using (var reader = new StreamReader(stream))
                 {
                     string html = reader.ReadToEnd();
-
-                    // Look for "Our latest stable release"
                     int index = html.IndexOf("Our latest stable release", StringComparison.OrdinalIgnoreCase);
                     if (index != -1)
                     {
                         string snippet = html.Substring(index, Math.Min(1000, html.Length - index));
-
-                        // Extract version number
                         var versionMatch = Regex.Match(snippet, @"\b\d+\.\d+\.\d+\b");
                         if (versionMatch.Success)
                         {
@@ -840,7 +947,7 @@ namespace PlutoPoint_Installer
                 Console.WriteLine("Error: " + ex.Message);
             }
 
-            return null; // or throw or fallback
+            return null;
         }
         private async void install_Click(object sender, EventArgs e)
         {
@@ -900,7 +1007,7 @@ namespace PlutoPoint_Installer
             }
             else
             {
-                dateToUse = DateTime.Today; // fallback
+                dateToUse = DateTime.Today;
             }
 
             string formatted = string.Format("{0} of {1} {2}",
@@ -922,30 +1029,12 @@ namespace PlutoPoint_Installer
                 Directory.CreateDirectory(appsDir);
             }
             SoundPlayer player;
-            using (RegistryKey key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion"))
+            if (windows10 == "1")
             {
-                if (key != null)
-                {
-                    string buildNumber = key.GetValue("CurrentBuild")?.ToString();
-                    if (int.TryParse(buildNumber, out int build))
-                    {
-                        if (build >= 22000)
-                        {
-                            progressBar.Maximum += 8;
-                            if (romsey == "1") { progressBar.Maximum += 1; };
-                            if (highcliffe == "1") { progressBar.Maximum += 1; };
-                            installerTextBox.AppendText("This computer is running Windows 11.");
-                            installerTextBox.AppendText(Environment.NewLine);
-                        }
-                        else if (build >= 19041)
-                        {
-                            progressBar.Maximum += 8;
-                            installerTextBox.AppendText("This computer is running Windows 10.");
-                            installerTextBox.AppendText(Environment.NewLine);
-                        }
-                    }
-                }
+                if (romsey == "1") { progressBar.Maximum += 1; };
+                if (highcliffe == "1") { progressBar.Maximum += 1; };
             }
+            if (windows11 == "1") { progressBar.Maximum += 8; }
             if (powerCheck.Checked) { progressBar.Maximum += 1; }
             else { progressBar.Maximum += 2; }
             if (crcCheck.Checked) { progressBar.Maximum += 1; }
@@ -1063,7 +1152,7 @@ namespace PlutoPoint_Installer
             {
                 player = new SoundPlayer(Properties.Resources.win98shutdown);
             }
-            if (nvidiaCheckStatus == "1")
+            if (nvidiaAppCheck.Checked)
             {
                 installerTextBox.AppendText("Nvidia GPU has been detected, Nvidia App will be installed.");
                 installerTextBox.AppendText(Environment.NewLine);
@@ -1095,7 +1184,7 @@ namespace PlutoPoint_Installer
                 {
                     installerTextBox.AppendText("The installer is being run from the Romsey shop.");
                     installerTextBox.AppendText(Environment.NewLine);
-                    installerTextBox.AppendText("✅ Installing Romsey Computer Repair Centre OEM information...");
+                    installerTextBox.AppendText("📦 Installing Romsey Computer Repair Centre OEM information...");
                     installerTextBox.AppendText(Environment.NewLine);
                     using (WebClient wc = new WebClient())
                     {
@@ -1146,7 +1235,7 @@ namespace PlutoPoint_Installer
                 {
                     installerTextBox.AppendText("The installer is being run from the Chandlers Ford shop.");
                     installerTextBox.AppendText(Environment.NewLine);
-                    installerTextBox.AppendText("✅ Installing Chandlers Ford Computer Repair Centre OEM information...");
+                    installerTextBox.AppendText("📦 Installing Chandlers Ford Computer Repair Centre OEM information...");
                     installerTextBox.AppendText(Environment.NewLine);
                     using (WebClient wc = new WebClient())
                     {
@@ -1197,7 +1286,7 @@ namespace PlutoPoint_Installer
                 {
                     installerTextBox.AppendText("The installer is being run from the Romsey shop.");
                     installerTextBox.AppendText(Environment.NewLine);
-                    installerTextBox.AppendText("✅ Installing Romsey Computer Repair Centre OEM information...");
+                    installerTextBox.AppendText("📦 Installing Romsey Computer Repair Centre OEM information...");
                     installerTextBox.AppendText(Environment.NewLine);
                     using (WebClient wc = new WebClient())
                     {
@@ -1280,7 +1369,7 @@ namespace PlutoPoint_Installer
                             await wc.DownloadFileTaskAsync(nanaZipURL, nanaZipFilename);
                         }
 
-                        installerTextBox.AppendText("Installing NanaZip...");
+                        installerTextBox.AppendText("📦 Installing NanaZip...");
                         installerTextBox.AppendText(Environment.NewLine);
 
                         Process nanaZipInstallProcess = Process.Start(new ProcessStartInfo
@@ -1337,7 +1426,7 @@ namespace PlutoPoint_Installer
                 }
 
                 progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
-                installerTextBox.AppendText("Installing AMD Software silently...");
+                installerTextBox.AppendText("📦 Installing AMD Software silently...");
                 installerTextBox.AppendText(Environment.NewLine);
 
                 await Task.Run(() =>
@@ -1400,7 +1489,7 @@ namespace PlutoPoint_Installer
                         wc.DownloadFileCompleted += wc_progressBarStep;
                         await wc.DownloadFileTaskAsync(anyDeskURL, anyDeskFilename);
                     }
-                    installerTextBox.AppendText("Installing AnyDesk...");
+                    installerTextBox.AppendText("📦 Installing AnyDesk...");
                     installerTextBox.AppendText(Environment.NewLine);
                     await Task.Run(() =>
                     {
@@ -1454,7 +1543,7 @@ namespace PlutoPoint_Installer
                         wc.DownloadFileCompleted += wc_progressBarStep;
                         await wc.DownloadFileTaskAsync(bingWallpapersURL, bingWallpapersFilename);
                     }
-                    installerTextBox.AppendText("Installing Bing Wallpapers...");
+                    installerTextBox.AppendText("📦 Installing Bing Wallpapers...");
                     installerTextBox.AppendText(Environment.NewLine);
                     await Task.Run(() =>
                     {
@@ -1508,7 +1597,7 @@ namespace PlutoPoint_Installer
                         wc.DownloadFileCompleted += wc_progressBarStep;
                         await wc.DownloadFileTaskAsync(bitDefenderURL, bitDefenderFilename);
                     }
-                    installerTextBox.AppendText("Installing BitDefender...");
+                    installerTextBox.AppendText("📦 Installing BitDefender...");
                     installerTextBox.AppendText(Environment.NewLine);
                     await Task.Run(() =>
                     {
@@ -1565,7 +1654,7 @@ namespace PlutoPoint_Installer
                         wc.DownloadFileCompleted += wc_progressBarStep;
                         await wc.DownloadFileTaskAsync(discordURL, discordFilename);
                     }
-                    installerTextBox.AppendText("Installing Discord...");
+                    installerTextBox.AppendText("📦 Installing Discord...");
                     installerTextBox.AppendText(Environment.NewLine);
                     await Task.Run(() =>
                     {
@@ -1622,7 +1711,7 @@ namespace PlutoPoint_Installer
                         wc.DownloadFileCompleted += wc_progressBarStep;
                         await wc.DownloadFileTaskAsync(googleChromeURL, googleChromeFilename);
                     }
-                    installerTextBox.AppendText("Installing Google Chrome...");
+                    installerTextBox.AppendText("📦 Installing Google Chrome...");
                     installerTextBox.AppendText(Environment.NewLine);
                     await Task.Run(() =>
                     {
@@ -1685,7 +1774,7 @@ namespace PlutoPoint_Installer
                         await wc.DownloadFileTaskAsync(libreOfficeURL, libreOfficeFilename);
                     }
 
-                    installerTextBox.AppendText("Installing LibreOffice...");
+                    installerTextBox.AppendText("📦 Installing LibreOffice...");
                     installerTextBox.AppendText(Environment.NewLine);
 
                     await Task.Run(() =>
@@ -1780,7 +1869,7 @@ namespace PlutoPoint_Installer
                             await wc.DownloadFileTaskAsync(nanaZipURL, nanaZipFilename);
                         }
 
-                        installerTextBox.AppendText("📦 Installing NanaZip...");
+                        installerTextBox.AppendText("📦 📦 Installing NanaZip...");
                         installerTextBox.AppendText(Environment.NewLine);
 
                         Process nanaZipInstallProcess = Process.Start(new ProcessStartInfo
@@ -1922,7 +2011,7 @@ namespace PlutoPoint_Installer
                     Console.WriteLine($"Error downloading NVIDIA App:\n{ex.Message}", "Error");
                 }
                 progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
-                installerTextBox.AppendText("Installing Nvidia App...");
+                installerTextBox.AppendText("📦 Installing Nvidia App...");
                 installerTextBox.AppendText(Environment.NewLine);
                 await Task.Run(() =>
                 {
@@ -1979,7 +2068,7 @@ namespace PlutoPoint_Installer
                         wc.DownloadFileCompleted += wc_progressBarStep;
                         await wc.DownloadFileTaskAsync(mozillaFirefoxURL, mozillaFirefoxFilename);
                     }
-                    installerTextBox.AppendText("Installing Mozilla Firefox...");
+                    installerTextBox.AppendText("📦 Installing Mozilla Firefox...");
                     installerTextBox.AppendText(Environment.NewLine);
                     await Task.Run(() =>
                     {
@@ -2034,7 +2123,7 @@ namespace PlutoPoint_Installer
                         wc.DownloadFileCompleted += wc_progressBarStep;
                         await wc.DownloadFileTaskAsync(mozillaThunderbirdURL, mozillaThunderbirdFilename);
                     }
-                    installerTextBox.AppendText("Installing Mozilla Thunderbird...");
+                    installerTextBox.AppendText("📦 Installing Mozilla Thunderbird...");
                     installerTextBox.AppendText(Environment.NewLine);
                     await Task.Run(() =>
                     {
@@ -2089,7 +2178,7 @@ namespace PlutoPoint_Installer
                         wc.DownloadFileCompleted += wc_progressBarStep;
                         await wc.DownloadFileTaskAsync(steamURL, steamFilename);
                     }
-                    installerTextBox.AppendText("Installing Steam...");
+                    installerTextBox.AppendText("📦 Installing Steam...");
                     installerTextBox.AppendText(Environment.NewLine);
                     await Task.Run(() =>
                     {
@@ -2146,7 +2235,7 @@ namespace PlutoPoint_Installer
                         wc.DownloadFileCompleted += wc_progressBarStep;
                         await wc.DownloadFileTaskAsync(vlcMediaPlayerURL, vlcMediaPlayerFilename);
                     }
-                    installerTextBox.AppendText("Installing VLC Media Player...");
+                    installerTextBox.AppendText("📦 Installing VLC Media Player...");
                     installerTextBox.AppendText(Environment.NewLine);
                     await Task.Run(() =>
                     {
@@ -2231,7 +2320,7 @@ namespace PlutoPoint_Installer
                         await wc.DownloadFileTaskAsync(nanaZipURL, nanaZipFilename);
                     }
 
-                    installerTextBox.AppendText("Installing NanaZip...");
+                    installerTextBox.AppendText("📦 Installing NanaZip...");
                     installerTextBox.AppendText(Environment.NewLine);
 
                     Process nanaZipInstallProcess = Process.Start(new ProcessStartInfo
@@ -2337,7 +2426,7 @@ namespace PlutoPoint_Installer
                 installerTextBox.AppendText(Environment.NewLine);
                 progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
 
-                installerTextBox.AppendText("Installing HP Hotkey Support...");
+                installerTextBox.AppendText("📦 Installing HP Hotkey Support...");
                 installerTextBox.AppendText(Environment.NewLine);
 
                 async Task InstallHPHotkeySupport()
@@ -2385,7 +2474,7 @@ namespace PlutoPoint_Installer
                 await InstallHPHotkeySupport();
                 progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
 
-                installerTextBox.AppendText("Installing HP Framework...");
+                installerTextBox.AppendText("📦 Installing HP Framework...");
                 installerTextBox.AppendText(Environment.NewLine);
 
                 await InstallHPFramework();
@@ -2631,7 +2720,7 @@ namespace PlutoPoint_Installer
             {
                 installerTextBox.AppendText("✅ Empty Recycle Bin is checked.");
                 installerTextBox.AppendText(Environment.NewLine);
-                installerTextBox.AppendText("Emptying Recycle Bin...");
+                installerTextBox.AppendText("🗑️ Emptying Recycle Bin...");
                 installerTextBox.AppendText(Environment.NewLine);
 
                 try
