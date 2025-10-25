@@ -51,7 +51,6 @@ namespace PlutoPoint_Installer
         public installerForm()
         {
             InitializeComponent();
-            // Preload button sound effects from resources
             SoundPlayer hoverSound = new SoundPlayer(Properties.Resources.buttonHover);
             SoundPlayer clickSound = new SoundPlayer(Properties.Resources.buttonHover);
             void PlayHover()
@@ -96,8 +95,12 @@ namespace PlutoPoint_Installer
             CheckHowardBirthday();
             CheckAdamBirthday();
             CheckGeethBirthday();
+            OverrideRoundedBoxColours();
             CheckIP();
             CheckEliteBook();
+            // Info checks
+            PrintVersion();
+            PrintDay();
             CheckWindowsVersion();
             CheckForIntelHardware();
             CheckforAMDHardware();
@@ -134,12 +137,147 @@ namespace PlutoPoint_Installer
         string windows81 = null;
         string windows10 = null;
         string windows11 = null;
+        string amd = null;
+        string nvidia = null;
+        string intel = null;
         private const string charliePasswordHash = "61a8b0026371a90d41b114644694485ecdaf999473977a125d028e39cb6d77b2";
         private const string CRCPasswordHash = "1c98fa014f3400abee047920e535036a74661fa0c88f34d24ebed7866a1fc630";
         string romseyHash = "aebeec856af3585448c3d5cc72dc93f29d56fa7191027a35c345eba670c533b3";
         string chandlersFordHash = "668cc649b9638504fe7d36a29637e740d44bd8ec2d8839e156c22b8f7a155b43";
         string highcliffeHash = "a9c9ca550056bb3e3062acf0327f99f0e2959ad2421a5745687a49140aa9c4bc";
-        string charlieHomeHash = "980752625289e182433c3609667f014fd3fa6201b621a8e3b02caeafb3bacfde";
+        string charlieHomeHash = "67177374995543edf423de86cd086b9c6fad3ec80cdbb6d18de5a8c72e048199";
+        private void PrintVersion()
+        {
+            Version version = Assembly.GetExecutingAssembly().GetName().Version;
+            Func<int, string> WithDaySuffix = day =>
+            {
+                if (day >= 11 && day <= 13) return day + "th";
+                switch (day % 10)
+                {
+                    case 1: return day + "st";
+                    case 2: return day + "nd";
+                    case 3: return day + "rd";
+                    default: return day + "th";
+                }
+            };
+            var assembly = Assembly.GetExecutingAssembly();
+            var updateAttr = assembly
+                .GetCustomAttributes(typeof(AssemblyUpdateDateAttribute), false)
+                .Cast<AssemblyUpdateDateAttribute>()
+                .FirstOrDefault();
+            DateTime dateToUse;
+            if (updateAttr != null &&
+                DateTime.TryParseExact(updateAttr.Date, "dd/MM/yyyy",
+                                       System.Globalization.CultureInfo.InvariantCulture,
+                                       System.Globalization.DateTimeStyles.None,
+                                       out DateTime parsedDate))
+            {
+                dateToUse = parsedDate;
+            }
+            else
+            {
+                dateToUse = DateTime.Today;
+            }
+
+            string formatted = string.Format("{0} of {1} {2}",
+                WithDaySuffix(dateToUse.Day),
+                dateToUse.ToString("MMMM"),
+                dateToUse.Year);
+            installerTextBox.AppendText($"Version {version}");
+            installerTextBox.AppendText(Environment.NewLine);
+            installerTextBox.AppendText("Last updated on " + formatted + ".");
+            installerTextBox.AppendText(Environment.NewLine);
+        }
+        private void PrintDay()
+        {
+            if (christmas == "1")
+            {
+                installerTextBox.AppendText("Merry Christmas!");
+                installerTextBox.AppendText(Environment.NewLine);
+            }
+            else if (halloween == "1")
+            {
+                installerTextBox.AppendText("Boo! Happy Halloween!");
+                installerTextBox.AppendText(Environment.NewLine);
+            }
+            else if (valentines == "1")
+            {
+                installerTextBox.AppendText("Happy Valentines day!");
+                installerTextBox.AppendText(Environment.NewLine);
+            }
+            else if (pancake == "1")
+            {
+                installerTextBox.AppendText("It's pancake day!");
+                installerTextBox.AppendText(Environment.NewLine);
+                installerTextBox.AppendText("Don't forget to eat pancakes you fat bastard!");
+                installerTextBox.AppendText(Environment.NewLine);
+            }
+            else if (puffin == "1")
+            {
+                installerTextBox.AppendText("Today is world Puffin day!");
+                installerTextBox.AppendText(Environment.NewLine);
+            }
+            else if (dachshund == "1")
+            {
+                installerTextBox.AppendText("Today is world Dachshund day!");
+                installerTextBox.AppendText(Environment.NewLine);
+            }
+            else if (hippo == "1")
+            {
+                installerTextBox.AppendText("Today is world Hippo day!");
+                installerTextBox.AppendText(Environment.NewLine);
+            }
+            else if (rhino == "1")
+            {
+                installerTextBox.AppendText("Today is world Rhino day!");
+                installerTextBox.AppendText(Environment.NewLine);
+            }
+            else if (birthday == "1")
+            {
+                if (charlieBirthday == "1")
+                {
+                    installerTextBox.AppendText("It is Charlie's birthday today!");
+                    installerTextBox.AppendText(Environment.NewLine);
+                    installerTextBox.AppendText("Happy birthday Charlie!");
+                    installerTextBox.AppendText(Environment.NewLine);
+                }
+                else if (deanBirthday == "1")
+                {
+                    installerTextBox.AppendText("It is Dean's birthday today!");
+                    installerTextBox.AppendText(Environment.NewLine);
+                    installerTextBox.AppendText("Happy birthday Dean!");
+                    installerTextBox.AppendText(Environment.NewLine);
+                }
+                else if (steveBirthday == "1")
+                {
+                    installerTextBox.AppendText("It is Steve's birthday today!");
+                    installerTextBox.AppendText(Environment.NewLine);
+                    installerTextBox.AppendText("Happy birthday Steve!");
+                    installerTextBox.AppendText(Environment.NewLine);
+                }
+                else if (howardBirthday == "1")
+                {
+                    installerTextBox.AppendText("It is Howard's birthday today!");
+                    installerTextBox.AppendText(Environment.NewLine);
+                    installerTextBox.AppendText("Happy birthday Howard!");
+                    installerTextBox.AppendText(Environment.NewLine);
+                }
+                else if (adamBirthday == "1")
+                {
+                    installerTextBox.AppendText("It is Adam's birthday today!");
+                    installerTextBox.AppendText(Environment.NewLine);
+                    installerTextBox.AppendText("Happy birthday Adam!");
+                    installerTextBox.AppendText(Environment.NewLine);
+                }
+                else if (geethBirthday == "1")
+                {
+                    installerTextBox.AppendText("It is Geeth's birthday today!");
+                    installerTextBox.AppendText(Environment.NewLine);
+                    installerTextBox.AppendText("Happy birthday Geeth!");
+                    installerTextBox.AppendText(Environment.NewLine);
+                }
+            }
+        }
         private void CheckEliteBook()
         {
             using (ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT Model FROM Win32_ComputerSystem"))
@@ -579,14 +717,19 @@ namespace PlutoPoint_Installer
                 }
             }
         }
+        protected void OverrideRoundedBoxColours()
+        {
+            roundedGroupBox1.BorderColorOverride = versionLabel.LinkColor;
+            roundedGroupBox1.TextColorOverride = versionLabel.LinkColor;
+            roundedGroupBox2.BorderColorOverride = versionLabel.LinkColor;
+            roundedGroupBox2.TextColorOverride = versionLabel.LinkColor;
+        }
         private string HashIP(string ip)
         {
             using (var sha256 = SHA256.Create())
             {
                 byte[] bytes = Encoding.UTF8.GetBytes(ip.Trim());
                 byte[] hash = sha256.ComputeHash(bytes);
-
-                // Convert to lowercase hex string
                 return BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
             }
         }
@@ -677,7 +820,6 @@ namespace PlutoPoint_Installer
         Uri vlcMediaPlayerURL = new Uri("https://files.crchq.net/installer/vlcMediaPlayer.msi");
         string vlcMediaPlayerFilename = @"C:\Computer Repair Centre\apps\vlcMediaPlayer.msi";
         string nvidiaAppFilename = @"C:\Computer Repair Centre\apps\nvidiaApp.exe";
-        string amdFilename = @"C:\Computer Repair Centre\apps\amdApp.exe";
         private SoundPlayer hoverSound;
         private SoundPlayer clickSound;
 
@@ -840,8 +982,8 @@ namespace PlutoPoint_Installer
             }
             if (hasIntelGpu || hasIntelCpu)
             {
-//                intelCheck.Checked = true;
-
+                //intelCheck.Checked = true;
+                intel = "1";
                 if (hasIntelGpu && hasIntelCpu)
                     installerTextBox.AppendText("🧠 + 🎮 Intel CPU and GPU detected." + Environment.NewLine);
                 else if (hasIntelGpu)
@@ -864,6 +1006,7 @@ namespace PlutoPoint_Installer
                     if (caption.IndexOf("NVIDIA", StringComparison.OrdinalIgnoreCase) >= 0)
                     {
                         nvidiaAppCheck.Checked = true;
+                        nvidia = "1";
                         installerTextBox.AppendText("🎮 Nvidia GPU detected." + Environment.NewLine);
                         return;
                     }
@@ -905,7 +1048,8 @@ namespace PlutoPoint_Installer
             }
             if (hasAmdGpu || hasAmdCpu)
             {
-                amdCheck.Checked = true;
+                //amdCheck.Checked = true;
+                amd = "1";
                 if (hasAmdGpu && hasAmdCpu)
                     installerTextBox.AppendText("🧠 + 🎮 AMD CPU and GPU detected." + Environment.NewLine);
                 else if (hasAmdGpu)
@@ -915,7 +1059,7 @@ namespace PlutoPoint_Installer
             }
             else
             {
-                amdCheck.Checked = false;
+                //amdCheck.Checked = false;
             }
         }
         private string GetLibreOfficeVersion()
@@ -980,42 +1124,6 @@ namespace PlutoPoint_Installer
             string discordAppPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"Discord\Update.exe");
             string desktopPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop));
             string launcherPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), @"Computer Repair Centre Installer Launcher.exe");
-            Func<int, string> WithDaySuffix = day =>
-            {
-                if (day >= 11 && day <= 13) return day + "th";
-                switch (day % 10)
-                {
-                    case 1: return day + "st";
-                    case 2: return day + "nd";
-                    case 3: return day + "rd";
-                    default: return day + "th";
-                }
-            };
-            var assembly = Assembly.GetExecutingAssembly();
-            var updateAttr = assembly
-                .GetCustomAttributes(typeof(AssemblyUpdateDateAttribute), false)
-                .Cast<AssemblyUpdateDateAttribute>()
-                .FirstOrDefault();
-            DateTime dateToUse;
-            if (updateAttr != null &&
-                DateTime.TryParseExact(updateAttr.Date, "dd/MM/yyyy",
-                                       System.Globalization.CultureInfo.InvariantCulture,
-                                       System.Globalization.DateTimeStyles.None,
-                                       out DateTime parsedDate))
-            {
-                dateToUse = parsedDate;
-            }
-            else
-            {
-                dateToUse = DateTime.Today;
-            }
-
-            string formatted = string.Format("{0} of {1} {2}",
-                WithDaySuffix(dateToUse.Day),
-                dateToUse.ToString("MMMM"),
-                dateToUse.Year);
-            installerTextBox.AppendText("Last updated on " + formatted + ".");
-            installerTextBox.AppendText(Environment.NewLine);
             if (!Directory.Exists(rootDir))
             {
                 Directory.CreateDirectory(rootDir);
@@ -1046,7 +1154,6 @@ namespace PlutoPoint_Installer
             if (googleChromeCheck.Checked) { progressBar.Maximum += 2; }
             if (libreOfficeCheck.Checked) { progressBar.Maximum += 2; }
             if (nvidiaAppCheck.Checked) { progressBar.Maximum += 2; }
-            if (amdCheck.Checked) { progressBar.Maximum += 2; }
             if (microsoftOffice2007Check.Checked) { progressBar.Maximum += 2; }
             if (mozillaFirefoxCheck.Checked) { progressBar.Maximum += 2; }
             if (mozillaThunderbirdCheck.Checked) { progressBar.Maximum += 2; }
@@ -1054,114 +1161,47 @@ namespace PlutoPoint_Installer
             if (hpEliteBook == "1") { progressBar.Maximum += 4; }
             if (christmas == "1")
             {
-                installerTextBox.AppendText("Merry Christmas!");
-                installerTextBox.AppendText(Environment.NewLine);
                 player = new SoundPlayer(Properties.Resources.christmas);
             }
             else if (halloween == "1")
             {
-                installerTextBox.AppendText("Boo! Happy Halloween!");
-                installerTextBox.AppendText(Environment.NewLine);
                 player = new SoundPlayer(Properties.Resources.halloween);
             }
             else if (valentines == "1")
             {
-                installerTextBox.AppendText("Happy Valentines day!");
-                installerTextBox.AppendText(Environment.NewLine);
                 player = new SoundPlayer(Properties.Resources.valentines);
             }
             else if (pancake == "1")
             {
-                installerTextBox.AppendText("It's pancake day!");
-                installerTextBox.AppendText(Environment.NewLine);
-                installerTextBox.AppendText("Don't forget to eat pancakes you fat bastard!");
-                installerTextBox.AppendText(Environment.NewLine);
                 player = new SoundPlayer(Properties.Resources.win98shutdown);
             }
             else if (puffin == "1")
             {
-                installerTextBox.AppendText("Today is world Puffin day!");
-                installerTextBox.AppendText(Environment.NewLine);
                 player = new SoundPlayer(Properties.Resources.win98shutdown);
             }
             else if (dachshund == "1")
             {
-                installerTextBox.AppendText("Today is world Dachshund day!");
-                installerTextBox.AppendText(Environment.NewLine);
                 player = new SoundPlayer(Properties.Resources.win98shutdown);
             }
             else if (hippo == "1")
             {
-                installerTextBox.AppendText("Today is world Hippo day!");
-                installerTextBox.AppendText(Environment.NewLine);
                 player = new SoundPlayer(Properties.Resources.win98shutdown);
             }
             else if (rhino == "1")
             {
-                installerTextBox.AppendText("Today is world Rhino day!");
-                installerTextBox.AppendText(Environment.NewLine);
                 player = new SoundPlayer(Properties.Resources.win98shutdown);
             }
             else if (birthday == "1")
             {
-                if (charlieBirthday == "1")
-                {
-                    installerTextBox.AppendText("It is Charlie's birthday today!");
-                    installerTextBox.AppendText(Environment.NewLine);
-                    installerTextBox.AppendText("Happy birthday Charlie!");
-                    installerTextBox.AppendText(Environment.NewLine);
-                }
-                else if (deanBirthday == "1")
-                {
-                    installerTextBox.AppendText("It is Dean's birthday today!");
-                    installerTextBox.AppendText(Environment.NewLine);
-                    installerTextBox.AppendText("Happy birthday Dean!");
-                    installerTextBox.AppendText(Environment.NewLine);
-                }
-                else if (steveBirthday == "1")
-                {
-                    installerTextBox.AppendText("It is Steve's birthday today!");
-                    installerTextBox.AppendText(Environment.NewLine);
-                    installerTextBox.AppendText("Happy birthday Steve!");
-                    installerTextBox.AppendText(Environment.NewLine);
-                }
-                else if (howardBirthday == "1")
-                {
-                    installerTextBox.AppendText("It is Howard's birthday today!");
-                    installerTextBox.AppendText(Environment.NewLine);
-                    installerTextBox.AppendText("Happy birthday Howard!");
-                    installerTextBox.AppendText(Environment.NewLine);
-                }
-                else if (adamBirthday == "1")
-                {
-                    installerTextBox.AppendText("It is Adam's birthday today!");
-                    installerTextBox.AppendText(Environment.NewLine);
-                    installerTextBox.AppendText("Happy birthday Adam!");
-                    installerTextBox.AppendText(Environment.NewLine);
-                }
-                else if (geethBirthday == "1")
-                {
-                    installerTextBox.AppendText("It is Geeth's birthday today!");
-                    installerTextBox.AppendText(Environment.NewLine);
-                    installerTextBox.AppendText("Happy birthday Geeth!");
-                    installerTextBox.AppendText(Environment.NewLine);
-                }
                 player = new SoundPlayer(Properties.Resources.birthday);
             }
             else
             {
                 player = new SoundPlayer(Properties.Resources.win98shutdown);
             }
-            if (amdCheck.Checked)
+            if (nvidiaAppCheck.Checked & nvidia == "1")
             {
-                installerTextBox.AppendText("AMD CPU/GPU has been detected, AMD software will be installed.");
-                installerTextBox.AppendText(Environment.NewLine);
-                installerTextBox.AppendText("You can uncheck this if you want.");
-                installerTextBox.AppendText(Environment.NewLine);
-            }
-            if (nvidiaAppCheck.Checked)
-            {
-                installerTextBox.AppendText("Nvidia GPU has been detected, Nvidia App will be installed.");
+                installerTextBox.AppendText("Nvidia GPU has been detected and selected, Nvidia App will be installed.");
                 installerTextBox.AppendText(Environment.NewLine);
                 installerTextBox.AppendText("You can uncheck this if you want.");
                 installerTextBox.AppendText(Environment.NewLine);
@@ -1410,85 +1450,6 @@ namespace PlutoPoint_Installer
                     installerTextBox.AppendText(Environment.NewLine);
                 }
             }
-            if (amdCheck.Checked)
-            {
-                installerTextBox.AppendText("📌 AMD Software is selected.");
-                installerTextBox.AppendText(Environment.NewLine);
-                installerTextBox.AppendText("🔄 Searching for latest AMD Auto-Detect installer...");
-                installerTextBox.AppendText(Environment.NewLine);
-
-                try
-                {
-                    using (HttpClient client = new HttpClient())
-                    {
-                        string htmlContent = await client.GetStringAsync("https://www.amd.com/en/support");
-                        // Look for something like:
-                        // https://drivers.amd.com/drivers/installer/25.10/whql/amd-software-adrenalin-edition-25.9.1-minimalsetup-250901_web.exe
-                        string pattern = @"https:\/\/drivers\.amd\.com\/drivers\/installer\/[\w\.\/-]*?-minimalsetup-[\w]+_web\.exe";
-                        Match match = Regex.Match(htmlContent, pattern, RegexOptions.IgnoreCase);
-
-                        if (match.Success)
-                        {
-                            string downloadUrl = match.Value;
-                            installerTextBox.AppendText($"🔗 Found latest AMD installer: {downloadUrl}");
-                            installerTextBox.AppendText(Environment.NewLine);
-
-                            byte[] fileBytes = await client.GetByteArrayAsync(downloadUrl);
-                            File.WriteAllBytes(amdFilename, fileBytes);
-                        }
-                        else
-                        {
-                            installerTextBox.AppendText("⚠️ Could not find the AMD installer link on the page.");
-                            installerTextBox.AppendText(Environment.NewLine);
-                            return;
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    installerTextBox.AppendText($"⚠️ Error downloading AMD Software: {ex.Message}");
-                    installerTextBox.AppendText(Environment.NewLine);
-                    return;
-                }
-
-                progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
-                installerTextBox.AppendText("📦 Installing AMD Software silently...");
-                installerTextBox.AppendText(Environment.NewLine);
-
-                await Task.Run(() =>
-                {
-                    ProcessStartInfo startInfo = new ProcessStartInfo
-                    {
-                        FileName = amdFilename,
-                        Arguments = "/INSTALL /SILENT /NOREBOOT",
-                        UseShellExecute = true,
-                        Verb = "runas"
-                    };
-
-                    try
-                    {
-                        using (Process process = Process.Start(startInfo))
-                        {
-                            process.WaitForExit();
-                            int exitCode = process.ExitCode;
-                            installerTextBox.AppendText(exitCode == 0
-                                ? "✅ Installation successful."
-                                : $"⚠️ Installation exited with code: {exitCode}");
-                            installerTextBox.AppendText(Environment.NewLine);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        installerTextBox.AppendText($"⚠️ Installation failed: {ex.Message}");
-                        installerTextBox.AppendText(Environment.NewLine);
-                    }
-                });
-
-                installerTextBox.AppendText("✅ Completed installation of AMD Software.");
-                installerTextBox.AppendText(Environment.NewLine);
-                progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
-            }
-
             if (anyDeskCheck.Checked)
             {
                 installerTextBox.AppendText("📌 AnyDesk is selected.");
@@ -1845,7 +1806,6 @@ namespace PlutoPoint_Installer
                 string windowsAppsPath = @"C:\Program Files\WindowsApps";
                 string nanaZipExe = "NanaZip.Windows.exe";
                 string nanaZipPath = null;
-
                 if (File.Exists(officePath))
                 {
                     installerTextBox.AppendText("✅ Microsoft Office 2007 is already installed, skipping installation.");
@@ -1862,10 +1822,8 @@ namespace PlutoPoint_Installer
                         wc.DownloadFileCompleted += wc_progressBarStep;
                         await wc.DownloadFileTaskAsync(microsoftOffice2007URL, microsoftOffice2007Filename);
                     }
-
                     installerTextBox.AppendText("🔎 Checking if NanaZip is installed...");
                     installerTextBox.AppendText(Environment.NewLine);
-
                     try
                     {
                         var files = Directory.GetFiles(windowsAppsPath, nanaZipExe, SearchOption.AllDirectories);
@@ -1881,22 +1839,18 @@ namespace PlutoPoint_Installer
                         installerTextBox.AppendText("⚠️ Access denied to WindowsApps. Try running as Administrator.");
                         installerTextBox.AppendText(Environment.NewLine);
                     }
-
                     if (string.IsNullOrEmpty(nanaZipPath))
                     {
                         installerTextBox.AppendText("🚀 NanaZip is not installed and is required for extraction.");
                         installerTextBox.AppendText(Environment.NewLine);
                         installerTextBox.AppendText("📥 Downloading NanaZip...");
                         installerTextBox.AppendText(Environment.NewLine);
-
                         using (WebClient wc = new WebClient())
                         {
                             await wc.DownloadFileTaskAsync(nanaZipURL, nanaZipFilename);
                         }
-
                         installerTextBox.AppendText("📦 📦 Installing NanaZip...");
                         installerTextBox.AppendText(Environment.NewLine);
-
                         Process nanaZipInstallProcess = Process.Start(new ProcessStartInfo
                         {
                             FileName = "powershell",
@@ -1906,15 +1860,12 @@ namespace PlutoPoint_Installer
                             RedirectStandardError = true,
                             CreateNoWindow = true
                         });
-
                         if (nanaZipInstallProcess != null)
                         {
                             await Task.Run(() => nanaZipInstallProcess.WaitForExit());
                         }
-
                         installerTextBox.AppendText("✅ NanaZip installation completed.");
                         installerTextBox.AppendText(Environment.NewLine);
-
                         try
                         {
                             var files = Directory.GetFiles(windowsAppsPath, nanaZipExe, SearchOption.AllDirectories);
@@ -1938,14 +1889,11 @@ namespace PlutoPoint_Installer
                             return;
                         }
                     }
-
                     string microsoftOffice2007ExtractPath = Path.Combine(desktopPath, "Microsoft Office 2007");
-
                     if (!Directory.Exists(microsoftOffice2007ExtractPath))
                     {
                         Directory.CreateDirectory(microsoftOffice2007ExtractPath);
                     }
-
                     installerTextBox.AppendText("📂 Extracting Microsoft Office 2007 to Desktop...");
                     installerTextBox.AppendText(Environment.NewLine);
 
@@ -1960,7 +1908,6 @@ namespace PlutoPoint_Installer
                             RedirectStandardError = true,
                             CreateNoWindow = true
                         };
-
                         try
                         {
                             using (Process process = new Process { StartInfo = processStartInfo })
@@ -1993,22 +1940,18 @@ namespace PlutoPoint_Installer
                             installerTextBox.AppendText(Environment.NewLine);
                         }
                     }
-
                     await RunNanaZipExtractionOfficeAsync();
-
                     installerTextBox.AppendText("✅ Completed extraction of Microsoft Office 2007.");
                     installerTextBox.AppendText(Environment.NewLine);
                     progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
                 }
             }
-
             if (nvidiaAppCheck.Checked)
             {
                 installerTextBox.AppendText("📌 Nvidia App is selected.");
                 installerTextBox.AppendText(Environment.NewLine);
                 installerTextBox.AppendText("🔄 Searching for latest Nvidia App installer...");
                 installerTextBox.AppendText(Environment.NewLine);
-
                 try
                 {
                     using (HttpClient client = new HttpClient())
@@ -2019,9 +1962,6 @@ namespace PlutoPoint_Installer
                             : "https://www.nvidia.com/en-us/software/nvidia-app/";
 
                         string htmlContent = await client.GetStringAsync(baseUrl);
-
-                        // Look for something like:
-                        // https://us.download.nvidia.com/nvapp/client/1.2.3/NVIDIA_app_v1.2.3.exe
                         string pattern = @"https:\/\/us\.download\.nvidia\.com\/nvapp\/client\/[\d\.]+\/NVIDIA_app_v[\d\.]+\.exe";
                         Match match = Regex.Match(htmlContent, pattern, RegexOptions.IgnoreCase);
 
@@ -2048,7 +1988,6 @@ namespace PlutoPoint_Installer
                     installerTextBox.AppendText(Environment.NewLine);
                     return;
                 }
-
                 progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
                 installerTextBox.AppendText("📦 Installing Nvidia App silently...");
                 installerTextBox.AppendText(Environment.NewLine);
@@ -2081,12 +2020,10 @@ namespace PlutoPoint_Installer
                         installerTextBox.AppendText(Environment.NewLine);
                     }
                 });
-
                 installerTextBox.AppendText("✅ Completed installation of Nvidia App.");
                 installerTextBox.AppendText(Environment.NewLine);
                 progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
             }
-
             if (mozillaFirefoxCheck.Checked)
             {
                 installerTextBox.AppendText("📌 Mozilla Firefox is selected.");
@@ -2737,7 +2674,6 @@ namespace PlutoPoint_Installer
                 }
             }
 
-
             if (powerCheck.Checked) { }
             else
             {
@@ -2832,7 +2768,7 @@ namespace PlutoPoint_Installer
         {
             public string EnteredPassword { get; private set; }
             private TextBox txtPassword;
-            private Button btnOK, btnCancel;
+            private Button btnOK;
             private Label passwordText;
 
             public PasswordForm()
@@ -2866,6 +2802,5 @@ namespace PlutoPoint_Installer
                 this.AcceptButton = btnOK;
             }
         }
-
     }
 }
