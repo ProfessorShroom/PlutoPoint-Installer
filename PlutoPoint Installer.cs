@@ -1997,7 +1997,7 @@ namespace PlutoPoint_Installer
                     ProcessStartInfo startInfo = new ProcessStartInfo
                     {
                         FileName = nvidiaAppFilename,
-                        Arguments = "/S",
+                        Arguments = "/s",
                         UseShellExecute = true,
                         Verb = "runas"
                     };
