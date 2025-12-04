@@ -85,6 +85,7 @@ namespace PlutoPoint_Installer
             close.Click += (s, e) => PlayClick();
             // Date checks
             CheckChristmas();
+            CheckNewYear();
             CheckHalloween();
             CheckValentines();
             CheckPancake();
@@ -114,6 +115,7 @@ namespace PlutoPoint_Installer
         }
         // Set strings
         string christmas = null;
+        string newyear = null;
         string halloween = null;
         string valentines = null;
         string birthday = null;
@@ -223,9 +225,22 @@ namespace PlutoPoint_Installer
                 installerTextBox.AppendText(" ");
                 installerTextBox.AppendText(Environment.NewLine);
             }
+            else if (newyear == "1")
+            {
+                installerTextBox.AppendText(" ");
+                installerTextBox.AppendText(Environment.NewLine);
+                installerTextBox.AppendText("Happy New Year!");
+                installerTextBox.AppendText(Environment.NewLine);
+                installerTextBox.AppendText(" ");
+                installerTextBox.AppendText(Environment.NewLine);
+            }
             else if (halloween == "1")
             {
+                installerTextBox.AppendText(" ");
+                installerTextBox.AppendText(Environment.NewLine);
                 installerTextBox.AppendText("Boo! Happy Halloween!");
+                installerTextBox.AppendText(Environment.NewLine);
+                installerTextBox.AppendText(" ");
                 installerTextBox.AppendText(Environment.NewLine);
             }
             else if (valentines == "1")
@@ -384,9 +399,16 @@ namespace PlutoPoint_Installer
                 this.Invalidate();
             }
         }
+        private void CheckNewYear()
+        {
+            if (DateTime.Now.Month == 1 && (DateTime.Now.Day == 1 || DateTime.Now.Day == 2 || DateTime.Now.Day == 3 || DateTime.Now.Day == 4 || DateTime.Now.Day == 5 ))
+            {
+                newyear = "1";
+            }
+        }
         private void CheckHalloween()
         {
-            if (DateTime.Now.Month == 10 && (DateTime.Now.Day == 28 || DateTime.Now.Day == 29 || DateTime.Now.Day == 30 || DateTime.Now.Day == 31))
+            if (DateTime.Now.Month == 10 && (DateTime.Now.Day == 26 || DateTime.Now.Day == 27 || DateTime.Now.Day == 28 || DateTime.Now.Day == 29 || DateTime.Now.Day == 30 || DateTime.Now.Day == 31))
             {
                 halloween = "1";
                 install.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(252)))), ((int)(((byte)(76)))), ((int)(((byte)(2)))));
