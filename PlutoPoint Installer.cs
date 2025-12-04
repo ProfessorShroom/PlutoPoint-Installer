@@ -20,8 +20,10 @@ using System.Windows.Forms;
 using System.Xml.Linq;
 using static System.Net.WebRequestMethods;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using System.Globalization;
 
-// Copyright © Charlie Howard 2025 All rights reserved.
+
+// Copyright © Charlie Howard 2026 All rights reserved.
 
 namespace PlutoPoint_Installer
 {
@@ -29,6 +31,7 @@ namespace PlutoPoint_Installer
     using System.Drawing;
     using System.Drawing.Drawing2D;
     using System.Drawing.Text;
+    using System.Globalization;
     using System.Linq;
     using System.Management;
     using System.Reflection;
@@ -192,7 +195,32 @@ namespace PlutoPoint_Installer
         {
             if (christmas == "1")
             {
+                installerTextBox.AppendText(" ");
+                installerTextBox.AppendText(Environment.NewLine);
+                var rm = Properties.Resources.ResourceManager;
+                var set = rm.GetResourceSet(CultureInfo.CurrentUICulture, true, true);
+                // Find all resources starting with "song"
+                var songKeys = set.Cast<DictionaryEntry>()
+                                  .Where(e => e.Key.ToString().StartsWith("song"))
+                                  .Select(e => e.Key.ToString())
+                                  .ToList();
+                if (songKeys.Count > 0)
+                {
+                    var rnd = new Random();
+                    string chosenKey = songKeys[rnd.Next(songKeys.Count)];
+                    var bytes = (byte[])rm.GetObject(chosenKey);
+                    using (var reader = new StreamReader(new MemoryStream(bytes)))
+                    {
+                        string line;
+                        while ((line = reader.ReadLine()) != null)
+                            installerTextBox.AppendText(line + Environment.NewLine);
+                    }
+                }
+                installerTextBox.AppendText(" ");
+                installerTextBox.AppendText(Environment.NewLine);
                 installerTextBox.AppendText("Merry Christmas!");
+                installerTextBox.AppendText(Environment.NewLine);
+                installerTextBox.AppendText(" ");
                 installerTextBox.AppendText(Environment.NewLine);
             }
             else if (halloween == "1")
@@ -202,78 +230,126 @@ namespace PlutoPoint_Installer
             }
             else if (valentines == "1")
             {
+                installerTextBox.AppendText(" ");
+                installerTextBox.AppendText(Environment.NewLine);
                 installerTextBox.AppendText("Happy Valentines day!");
+                installerTextBox.AppendText(Environment.NewLine);
+                installerTextBox.AppendText(" ");
                 installerTextBox.AppendText(Environment.NewLine);
             }
             else if (pancake == "1")
             {
+                installerTextBox.AppendText(" ");
+                installerTextBox.AppendText(Environment.NewLine);
                 installerTextBox.AppendText("It's pancake day!");
                 installerTextBox.AppendText(Environment.NewLine);
-                installerTextBox.AppendText("Don't forget to eat pancakes you fat bastard!");
+                installerTextBox.AppendText("Don't forget to have some pancakes you fat bastard!");
+                installerTextBox.AppendText(Environment.NewLine);
+                installerTextBox.AppendText(" ");
                 installerTextBox.AppendText(Environment.NewLine);
             }
             else if (puffin == "1")
             {
+                installerTextBox.AppendText(" ");
+                installerTextBox.AppendText(Environment.NewLine);
                 installerTextBox.AppendText("Today is world Puffin day!");
+                installerTextBox.AppendText(Environment.NewLine);
+                installerTextBox.AppendText(" ");
                 installerTextBox.AppendText(Environment.NewLine);
             }
             else if (dachshund == "1")
             {
+                installerTextBox.AppendText(" ");
+                installerTextBox.AppendText(Environment.NewLine);
                 installerTextBox.AppendText("Today is world Dachshund day!");
+                installerTextBox.AppendText(Environment.NewLine);
+                installerTextBox.AppendText(" ");
                 installerTextBox.AppendText(Environment.NewLine);
             }
             else if (hippo == "1")
             {
+                installerTextBox.AppendText(" ");
+                installerTextBox.AppendText(Environment.NewLine);
                 installerTextBox.AppendText("Today is world Hippo day!");
+                installerTextBox.AppendText(Environment.NewLine);
+                installerTextBox.AppendText(" ");
                 installerTextBox.AppendText(Environment.NewLine);
             }
             else if (rhino == "1")
             {
+                installerTextBox.AppendText(" ");
+                installerTextBox.AppendText(Environment.NewLine);
                 installerTextBox.AppendText("Today is world Rhino day!");
+                installerTextBox.AppendText(Environment.NewLine);
+                installerTextBox.AppendText(" ");
                 installerTextBox.AppendText(Environment.NewLine);
             }
             else if (birthday == "1")
             {
                 if (charlieBirthday == "1")
                 {
+                    installerTextBox.AppendText(" ");
+                    installerTextBox.AppendText(Environment.NewLine);
                     installerTextBox.AppendText("It is Charlie's birthday today!");
                     installerTextBox.AppendText(Environment.NewLine);
                     installerTextBox.AppendText("Happy birthday Charlie!");
                     installerTextBox.AppendText(Environment.NewLine);
+                    installerTextBox.AppendText(" ");
+                    installerTextBox.AppendText(Environment.NewLine);
                 }
                 else if (deanBirthday == "1")
                 {
+                    installerTextBox.AppendText(" ");
+                    installerTextBox.AppendText(Environment.NewLine);
                     installerTextBox.AppendText("It is Dean's birthday today!");
                     installerTextBox.AppendText(Environment.NewLine);
                     installerTextBox.AppendText("Happy birthday Dean!");
                     installerTextBox.AppendText(Environment.NewLine);
+                    installerTextBox.AppendText(" ");
+                    installerTextBox.AppendText(Environment.NewLine);
                 }
                 else if (steveBirthday == "1")
                 {
+                    installerTextBox.AppendText(" ");
+                    installerTextBox.AppendText(Environment.NewLine);
                     installerTextBox.AppendText("It is Steve's birthday today!");
                     installerTextBox.AppendText(Environment.NewLine);
                     installerTextBox.AppendText("Happy birthday Steve!");
                     installerTextBox.AppendText(Environment.NewLine);
+                    installerTextBox.AppendText(" ");
+                    installerTextBox.AppendText(Environment.NewLine);
                 }
                 else if (howardBirthday == "1")
                 {
+                    installerTextBox.AppendText(" ");
+                    installerTextBox.AppendText(Environment.NewLine);
                     installerTextBox.AppendText("It is Howard's birthday today!");
                     installerTextBox.AppendText(Environment.NewLine);
                     installerTextBox.AppendText("Happy birthday Howard!");
                     installerTextBox.AppendText(Environment.NewLine);
+                    installerTextBox.AppendText(" ");
+                    installerTextBox.AppendText(Environment.NewLine);
                 }
                 else if (adamBirthday == "1")
                 {
+                    installerTextBox.AppendText(" ");
+                    installerTextBox.AppendText(Environment.NewLine);
                     installerTextBox.AppendText("It is Adam's birthday today!");
                     installerTextBox.AppendText(Environment.NewLine);
                     installerTextBox.AppendText("Happy birthday Adam!");
                     installerTextBox.AppendText(Environment.NewLine);
+                    installerTextBox.AppendText(" ");
+                    installerTextBox.AppendText(Environment.NewLine);
                 }
                 else if (geethBirthday == "1")
                 {
+                    installerTextBox.AppendText(" ");
+                    installerTextBox.AppendText(Environment.NewLine);
                     installerTextBox.AppendText("It is Geeth's birthday today!");
                     installerTextBox.AppendText(Environment.NewLine);
                     installerTextBox.AppendText("Happy birthday Geeth!");
+                    installerTextBox.AppendText(Environment.NewLine);
+                    installerTextBox.AppendText(" ");
                     installerTextBox.AppendText(Environment.NewLine);
                 }
             }

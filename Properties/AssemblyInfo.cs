@@ -2,6 +2,8 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
+// Copyright © Charlie Howard 2026 All rights reserved.
+
 [assembly: AssemblyTitle("Computer Repair Centre Installer")]
 [assembly: AssemblyDescription("C# Automatic Software Installer")]
 [assembly: AssemblyConfiguration("")]
@@ -12,6 +14,6 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCulture("")]
 [assembly: ComVisible(false)]
 [assembly: Guid("be5f5489-1412-42da-8d0c-4022fdcb8446")]
-[assembly: AssemblyVersion("6.2.0.1")]
-[assembly: AssemblyFileVersion("6.2.0.1")]
-[assembly: AssemblyUpdateDate("28/11/2025")]
+[assembly: AssemblyVersion("6.2.1.0")]
+[assembly: AssemblyFileVersion("6.2.1.0")]
+[assembly: AssemblyUpdateDate("04/12/2025")]

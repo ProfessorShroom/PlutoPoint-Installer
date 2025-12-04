@@ -7,7 +7,7 @@ using System.Security.Cryptography;
 using System.Security.Policy;
 using System.Windows.Forms;
 
-// Copyright © Charlie Howard 2025 All rights reserved.
+// Copyright © Charlie Howard 2026 All rights reserved.
 
 namespace PlutoPoint_Installer
 {
