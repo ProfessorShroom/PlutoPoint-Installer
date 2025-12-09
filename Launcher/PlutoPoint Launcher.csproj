@@ -34,7 +34,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>Properties\computerRepairCentreIcon.ico</ApplicationIcon>
+    <ApplicationIcon>computerRepairCentreIcon.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -116,6 +116,7 @@
     <None Include="icons\libreOffice.png" />
     <None Include="icons\googleChrome.png" />
     <None Include="icons\mozillaFirefox.png" />
+    <Content Include="computerRepairCentreIcon.ico" />
     <Content Include="Properties\computerRepairCentreIcon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
