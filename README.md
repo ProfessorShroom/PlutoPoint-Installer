@@ -1,6 +1,6 @@
  ![Arch](https://img.shields.io/badge/Arch-AMD64-blue) ![OS](https://img.shields.io/badge/OS-Windows%2010%20|%20Windows%2011-green)
 
-## PlutoPoint Installer Version 6.3.0.0
+## PlutoPoint Installer Version 6.3.1.0
 ###### Copyright © Charlie Howard 2026 All rights reserved.
 
 A C# based GUI installer for Windows 10/11.
@@ -9,11 +9,15 @@ Gives you the option to install the Computer Repair Centre OEM information, Bing
 
 If run on Windows 10 or Windows 11 it disables hibernation mode and Wi-Fi sense.
 
-If run on Windows 11 it will disable automatic device encryption.
+If run on Windows 11 it will disable automatic device encryption and remove AI components if selected.
 
 Disables sleep and screen timeout if plugged into AC power during the install and then revert it once it has completed to prevent the computer going to sleep during the install which can cause issues, you also get the option to prevent sleep on AC power permanently with the "Refurb" box.
 
 ### Changelog
+
+**Update 6.3.1.0**
+
+Added remove AI check box. When selected will remove all AI components from Windows 11.
 
 **Update 6.3.0.0**
 

@@ -139,6 +139,7 @@ namespace PlutoPoint_Installer
             this.microsoftOffice2007Check = new System.Windows.Forms.CheckBox();
             this.nvidiaAppToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.nvidiaAppCheck = new System.Windows.Forms.CheckBox();
+            this.aiCheck = new System.Windows.Forms.CheckBox();
             this.mozillaFirefoxToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.mozillaFirefoxCheck = new System.Windows.Forms.CheckBox();
             this.mozillaThunderbirdToolTip = new System.Windows.Forms.ToolTip(this.components);
@@ -363,12 +364,24 @@ namespace PlutoPoint_Installer
             // nvidiaAppCheck
             // 
             this.nvidiaAppCheck.Image = global::PlutoPoint_Installer.Properties.Resources.nvidiaApp;
-            this.nvidiaAppCheck.Location = new System.Drawing.Point(10, 146);
+            this.nvidiaAppCheck.Location = new System.Drawing.Point(10, 192);
             this.nvidiaAppCheck.Name = "nvidiaAppCheck";
             this.nvidiaAppCheck.Size = new System.Drawing.Size(57, 50);
             this.nvidiaAppCheck.TabIndex = 21;
             this.nvidiaAppToolTip.SetToolTip(this.nvidiaAppCheck, "Nvidia Graphics App");
             this.nvidiaAppCheck.UseVisualStyleBackColor = true;
+            // 
+            // aiCheck
+            // 
+            this.aiCheck.Checked = true;
+            this.aiCheck.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.aiCheck.Image = global::PlutoPoint_Installer.Properties.Resources.aiRemoval;
+            this.aiCheck.Location = new System.Drawing.Point(10, 58);
+            this.aiCheck.Name = "aiCheck";
+            this.aiCheck.Size = new System.Drawing.Size(57, 50);
+            this.aiCheck.TabIndex = 22;
+            this.nvidiaAppToolTip.SetToolTip(this.aiCheck, "Remove Windows AI Bollocks (this can take a few minutes)");
+            this.aiCheck.UseVisualStyleBackColor = true;
             // 
             // mozillaFirefoxCheck
             // 
@@ -397,7 +410,7 @@ namespace PlutoPoint_Installer
             this.nanaZipCheck.Checked = true;
             this.nanaZipCheck.CheckState = System.Windows.Forms.CheckState.Checked;
             this.nanaZipCheck.Image = global::PlutoPoint_Installer.Properties.Resources.nanaZip;
-            this.nanaZipCheck.Location = new System.Drawing.Point(10, 101);
+            this.nanaZipCheck.Location = new System.Drawing.Point(10, 147);
             this.nanaZipCheck.Name = "nanaZipCheck";
             this.nanaZipCheck.Size = new System.Drawing.Size(57, 50);
             this.nanaZipCheck.TabIndex = 18;
@@ -430,7 +443,7 @@ namespace PlutoPoint_Installer
             this.bingWallpapersCheck.Checked = true;
             this.bingWallpapersCheck.CheckState = System.Windows.Forms.CheckState.Checked;
             this.bingWallpapersCheck.Image = global::PlutoPoint_Installer.Properties.Resources.bingWallpaper;
-            this.bingWallpapersCheck.Location = new System.Drawing.Point(10, 58);
+            this.bingWallpapersCheck.Location = new System.Drawing.Point(10, 104);
             this.bingWallpapersCheck.Name = "bingWallpapersCheck";
             this.bingWallpapersCheck.Size = new System.Drawing.Size(57, 50);
             this.bingWallpapersCheck.TabIndex = 8;
@@ -469,6 +482,7 @@ namespace PlutoPoint_Installer
             this.roundedGroupBox1.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(35)))), ((int)(((byte)(35)))));
             this.roundedGroupBox1.BorderColor = System.Drawing.Color.DodgerBlue;
             this.roundedGroupBox1.BorderColorOverride = null;
+            this.roundedGroupBox1.Controls.Add(this.aiCheck);
             this.roundedGroupBox1.Controls.Add(this.crcCheck);
             this.roundedGroupBox1.Controls.Add(this.nvidiaAppCheck);
             this.roundedGroupBox1.Controls.Add(this.nanaZipCheck);
@@ -477,7 +491,7 @@ namespace PlutoPoint_Installer
             this.roundedGroupBox1.ForeColor = System.Drawing.Color.White;
             this.roundedGroupBox1.Location = new System.Drawing.Point(167, 70);
             this.roundedGroupBox1.Name = "roundedGroupBox1";
-            this.roundedGroupBox1.Size = new System.Drawing.Size(75, 202);
+            this.roundedGroupBox1.Size = new System.Drawing.Size(75, 250);
             this.roundedGroupBox1.TabIndex = 24;
             this.roundedGroupBox1.TabStop = false;
             this.roundedGroupBox1.Text = "Utilities";
@@ -557,5 +571,6 @@ namespace PlutoPoint_Installer
         private System.Windows.Forms.ToolTip restartToolTip;
         private RoundedGroupBox roundedGroupBox1;
         private RoundedGroupBox roundedGroupBox2;
+        private CheckBox aiCheck;
     }
 }

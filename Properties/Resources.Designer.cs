@@ -63,6 +63,16 @@ namespace PlutoPoint_Installer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap aiRemoval {
+            get {
+                object obj = ResourceManager.GetObject("aiRemoval", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap amd {
             get {
                 object obj = ResourceManager.GetObject("amd", resourceCulture);

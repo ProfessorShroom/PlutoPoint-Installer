@@ -1080,7 +1080,6 @@ namespace PlutoPoint_Installer
             }
             if (hasIntelGpu || hasIntelCpu)
             {
-                //intelCheck.Checked = true;
                 intel = "1";
                 if (hasIntelGpu && hasIntelCpu)
                     installerTextBox.AppendText("🧠 + 🎮 Intel CPU and GPU detected." + Environment.NewLine);
@@ -1091,7 +1090,6 @@ namespace PlutoPoint_Installer
             }
             else
             {
-//                intelCheck.Checked = false;
             }
         }
         private void CheckForNvidiaGPU()
@@ -1146,7 +1144,6 @@ namespace PlutoPoint_Installer
             }
             if (hasAmdGpu || hasAmdCpu)
             {
-                //amdCheck.Checked = true;
                 amd = "1";
                 if (hasAmdGpu && hasAmdCpu)
                     installerTextBox.AppendText("🧠 + 🎮 AMD CPU and GPU detected." + Environment.NewLine);
@@ -1157,7 +1154,6 @@ namespace PlutoPoint_Installer
             }
             else
             {
-                //amdCheck.Checked = false;
             }
         }
         private string GetLibreOfficeVersion()
@@ -1256,6 +1252,7 @@ namespace PlutoPoint_Installer
             if (mozillaFirefoxCheck.Checked) { progressBar.Maximum += 2; }
             if (mozillaThunderbirdCheck.Checked) { progressBar.Maximum += 2; }
             if (steamCheck.Checked) { progressBar.Maximum += 2; }
+            if (aiCheck.Checked) { progressBar.Maximum += 1; }
             if (hpEliteBook == "1") { progressBar.Maximum += 4; }
             if (christmas == "1")
             {
@@ -1547,6 +1544,31 @@ namespace PlutoPoint_Installer
                     installerTextBox.AppendText("❌ Error: " + ex.Message);
                     installerTextBox.AppendText(Environment.NewLine);
                 }
+            }
+            if (aiCheck.Checked)
+            {
+                installerTextBox.AppendText("📌 Remove Windows AI is selected." + Environment.NewLine);
+                installerTextBox.AppendText("📌 Removing Windows AI... (this can take a few minutes)" + Environment.NewLine);
+                await Task.Run(() =>
+                {
+                    var psi = new ProcessStartInfo
+                    {
+                        FileName = "powershell.exe",
+                        Arguments =
+                            "-NoLogo -NoProfile -WindowStyle Hidden -NonInteractive " +
+                            "& ([scriptblock]::Create((irm \"https://raw.githubusercontent.com/zoicware/RemoveWindowsAI/main/RemoveWindowsAi.ps1\"))) -nonInteractive -Options DisableRegKeys,PreventAIPackageReinstall,DisableCopilotPolicies,RemoveRecallFeature,RemoveCBSPackages,HideAIComponents,DisableRewrite,RemoveRecallTasks",
+                        RedirectStandardOutput = false,
+                        RedirectStandardError = false,
+                        UseShellExecute = false,
+                        CreateNoWindow = true
+                    };
+                    using (var proc = Process.Start(psi))
+                    {
+                        proc.WaitForExit();
+                    }
+                });
+                installerTextBox.AppendText("✅ Completed removal of Windows AI." + Environment.NewLine);
+                progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
             }
             if (anyDeskCheck.Checked)
             {
