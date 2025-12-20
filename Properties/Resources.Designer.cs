@@ -168,6 +168,56 @@ namespace PlutoPoint_Installer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon computerRepairCentreIconBirthday {
+            get {
+                object obj = ResourceManager.GetObject("computerRepairCentreIconBirthday", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon computerRepairCentreIconChristmas {
+            get {
+                object obj = ResourceManager.GetObject("computerRepairCentreIconChristmas", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon computerRepairCentreIconHalloween {
+            get {
+                object obj = ResourceManager.GetObject("computerRepairCentreIconHalloween", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon computerRepairCentreIconPuffin {
+            get {
+                object obj = ResourceManager.GetObject("computerRepairCentreIconPuffin", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon computerRepairCentreIconValentines {
+            get {
+                object obj = ResourceManager.GetObject("computerRepairCentreIconValentines", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap discord {
@@ -293,6 +343,16 @@ namespace PlutoPoint_Installer.Properties {
             get {
                 object obj = ResourceManager.GetObject("pluto", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon plutoLogo {
+            get {
+                object obj = ResourceManager.GetObject("plutoLogo", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
             }
         }
         

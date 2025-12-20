@@ -91,6 +91,7 @@ namespace PlutoPoint_Installer
             CheckPancake();
             CheckPuffin();
             CheckDachshund();
+            CheckPluto();
             CheckRhino();
             CheckHippo();
             CheckCharlieBirthday();
@@ -122,6 +123,7 @@ namespace PlutoPoint_Installer
         string pancake = null;
         string puffin = null;
         string dachshund = null;
+        string pluto = null;
         string hippo = null;
         string rhino = null;
         string charlieBirthday = null;
@@ -477,6 +479,26 @@ namespace PlutoPoint_Installer
                 this.Invalidate();
             }
         }
+
+        private void CheckPluto()
+        {
+            if (DateTime.Now.Month == 3 && DateTime.Now.Day == 12)
+            {
+                pluto = "1";
+                this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(224)))), ((int)(((byte)(205)))));
+                install.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(167)))), ((int)(((byte)(121)))), ((int)(((byte)(87)))));
+                restart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(167)))), ((int)(((byte)(121)))), ((int)(((byte)(87)))));
+                close.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(167)))), ((int)(((byte)(121)))), ((int)(((byte)(87)))));
+                install.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(224)))), ((int)(((byte)(205)))));
+                restart.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(224)))), ((int)(((byte)(205)))));
+                close.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(224)))), ((int)(((byte)(205)))));
+                installerTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(167)))), ((int)(((byte)(121)))), ((int)(((byte)(87)))));
+                installerTextBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(224)))), ((int)(((byte)(205)))));
+                versionLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(167)))), ((int)(((byte)(121)))), ((int)(((byte)(87)))));
+                this.Invalidate();
+            }
+        }
+
         private void CheckHippo()
         {
             if (DateTime.Now.Month == 2 && DateTime.Now.Day == 15)
@@ -623,6 +645,7 @@ namespace PlutoPoint_Installer
                     e.Graphics.TranslateTransform(-(x + newWidth / 2), -(y + newHeight / 2));
                     e.Graphics.DrawImage(heartImage, new Rectangle(x, y, newWidth, newHeight));
                     e.Graphics.Restore(state);
+                    this.Icon = global::PlutoPoint_Installer.Properties.Resources.computerRepairCentreIconChristmas;
                 }
                 catch (Exception ex)
                 {
@@ -646,6 +669,7 @@ namespace PlutoPoint_Installer
                     e.Graphics.TranslateTransform(-(x + newWidth / 2), -(y + newHeight / 2));
                     e.Graphics.DrawImage(heartImage, new Rectangle(x, y, newWidth, newHeight));
                     e.Graphics.Restore(state);
+                    this.Icon = global::PlutoPoint_Installer.Properties.Resources.computerRepairCentreIconHalloween;
                 }
                 catch (Exception ex)
                 {
@@ -670,6 +694,7 @@ namespace PlutoPoint_Installer
                     e.Graphics.TranslateTransform(-(x + newWidth / 2), -(y + newHeight / 2));
                     e.Graphics.DrawImage(heartImage, new Rectangle(x, y, newWidth, newHeight));
                     e.Graphics.Restore(state);
+                    this.Icon = global::PlutoPoint_Installer.Properties.Resources.computerRepairCentreIconValentines;
                 }
                 catch (Exception ex)
                 {
@@ -716,6 +741,7 @@ namespace PlutoPoint_Installer
                     e.Graphics.TranslateTransform(-(x + newWidth / 2), -(y + newHeight / 2));
                     e.Graphics.DrawImage(heartImage, new Rectangle(x, y, newWidth, newHeight));
                     e.Graphics.Restore(state);
+                    this.Icon = global::PlutoPoint_Installer.Properties.Resources.computerRepairCentreIconPuffin;
                 }
                 catch (Exception ex)
                 {
@@ -739,6 +765,31 @@ namespace PlutoPoint_Installer
                     e.Graphics.TranslateTransform(-(x + newWidth / 2), -(y + newHeight / 2));
                     e.Graphics.DrawImage(heartImage, new Rectangle(x, y, newWidth, newHeight));
                     e.Graphics.Restore(state);
+                    this.Icon = global::PlutoPoint_Installer.Properties.Resources.plutoLogo;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error loading image: " + ex.Message);
+                }
+            }
+            if (pluto == "1")
+            {
+                try
+                {
+                    Image heartImage = Properties.Resources.pluto;
+                    int newWidth = 130;
+                    int newHeight = 100;
+                    int x = 140;
+                    int y = 320;
+                    e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+                    e.Graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                    e.Graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                    GraphicsState state = e.Graphics.Save();
+                    e.Graphics.TranslateTransform(x + newWidth / 2, y + newHeight / 2);
+                    e.Graphics.TranslateTransform(-(x + newWidth / 2), -(y + newHeight / 2));
+                    e.Graphics.DrawImage(heartImage, new Rectangle(x, y, newWidth, newHeight));
+                    e.Graphics.Restore(state);
+                    this.Icon = global::PlutoPoint_Installer.Properties.Resources.plutoLogo;
                 }
                 catch (Exception ex)
                 {
@@ -808,6 +859,7 @@ namespace PlutoPoint_Installer
                     e.Graphics.TranslateTransform(-(x + newWidth / 2), -(y + newHeight / 2));
                     e.Graphics.DrawImage(heartImage, new Rectangle(x, y, newWidth, newHeight));
                     e.Graphics.Restore(state);
+                    this.Icon = global::PlutoPoint_Installer.Properties.Resources.computerRepairCentreIconBirthday;
                 }
                 catch (Exception ex)
                 {
