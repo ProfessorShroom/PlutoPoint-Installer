@@ -155,6 +155,7 @@ namespace PlutoPoint_Installer
             this.recycleBinToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.powerToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.restartToolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.aiToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.roundedGroupBox2 = new PlutoPoint_Installer.RoundedGroupBox();
             this.roundedGroupBox1 = new PlutoPoint_Installer.RoundedGroupBox();
             this.roundedGroupBox2.SuspendLayout();
@@ -373,14 +374,13 @@ namespace PlutoPoint_Installer
             // 
             // aiCheck
             // 
-            this.aiCheck.Checked = true;
-            this.aiCheck.CheckState = System.Windows.Forms.CheckState.Checked;
             this.aiCheck.Image = global::PlutoPoint_Installer.Properties.Resources.aiRemoval;
             this.aiCheck.Location = new System.Drawing.Point(10, 58);
             this.aiCheck.Name = "aiCheck";
             this.aiCheck.Size = new System.Drawing.Size(57, 50);
             this.aiCheck.TabIndex = 22;
-            this.nvidiaAppToolTip.SetToolTip(this.aiCheck, "Remove Windows AI Bollocks (this can take a few minutes)");
+            //            this.aiToolTip.SetToolTip(this.aiCheck, "Remove Windows AI Bollocks (this can take a few minutes)");
+            this.aiToolTip.SetToolTip(this.aiCheck, "Temporarily disabled");
             this.aiCheck.UseVisualStyleBackColor = true;
             // 
             // mozillaFirefoxCheck
@@ -569,6 +569,7 @@ namespace PlutoPoint_Installer
         private System.Windows.Forms.ToolTip recycleBinToolTip;
         private System.Windows.Forms.ToolTip powerToolTip;
         private System.Windows.Forms.ToolTip restartToolTip;
+        private System.Windows.Forms.ToolTip aiToolTip;
         private RoundedGroupBox roundedGroupBox1;
         private RoundedGroupBox roundedGroupBox2;
         private CheckBox aiCheck;
