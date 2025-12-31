@@ -379,8 +379,8 @@ namespace PlutoPoint_Installer
             this.aiCheck.Name = "aiCheck";
             this.aiCheck.Size = new System.Drawing.Size(57, 50);
             this.aiCheck.TabIndex = 22;
-            //            this.aiToolTip.SetToolTip(this.aiCheck, "Remove Windows AI Bollocks (this can take a few minutes)");
-            this.aiToolTip.SetToolTip(this.aiCheck, "Temporarily disabled");
+            this.aiCheck.Checked = true;
+            this.aiToolTip.SetToolTip(this.aiCheck, "Remove Windows AI Bollocks (this can take a few minutes)");
             this.aiCheck.UseVisualStyleBackColor = true;
             // 
             // mozillaFirefoxCheck

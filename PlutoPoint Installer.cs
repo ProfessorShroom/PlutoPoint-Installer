@@ -56,6 +56,7 @@ namespace PlutoPoint_Installer
             InitializeComponent();
             SoundPlayer hoverSound = new SoundPlayer(Properties.Resources.buttonHover);
             SoundPlayer clickSound = new SoundPlayer(Properties.Resources.buttonHover);
+            this.DoubleBuffered = true;
             void PlayHover()
             {
                 if (isClickPlaying) return;
@@ -103,6 +104,7 @@ namespace PlutoPoint_Installer
             OverrideRoundedBoxColours();
             CheckIP();
             CheckEliteBook();
+            UpdateOverlayFromFlags();
             // Info checks
             PrintVersion();
             PrintDay();
@@ -147,6 +149,13 @@ namespace PlutoPoint_Installer
         string amd = null;
         string nvidia = null;
         string intel = null;
+        private Image _overlayImage;
+        private Icon _overlayIcon;
+        private int _overlayX;
+        private int _overlayY;
+        private int _overlayWidth;
+        private int _overlayHeight;
+        private float _overlayRotationDegrees;
         private const string charliePasswordHash = "61a8b0026371a90d41b114644694485ecdaf999473977a125d028e39cb6d77b2";
         private const string CRCPasswordHash = "1c98fa014f3400abee047920e535036a74661fa0c88f34d24ebed7866a1fc630";
         string romseyHash = "aebeec856af3585448c3d5cc72dc93f29d56fa7191027a35c345eba670c533b3";
@@ -388,7 +397,7 @@ namespace PlutoPoint_Installer
         }
         private void CheckChristmas()
         {
-            if (DateTime.Now.Month == 11)
+            if (DateTime.Now.Month == 12)
             {
                 christmas = "1";
                 this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(130)))), ((int)(((byte)(60)))));
@@ -625,248 +634,127 @@ namespace PlutoPoint_Installer
                 this.Invalidate();
             }
         }
+        private void UpdateOverlayFromFlags()
+        {
+            // Defaults: nothing to draw
+            _overlayImage = null;
+            _overlayIcon = null;
+            _overlayRotationDegrees = 0f;
+
+            _overlayX = 160;
+            _overlayY = 320;
+            _overlayWidth = 100;
+            _overlayHeight = 100;
+
+            // Choose ONE overlay based on priority (topmost wins).
+            // Adjust priority order if needed.
+            if (christmas == "1")
+            {
+                _overlayImage = Properties.Resources.christmasTree;
+                _overlayIcon = PlutoPoint_Installer.Properties.Resources.computerRepairCentreIconChristmas;
+                _overlayX = 160; _overlayY = 320; _overlayWidth = 100; _overlayHeight = 100;
+            }
+            else if (halloween == "1")
+            {
+                _overlayImage = Properties.Resources.pumpkin;
+                _overlayIcon = PlutoPoint_Installer.Properties.Resources.computerRepairCentreIconHalloween;
+                _overlayX = 160; _overlayY = 320; _overlayWidth = 100; _overlayHeight = 100;
+            }
+            else if (valentines == "1")
+            {
+                _overlayImage = Properties.Resources.heart;
+                _overlayIcon = PlutoPoint_Installer.Properties.Resources.computerRepairCentreIconValentines;
+                _overlayRotationDegrees = 30f;
+                _overlayX = 160; _overlayY = 320; _overlayWidth = 100; _overlayHeight = 100;
+            }
+            else if (pancake == "1")
+            {
+                _overlayImage = Properties.Resources.pancake;
+                _overlayIcon = null; // you didn't set one before
+                _overlayX = 160; _overlayY = 320; _overlayWidth = 100; _overlayHeight = 100;
+            }
+            else if (puffin == "1")
+            {
+                _overlayImage = Properties.Resources.puffin;
+                _overlayIcon = PlutoPoint_Installer.Properties.Resources.computerRepairCentreIconPuffin;
+                _overlayX = 320; _overlayY = 320; _overlayWidth = 100; _overlayHeight = 100;
+            }
+            else if (dachshund == "1")
+            {
+                _overlayImage = Properties.Resources.pluto;
+                _overlayIcon = PlutoPoint_Installer.Properties.Resources.plutoLogo;
+                _overlayX = 140; _overlayY = 320; _overlayWidth = 130; _overlayHeight = 100;
+            }
+            else if (pluto == "1")
+            {
+                _overlayImage = Properties.Resources.pluto;
+                _overlayIcon = PlutoPoint_Installer.Properties.Resources.plutoLogo;
+                _overlayX = 140; _overlayY = 320; _overlayWidth = 130; _overlayHeight = 100;
+            }
+            else if (hippo == "1")
+            {
+                _overlayImage = Properties.Resources.hippo;
+                _overlayIcon = null;
+                _overlayX = 140; _overlayY = 320; _overlayWidth = 130; _overlayHeight = 100;
+            }
+            else if (rhino == "1")
+            {
+                _overlayImage = Properties.Resources.rhino;
+                _overlayIcon = null;
+                _overlayX = 140; _overlayY = 320; _overlayWidth = 120; _overlayHeight = 100;
+            }
+            else if (birthday == "1")
+            {
+                _overlayImage = Properties.Resources.present;
+                _overlayIcon = PlutoPoint_Installer.Properties.Resources.computerRepairCentreIconBirthday;
+                _overlayX = 160; _overlayY = 320; _overlayWidth = 100; _overlayHeight = 100;
+            }
+
+            // Set the icon ONCE here (not in OnPaint)
+            if (_overlayIcon != null && this.Icon != _overlayIcon)
+                this.Icon = _overlayIcon;
+
+            // Trigger repaint
+            this.Invalidate();
+        }
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
-            if (christmas == "1")
+
+            if (_overlayImage == null)
+                return;
+
+            e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+            e.Graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBilinear; // faster than Bicubic
+            e.Graphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
+
+            var dest = new Rectangle(_overlayX, _overlayY, _overlayWidth, _overlayHeight);
+
+            if (_overlayRotationDegrees == 0f)
             {
-                try
-                {
-                    Image heartImage = Properties.Resources.christmasTree;
-                    int newWidth = 100;
-                    int newHeight = 100;
-                    int x = 160;
-                    int y = 320;
-                    e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-                    e.Graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                    e.Graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                    GraphicsState state = e.Graphics.Save();
-                    e.Graphics.TranslateTransform(x + newWidth / 2, y + newHeight / 2);
-                    e.Graphics.TranslateTransform(-(x + newWidth / 2), -(y + newHeight / 2));
-                    e.Graphics.DrawImage(heartImage, new Rectangle(x, y, newWidth, newHeight));
-                    e.Graphics.Restore(state);
-                    this.Icon = global::PlutoPoint_Installer.Properties.Resources.computerRepairCentreIconChristmas;
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Error loading image: " + ex.Message);
-                }
+                e.Graphics.DrawImage(_overlayImage, dest);
+                return;
             }
-            if (halloween == "1")
+
+            // Rotate around the image center
+            var state = e.Graphics.Save();
+            try
             {
-                try
-                {
-                    Image heartImage = Properties.Resources.pumpkin;
-                    int newWidth = 100;
-                    int newHeight = 100;
-                    int x = 160;
-                    int y = 320;
-                    e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-                    e.Graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                    e.Graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                    GraphicsState state = e.Graphics.Save();
-                    e.Graphics.TranslateTransform(x + newWidth / 2, y + newHeight / 2);
-                    e.Graphics.TranslateTransform(-(x + newWidth / 2), -(y + newHeight / 2));
-                    e.Graphics.DrawImage(heartImage, new Rectangle(x, y, newWidth, newHeight));
-                    e.Graphics.Restore(state);
-                    this.Icon = global::PlutoPoint_Installer.Properties.Resources.computerRepairCentreIconHalloween;
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Error loading image: " + ex.Message);
-                }
+                float cx = _overlayX + (_overlayWidth / 2f);
+                float cy = _overlayY + (_overlayHeight / 2f);
+
+                e.Graphics.TranslateTransform(cx, cy);
+                e.Graphics.RotateTransform(_overlayRotationDegrees);
+                e.Graphics.TranslateTransform(-cx, -cy);
+
+                e.Graphics.DrawImage(_overlayImage, dest);
             }
-            if (valentines == "1")
+            finally
             {
-                try
-                {
-                    Image heartImage = Properties.Resources.heart;
-                    int newWidth = 100;
-                    int newHeight = 100;
-                    int x = 160;
-                    int y = 320;
-                    e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-                    e.Graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                    e.Graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                    GraphicsState state = e.Graphics.Save();
-                    e.Graphics.TranslateTransform(x + newWidth / 2, y + newHeight / 2);
-                    e.Graphics.RotateTransform(30);
-                    e.Graphics.TranslateTransform(-(x + newWidth / 2), -(y + newHeight / 2));
-                    e.Graphics.DrawImage(heartImage, new Rectangle(x, y, newWidth, newHeight));
-                    e.Graphics.Restore(state);
-                    this.Icon = global::PlutoPoint_Installer.Properties.Resources.computerRepairCentreIconValentines;
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Error loading image: " + ex.Message);
-                }
-            }
-            if (pancake == "1")
-            {
-                try
-                {
-                    Image heartImage = Properties.Resources.pancake;
-                    int newWidth = 100;
-                    int newHeight = 100;
-                    int x = 160;
-                    int y = 320;
-                    e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-                    e.Graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                    e.Graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                    GraphicsState state = e.Graphics.Save();
-                    e.Graphics.TranslateTransform(x + newWidth / 2, y + newHeight / 2);
-                    e.Graphics.TranslateTransform(-(x + newWidth / 2), -(y + newHeight / 2));
-                    e.Graphics.DrawImage(heartImage, new Rectangle(x, y, newWidth, newHeight));
-                    e.Graphics.Restore(state);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Error loading image: " + ex.Message);
-                }
-            }
-            if (puffin == "1")
-            {
-                try
-                {
-                    Image heartImage = Properties.Resources.puffin;
-                    int newWidth = 100;
-                    int newHeight = 100;
-                    int x = 320;
-                    int y = 320;
-                    e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-                    e.Graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                    e.Graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                    GraphicsState state = e.Graphics.Save();
-                    e.Graphics.TranslateTransform(x + newWidth / 2, y + newHeight / 2);
-                    e.Graphics.TranslateTransform(-(x + newWidth / 2), -(y + newHeight / 2));
-                    e.Graphics.DrawImage(heartImage, new Rectangle(x, y, newWidth, newHeight));
-                    e.Graphics.Restore(state);
-                    this.Icon = global::PlutoPoint_Installer.Properties.Resources.computerRepairCentreIconPuffin;
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Error loading image: " + ex.Message);
-                }
-            }
-            if (dachshund == "1")
-            {
-                try
-                {
-                    Image heartImage = Properties.Resources.pluto;
-                    int newWidth = 130;
-                    int newHeight = 100;
-                    int x = 140;
-                    int y = 320;
-                    e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-                    e.Graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                    e.Graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                    GraphicsState state = e.Graphics.Save();
-                    e.Graphics.TranslateTransform(x + newWidth / 2, y + newHeight / 2);
-                    e.Graphics.TranslateTransform(-(x + newWidth / 2), -(y + newHeight / 2));
-                    e.Graphics.DrawImage(heartImage, new Rectangle(x, y, newWidth, newHeight));
-                    e.Graphics.Restore(state);
-                    this.Icon = global::PlutoPoint_Installer.Properties.Resources.plutoLogo;
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Error loading image: " + ex.Message);
-                }
-            }
-            if (pluto == "1")
-            {
-                try
-                {
-                    Image heartImage = Properties.Resources.pluto;
-                    int newWidth = 130;
-                    int newHeight = 100;
-                    int x = 140;
-                    int y = 320;
-                    e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-                    e.Graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                    e.Graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                    GraphicsState state = e.Graphics.Save();
-                    e.Graphics.TranslateTransform(x + newWidth / 2, y + newHeight / 2);
-                    e.Graphics.TranslateTransform(-(x + newWidth / 2), -(y + newHeight / 2));
-                    e.Graphics.DrawImage(heartImage, new Rectangle(x, y, newWidth, newHeight));
-                    e.Graphics.Restore(state);
-                    this.Icon = global::PlutoPoint_Installer.Properties.Resources.plutoLogo;
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Error loading image: " + ex.Message);
-                }
-            }
-            if (hippo == "1")
-            {
-                try
-                {
-                    Image heartImage = Properties.Resources.hippo;
-                    int newWidth = 130;
-                    int newHeight = 100;
-                    int x = 140;
-                    int y = 320;
-                    e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-                    e.Graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                    e.Graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                    GraphicsState state = e.Graphics.Save();
-                    e.Graphics.TranslateTransform(x + newWidth / 2, y + newHeight / 2);
-                    e.Graphics.TranslateTransform(-(x + newWidth / 2), -(y + newHeight / 2));
-                    e.Graphics.DrawImage(heartImage, new Rectangle(x, y, newWidth, newHeight));
-                    e.Graphics.Restore(state);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Error loading image: " + ex.Message);
-                }
-            }
-            if (rhino == "1")
-            {
-                try
-                {
-                    Image heartImage = Properties.Resources.rhino;
-                    int newWidth = 120;
-                    int newHeight = 100;
-                    int x = 140;
-                    int y = 320;
-                    e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-                    e.Graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                    e.Graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                    GraphicsState state = e.Graphics.Save();
-                    e.Graphics.TranslateTransform(x + newWidth / 2, y + newHeight / 2);
-                    e.Graphics.TranslateTransform(-(x + newWidth / 2), -(y + newHeight / 2));
-                    e.Graphics.DrawImage(heartImage, new Rectangle(x, y, newWidth, newHeight));
-                    e.Graphics.Restore(state);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Error loading image: " + ex.Message);
-                }
-            }
-            if (birthday == "1")
-            {
-                try
-                {
-                    Image heartImage = Properties.Resources.present;
-                    int newWidth = 100;
-                    int newHeight = 100;
-                    int x = 160;
-                    int y = 320;
-                    e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-                    e.Graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                    e.Graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                    GraphicsState state = e.Graphics.Save();
-                    e.Graphics.TranslateTransform(x + newWidth / 2, y + newHeight / 2);
-                    e.Graphics.TranslateTransform(-(x + newWidth / 2), -(y + newHeight / 2));
-                    e.Graphics.DrawImage(heartImage, new Rectangle(x, y, newWidth, newHeight));
-                    e.Graphics.Restore(state);
-                    this.Icon = global::PlutoPoint_Installer.Properties.Resources.computerRepairCentreIconBirthday;
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Error loading image: " + ex.Message);
-                }
+                e.Graphics.Restore(state);
             }
         }
+
         protected void OverrideRoundedBoxColours()
         {
             roundedGroupBox1.BorderColorOverride = versionLabel.LinkColor;
