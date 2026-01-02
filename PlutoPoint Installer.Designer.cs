@@ -242,16 +242,18 @@ namespace PlutoPoint_Installer
             this.versionLabel.TabIndex = 9;
             this.versionLabel.TabStop = true;
             this.versionLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.versionLabel_LinkClicked);
+            this.versionLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             // 
             // locationLabel
             // 
             this.locationLabel.AutoSize = true;
             this.locationLabel.ForeColor = System.Drawing.Color.White;
-            this.locationLabel.Location = new System.Drawing.Point(100, 425);
+            this.locationLabel.Location = new System.Drawing.Point(120, 425);
             this.locationLabel.Name = "locationLabel";
             this.locationLabel.Size = new System.Drawing.Size(0, 13);
             this.locationLabel.TabIndex = 9;
             this.locationLabel.TabStop = true;
+            this.locationLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             // 
             // restartCheck
             // 

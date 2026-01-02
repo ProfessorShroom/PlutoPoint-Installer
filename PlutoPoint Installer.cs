@@ -406,15 +406,25 @@ namespace PlutoPoint_Installer
                 close.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(214)))), ((int)(((byte)(0)))), ((int)(((byte)(28)))));
                 close.ForeColor = System.Drawing.Color.White;
                 restart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(214)))), ((int)(((byte)(0)))), ((int)(((byte)(28)))));
+                restart.ForeColor = System.Drawing.Color.White;
                 installerTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(135)))), ((int)(((byte)(62)))));
                 this.Invalidate();
             }
         }
         private void CheckNewYear()
         {
-            if (DateTime.Now.Month == 1 && (DateTime.Now.Day == 1 || DateTime.Now.Day == 2 || DateTime.Now.Day == 3 || DateTime.Now.Day == 4 || DateTime.Now.Day == 5 ))
+            if (DateTime.Now.Month == 1 && (DateTime.Now.Day == 1 || DateTime.Now.Day == 2 || DateTime.Now.Day == 3 || DateTime.Now.Day == 4 || DateTime.Now.Day == 5 || DateTime.Now.Day == 6 || DateTime.Now.Day == 7))
             {
                 newyear = "1";
+                this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(247)))), ((int)(((byte)(183)))), ((int)(((byte)(58)))));
+                install.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(237)))), ((int)(((byte)(231)))));
+                install.ForeColor = System.Drawing.Color.Black;
+                close.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(237)))), ((int)(((byte)(231)))));
+                close.ForeColor = System.Drawing.Color.Black;
+                restart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(237)))), ((int)(((byte)(231)))));
+                restart.ForeColor = System.Drawing.Color.Black;
+                installerTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(247)))), ((int)(((byte)(183)))), ((int)(((byte)(58)))));
+                this.Invalidate();
             }
         }
         private void CheckHalloween()
@@ -636,7 +646,6 @@ namespace PlutoPoint_Installer
         }
         private void UpdateOverlayFromFlags()
         {
-            // Defaults: nothing to draw
             _overlayImage = null;
             _overlayIcon = null;
             _overlayRotationDegrees = 0f;
@@ -645,13 +654,16 @@ namespace PlutoPoint_Installer
             _overlayY = 320;
             _overlayWidth = 100;
             _overlayHeight = 100;
-
-            // Choose ONE overlay based on priority (topmost wins).
-            // Adjust priority order if needed.
             if (christmas == "1")
             {
                 _overlayImage = Properties.Resources.christmasTree;
                 _overlayIcon = PlutoPoint_Installer.Properties.Resources.computerRepairCentreIconChristmas;
+                _overlayX = 160; _overlayY = 320; _overlayWidth = 100; _overlayHeight = 100;
+            }
+            else if (newyear == "1")
+            {
+                _overlayImage = Properties.Resources.newyear;
+                _overlayIcon = null;
                 _overlayX = 160; _overlayY = 320; _overlayWidth = 100; _overlayHeight = 100;
             }
             else if (halloween == "1")
@@ -670,7 +682,7 @@ namespace PlutoPoint_Installer
             else if (pancake == "1")
             {
                 _overlayImage = Properties.Resources.pancake;
-                _overlayIcon = null; // you didn't set one before
+                _overlayIcon = null;
                 _overlayX = 160; _overlayY = 320; _overlayWidth = 100; _overlayHeight = 100;
             }
             else if (puffin == "1")
@@ -709,12 +721,8 @@ namespace PlutoPoint_Installer
                 _overlayIcon = PlutoPoint_Installer.Properties.Resources.computerRepairCentreIconBirthday;
                 _overlayX = 160; _overlayY = 320; _overlayWidth = 100; _overlayHeight = 100;
             }
-
-            // Set the icon ONCE here (not in OnPaint)
             if (_overlayIcon != null && this.Icon != _overlayIcon)
                 this.Icon = _overlayIcon;
-
-            // Trigger repaint
             this.Invalidate();
         }
         protected override void OnPaint(PaintEventArgs e)
@@ -725,7 +733,7 @@ namespace PlutoPoint_Installer
                 return;
 
             e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-            e.Graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBilinear; // faster than Bicubic
+            e.Graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBilinear;
             e.Graphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
 
             var dest = new Rectangle(_overlayX, _overlayY, _overlayWidth, _overlayHeight);
@@ -735,8 +743,6 @@ namespace PlutoPoint_Installer
                 e.Graphics.DrawImage(_overlayImage, dest);
                 return;
             }
-
-            // Rotate around the image center
             var state = e.Graphics.Save();
             try
             {
