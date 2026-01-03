@@ -1204,6 +1204,10 @@ namespace PlutoPoint_Installer
             {
                 player = new SoundPlayer(Properties.Resources.christmas);
             }
+            else if (newyear == "1")
+            {
+                player = new SoundPlayer(Properties.Resources.newYearFireworks);
+            }
             else if (halloween == "1")
             {
                 player = new SoundPlayer(Properties.Resources.halloween);
