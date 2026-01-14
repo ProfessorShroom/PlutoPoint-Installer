@@ -2791,6 +2791,13 @@ namespace PlutoPoint_Installer
                 installerTextBox.AppendText(Environment.NewLine);
             }
 
+            if (shutdownCheck.Checked)
+            {
+                Process.Start("shutdown", "/s /t 60");
+                installerTextBox.AppendText("System will shutdown in 60 seconds. If you need to cancel this press the close button.");
+                installerTextBox.AppendText(Environment.NewLine);
+            }
+
             installerTextBox.AppendText("✅ The installation has completed.");
             installerTextBox.AppendText(Environment.NewLine);
 

@@ -155,9 +155,11 @@ namespace PlutoPoint_Installer
             this.recycleBinToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.powerToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.restartToolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.shutdownCheck = new System.Windows.Forms.CheckBox();
             this.aiToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.roundedGroupBox2 = new PlutoPoint_Installer.RoundedGroupBox();
             this.roundedGroupBox1 = new PlutoPoint_Installer.RoundedGroupBox();
+            this.shutdownToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.roundedGroupBox2.SuspendLayout();
             this.roundedGroupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -235,6 +237,7 @@ namespace PlutoPoint_Installer
             // versionLabel
             // 
             this.versionLabel.AutoSize = true;
+            this.versionLabel.Font = new System.Drawing.Font("Ubuntu", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.versionLabel.LinkColor = System.Drawing.Color.White;
             this.versionLabel.Location = new System.Drawing.Point(12, 425);
             this.versionLabel.Name = "versionLabel";
@@ -242,23 +245,22 @@ namespace PlutoPoint_Installer
             this.versionLabel.TabIndex = 9;
             this.versionLabel.TabStop = true;
             this.versionLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.versionLabel_LinkClicked);
-            this.versionLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             // 
             // locationLabel
             // 
             this.locationLabel.AutoSize = true;
+            this.locationLabel.Font = new System.Drawing.Font("Ubuntu", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.locationLabel.ForeColor = System.Drawing.Color.White;
             this.locationLabel.Location = new System.Drawing.Point(120, 425);
             this.locationLabel.Name = "locationLabel";
             this.locationLabel.Size = new System.Drawing.Size(0, 13);
             this.locationLabel.TabIndex = 9;
             this.locationLabel.TabStop = true;
-            this.locationLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             // 
             // restartCheck
             // 
             this.restartCheck.Image = global::PlutoPoint_Installer.Properties.Resources.restart;
-            this.restartCheck.Location = new System.Drawing.Point(740, 415);
+            this.restartCheck.Location = new System.Drawing.Point(687, 415);
             this.restartCheck.Name = "restartCheck";
             this.restartCheck.Size = new System.Drawing.Size(48, 34);
             this.restartCheck.TabIndex = 10;
@@ -268,7 +270,7 @@ namespace PlutoPoint_Installer
             // powerCheck
             // 
             this.powerCheck.Image = global::PlutoPoint_Installer.Properties.Resources.power;
-            this.powerCheck.Location = new System.Drawing.Point(686, 415);
+            this.powerCheck.Location = new System.Drawing.Point(633, 415);
             this.powerCheck.Name = "powerCheck";
             this.powerCheck.Size = new System.Drawing.Size(48, 34);
             this.powerCheck.TabIndex = 12;
@@ -278,7 +280,7 @@ namespace PlutoPoint_Installer
             // recycleBinCheck
             // 
             this.recycleBinCheck.Image = global::PlutoPoint_Installer.Properties.Resources.recycleBin;
-            this.recycleBinCheck.Location = new System.Drawing.Point(632, 415);
+            this.recycleBinCheck.Location = new System.Drawing.Point(579, 415);
             this.recycleBinCheck.Name = "recycleBinCheck";
             this.recycleBinCheck.Size = new System.Drawing.Size(48, 34);
             this.recycleBinCheck.TabIndex = 22;
@@ -376,12 +378,13 @@ namespace PlutoPoint_Installer
             // 
             // aiCheck
             // 
+            this.aiCheck.Checked = true;
+            this.aiCheck.CheckState = System.Windows.Forms.CheckState.Checked;
             this.aiCheck.Image = global::PlutoPoint_Installer.Properties.Resources.aiRemoval;
             this.aiCheck.Location = new System.Drawing.Point(10, 58);
             this.aiCheck.Name = "aiCheck";
             this.aiCheck.Size = new System.Drawing.Size(57, 50);
             this.aiCheck.TabIndex = 22;
-            this.aiCheck.Checked = true;
             this.aiToolTip.SetToolTip(this.aiCheck, "Remove Windows AI Bollocks (this can take a few minutes)");
             this.aiCheck.UseVisualStyleBackColor = true;
             // 
@@ -452,6 +455,16 @@ namespace PlutoPoint_Installer
             this.bingWallpaperstoolTip.SetToolTip(this.bingWallpapersCheck, "Bing Wallpapers");
             this.bingWallpapersCheck.UseVisualStyleBackColor = false;
             // 
+            // shutdownCheck
+            // 
+            this.shutdownCheck.Image = global::PlutoPoint_Installer.Properties.Resources.shutdown;
+            this.shutdownCheck.Location = new System.Drawing.Point(740, 415);
+            this.shutdownCheck.Name = "shutdownCheck";
+            this.shutdownCheck.Size = new System.Drawing.Size(48, 34);
+            this.shutdownCheck.TabIndex = 26;
+            this.shutdownToolTip.SetToolTip(this.shutdownCheck, "Shutdown Computer on Install Completion");
+            this.shutdownCheck.UseVisualStyleBackColor = true;
+            // 
             // roundedGroupBox2
             // 
             this.roundedGroupBox2.BackColor = System.Drawing.Color.Transparent;
@@ -476,6 +489,7 @@ namespace PlutoPoint_Installer
             this.roundedGroupBox2.TabIndex = 25;
             this.roundedGroupBox2.TabStop = false;
             this.roundedGroupBox2.Text = "Software";
+            this.roundedGroupBox2.Font = new System.Drawing.Font("Ubuntu", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.roundedGroupBox2.TextColorOverride = null;
             // 
             // roundedGroupBox1
@@ -497,6 +511,7 @@ namespace PlutoPoint_Installer
             this.roundedGroupBox1.TabIndex = 24;
             this.roundedGroupBox1.TabStop = false;
             this.roundedGroupBox1.Text = "Utilities";
+            this.roundedGroupBox1.Font = new System.Drawing.Font("Ubuntu", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.roundedGroupBox1.TextColorOverride = null;
             // 
             // installerForm
@@ -505,6 +520,7 @@ namespace PlutoPoint_Installer
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(41)))), ((int)(((byte)(41)))));
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.shutdownCheck);
             this.Controls.Add(this.roundedGroupBox2);
             this.Controls.Add(this.recycleBinCheck);
             this.Controls.Add(this.powerCheck);
@@ -575,5 +591,7 @@ namespace PlutoPoint_Installer
         private RoundedGroupBox roundedGroupBox1;
         private RoundedGroupBox roundedGroupBox2;
         private CheckBox aiCheck;
+        private CheckBox shutdownCheck;
+        private ToolTip shutdownToolTip;
     }
 }
