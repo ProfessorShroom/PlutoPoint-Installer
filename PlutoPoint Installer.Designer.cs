@@ -169,7 +169,7 @@ namespace PlutoPoint_Installer
             this.install.BackColor = System.Drawing.SystemColors.MenuHighlight;
             this.install.FlatAppearance.BorderSize = 0;
             this.install.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.install.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.install.Font = Program.Ubuntu(15f, FontStyle.Bold);
             this.install.ForeColor = System.Drawing.Color.White;
             this.install.Location = new System.Drawing.Point(12, 14);
             this.install.Name = "install";
@@ -184,7 +184,7 @@ namespace PlutoPoint_Installer
             this.installerTextBox.AcceptsReturn = true;
             this.installerTextBox.BackColor = System.Drawing.SystemColors.ControlDarkDark;
             this.installerTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.installerTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.installerTextBox.Font = Program.Ubuntu(12f, FontStyle.Regular);
             this.installerTextBox.ForeColor = System.Drawing.SystemColors.Info;
             this.installerTextBox.Location = new System.Drawing.Point(267, 54);
             this.installerTextBox.Multiline = true;
@@ -209,7 +209,7 @@ namespace PlutoPoint_Installer
             this.close.BackColor = System.Drawing.SystemColors.MenuHighlight;
             this.close.FlatAppearance.BorderSize = 0;
             this.close.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.close.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.close.Font = Program.Ubuntu(8.25f, FontStyle.Bold);
             this.close.ForeColor = System.Drawing.Color.White;
             this.close.Location = new System.Drawing.Point(195, 14);
             this.close.Name = "close";
@@ -224,7 +224,7 @@ namespace PlutoPoint_Installer
             this.restart.BackColor = System.Drawing.Color.OrangeRed;
             this.restart.FlatAppearance.BorderSize = 0;
             this.restart.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.restart.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.restart.Font = Program.Ubuntu(8.25f, FontStyle.Bold);
             this.restart.ForeColor = System.Drawing.Color.White;
             this.restart.Location = new System.Drawing.Point(123, 14);
             this.restart.Name = "restart";
@@ -237,7 +237,7 @@ namespace PlutoPoint_Installer
             // versionLabel
             // 
             this.versionLabel.AutoSize = true;
-            this.versionLabel.Font = new System.Drawing.Font("Ubuntu", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.versionLabel.Font = Program.Ubuntu(8.25f, FontStyle.Bold);
             this.versionLabel.LinkColor = System.Drawing.Color.White;
             this.versionLabel.Location = new System.Drawing.Point(12, 425);
             this.versionLabel.Name = "versionLabel";
@@ -249,7 +249,7 @@ namespace PlutoPoint_Installer
             // locationLabel
             // 
             this.locationLabel.AutoSize = true;
-            this.locationLabel.Font = new System.Drawing.Font("Ubuntu", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.locationLabel.Font = Program.Ubuntu(8.25f, FontStyle.Bold);
             this.locationLabel.ForeColor = System.Drawing.Color.White;
             this.locationLabel.Location = new System.Drawing.Point(120, 425);
             this.locationLabel.Name = "locationLabel";
@@ -489,7 +489,7 @@ namespace PlutoPoint_Installer
             this.roundedGroupBox2.TabIndex = 25;
             this.roundedGroupBox2.TabStop = false;
             this.roundedGroupBox2.Text = "Software";
-            this.roundedGroupBox2.Font = new System.Drawing.Font("Ubuntu", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.roundedGroupBox2.Font = Program.Ubuntu(8.25f, FontStyle.Bold);
             this.roundedGroupBox2.TextColorOverride = null;
             // 
             // roundedGroupBox1
@@ -511,7 +511,7 @@ namespace PlutoPoint_Installer
             this.roundedGroupBox1.TabIndex = 24;
             this.roundedGroupBox1.TabStop = false;
             this.roundedGroupBox1.Text = "Utilities";
-            this.roundedGroupBox1.Font = new System.Drawing.Font("Ubuntu", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.roundedGroupBox1.Font = Program.Ubuntu(8.25f, FontStyle.Bold);
             this.roundedGroupBox1.TextColorOverride = null;
             // 
             // installerForm

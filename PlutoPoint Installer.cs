@@ -1497,29 +1497,27 @@ namespace PlutoPoint_Installer
             }
             if (aiCheck.Checked)
             {
-//                installerTextBox.AppendText("📌 Remove Windows AI is selected." + Environment.NewLine);
-//                installerTextBox.AppendText("📌 Removing Windows AI... (this can take a few minutes)" + Environment.NewLine);
-//                await Task.Run(() =>
-//                {
-//                    var psi = new ProcessStartInfo
-//                    {
-//                        FileName = "powershell.exe",
-//                        Arguments =
-//                            "-NoLogo -NoProfile -WindowStyle Hidden -NonInteractive " +
-//                            "& ([scriptblock]::Create((irm \"https://raw.githubusercontent.com/zoicware/RemoveWindowsAI/main/RemoveWindowsAi.ps1\"))) -nonInteractive -Options DisableRegKeys,PreventAIPackageReinstall,DisableCopilotPolicies,RemoveRecallFeature,RemoveCBSPackages,HideAIComponents,DisableRewrite,RemoveRecallTasks",
-//                        RedirectStandardOutput = false,
-//                        RedirectStandardError = false,
-//                        UseShellExecute = false,
-//                        CreateNoWindow = true
-//                    };
-//                    using (var proc = Process.Start(psi))
-//                    {
-//                        proc.WaitForExit();
-//                    }
-//                });
-//                installerTextBox.AppendText("✅ Completed removal of Windows AI." + Environment.NewLine);
-                installerTextBox.AppendText("Temporarily disabled removal of Windows AI." + Environment.NewLine);
-                progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
+                installerTextBox.AppendText("📌 Remove Windows AI is selected." + Environment.NewLine);
+                installerTextBox.AppendText("📌 Removing Windows AI... (this can take a few minutes)" + Environment.NewLine);
+                await Task.Run(() =>
+                {
+                    var psi = new ProcessStartInfo
+                    {
+                        FileName = "powershell.exe",
+                        Arguments =
+                            "-NoLogo -NoProfile -WindowStyle Hidden -NonInteractive " +
+                            "& ([scriptblock]::Create((irm \"https://raw.githubusercontent.com/zoicware/RemoveWindowsAI/main/RemoveWindowsAi.ps1\"))) -nonInteractive -Options DisableRegKeys,PreventAIPackageReinstall,DisableCopilotPolicies,RemoveRecallFeature,RemoveCBSPackages,HideAIComponents,DisableRewrite,RemoveRecallTasks",
+                        RedirectStandardOutput = false,
+                        RedirectStandardError = false,
+                        UseShellExecute = false,
+                        CreateNoWindow = true
+                    };
+                    using (var proc = Process.Start(psi))
+                    {
+                        proc.WaitForExit();
+                    }
+                });
+                installerTextBox.AppendText("✅ Completed removal of Windows AI." + Environment.NewLine);
             }
             if (anyDeskCheck.Checked)
             {

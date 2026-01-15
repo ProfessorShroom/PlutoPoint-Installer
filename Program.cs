@@ -1,24 +1,44 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Text;
 using System.Linq;
-using System.Threading.Tasks;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
-
-// Copyright © Charlie Howard 2026 All rights reserved.
 
 namespace PlutoPoint_Installer
 {
     internal static class Program
     {
-        /// <summary>
-        /// The main entry point for the application.
-        /// </summary>
+        public static PrivateFontCollection UbuntuFonts;
+        public static FontFamily UbuntuFamily;
+
         [STAThread]
         static void Main()
         {
+            UbuntuFonts = new PrivateFontCollection();
+            AddFont(Properties.Resources.Ubuntu_Regular);
+            AddFont(Properties.Resources.Ubuntu_Bold);
+            AddFont(Properties.Resources.Ubuntu_Italic);
+
+            UbuntuFamily = UbuntuFonts.Families
+                .First(f => f.Name == "Ubuntu");
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new installerForm());
+        }
+
+        private static void AddFont(byte[] fontData)
+        {
+            IntPtr fontPtr = Marshal.AllocCoTaskMem(fontData.Length);
+            Marshal.Copy(fontData, 0, fontPtr, fontData.Length);
+
+            UbuntuFonts.AddMemoryFont(fontPtr, fontData.Length);
+        }
+
+        public static Font Ubuntu(float size, FontStyle style = FontStyle.Regular)
+        {
+            return new Font(UbuntuFamily, size, style);
         }
     }
 }
