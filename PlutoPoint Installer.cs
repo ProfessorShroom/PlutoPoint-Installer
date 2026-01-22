@@ -1497,27 +1497,32 @@ namespace PlutoPoint_Installer
             }
             if (aiCheck.Checked)
             {
-                installerTextBox.AppendText("📌 Remove Windows AI is selected." + Environment.NewLine);
-                installerTextBox.AppendText("📌 Removing Windows AI... (this can take a few minutes)" + Environment.NewLine);
-                await Task.Run(() =>
+                if (windows11 == "1")
                 {
-                    var psi = new ProcessStartInfo
+                    installerTextBox.AppendText("📌 Remove Windows AI is selected." + Environment.NewLine);
+                    installerTextBox.AppendText("📌 Removing Windows AI... (this can take a few minutes)" + Environment.NewLine);
+                    await Task.Run(() =>
                     {
-                        FileName = "powershell.exe",
-                        Arguments =
-                            "-NoLogo -NoProfile -WindowStyle Hidden -NonInteractive " +
-                            "& ([scriptblock]::Create((irm \"https://raw.githubusercontent.com/zoicware/RemoveWindowsAI/main/RemoveWindowsAi.ps1\"))) -nonInteractive -Options DisableRegKeys,PreventAIPackageReinstall,DisableCopilotPolicies,RemoveRecallFeature,RemoveCBSPackages,HideAIComponents,DisableRewrite,RemoveRecallTasks",
-                        RedirectStandardOutput = false,
-                        RedirectStandardError = false,
-                        UseShellExecute = false,
-                        CreateNoWindow = true
-                    };
-                    using (var proc = Process.Start(psi))
-                    {
-                        proc.WaitForExit();
-                    }
-                });
-                installerTextBox.AppendText("✅ Completed removal of Windows AI." + Environment.NewLine);
+                        var psi = new ProcessStartInfo
+                        {
+                            FileName = "powershell.exe",
+                            Arguments =
+                                "-NoLogo -NoProfile -WindowStyle Hidden -NonInteractive " +
+                                "& ([scriptblock]::Create((irm \"https://raw.githubusercontent.com/zoicware/RemoveWindowsAI/main/RemoveWindowsAi.ps1\"))) -nonInteractive -Options DisableRegKeys,PreventAIPackageReinstall,DisableCopilotPolicies,RemoveRecallFeature,RemoveCBSPackages,HideAIComponents,DisableRewrite,RemoveRecallTasks",
+                            RedirectStandardOutput = false,
+                            RedirectStandardError = false,
+                            UseShellExecute = false,
+                            CreateNoWindow = true
+                        };
+                        using (var proc = Process.Start(psi))
+                        {
+                            proc.WaitForExit();
+                        }
+                    });
+                    installerTextBox.AppendText("✅ Completed removal of Windows AI." + Environment.NewLine);
+                }
+                installerTextBox.AppendText("Not running on Windows 11. Skipping removal of Windows AI" + Environment.NewLine);
+                progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
             }
             if (anyDeskCheck.Checked)
             {

@@ -184,7 +184,7 @@ namespace PlutoPoint_Installer
             this.installerTextBox.AcceptsReturn = true;
             this.installerTextBox.BackColor = System.Drawing.SystemColors.ControlDarkDark;
             this.installerTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.installerTextBox.Font = Program.Ubuntu(12f);
+            this.installerTextBox.Font = Program.Ubuntu(12f, FontStyle.Regular);
             this.installerTextBox.ForeColor = System.Drawing.SystemColors.Info;
             this.installerTextBox.Location = new System.Drawing.Point(267, 54);
             this.installerTextBox.Multiline = true;
