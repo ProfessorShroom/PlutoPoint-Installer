@@ -54,6 +54,7 @@ namespace PlutoPoint_Installer
         public installerForm()
         {
             InitializeComponent();
+            this.installerTextBox.Font = Program.Ubuntu(12f, FontStyle.Regular);
             SoundPlayer hoverSound = new SoundPlayer(Properties.Resources.buttonHover);
             SoundPlayer clickSound = new SoundPlayer(Properties.Resources.buttonHover);
             this.DoubleBuffered = true;
@@ -1521,7 +1522,7 @@ namespace PlutoPoint_Installer
                     });
                     installerTextBox.AppendText("✅ Completed removal of Windows AI." + Environment.NewLine);
                 }
-                installerTextBox.AppendText("Not running on Windows 11. Skipping removal of Windows AI" + Environment.NewLine);
+                installerTextBox.AppendText("Not running on Windows 11; skipping removal of Windows AI." + Environment.NewLine);
                 progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
             }
             if (anyDeskCheck.Checked)
@@ -2541,37 +2542,17 @@ namespace PlutoPoint_Installer
                     {
                         if (build >= 22000)
                         {
-                            if (romsey == "1") 
+                            installerTextBox.AppendText("✅ Aligning the taskbar to the left...");
+                            installerTextBox.AppendText(Environment.NewLine);
+                            const string taskbarRegPath = @"SOFTWARE\microsoft\windows\currentversion\explorer\advanced";
+                            const string taskbarReg = "TaskbarAl";
+                            const int taskbarRegData = 0;
+                            using (RegistryKey registryKey = Registry.CurrentUser.OpenSubKey(taskbarRegPath, writable: true))
                             {
-                                installerTextBox.AppendText("✅ Aligning the taskbar to the left...");
-                                installerTextBox.AppendText(Environment.NewLine);
-                                const string taskbarRegPath = @"SOFTWARE\microsoft\windows\currentversion\explorer\advanced";
-                                const string taskbarReg = "TaskbarAl";
-                                const int taskbarRegData = 0;
-                                using (RegistryKey registryKey = Registry.CurrentUser.OpenSubKey(taskbarRegPath, writable: true))
-                                {
-                                    registryKey.SetValue(taskbarReg, taskbarRegData, RegistryValueKind.DWord);
-                                    Console.WriteLine($"Set '{taskbarReg}' to {taskbarRegData} in '{taskbarRegPath}'.");
-                                }
-                                progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
+                                registryKey.SetValue(taskbarReg, taskbarRegData, RegistryValueKind.DWord);
+                                Console.WriteLine($"Set '{taskbarReg}' to {taskbarRegData} in '{taskbarRegPath}'.");
                             }
-                            else if (chandlersFord == "1")
-                            {
-                            }
-                            else if (highcliffe == "1")
-                            {
-                                installerTextBox.AppendText("✅ Aligning the taskbar to the left...");
-                                installerTextBox.AppendText(Environment.NewLine);
-                                const string taskbarRegPath = @"SOFTWARE\microsoft\windows\currentversion\explorer\advanced";
-                                const string taskbarReg = "TaskbarAl";
-                                const int taskbarRegData = 0;
-                                using (RegistryKey registryKey = Registry.CurrentUser.OpenSubKey(taskbarRegPath, writable: true))
-                                {
-                                    registryKey.SetValue(taskbarReg, taskbarRegData, RegistryValueKind.DWord);
-                                    Console.WriteLine($"Set '{taskbarReg}' to {taskbarRegData} in '{taskbarRegPath}'.");
-                                }
-                                progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
-                            }
+                            progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
                             installerTextBox.AppendText("✅ Disabling device encryption...");
                             installerTextBox.AppendText(Environment.NewLine);
                             const string bitLockerRegPath = @"SYSTEM\CurrentControlSet\Control\BitLocker";
