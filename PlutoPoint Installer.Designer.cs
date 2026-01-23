@@ -16,8 +16,6 @@ namespace PlutoPoint_Installer
         public int CornerRadius { get; set; } = 3;
         public Color BorderColor { get; set; } = Color.Silver;
         public Color BackgroundColor { get; set; } = Color.FromArgb(35, 35, 35);
-
-        // Optional overrides
         public Color? BorderColorOverride { get; set; } = null;
         public Color? TextColorOverride { get; set; } = null;
         protected override void OnPaint(PaintEventArgs e)
@@ -51,9 +49,7 @@ namespace PlutoPoint_Installer
                     e.Graphics.DrawPath(pen, path);
             }
 
-            // Measure text size once
             SizeF textSize = e.Graphics.MeasureString(this.Text, this.Font);
-
             // Top text
             RectangleF topRect = new RectangleF(
                 (ClientRectangle.Width - textSize.Width) / 2f,
@@ -61,13 +57,10 @@ namespace PlutoPoint_Installer
                 textSize.Width,
                 textSize.Height
             );
-
             using (SolidBrush bTop = new SolidBrush(Parent?.BackColor ?? BackgroundColor))
                 e.Graphics.FillRectangle(bTop, topRect);
-
             using (SolidBrush textBrushTop = new SolidBrush(TextColorOverride ?? ForeColor))
                 e.Graphics.DrawString(this.Text, this.Font, textBrushTop, topRect.Location);
-
             // Bottom text
             RectangleF bottomRect = new RectangleF(
                 (ClientRectangle.Width - textSize.Width) / 2f,
@@ -75,10 +68,8 @@ namespace PlutoPoint_Installer
                 textSize.Width,
                 textSize.Height
             );
-
             using (SolidBrush bBottom = new SolidBrush(Parent?.BackColor ?? BackgroundColor))
                 e.Graphics.FillRectangle(bBottom, bottomRect);
-
             using (SolidBrush textBrushBottom = new SolidBrush(TextColorOverride ?? ForeColor))
                 e.Graphics.DrawString(this.Text, this.Font, textBrushBottom, bottomRect.Location);
         }
@@ -113,7 +104,7 @@ namespace PlutoPoint_Installer
         {
             this.components = new System.ComponentModel.Container();
             this.install = new System.Windows.Forms.Button();
-            this.installerTextBox = new System.Windows.Forms.TextBox();
+            this.installerTextBox = new System.Windows.Forms.RichTextBox();
             this.progressBar = new System.Windows.Forms.ProgressBar();
             this.close = new System.Windows.Forms.Button();
             this.restart = new System.Windows.Forms.Button();
@@ -179,9 +170,9 @@ namespace PlutoPoint_Installer
             this.install.UseVisualStyleBackColor = false;
             this.install.Click += new System.EventHandler(this.install_Click);
             // 
-            // installerTextBox
+            // installerTextBox (RichTextBox)
             // 
-            this.installerTextBox.AcceptsReturn = true;
+            this.installerTextBox.AcceptsTab = false;
             this.installerTextBox.BackColor = System.Drawing.SystemColors.ControlDarkDark;
             this.installerTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.installerTextBox.Font = Program.Ubuntu(12f, FontStyle.Regular);
@@ -190,9 +181,15 @@ namespace PlutoPoint_Installer
             this.installerTextBox.Multiline = true;
             this.installerTextBox.Name = "installerTextBox";
             this.installerTextBox.ReadOnly = true;
-            this.installerTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.installerTextBox.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
             this.installerTextBox.Size = new System.Drawing.Size(521, 355);
             this.installerTextBox.TabIndex = 1;
+            this.installerTextBox.DetectUrls = false;
+            this.installerTextBox.ShortcutsEnabled = false;
+            this.installerTextBox.HideSelection = true;
+            this.installerTextBox.WordWrap = true;
+            this.installerTextBox.Cursor = Cursors.Default;
+            this.installerTextBox.TabStop = false;
             // 
             // progressBar
             // 
@@ -546,7 +543,7 @@ namespace PlutoPoint_Installer
         #endregion
 
         private System.Windows.Forms.Button install;
-        private System.Windows.Forms.TextBox installerTextBox;
+        private System.Windows.Forms.RichTextBox installerTextBox;
         private System.Windows.Forms.ProgressBar progressBar;
         private System.Windows.Forms.CheckBox libreOfficeCheck;
         private System.Windows.Forms.CheckBox mozillaFirefoxCheck;

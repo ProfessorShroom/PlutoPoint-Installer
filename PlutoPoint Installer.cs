@@ -54,7 +54,6 @@ namespace PlutoPoint_Installer
         public installerForm()
         {
             InitializeComponent();
-            this.installerTextBox.Font = Program.Ubuntu(12f, FontStyle.Regular);
             SoundPlayer hoverSound = new SoundPlayer(Properties.Resources.buttonHover);
             SoundPlayer clickSound = new SoundPlayer(Properties.Resources.buttonHover);
             this.DoubleBuffered = true;
