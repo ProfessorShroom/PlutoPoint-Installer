@@ -52,8 +52,6 @@ namespace PlutoPoint_Installer
             IntPtr ptr = Marshal.AllocCoTaskMem(fontData.Length);
             Marshal.Copy(fontData, 0, ptr, fontData.Length);
             _fonts.AddMemoryFont(ptr, fontData.Length);
-
-            // DO NOT free ptr — GDI requires this memory to stay alive
         }
     }
 }

@@ -42,15 +42,12 @@ namespace PlutoPoint_Installer
     public partial class installerForm : Form
     {
         DateTime buildDate = File.GetLastWriteTime(Assembly.GetExecutingAssembly().Location);
-
         private bool isClickPlaying = false;
-
         [DllImport("Shell32.dll", CharSet = CharSet.Unicode)]
         private static extern uint SHEmptyRecycleBin(IntPtr hwnd, string pszRootPath, uint dwFlags);
         private const uint SHERB_NOCONFIRMATION = 0x00000001;
         private const uint SHERB_NOPROGRESSUI = 0x00000002;
         private const uint SHERB_NOSOUND = 0x00000004;
-
         public installerForm()
         {
             InitializeComponent();
@@ -200,8 +197,8 @@ namespace PlutoPoint_Installer
                 WithDaySuffix(dateToUse.Day),
                 dateToUse.ToString("MMMM"),
                 dateToUse.Year);
-            AppendLine($"Version {version}");
-            AppendLine("Last updated on " + formatted + ".");
+            AppendLine($"🛠️ Version {version}");
+            AppendLine("📅 Last updated on " + formatted + ".");
         }
         private void PrintDay()
         {
@@ -1192,20 +1189,20 @@ namespace PlutoPoint_Installer
             }
             if (nvidiaAppCheck.Checked & nvidia == "1")
             {
-                AppendLine("Nvidia GPU has been detected and selected, Nvidia App will be installed.");
-                AppendLine("You can uncheck this if you want.");
+                AppendLine("🎮 Nvidia GPU has been detected and selected, Nvidia App will be installed.");
+                AppendLine("✅ You can uncheck this if you want.");
             }
             if (powerCheck.Checked)
             {
                 AppendLine("📌 Disable sleep on AC power is selected.");
-                AppendLine("Disabling sleep and screen timeout while on AC power...");
+                AppendLine("🔄 Disabling sleep and screen timeout while on AC power...");
                 Process.Start("powercfg", "/change monitor-timeout-ac 0");
                 Process.Start("powercfg", "/change standby-timeout-ac 0");
                 progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
             }
             else
             {
-                AppendLine("Disabling sleep and screen timeout while on AC power temporarily during install...");
+                AppendLine("🔄 Disabling sleep and screen timeout while on AC power temporarily during install...");
                 progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
             }
 
@@ -1214,7 +1211,7 @@ namespace PlutoPoint_Installer
                 AppendLine("📌 Computer Repair Centre OEM information is selected.");
                 if (romsey == "1")
                 {
-                    AppendLine("The installer is being run from the Romsey shop.");
+                    AppendLine("📍 The installer is being run from the Romsey shop.");
                     AppendLine("📦 Installing Romsey Computer Repair Centre OEM information...");
                     using (WebClient wc = new WebClient())
                     {
@@ -1263,7 +1260,7 @@ namespace PlutoPoint_Installer
                 }
                 if (chandlersFord == "1")
                 {
-                    AppendLine("The installer is being run from the Chandlers Ford shop.");
+                    AppendLine("📍 The installer is being run from the Chandlers Ford shop.");
                     AppendLine("📦 Installing Chandlers Ford Computer Repair Centre OEM information...");
                     using (WebClient wc = new WebClient())
                     {
@@ -1312,7 +1309,7 @@ namespace PlutoPoint_Installer
                 }
                 if (highcliffe == "1")
                 {
-                    AppendLine("The installer is being run from the Romsey shop.");
+                    AppendLine("📍 The installer is being run from the Romsey shop.");
                     AppendLine("📦 Installing Romsey Computer Repair Centre OEM information...");
                     using (WebClient wc = new WebClient())
                     {
@@ -1368,7 +1365,7 @@ namespace PlutoPoint_Installer
                 string windowsAppsPath = @"C:\Program Files\WindowsApps";
                 string nanaZipPath = null;
 
-                AppendLine("Checking if NanaZip is installed...");
+                AppendLine("🔄 Checking if NanaZip is installed...");
 
                 try
                 {
@@ -1426,27 +1423,49 @@ namespace PlutoPoint_Installer
                 {
                     AppendLine("📌 Remove Windows AI is selected.");
                     AppendLine("📌 Removing Windows AI... (this can take a few minutes)");
+
                     await Task.Run(() =>
                     {
-                        var psi = new ProcessStartInfo
+                        var psiAI = new ProcessStartInfo
                         {
                             FileName = "powershell.exe",
                             Arguments =
                                 "-NoLogo -NoProfile -WindowStyle Hidden -NonInteractive " +
-                                "& ([scriptblock]::Create((irm \"https://raw.githubusercontent.com/zoicware/RemoveWindowsAI/main/RemoveWindowsAi.ps1\"))) -nonInteractive -Options DisableRegKeys,PreventAIPackageReinstall,DisableCopilotPolicies,RemoveRecallFeature,RemoveCBSPackages,HideAIComponents,DisableRewrite,RemoveRecallTasks",
+                                "& ([scriptblock]::Create((irm \"https://raw.githubusercontent.com/zoicware/RemoveWindowsAI/main/RemoveWindowsAi.ps1\"))) " +
+                                "-nonInteractive -Options DisableRegKeys,PreventAIPackageReinstall,DisableCopilotPolicies,RemoveRecallFeature,RemoveCBSPackages,HideAIComponents,DisableRewrite,RemoveRecallTasks",
                             RedirectStandardOutput = false,
                             RedirectStandardError = false,
                             UseShellExecute = false,
                             CreateNoWindow = true
                         };
-                        using (var proc = Process.Start(psi))
+                        using (var proc = Process.Start(psiAI))
+                        {
+                            proc.WaitForExit();
+                        }
+                        var psiCopilot = new ProcessStartInfo
+                        {
+                            FileName = "powershell.exe",
+                            Arguments =
+                                "-NoLogo -NoProfile -WindowStyle Hidden -NonInteractive " +
+                                "Get-AppxPackage -AllUsers *Copilot* | Remove-AppxPackage -ErrorAction SilentlyContinue",
+                            RedirectStandardOutput = false,
+                            RedirectStandardError = false,
+                            UseShellExecute = false,
+                            CreateNoWindow = true
+                        };
+                        using (var proc = Process.Start(psiCopilot))
                         {
                             proc.WaitForExit();
                         }
                     });
-                    AppendLine("✅ Completed removal of Windows AI.");
+
+                    AppendLine("✅ Completed removal of Windows AI and Copilot.");
                 }
-                AppendLine("Not running on Windows 11; skipping removal of Windows AI.");
+                else
+                {
+                    AppendLine("❌ Not running on Windows 11; skipping removal of Windows AI.");
+                }
+
                 progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
             }
             if (anyDeskCheck.Checked)
@@ -1459,7 +1478,7 @@ namespace PlutoPoint_Installer
                 }
                 else if (System.IO.File.Exists(@"C:\Program Files (x86)\AnyDesk\AnyDesk.exe"))
                 {
-                    AppendLine("AnyDesk is already installed, skipping installation.");
+                    AppendLine("✅ AnyDesk is already installed, skipping installation.");
                     progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
                 }
                 else
@@ -1809,7 +1828,7 @@ namespace PlutoPoint_Installer
                         {
                             await wc.DownloadFileTaskAsync(nanaZipURL, nanaZipFilename);
                         }
-                        AppendLine("📦 📦 Installing NanaZip...");
+                        AppendLine("📦 Installing NanaZip...");
                         Process nanaZipInstallProcess = Process.Start(new ProcessStartInfo
                         {
                             FileName = "powershell",
@@ -2631,11 +2650,12 @@ namespace PlutoPoint_Installer
         }
         private void AppendLine(string text = "")
         {
-            installerTextBox.AppendText(text + Environment.NewLine);
             installerTextBox.SelectionStart = installerTextBox.TextLength;
+            installerTextBox.SelectionLength = 0;
+            installerTextBox.SelectionFont = Program.Ubuntu(12f, FontStyle.Regular);
+            installerTextBox.AppendText(text + Environment.NewLine);
             installerTextBox.ScrollToCaret();
         }
-
         private class PasswordForm : Form
         {
             public string EnteredPassword { get; private set; }
