@@ -126,12 +126,7 @@ namespace PlutoPoint_Installer
         string pluto = null;
         string hippo = null;
         string rhino = null;
-        string charlieBirthday = null;
-        string deanBirthday = null;
-        string steveBirthday = null;
-        string howardBirthday = null;
-        string adamBirthday = null;
-        string geethBirthday = null;
+        string birthdayName = null;
         string hpEliteBook = null;
         string safeLocation = null;
         string location = null;
@@ -225,102 +220,64 @@ namespace PlutoPoint_Installer
                     }
                 }
                 AppendLine("");
-                AppendLine("Merry Christmas!");
+                AppendLine("🎄 Merry Christmas!");
                 AppendLine("");
             }
             else if (newyear == "1")
             {
                 AppendLine("");
-                AppendLine("Happy New Year!");
+                AppendLine("🎉 Happy New Year!");
                 AppendLine("");
             }
             else if (halloween == "1")
             {
                 AppendLine("");
-                AppendLine("Boo! Happy Halloween!");
+                AppendLine("🎃 Boo! Happy Halloween!");
                 AppendLine("");
             }
             else if (valentines == "1")
             {
                 AppendLine("");
-                AppendLine("Happy Valentines day!");
+                AppendLine("❤️ Happy Valentines day!");
                 AppendLine("");
             }
             else if (pancake == "1")
             {
                 AppendLine("");
-                AppendLine("It's pancake day!");
-                AppendLine("Don't forget to have some pancakes you fat bastard!");
+                AppendLine("🥞 It's pancake day!");
+                AppendLine("🥞 Don't forget to have some pancakes you fat bastard!");
                 AppendLine("");
             }
             else if (puffin == "1")
             {
                 AppendLine("");
-                AppendLine("Today is world Puffin day!");
+                AppendLine("🐧 Today is world Puffin day!");
                 AppendLine("");
             }
             else if (dachshund == "1")
             {
                 AppendLine("");
-                AppendLine("Today is world Dachshund day!");
+                AppendLine("🌭 Today is world Dachshund day!");
                 AppendLine("");
             }
             else if (hippo == "1")
             {
                 AppendLine("");
-                AppendLine("Today is world Hippo day!");
+                AppendLine("🦛 Today is world Hippo day!");
                 AppendLine("");
             }
             else if (rhino == "1")
             {
                 AppendLine("");
-                AppendLine("Today is world Rhino day!");
+                AppendLine("🦏 Today is world Rhino day!");
                 AppendLine("");
             }
-            else if (birthday == "1")
+            else if (birthday == "1" && !string.IsNullOrEmpty(birthdayName))
             {
-                if (charlieBirthday == "1")
-                {
-                    AppendLine("");
-                    AppendLine("It is Charlie's birthday today!");
-                    AppendLine("Happy birthday Charlie!");
-                    AppendLine("");
-                }
-                else if (deanBirthday == "1")
-                {
-                    AppendLine("");
-                    AppendLine("It is Dean's birthday today!");
-                    AppendLine("Happy birthday Dean!");
-                    AppendLine("");
-                }
-                else if (steveBirthday == "1")
-                {
-                    AppendLine("");
-                    AppendLine("It is Steve's birthday today!");
-                    AppendLine("Happy birthday Steve!");
-                    AppendLine("");
-                }
-                else if (howardBirthday == "1")
-                {
-                    AppendLine("");
-                    AppendLine("It is Howard's birthday today!");
-                    AppendLine("Happy birthday Howard!");
-                    AppendLine("");
-                }
-                else if (adamBirthday == "1")
-                {
-                    AppendLine("");
-                    AppendLine("It is Adam's birthday today!");
-                    AppendLine("Happy birthday Adam!");
-                    AppendLine("");
-                }
-                else if (geethBirthday == "1")
-                {
-                    AppendLine("");
-                    AppendLine("It is Geeth's birthday today!");
-                    AppendLine("Happy birthday Geeth!");
-                    AppendLine("");
-                }
+                AppendLine("");
+                AppendLine($"🎂 It is {birthdayName}'s birthday today!");
+                AppendLine($"🎉 Happy birthday {birthdayName}!");
+                AppendLine("");
             }
         }
         private void CheckEliteBook()
@@ -502,7 +459,7 @@ namespace PlutoPoint_Installer
             if (DateTime.Now.Month == 4 && DateTime.Now.Day == 6)
             {
                 birthday = "1";
-                charlieBirthday = "1";
+                birthdayName = "Charlie";
                 this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(155)))), ((int)(((byte)(211)))), ((int)(((byte)(221)))));
                 install.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
                 restart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
@@ -517,7 +474,7 @@ namespace PlutoPoint_Installer
             if (DateTime.Now.Month == 4 && DateTime.Now.Day == 21)
             {
                 birthday = "1";
-                deanBirthday = "1";
+                birthdayName = "Dean";
                 this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(155)))), ((int)(((byte)(211)))), ((int)(((byte)(221)))));
                 install.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
                 restart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
@@ -532,7 +489,7 @@ namespace PlutoPoint_Installer
             if (DateTime.Now.Month == 6 && DateTime.Now.Day == 24)
             {
                 birthday = "1";
-                steveBirthday = "1";
+                birthdayName = "Steve";
                 this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(155)))), ((int)(((byte)(211)))), ((int)(((byte)(221)))));
                 install.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
                 restart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
@@ -547,13 +504,14 @@ namespace PlutoPoint_Installer
             if (DateTime.Now.Month == 5 && DateTime.Now.Day == 16)
             {
                 birthday = "1";
-                howardBirthday = "1";
-                this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(155)))), ((int)(((byte)(211)))), ((int)(((byte)(221)))));
-                install.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
-                restart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
-                close.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
-                installerTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
+                birthdayName = "Howard";
+                this.BackColor = System.Drawing.Color.FromArgb(155, 211, 221);
+                install.BackColor = System.Drawing.Color.FromArgb(242, 172, 185);
+                restart.BackColor = System.Drawing.Color.FromArgb(242, 172, 185);
+                close.BackColor = System.Drawing.Color.FromArgb(242, 172, 185);
+                installerTextBox.BackColor = System.Drawing.Color.FromArgb(242, 172, 185);
                 installerTextBox.ForeColor = System.Drawing.Color.Black;
+
                 this.Invalidate();
             }
         }
@@ -562,7 +520,7 @@ namespace PlutoPoint_Installer
             if (DateTime.Now.Month == 6 && DateTime.Now.Day == 9)
             {
                 birthday = "1";
-                adamBirthday = "1";
+                birthdayName = "Adam";
                 this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(155)))), ((int)(((byte)(211)))), ((int)(((byte)(221)))));
                 install.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
                 restart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
@@ -577,7 +535,7 @@ namespace PlutoPoint_Installer
             if (DateTime.Now.Month == 7 && DateTime.Now.Day == 25)
             {
                 birthday = "1";
-                geethBirthday = "1";
+                birthdayName = "Geeth";
                 this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(155)))), ((int)(((byte)(211)))), ((int)(((byte)(221)))));
                 install.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
                 restart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
@@ -1422,7 +1380,7 @@ namespace PlutoPoint_Installer
                 if (windows11 == "1")
                 {
                     AppendLine("📌 Remove Windows AI is selected.");
-                    AppendLine("📌 Removing Windows AI... (this can take a few minutes)");
+                    AppendLine("🔄 Removing Windows AI... (this can take a few minutes)");
 
                     await Task.Run(() =>
                     {
@@ -1438,6 +1396,7 @@ namespace PlutoPoint_Installer
                             UseShellExecute = false,
                             CreateNoWindow = true
                         };
+                        AppendLine("🔄 Removing Copilot");
                         using (var proc = Process.Start(psiAI))
                         {
                             proc.WaitForExit();
@@ -1465,7 +1424,6 @@ namespace PlutoPoint_Installer
                 {
                     AppendLine("❌ Not running on Windows 11; skipping removal of Windows AI.");
                 }
-
                 progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
             }
             if (anyDeskCheck.Checked)
