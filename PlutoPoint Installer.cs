@@ -54,6 +54,8 @@ namespace PlutoPoint_Installer
             this.installerTextBox.Font = Program.Ubuntu(12f, FontStyle.Regular);
             SoundPlayer hoverSound = new SoundPlayer(Properties.Resources.buttonHover);
             SoundPlayer clickSound = new SoundPlayer(Properties.Resources.buttonHover);
+            shutdownCheck.CheckedChanged += ShutdownCheck_CheckedChanged;
+            restartCheck.CheckedChanged += RestartCheck_CheckedChanged;
             this.DoubleBuffered = true;
             void PlayHover()
             {
@@ -2146,7 +2148,7 @@ namespace PlutoPoint_Installer
             }
             if (hpEliteBook == "1")
             {
-                AppendLine("The installer is being run on an HP EliteBook.");
+                AppendLine("💻 The installer is being run on an HP EliteBook.");
 
                 AppendLine("🔄 Downloading HP Hotkey Support...");
 
@@ -2156,7 +2158,7 @@ namespace PlutoPoint_Installer
                     await wc.DownloadFileTaskAsync(hpHotkeySupportURL, hpHotkeySupportFilename);
                 }
 
-                AppendLine("Checking if NanaZip is installed...");
+                AppendLine("🔄 Checking if NanaZip is installed...");
 
                 string windowsAppsPath = @"C:\Program Files\WindowsApps";
                 string nanaZipExe = "NanaZip.Windows.exe";
@@ -2178,7 +2180,7 @@ namespace PlutoPoint_Installer
 
                 if (string.IsNullOrEmpty(nanaZipPath))
                 {
-                    AppendLine("NanaZip is not installed and is required for extraction.");
+                    AppendLine("⚠️ NanaZip is not installed and is required for extraction.");
                     AppendLine("🔄 Downloading NanaZip...");
 
                     using (WebClient wc = new WebClient())
@@ -2262,13 +2264,13 @@ namespace PlutoPoint_Installer
 
                             if (!string.IsNullOrEmpty(errors))
                             {
-                                AppendLine("Errors: " + errors);
+                                AppendLine("❌ Errors: " + errors);
                             }
                         }
                     }
                     catch (Exception ex)
                     {
-                        AppendLine("Exception: " + ex.Message);
+                        AppendLine("❌ Exception: " + ex.Message);
                     }
                 }
 
@@ -2309,7 +2311,7 @@ namespace PlutoPoint_Installer
                             if (process != null)
                             {
                                 await Task.Run(() => process.WaitForExit());
-                                AppendLine($"Process completed successfully for {filePath}.");
+                                AppendLine($"✅ Process completed successfully for {filePath}.");
                             }
                             else
                             {
@@ -2319,7 +2321,7 @@ namespace PlutoPoint_Installer
                     }
                     catch (Exception ex)
                     {
-                        AppendLine("An error occurred: " + ex.Message);
+                        AppendLine("❌ An error occurred: " + ex.Message);
                     }
                 }
 
@@ -2511,7 +2513,7 @@ namespace PlutoPoint_Installer
                         }
                         else
                         {
-                            AppendLine("This computer is running an old version of Windows, please update it.");
+                            AppendLine("⬆️ This computer is running an old version of Windows, please update it.");
                         }
                     }
                 }
@@ -2554,19 +2556,18 @@ namespace PlutoPoint_Installer
             if (restartCheck.Checked)
             {
                 Process.Start("shutdown", "/r /t 60");
-                AppendLine("System will restart in 60 seconds. If you need to cancel this press the close button.");
+                AppendLine("🔄 System will restart in 60 seconds. If you need to cancel this press the close button.");
             }
 
             if (shutdownCheck.Checked)
             {
                 Process.Start("shutdown", "/s /t 60");
-                AppendLine("System will shutdown in 60 seconds. If you need to cancel this press the close button.");
+                AppendLine("⏻ System will shutdown in 60 seconds. If you need to cancel this press the close button.");
             }
 
             AppendLine("✅ The installation has completed.");
 
         }
-
         private void wc_progressBarStep(object sender, AsyncCompletedEventArgs e)
         {
             if (progressBar.InvokeRequired)
@@ -2578,6 +2579,16 @@ namespace PlutoPoint_Installer
                 progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
             }
         }
+        private void ShutdownCheck_CheckedChanged(object sender, EventArgs e)
+        {
+            if (shutdownCheck.Checked)
+                restartCheck.Checked = false;
+        }
+        private void RestartCheck_CheckedChanged(object sender, EventArgs e)
+        {
+            if (restartCheck.Checked)
+                shutdownCheck.Checked = false;
+        }
 
         private async void close_Click(object sender, EventArgs e)
         {
@@ -2585,12 +2596,10 @@ namespace PlutoPoint_Installer
             Process.Start("shutdown", "/a");
             this.Close();
         }
-
         private void restart_Click(object sender, EventArgs e)
         {
             Process.Start("shutdown","/r /t 1");
         }
-
         private void versionLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             System.Diagnostics.Process.Start("https://github.com/professorshroom/PlutoPoint-Installer/blob/main/README.md");
