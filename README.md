@@ -19,6 +19,7 @@ Disables sleep and screen timeout if plugged into AC power during the install an
 Update 6.4.8.0
 
 - Added shutdown button.
+- Moved Version/Readme link to [professorshroom.com](https://professorshroom.com)
 
 #### Older Updates
 
