@@ -82,6 +82,8 @@ namespace PlutoPoint_Installer
             install.Click += (s, e) => PlayClick();
             restart.MouseEnter += (s, e) => PlayHover();
             restart.Click += (s, e) => PlayClick();
+            shutdown.MouseEnter += (s, e) => PlayHover();
+            shutdown.Click += (s, e) => PlayClick();
             close.MouseEnter += (s, e) => PlayHover();
             close.Click += (s, e) => PlayClick();
             // Date checks
@@ -309,6 +311,8 @@ namespace PlutoPoint_Installer
                 close.ForeColor = System.Drawing.Color.White;
                 restart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(214)))), ((int)(((byte)(0)))), ((int)(((byte)(28)))));
                 restart.ForeColor = System.Drawing.Color.White;
+                shutdown.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(214)))), ((int)(((byte)(0)))), ((int)(((byte)(28)))));
+                shutdown.ForeColor = System.Drawing.Color.White;
                 installerTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(135)))), ((int)(((byte)(62)))));
                 this.Invalidate();
             }
@@ -325,6 +329,8 @@ namespace PlutoPoint_Installer
                 close.ForeColor = System.Drawing.Color.Black;
                 restart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(237)))), ((int)(((byte)(231)))));
                 restart.ForeColor = System.Drawing.Color.Black;
+                shutdown.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(237)))), ((int)(((byte)(231)))));
+                shutdown.ForeColor = System.Drawing.Color.Black;
                 installerTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(247)))), ((int)(((byte)(183)))), ((int)(((byte)(58)))));
                 this.Invalidate();
             }
@@ -336,6 +342,7 @@ namespace PlutoPoint_Installer
                 halloween = "1";
                 install.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(252)))), ((int)(((byte)(76)))), ((int)(((byte)(2)))));
                 restart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(252)))), ((int)(((byte)(76)))), ((int)(((byte)(2)))));
+                shutdown.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(252)))), ((int)(((byte)(76)))), ((int)(((byte)(2)))));
                 close.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(252)))), ((int)(((byte)(76)))), ((int)(((byte)(2)))));
                 this.Invalidate();
             }
@@ -348,6 +355,7 @@ namespace PlutoPoint_Installer
                 this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(200)))), ((int)(((byte)(213)))));
                 install.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(160)))), ((int)(((byte)(0)))), ((int)(((byte)(28)))));
                 restart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(160)))), ((int)(((byte)(0)))), ((int)(((byte)(28)))));
+                shutdown.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(160)))), ((int)(((byte)(0)))), ((int)(((byte)(28)))));
                 close.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(160)))), ((int)(((byte)(0)))), ((int)(((byte)(28)))));
                 installerTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(200)))), ((int)(((byte)(213)))));
                 installerTextBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(160)))), ((int)(((byte)(0)))), ((int)(((byte)(28)))));
@@ -362,6 +370,7 @@ namespace PlutoPoint_Installer
                 this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(183)))), ((int)(((byte)(139)))));
                 install.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(214)))), ((int)(((byte)(154)))), ((int)(((byte)(108)))));
                 restart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(214)))), ((int)(((byte)(154)))), ((int)(((byte)(108)))));
+                shutdown.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(214)))), ((int)(((byte)(154)))), ((int)(((byte)(108)))));
                 close.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(214)))), ((int)(((byte)(154)))), ((int)(((byte)(108)))));
                 installerTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(183)))), ((int)(((byte)(139)))));
                 installerTextBox.ForeColor = Color.Black;
@@ -374,10 +383,12 @@ namespace PlutoPoint_Installer
             {
                 puffin = "1";
                 install.BackColor = System.Drawing.Color.White;
-                restart.BackColor = System.Drawing.Color.White;
-                close.BackColor = System.Drawing.Color.White;
                 install.ForeColor = System.Drawing.Color.Black;
+                restart.BackColor = System.Drawing.Color.White;
                 restart.ForeColor = System.Drawing.Color.Black;
+                shutdown.BackColor = System.Drawing.Color.White;
+                shutdown.ForeColor = System.Drawing.Color.Black;
+                close.BackColor = System.Drawing.Color.White;
                 close.ForeColor = System.Drawing.Color.Black;
                 this.Invalidate();
             }
@@ -389,10 +400,12 @@ namespace PlutoPoint_Installer
                 dachshund = "1";
                 this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(224)))), ((int)(((byte)(205)))));
                 install.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(167)))), ((int)(((byte)(121)))), ((int)(((byte)(87)))));
-                restart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(167)))), ((int)(((byte)(121)))), ((int)(((byte)(87)))));
-                close.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(167)))), ((int)(((byte)(121)))), ((int)(((byte)(87)))));
                 install.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(224)))), ((int)(((byte)(205)))));
+                restart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(167)))), ((int)(((byte)(121)))), ((int)(((byte)(87)))));
                 restart.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(224)))), ((int)(((byte)(205)))));
+                shutdown.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(167)))), ((int)(((byte)(121)))), ((int)(((byte)(87)))));
+                shutdown.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(224)))), ((int)(((byte)(205)))));
+                close.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(167)))), ((int)(((byte)(121)))), ((int)(((byte)(87)))));   
                 close.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(224)))), ((int)(((byte)(205)))));
                 installerTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(167)))), ((int)(((byte)(121)))), ((int)(((byte)(87)))));
                 installerTextBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(224)))), ((int)(((byte)(205)))));
@@ -408,10 +421,12 @@ namespace PlutoPoint_Installer
                 pluto = "1";
                 this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(224)))), ((int)(((byte)(205)))));
                 install.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(167)))), ((int)(((byte)(121)))), ((int)(((byte)(87)))));
-                restart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(167)))), ((int)(((byte)(121)))), ((int)(((byte)(87)))));
-                close.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(167)))), ((int)(((byte)(121)))), ((int)(((byte)(87)))));
                 install.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(224)))), ((int)(((byte)(205)))));
+                restart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(167)))), ((int)(((byte)(121)))), ((int)(((byte)(87)))));
                 restart.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(224)))), ((int)(((byte)(205)))));
+                shutdown.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(167)))), ((int)(((byte)(121)))), ((int)(((byte)(87)))));
+                shutdown.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(224)))), ((int)(((byte)(205)))));
+                close.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(167)))), ((int)(((byte)(121)))), ((int)(((byte)(87)))));
                 close.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(224)))), ((int)(((byte)(205)))));
                 installerTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(167)))), ((int)(((byte)(121)))), ((int)(((byte)(87)))));
                 installerTextBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(224)))), ((int)(((byte)(205)))));
@@ -427,10 +442,12 @@ namespace PlutoPoint_Installer
                 hippo = "1";
                 this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(83)))), ((int)(((byte)(83)))), ((int)(((byte)(83)))));
                 install.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(66)))), ((int)(((byte)(66)))), ((int)(((byte)(66)))));
-                restart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(66)))), ((int)(((byte)(66)))), ((int)(((byte)(66)))));
-                close.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(66)))), ((int)(((byte)(66)))), ((int)(((byte)(66)))));
                 install.ForeColor = System.Drawing.Color.White;
+                restart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(66)))), ((int)(((byte)(66)))), ((int)(((byte)(66)))));
                 restart.ForeColor = System.Drawing.Color.White;
+                shutdown.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(66)))), ((int)(((byte)(66)))), ((int)(((byte)(66)))));
+                shutdown.ForeColor = System.Drawing.Color.White;
+                close.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(66)))), ((int)(((byte)(66)))), ((int)(((byte)(66)))));
                 close.ForeColor = System.Drawing.Color.White;
                 installerTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(83)))), ((int)(((byte)(83)))), ((int)(((byte)(83)))));
                 installerTextBox.ForeColor = System.Drawing.Color.White;
@@ -445,10 +462,12 @@ namespace PlutoPoint_Installer
                 rhino = "1";
                 this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(83)))), ((int)(((byte)(83)))), ((int)(((byte)(83)))));
                 install.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(66)))), ((int)(((byte)(66)))), ((int)(((byte)(66)))));
-                restart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(66)))), ((int)(((byte)(66)))), ((int)(((byte)(66)))));
-                close.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(66)))), ((int)(((byte)(66)))), ((int)(((byte)(66)))));
                 install.ForeColor = System.Drawing.Color.White;
+                restart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(66)))), ((int)(((byte)(66)))), ((int)(((byte)(66)))));
                 restart.ForeColor = System.Drawing.Color.White;
+                shutdown.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(66)))), ((int)(((byte)(66)))), ((int)(((byte)(66)))));
+                shutdown.ForeColor = System.Drawing.Color.White;
+                close.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(66)))), ((int)(((byte)(66)))), ((int)(((byte)(66)))));
                 close.ForeColor = System.Drawing.Color.White;
                 installerTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(83)))), ((int)(((byte)(83)))), ((int)(((byte)(83)))));
                 installerTextBox.ForeColor = System.Drawing.Color.White;
@@ -465,6 +484,7 @@ namespace PlutoPoint_Installer
                 this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(155)))), ((int)(((byte)(211)))), ((int)(((byte)(221)))));
                 install.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
                 restart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
+                shutdown.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
                 close.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
                 installerTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
                 installerTextBox.ForeColor = System.Drawing.Color.Black;
@@ -480,6 +500,7 @@ namespace PlutoPoint_Installer
                 this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(155)))), ((int)(((byte)(211)))), ((int)(((byte)(221)))));
                 install.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
                 restart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
+                shutdown.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
                 close.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
                 installerTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
                 installerTextBox.ForeColor = System.Drawing.Color.Black;
@@ -495,6 +516,7 @@ namespace PlutoPoint_Installer
                 this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(155)))), ((int)(((byte)(211)))), ((int)(((byte)(221)))));
                 install.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
                 restart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
+                shutdown.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
                 close.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
                 installerTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
                 installerTextBox.ForeColor = System.Drawing.Color.Black;
@@ -510,6 +532,7 @@ namespace PlutoPoint_Installer
                 this.BackColor = System.Drawing.Color.FromArgb(155, 211, 221);
                 install.BackColor = System.Drawing.Color.FromArgb(242, 172, 185);
                 restart.BackColor = System.Drawing.Color.FromArgb(242, 172, 185);
+                shutdown.BackColor = System.Drawing.Color.FromArgb(242, 172, 185);
                 close.BackColor = System.Drawing.Color.FromArgb(242, 172, 185);
                 installerTextBox.BackColor = System.Drawing.Color.FromArgb(242, 172, 185);
                 installerTextBox.ForeColor = System.Drawing.Color.Black;
@@ -526,6 +549,7 @@ namespace PlutoPoint_Installer
                 this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(155)))), ((int)(((byte)(211)))), ((int)(((byte)(221)))));
                 install.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
                 restart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
+                shutdown.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
                 close.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
                 installerTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
                 installerTextBox.ForeColor = System.Drawing.Color.Black;
@@ -541,6 +565,7 @@ namespace PlutoPoint_Installer
                 this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(155)))), ((int)(((byte)(211)))), ((int)(((byte)(221)))));
                 install.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
                 restart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
+                shutdown.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
                 close.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
                 installerTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
                 installerTextBox.ForeColor = System.Drawing.Color.Black;
@@ -2596,13 +2621,25 @@ namespace PlutoPoint_Installer
             Process.Start("shutdown", "/a");
             this.Close();
         }
-        private void restart_Click(object sender, EventArgs e)
+        private async void restart_Click(object sender, EventArgs e)
         {
+            await Task.Delay(325);
             Process.Start("shutdown","/r /t 1");
+        }
+        private async void shutdown_Click(object sender, EventArgs e)
+        {
+            await Task.Delay(325);
+            Process.Start("shutdown", "/s /t 1");
         }
         private void versionLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            System.Diagnostics.Process.Start("https://github.com/professorshroom/PlutoPoint-Installer/blob/main/README.md");
+            System.Diagnostics.Process.Start(
+                new System.Diagnostics.ProcessStartInfo
+                {
+                    FileName = "https://professorshroom.com/projects/PlutoPoint_Installer/#changelog",
+                    UseShellExecute = true
+                }
+            );
         }
         private static string ComputeSHA256(string input)
         {

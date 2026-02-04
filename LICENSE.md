@@ -1,6 +1,6 @@
 Repository Name: [PlutoPoint Installer](https://github.com/ProfessorShroom/PlutoPoint-Installer)
 
-Copyright © 2025 Charlie Howard
+Copyright © 2026 Charlie Howard
 
 All Rights Reserved
 
