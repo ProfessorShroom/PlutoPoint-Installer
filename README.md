@@ -2391,7 +2391,7 @@ Update 6.4.8.0
 
 </details>
 <details>
-<summary>Version .x</summary>
+<summary>Version 1.x</summary>
 
 **Update 1.12.1**
 
