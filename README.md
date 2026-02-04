@@ -494,8 +494,7 @@ Update 6.4.8.0
 
 - When LibreOffice is installed the default file type will be changed to Office 2007-2021 (docx, xlsx, etc.).
 
-<details>
-<summary>Version 6.x Beta</summary>
+#### Version 6.x Beta
 
 #### Update 6.0.8.0b
 
@@ -596,9 +595,7 @@ Update 6.4.8.0
 
 - Rewritten the installer using C#, the majority of features are being carried over, but it may take a few updates to get all of the features fully implemented.
 
-</details>
-<details>
-<summary>Version 5.x</summary>
+#### Version 5.x
 
 #### Update 5.2024.11.03.0
 
@@ -1211,9 +1208,7 @@ Update 6.4.8.0
 
 - Disabled Kaspersky for now until I can work out a silent install.
 
-</details>
-<details>
-<summary>Version 4.x</summary>
+#### Version 4.x
 
 
 #### Update 4.2022.12.19.0
@@ -1438,9 +1433,7 @@ Update 6.4.8.0
 
 - Updated EXE to run first time every time.
 
-</details>
-<details>
-<summary>Version 3.x</summary>
+#### Version 3.x
 
 #### Update 3.2022.07.02.5
 
@@ -2281,9 +2274,7 @@ Update 6.4.8.0
 
 - Renamed to NorthPoint Installer and moved to GitLab. Modernised the GUI and improved performace.
 
-</details>
-<details>
-<summary>Version 2.x</summary>
+#### Version 2.x
 
 #### Update 2.6.0
 
@@ -2389,9 +2380,7 @@ Update 6.4.8.0
 
 - Rewritten executable to work with Windows Defender and download quicker. Removed log file, Apache OpenOffice & WPSOffice.
 
-</details>
-<details>
-<summary>Version 1.x</summary>
+#### Version 1.x
 
 #### Update 1.12.1
 
