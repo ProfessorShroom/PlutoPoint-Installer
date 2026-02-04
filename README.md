@@ -1,7 +1,7 @@
  ![Arch](https://img.shields.io/badge/Arch-AMD64-blue) ![OS](https://img.shields.io/badge/OS-Windows%207%20|Windows%208(.1)%20|Windows%2010%20|%20Windows%2011-green)
 
 ## PlutoPoint Installer Version 6.4.8.0
-###### Copyright © Charlie Howard 2026 All rights reserved.
+###### Copyright ï¿½ Charlie Howard 2026 All rights reserved.
 
 A C# based GUI installer for Windows 10/11, it should also run on Windows 7, 8 & 8.1 but this isn't tested.
 
@@ -15,1993 +15,2589 @@ Disables sleep and screen timeout if plugged into AC power during the install an
 
 ### Changelog
 
-**Update 6.4.8.0**
+#### Latest Update
+Update 6.4.8.0
 
-Added shutdown button.
+- Added shutdown button.
+
+#### Older Updates
 
 **Update 6.4.7.2**
 
-Added a logic check to shutdown and restart check boxes so they both can't selected at the same time.
+- Added a logic check to shutdown and restart check boxes so they both can't selected at the same time.
 
-Fixed a few more lines missing emojis.
+
+- Fixed a few more lines missing emojis.
+
 
 **Update 6.4.7.1**
 
-Fixed a few lines missing emojis.
+- Fixed a few lines missing emojis.
 
-Added line to let you know that copilot is being removed.
+
+- Added line to let you know that copilot is being removed.
+
 
 **Update 6.4.7.0**
 
-Copilot should now be removed with the rest of the Windows AI components.
+- Copilot should now be removed with the rest of the Windows AI components.
 
-Fixed Ubuntu font not applying to every line.
+
+- Fixed Ubuntu font not applying to every line.
+
 
 **Update 6.4.6.1**
 
-Simplified adding text to text box.
+- Simplified adding text to text box.
+
 
 **Update 6.4.6.0**
 
-Converted the main installer text box to a rich text box.
+- Converted the main installer text box to a rich text box.
+
 
 **Update 6.4.5.0**
 
-Changed taskbar to align to the left in Windows 11.
+- Changed taskbar to align to the left in Windows 11.
 
-Tried to fix font not setting in text box.
+
+- Tried to fix font not setting in text box.
+
 
 **Update 6.4.4.0**
 
-Removal of Windows AI will now only run if the operating system is Windows 11.
+- Removal of Windows AI will now only run if the operating system is Windows 11.
+
 
 **Update 6.4.3.1**
 
-Corrected a font style for the installer text box.
+- Corrected a font style for the installer text box.
+
 
 **Update 6.4.3.0**
 
-Changed font.
+- Changed font.
 
-Re-enabled remove Windows AI.
+
+- Re-enabled remove Windows AI.
+
 
 **Update 6.4.2.0**
 
-Added shutdown button to shutdown computer when installation is complete.
+- Added shutdown button to shutdown computer when installation is complete.
 
-Remade all icons along the bottom of the installer.
+
+- Remade all icons along the bottom of the installer.
+
 
 **Update 6.4.1.2**
 
-Added New Year sound.
+- Added New Year sound.
+
 
 **Update 6.4.1.1**
 
-Corrected version number.
+- Corrected version number.
 
-Added New Year colours and image.
+
+- Added New Year colours and image.
+
 
 **Update 6.4.1.0**
 
-Re-enabled Windows AI Removal.
+- Re-enabled Windows AI Removal.
 
-Rewritten how the holiday themed image is drawn to reduce CPU usage and lag.
+
+- Rewritten how the holiday themed image is drawn to reduce CPU usage and lag.
+
 
 **Update 6.4.0.1**
 
-Disabled Windows AI Removal temporarily to try and fix slow loading.
+- Disabled Windows AI Removal temporarily to try and fix slow loading.
+
 
 **Update 6.4.0.0**
 
-Added different icons for different national holidays, and Pluto's birthday.
+- Added different icons for different national holidays, and Pluto's birthday.
+
 
 **Update 6.3.1.0**
 
-Added remove AI check box. When selected will remove all AI components from Windows 11.
+- Added remove AI check box. When selected will remove all AI components from Windows 11.
+
 
 **Update 6.3.0.0**
 
-Updated all Computer Repair Centre icons.
+- Updated all Computer Repair Centre icons.
+
 
 **Update 6.2.2.0**
 
-Added New Year check.
+- Added New Year check.
+
 
 **Update 6.2.1.0**
 
-Added Christmas songs.
+- Added Christmas songs.
+
 
 **Update 6.2.0.1**
 
-Fixed Nvidia silent install.
+- Fixed Nvidia silent install.
+
 
 **Update 6.2.0.0**
 
-Removed AMD check box as the way AMD design thier installer makes it impossible download and install silently. I might readd later, all the detection code is there still.
+- Removed AMD check box as the way AMD design thier installer makes it impossible download and install silently. I might readd later, all the detection code is there still.
 
-Slightly redesigned the GUI to make it a bit nicer and more organised.
+
+- Slightly redesigned the GUI to make it a bit nicer and more organised.
+
 
 **Update 6.1.18.1**
 
-Fixed AMD software URL.
+- Fixed AMD software URL.
 
-Changed Nvidia downloader to match AMD.
+
+- Changed Nvidia downloader to match AMD.
+
 
 **Update 6.1.18.0**
 
-Added Intel CPU and GPU checker just incase I want to add those in the future, if ARC becomes more mainstream.
+- Added Intel CPU and GPU checker just incase I want to add those in the future, if ARC becomes more mainstream.
 
-Moved Windows version check to before you click install, like the hardware checks are.
 
-Removed some unused flags.
+- Moved Windows version check to before you click install, like the hardware checks are.
+
+
+- Removed some unused flags.
+
 
 **Update 6.1.17.0**
 
-Added check box to empty the recycle bin on completion.
+- Added check box to empty the recycle bin on completion.
 
-Added AMD hardware checker just like Nvidia.
 
-Updated Nvidia icon.
+- Added AMD hardware checker just like Nvidia.
 
-Updated Office 2007 icon.
+
+- Updated Nvidia icon.
+
+
+- Updated Office 2007 icon.
+
 
 **Update 6.1.16.1**
 
-I never updated app.manifest to include support OS', so I added Windows 10 and 11.
+- I never updated app.manifest to include support OS', so I added Windows 10 and 11.
 
-Removed click sound, as I don't like it.
+
+- Removed click sound, as I don't like it.
+
 
 **Update 6.1.16.0**
 
-Fixed last updated line. It now shows the day the installer was updated rather than just the current day.
+- Fixed last updated line. It now shows the day the installer was updated rather than just the current day.
 
-Added custom update date attribute.
+
+- Added custom update date attribute.
+
 
 **Update 6.1.15.0**
 
-Added a location check label.
+- Added a location check label.
 
-Fixed sounds not playing correctly.
+
+- Fixed sounds not playing correctly.
+
 
 **Update 6.1.14.1**
 
-Added multiple password support for IP check, this will allow temporary usaged by multiple different people if needed.
+- Added multiple password support for IP check, this will allow temporary usaged by multiple different people if needed.
+
 
 **Update 6.1.14.0**
 
-IP addresses are now encrypted.
+- IP addresses are now encrypted.
 
-Added password protection if the installer is run from a different IP address from one of the listed safe IP's.
+
+- Added password protection if the installer is run from a different IP address from one of the listed safe IP's.
+
 
 **Update 6.1.13.0**
 
-Added button click and hover sounds.
+- Added button click and hover sounds.
+
 
 **Update 6.1.12.6**
 
-Added a couple more world days.
+- Added a couple more world days.
+
 
 **Update 6.1.12.5**
 
-Made the birthday sound quieter.
+- Made the birthday sound quieter.
+
 
 **Update 6.1.12.4**
 
-Fixed national Dachshund day date.
+- Fixed national Dachshund day date.
+
 
 **Update 6.1.12.3**
 
-Added national Dachshund day.
+- Added national Dachshund day.
+
 
 **Update 6.1.12.2**
 
-Added automatically changing build date & version number.
+- Added automatically changing build date & version number.
+
 
 **Update 6.1.12.1**
 
-Updated GitHub download URL's.
+- Updated GitHub download URL's.
+
 
 **Update 6.1.12.0**
 
-Updated launcher exe, changed download URL to crcinstaller.professorshroom.com to allow URL changes in the future.
+- Updated launcher exe, changed download URL to crcinstaller.professorshroom.com to allow URL changes in the future.
+
 
 **Update 6.1.11.2**
 
-Fixed LibreOffice URL.
+- Fixed LibreOffice URL.
+
 
 **Update 6.1.11.1**
 
-Fixed error causing all birthdays to display as Charlie.
+- Fixed error causing all birthdays to display as Charlie.
+
 
 **Update 6.1.11.0**
 
-Changed Google Chrome URL to Google's own latest enterprise download link.
+- Changed Google Chrome URL to Google's own latest enterprise download link.
 
-Changed Mozilla Thunderbird URL to Mozilla's own latest download link.
+
+- Changed Mozilla Thunderbird URL to Mozilla's own latest download link.
+
 
 **Update 6.1.10.0**
 
-Added LibreOffice version checker with the same logic used for Nvidia App to download the latest version.
+- Added LibreOffice version checker with the same logic used for Nvidia App to download the latest version.
 
-Changed Discord URL to Discord's own latest download link.
 
-Changed Mozilla Firefox URL to Mozilla's own latest download link.
+- Changed Discord URL to Discord's own latest download link.
+
+
+- Changed Mozilla Firefox URL to Mozilla's own latest download link.
+
 
 **Update 6.1.9.1**
 
-Fixed typo with Nvidia App exe.
+- Fixed typo with Nvidia App exe.
+
 
 **Update 6.1.9.0**
 
-Installer will check if the computer has an Nvidia GPU and install the Nvidia App if it does. This can be disabled if the user wants.
+- Installer will check if the computer has an Nvidia GPU and install the Nvidia App if it does. This can be disabled if the user wants.
+
 
 **Update 6.1.8.5**
 
-Updated Romsey IP as we now finally have a decent ISP.
+- Updated Romsey IP as we now finally have a decent ISP.
+
 
 **Update 6.1.8.4**
 
-Added national puffin day. We missed out this year, sad.
+- Added national puffin day. We missed out this year, sad.
+
 
 **Update 6.1.8.3**
 
-Fixed pancake day date.
+- Fixed pancake day date.
+
 
 **Update 6.1.8.2**
 
-Changed Google Chrome and NanaZip file names to make future updates easier.
+- Changed Google Chrome and NanaZip file names to make future updates easier.
 
-Updated Google Chrome.
 
-Updated VLC Media Player.
+- Updated Google Chrome.
+
+
+- Updated VLC Media Player.
+
 
 **Update 6.1.8.1**
 
-Fixed a typo in VLC Media Players installation.
+- Fixed a typo in VLC Media Players installation.
+
 
 **Update 6.1.8.0**
 
-Added VLC Media Player, for Adam.
+- Added VLC Media Player, for Adam.
+
 
 **Update 6.1.7.1**
 
-Added pancake day.
-Changed some text in NanaZip to make it align better with other text.
+- Added pancake day.
+
+- Changed some text in NanaZip to make it align better with other text.
+
 
 **Update 6.1.7.0**
 
-Updated LibreOffice.
+- Updated LibreOffice.
 
-Updated Mozilla Firefox.
 
-Updated Mozilla ThunderBird.
+- Updated Mozilla Firefox.
 
-Updated NanaZip.
 
-NanaZip now checks the installation folder dynamically which should allow NanaZip to update and not break the current scripts.
+- Updated Mozilla ThunderBird.
+
+
+- Updated NanaZip.
+
+
+- NanaZip now checks the installation folder dynamically which should allow NanaZip to update and not break the current scripts.
+
 
 **Update 6.1.6.2**
 
-Updated the icons I replaced yesterday, as they were too big.
+- Updated the icons I replaced yesterday, as they were too big.
+
 
 **Update 6.1.6.1**
 
-Disabled automatic restart.
-Replaced some icons.
+- Disabled automatic restart.
+
+- Replaced some icons.
+
 
 **Update 6.1.6.0**
 
-Added Valentines day colours and also images for every holiday.
+- Added Valentines day colours and also images for every holiday.
+
 
 **Update 6.1.5.0**
 
-Fixed Microsoft Office 2007 causing an error when extracting - will now compelte extraction to the Desktop as designed.
+- Fixed Microsoft Office 2007 causing an error when extracting - will now compelte extraction to the Desktop as designed.
+
 
 **Update 6.1.4.0**
 
-Reverted to 6.1.2.8 as Office was not causing the crash.
+- Reverted to 6.1.2.8 as Office was not causing the crash.
 
-Removed end task in the taskbar as that seemed to be causing issues, I may add it back in when I find out why.
+
+- Removed end task in the taskbar as that seemed to be causing issues, I may add it back in when I find out why.
+
 
 **Update 6.1.3.0**
 
-Microsoft Office 2007 will no longer extract, it will just copy to the Desktop.
+- Microsoft Office 2007 will no longer extract, it will just copy to the Desktop.
+
 
 **Update 6.1.2.8**
 
-Removed LibreOffice XCD file as it was causing issue with LibreOffice opening.
+- Removed LibreOffice XCD file as it was causing issue with LibreOffice opening.
+
 
 **Update 6.1.2.7**
 
-Tried to fix the installer not being deleted on the Desktop.
+- Tried to fix the installer not being deleted on the Desktop.
+
 
 **Update 6.1.2.6**
 
-Made file deleted async to avoid hanging on larger files like BitDefender.exe.
+- Made file deleted async to avoid hanging on larger files like BitDefender.exe.
 
-Removed auto arrange Desktop icons as I cannot get it to work, I don't think it's possible.
+
+- Removed auto arrange Desktop icons as I cannot get it to work, I don't think it's possible.
+
 
 **Update 6.1.2.5**
 
-Added a check for the EXE version of AnyDesk too just incase it is already installed, no point having both.
+- Added a check for the EXE version of AnyDesk too just incase it is already installed, no point having both.
 
-Fixed BitDefender crash.
+
+- Fixed BitDefender crash.
+
 
 **Update 6.1.2.4**
 
-Fixed BitDefender URL being incorrect so not installing.
+- Fixed BitDefender URL being incorrect so not installing.
 
-Fixed AnyDesk installation check, the MSI installer installs to a different location than the EXE for some reason.
+
+- Fixed AnyDesk installation check, the MSI installer installs to a different location than the EXE for some reason.
+
 
 **Update 6.1.2.3**
 
-Updated power icon.
+- Updated power icon.
 
-Tried another fix for auto arrange Desktop icons.
 
-Added line to state the last date the installer was updated.
+- Tried another fix for auto arrange Desktop icons.
+
+
+- Added line to state the last date the installer was updated.
+
 
 **Update 6.1.2.2**
 
-Fixed a typo in the launcherPath causing the launcher not to delete on the Desktop.
+- Fixed a typo in the launcherPath causing the launcher not to delete on the Desktop.
+
 
 **Update 6.1.2.1**
 
-Attempted to fix deleting the launcher on the Desktop.
+- Attempted to fix deleting the launcher on the Desktop.
 
-Attempted to fix auto arrange Desktop icons.
+
+- Attempted to fix auto arrange Desktop icons.
+
 
 **Update 6.1.2.0**
 
-Will now delete launcher file on the Desktop if it exists.
+- Will now delete launcher file on the Desktop if it exists.
 
-Attempted to auto arrange Desktop icons for a cleaner look, unsure if this will work, if it doesn't work I will remove it.
+
+- Attempted to auto arrange Desktop icons for a cleaner look, unsure if this will work, if it doesn't work I will remove it.
+
 
 **Update 6.1.1.2**
 
-Changed how the progress bar works to prevent crashes in the future.
+- Changed how the progress bar works to prevent crashes in the future.
+
 
 **Update 6.1.1.1**
 
-Fixed crash caused by HP Hotkey Support progress bar.
+- Fixed crash caused by HP Hotkey Support progress bar.
 
-Made NanaZip installation async.
+
+- Made NanaZip installation async.
+
 
 **Update 6.1.1.0**
 
-Added HP Hotkey Support.
+- Added HP Hotkey Support.
+
 
 **Update 6.1.0.1**
 
-Forgot to rebuild the exe.
+- Forgot to rebuild the exe.
+
 
 **Update 6.1.0.0**
 
-First full release of version 6.
+- First full release of version 6.
 
-When LibreOffice is installed the default file type will be changed to Office 2007-2021 (docx, xlsx, etc.).
+
+- When LibreOffice is installed the default file type will be changed to Office 2007-2021 (docx, xlsx, etc.).
+
+<details>
+<summary>Version 6.x Beta</summary>
 
 **Update 6.0.8.0b**
 
-Fully implemented AnyDesk.
+- Fully implemented AnyDesk.
 
-Fixed issue with progress bar not filling all of the way.
+
+- Fixed issue with progress bar not filling all of the way.
+
 
 **Update 6.0.7.2b**
 
-Fixed a thread locking issue caused by NanaZip extracting Office 2007.
+- Fixed a thread locking issue caused by NanaZip extracting Office 2007.
+
 
 **Update 6.0.7.1b**
 
-Fixed crash caused by NanaZip installation.
+- Fixed crash caused by NanaZip installation.
+
 
 **Update 6.0.7.0b**
 
-Cleans up installation files when the install is done.
+- Cleans up installation files when the install is done.
+
 
 **Update 6.0.6.0b**
 
-Added OEM information for Chandlers Ford and Highcliffe.
+- Added OEM information for Chandlers Ford and Highcliffe.
 
-Fully implemented BitDefender, Discord & Steam.
 
-Added Microsoft Office 2007, but this will only extract to the Desktop, not install.
+- Fully implemented BitDefender, Discord & Steam.
 
-Added NanaZip as a tickbox as in this installer it is not required for the install, unless Microsoft Office 2007 is selected, in which case it will be installed regardless of the tickbox state.
+
+- Added Microsoft Office 2007, but this will only extract to the Desktop, not install.
+
+
+- Added NanaZip as a tickbox as in this installer it is not required for the install, unless Microsoft Office 2007 is selected, in which case it will be installed regardless of the tickbox state.
+
 
 **Update 6.0.5.0b**
 
-Added BitDefender, AnyDesk, Discord, Mozilla Thunderbird, and Steam, but currently they don't do anything.
+- Added BitDefender, AnyDesk, Discord, Mozilla Thunderbird, and Steam, but currently they don't do anything.
 
-Added the installation check from Firefox to the other software.
+
+- Added the installation check from Firefox to the other software.
+
 
 **Update 6.0.4.0b**
 
-Fixed crash.
+- Fixed crash.
 
-Will now check is Firefox is installed before installing and skip it if it is, will add this to other software if it works as intended.
+
+- Will now check is Firefox is installed before installing and skip it if it is, will add this to other software if it works as intended.
+
 
 **Update 6.0.3.1b**
 
-Fixed URL to OEM BMP.
+- Fixed URL to OEM BMP.
+
 
 **Update 6.0.3.0b**
 
-Added holiday messages and holiday colours.
+- Added holiday messages and holiday colours.
 
-Added Windows 10 registry tweaks.
 
-Added option to disable sleep and screen timeout on AC power.
+- Added Windows 10 registry tweaks.
+
+
+- Added option to disable sleep and screen timeout on AC power.
+
 
 
 **Update 6.0.2.0b**
 
-Added IP checker to check where the installer is being run from.
+- Added IP checker to check where the installer is being run from.
 
-Added in all of the Windows 11 registry tweaks from the old installer.
 
-Added OEM information, only in Romsey for now for testing.
+- Added in all of the Windows 11 registry tweaks from the old installer.
+
+
+- Added OEM information, only in Romsey for now for testing.
+
 
 **Update 6.0.1.0b**
 
-Fixed Google Chrome installation.
+- Fixed Google Chrome installation.
 
-Added Bing Wallpapers.
 
-Added restart box but left it unticked by default for now.
+- Added Bing Wallpapers.
 
-Added version number with readme.
+
+- Added restart box but left it unticked by default for now.
+
+
+- Added version number with readme.
+
 
 **Update 6.0.0.0b**
 
-Rewritten the installer using C#, the majority of features are being carried over, but it may take a few updates to get all of the features fully implemented.
+- Rewritten the installer using C#, the majority of features are being carried over, but it may take a few updates to get all of the features fully implemented.
+
+</details>
+<details>
+<summary>Version 5.x</summary>
 
 **Update 5.2024.11.03.0**
 
-Moved some scripts to scripts folder.
+- Moved some scripts to scripts folder.
 
-Now sets LibreOffice default file type to Office 2007-2021 (docx, xlsx, etc.).
+
+- Now sets LibreOffice default file type to Office 2007-2021 (docx, xlsx, etc.).
+
 
 **Update 5.2024.11.02.4**
 
-Changed some icon paths as I accidentally left in some test paths.
+- Changed some icon paths as I accidentally left in some test paths.
+
 
 **Update 5.2024.11.02.3**
 
-Added apps folder.
-Changed power times if not not run on a refurb.
+- Added apps folder.
+
+- Changed power times if not not run on a refurb.
+
 
 **Update 5.2024.11.02.2**
 
-Fixed a couple of broken icons.
+- Fixed a couple of broken icons.
 
-Removed Teams as doesn't seem needed now.
+
+- Removed Teams as doesn't seem needed now.
+
 
 **Update 5.2024.11.02.1**
 
-Fixed issue with folders not being created.
+- Fixed issue with folders not being created.
+
 
 **Update 5.2024.11.02.0**
 
-Removed Windows 7 games, as I don't think anyones ever used it.
+- Removed Windows 7 games, as I don't think anyones ever used it.
 
-Added BitDefender as the world is being silly about Kaspersky.
 
-Fixed Office 2007 URL typo.
+- Added BitDefender as the world is being silly about Kaspersky.
 
-Updated all the icons.
 
-Added subfolders to 'C:\Computer Repair Centre' to tidy up installation folder.
+- Fixed Office 2007 URL typo.
 
-Removed TeamViewer.
+
+- Updated all the icons.
+
+
+- Added subfolders to 'C:\Computer Repair Centre' to tidy up installation folder.
+
+
+- Removed TeamViewer.
+
 
 **Update 5.2024.10.31.0**
 
-Made the check for Kaspersky more precise as if run on a system with Kapersky VPN or Kaspersky Password Manager it would skip the installation as it believed Kaspersky was already installed.
+- Made the check for Kaspersky more precise as if run on a system with Kapersky VPN or Kaspersky Password Manager it would skip the installation as it believed Kaspersky was already installed.
 
-Readded Microsoft Office 2007, but will extract to the Desktop. Old people.
+
+- Readded Microsoft Office 2007, but will extract to the Desktop. Old people.
+
 
 **Update 5.2024.10.29.6**
 
-Changed Halloween sound effect as it's probably a bit over the top.
+- Changed Halloween sound effect as it's probably a bit over the top.
+
 
 **Update 5.2024.10.29.5**
 
-Fixed elseIf command downloading correct sound file.
+- Fixed elseIf command downloading correct sound file.
+
 
 **Update 5.2024.10.29.4**
 
-Forgot date in download section.
+- Forgot date in download section.
+
 
 **Update 5.2024.10.29.3**
 
-Reorganised some lines of code.
+- Reorganised some lines of code.
+
 
 **Update 5.2024.10.29.2**
 
-Forgot to add sync hash to second part of the download code.
+- Forgot to add sync hash to second part of the download code.
+
 
 **Update 5.2024.10.29.1**
 
-Added sync hash for holidays during download section.
+- Added sync hash for holidays during download section.
+
 
 **Update 5.2024.10.29.0**
 
-Corrected typo that stopped the sound from changing on holidays.
+- Corrected typo that stopped the sound from changing on holidays.
+
 
 **Update 5.2024.10.23.1**
 
-Fixed some typos that have been in the readme for a loooooong time.
+- Fixed some typos that have been in the readme for a loooooong time.
+
 
 **Update 5.2024.10.23.0**
 
-Removed iTunes as it's no longer supported.
+- Removed iTunes as it's no longer supported.
+
 
 **Update 5.2024.10.12.0**
 
-Added birthday colours and sound.
+- Added birthday colours and sound.
+
 
 **Update 5.2024.10.11.0**
 
-Reduced Halloween to 3 days.
-Changed Christmas colours to red and white.
+- Reduced Halloween to 3 days.
+
+- Changed Christmas colours to red and white.
+
 
 **Update 5.2024.10.10.0**
 
-Added completed sound effect once installer is finished.
-Added task end button to taskbar in Windows 11.
+- Added completed sound effect once installer is finished.
+
+- Added task end button to taskbar in Windows 11.
+
 
 **Update 5.2024.10.07.3**
 
-Renamed LibreOffice installation file.
+- Renamed LibreOffice installation file.
+
 
 **Update 5.2024.10.07.2**
 
-Fixed NanaZip as they changed the exe name.
+- Fixed NanaZip as they changed the exe name.
+
 
 **Update 5.2024.10.07.1**
 
-Updated NanaZip.
-Removed all old Office assets.
-Updated version number on installer exe.
-Updated LibreOffice msi to newer version.
+- Updated NanaZip.
+
+- Removed all old Office assets.
+
+- Updated version number on installer exe.
+
+- Updated LibreOffice msi to newer version.
+
 
 **Update 5.2024.10.07.0**
 
-Removed Office 2007 and moved CF to LibreOffice.
+- Removed Office 2007 and moved CF to LibreOffice.
+
 
 **Update 5.2024.08.09.0**
 
-Changed website URL's and opening hours in OEM info.
+- Changed website URL's and opening hours in OEM info.
+
 
 **Update 5.2024.05.09.0**
 
-Will now disable automatic device encryption is run on Windows 11.
+- Will now disable automatic device encryption is run on Windows 11.
+
 
 **Update 5.2024.05.03.1**
 
-Dropped a }.
+- Dropped a }.
+
 
 **Update 5.2024.05.03.0**
 
-Removed LibreOffice winget install as it keeps hanging.
+- Removed LibreOffice winget install as it keeps hanging.
+
 
 **Update 5.2024.05.02.1**
 
-Removed line that causes installing Winget to hang.
+- Removed line that causes installing Winget to hang.
+
 
 **Update 5.2024.05.02.0**
 
-Winget installation will now run twice, it seems on some machines it isn't installing correctly.
+- Winget installation will now run twice, it seems on some machines it isn't installing correctly.
+
 
 **Update 5.2024.04.20.0**
 
-Removed dash from disabling sleep on AC power.
+- Removed dash from disabling sleep on AC power.
+
 
 **Update 5.2024.04.15.0**
 
-Updated Chandlers Ford IP.
-Added manual check for IP in CF and Romsey if the hardlinks aren't working.
+- Updated Chandlers Ford IP.
+
+- Added manual check for IP in CF and Romsey if the hardlinks aren't working.
+
 
 **Update 5.2024.04.02.0**
 
-Moved the screen and sleep pause to before downloading the prerequisites. 
+- Moved the screen and sleep pause to before downloading the prerequisites. 
+
 
 **Update 5.2024.03.25.2**
 
-If run in Chandlers Ford then the taskbar will not be moved to the left on Windows 11.
+- If run in Chandlers Ford then the taskbar will not be moved to the left on Windows 11.
+
 
 **Update 5.2024.03.25.1**
 
-Changed winget installation command.
+- Changed winget installation command.
+
 
 **Update 5.2024.03.25.0**
 
-The reason for recent hanging is somehow the installer is downloading old files despite not even being listed, so I've removed them to see if that helps.
+- The reason for recent hanging is somehow the installer is downloading old files despite not even being listed, so I've removed them to see if that helps.
+
 
 **Update 5.2024.03.23.0**
 
-Tried to fix hanging on winget installation.
-Updated NanaZip.
-Updated Winget.
+- Tried to fix hanging on winget installation.
+
+- Updated NanaZip.
+
+- Updated Winget.
+
 
 **Update 5.2024.03.22.0**
 
-Updated LibreOffice on the server as the link no longer exists on their site. Tried to fix occasional hanging.
+- Updated LibreOffice on the server as the link no longer exists on their site. Tried to fix occasional hanging.
+
 
 **Update 5.2024.02.29.0**
 
-If run on Windows 11 the taskbar will be aligned to the left like in Windows 10.
+- If run on Windows 11 the taskbar will be aligned to the left like in Windows 10.
+
 
 **Update 5.2024.02.7.0**
 
-Tried to fix Google Chrome installation from failing on the first attempt.
+- Tried to fix Google Chrome installation from failing on the first attempt.
+
 
 **Update 5.2024.01.20.0**
 
-Forget to add download for the refurb icon.
+- Forget to add download for the refurb icon.
+
 
 **Update 5.2024.01.19.1**
 
-Added refurb icon.
+- Added refurb icon.
+
 
 **Update 5.2024.01.19.0**
 
-Added refurb box so not all devices are set to never sleep.
+- Added refurb box so not all devices are set to never sleep.
+
 
 **Update 5.2024.01.13.0**
 
-Removed old apps from initial download.
+- Removed old apps from initial download.
+
 
 **Update 5.2024.01.03.3**
 
-I accidentally removed winget so I've readded it.
+- I accidentally removed winget so I've readded it.
+
 
 **Update 5.2024.01.03.2**
 
-Forgot to change NanaZip URL.
+- Forgot to change NanaZip URL.
+
 
 **Update 5.2024.01.03.1**
 
-Fixed typos.
+- Fixed typos.
+
 
 **Update 5.2024.01.03.0**
 
-Moved all the apps to our server instead of git.
+- Moved all the apps to our server instead of git.
+
 
 **Update 5.2024.01.02.1**
 
-Forgot quotations around URLs.
+- Forgot quotations around URLs.
+
 
 **Update 5.2024.01.02.0**
 
-Moved app downloads to during the install rather than before to speed up initial download.
+- Moved app downloads to during the install rather than before to speed up initial download.
+
 
 **Update 5.2023.11.03.0**
 
-Any log files will be removed before creating a new one just incase the installer is run more than once. Correctly this time.
+- Any log files will be removed before creating a new one just incase the installer is run more than once. Correctly this time.
+
 
 **Update 5.2023.10.27.0**
 
-Buttons weren't Halloweeny enough.
+- Buttons weren't Halloweeny enough.
+
 
 **Update 5.2023.10.20.2**
 
-Any log files will be removed before creating a new one just incase the installer is run more than once.
+- Any log files will be removed before creating a new one just incase the installer is run more than once.
+
 
 **Update 5.2023.10.20.1**
 
-Once all files are cleaned up a log file will be create in C:\Computer Repair Centre\ with the installation date.
+- Once all files are cleaned up a log file will be create in C:\Computer Repair Centre\ with the installation date.
+
 
 **Update 5.2023.10.20.0**
 
-Removed unzip of cleanupo files as they're no longer zipped.
+- Removed unzip of cleanupo files as they're no longer zipped.
+
 
 **Update 5.2023.10.19.2**
 
-Tidied up the script that deletes files after installation so you don't get an error if Office 2007 wasn't installed.
+- Tidied up the script that deletes files after installation so you don't get an error if Office 2007 wasn't installed.
+
 
 **Update 5.2023.10.19.1**
 
-Forgot to remove Bing files unzip during NanaZip installation.
+- Forgot to remove Bing files unzip during NanaZip installation.
+
 
 **Update 5.2023.10.19.0**
 
-Removed all of the old Bing Wallpaper installation files as the new method seems to work fine.
+- Removed all of the old Bing Wallpaper installation files as the new method seems to work fine.
+
 
 **Update 5.2023.10.18.2**
 
-Forgot to actually add it.
+- Forgot to actually add it.
+
 
 **Update 5.2023.10.18.1**
 
-Testing out new Bing Wallpapers installation method.
+- Testing out new Bing Wallpapers installation method.
+
 
 **Update 5.2023.10.18.0**
 
-Fixed dark mode not activating when selected.
+- Fixed dark mode not activating when selected.
+
 
 **Update 5.2023.10.16.1**
 
-Moved app to our server.
+- Moved app to our server.
+
 
 **Update 5.2023.10.16.0**
 
-Updated winget to see if that fixes recent winget issues.
+- Updated winget to see if that fixes recent winget issues.
+
 
 **Update 5.2023.10.12.1**
 
-Also added backup for VLC Media Player.
+- Also added backup for VLC Media Player.
+
 
 **Update 5.2023.10.12.0**
 
-Added backup installers of Google Chrome, Mozilla Firefox & LibreOffice due to issues with winget.
+- Added backup installers of Google Chrome, Mozilla Firefox & LibreOffice due to issues with winget.
+
 
 **Update 5.2023.10.09.0**
 
-Update winget ID as it was changed in the latest update.
+- Update winget ID as it was changed in the latest update.
+
 
 **Update 5.2023.10.03.1**
 
-Stopped the installer being orange for the whole of October.
+- Stopped the installer being orange for the whole of October.
+
 
 **Update 5.2023.10.03.0**
 
-Increased Halloween to a week before Halloween.  
-Added more Christmas songs.
+- Increased Halloween to a week before Halloween.  
+
+- Added more Christmas songs.
+
 
 **Update 5.2023.09.18.2**
 
-Fixed missing icons.
+- Fixed missing icons.
+
 
 **Update 5.2023.09.18.1**
 
-Updated Discord icon.  
-Reorganised assets folder.
+- Updated Discord icon.  
+
+- Reorganised assets folder.
+
 
 **Update 5.2023.09.18.0**
 
-Added version to bottom of the main window.  
-Added view changelog button at the bottom of the main window.
+- Added version to bottom of the main window.  
+
+- Added view changelog button at the bottom of the main window.
+
 
 **Update 5.2023.09.11.2**
 
-Fixed Discord icon.  
-Changed VLC to only install on Windows 10.
+- Fixed Discord icon.  
+
+- Changed VLC to only install on Windows 10.
+
 
 **Update 5.2023.09.11.1**
 
-Added some missing progress bar additions.
+- Added some missing progress bar additions.
+
 
 **Update 5.2023.09.11.0**
 
-Kaspersky will no longer be installed in Romsey or Highcliffe due to no longer having the option for a trial.  
-Added Discord.  
-Added Steam.
+- Kaspersky will no longer be installed in Romsey or Highcliffe due to no longer having the option for a trial.  
+
+- Added Discord.  
+
+- Added Steam.
+
 
 **Update 5.2023.07.21.2**
 
-Forgot to add --install switch so AnyDesk just opened.
+- Forgot to add --install switch so AnyDesk just opened.
+
 
 **Update 5.2023.07.21.1**
 
-Moved '
+- Moved '
+
 
 **Update 5.2023.07.21.0**
 
-Changed to AnyDesk EXE instead of MSI.
+- Changed to AnyDesk EXE instead of MSI.
+
 
 **Update 5.2023.07.20.2**
 
-Changed AnyDesk MSI location to the AnyDesk site so it's always up to date.
+- Changed AnyDesk MSI location to the AnyDesk site so it's always up to date.
+
 
 **Update 5.2023.07.20.1**
 
-Changed AnyDesk installer to an MSI as the winget installer is frequently broken.  
-Removed TeamViewer check from AnyDesk install as it's no longer relevant.
+- Changed AnyDesk installer to an MSI as the winget installer is frequently broken.  
+
+- Removed TeamViewer check from AnyDesk install as it's no longer relevant.
+
 
 **Update 5.2023.07.20.0**
 
-Added check for Microsoft Office 2007 and added loop breaks for both Office and Kaspersky after 5 minutes.
+- Added check for Microsoft Office 2007 and added loop breaks for both Office and Kaspersky after 5 minutes.
+
 
 **Update 5.2023.07.18.1**
 
-Added waits after every file extraction and added 5 minute wait to Office 2007 install.
+- Added waits after every file extraction and added 5 minute wait to Office 2007 install.
+
 
 **Update 5.2023.07.18.0**
 
-Fixed typo in NanaZip path and added Geeth's birthday.
+- Fixed typo in NanaZip path and added Geeth's birthday.
+
 
 **Update 5.2023.07.17.1**
 
-If Windows 7 games are installed then icons will be put on the Desktop for the games.
+- If Windows 7 games are installed then icons will be put on the Desktop for the games.
+
 
 **Update 5.2023.07.17.0**
 
-Replaced 7-zip with NanaZip.
+- Replaced 7-zip with NanaZip.
+
 
 **Update 5.2023.04.29.0**
 
-If AnyDesk is selected then TeamViewer will also be removed so this can run on already installed machines to switch to AnyDesk.
+- If AnyDesk is selected then TeamViewer will also be removed so this can run on already installed machines to switch to AnyDesk.
+
 
 
 **Update 5.2023.04.21.0**
 
-Added AnyDesk and disabled TeamViewer from being selected by default.
+- Added AnyDesk and disabled TeamViewer from being selected by default.
+
 
 **Update 5.2023.03.10.0**
 
-The installer will now update the Windows Store for Windows 11 as well as 10 because Adam is forgetful.
+- The installer will now update the Windows Store for Windows 11 as well as 10 because Adam is forgetful.
+
 
 **Update 5.2023.02.16.0**
 
-Changed restart box icon as I don't think anyone knew what it was for.  
-Changed this years Christmas song.
+- Changed restart box icon as I don't think anyone knew what it was for.  
+
+- Changed this years Christmas song.
+
 
 **Update 5.2023.01.31.0**
 
-Added Kaspersky Standard to installer as a proper install.
+- Added Kaspersky Standard to installer as a proper install.
+
 
 **Update 5.2023.01.30.3**
 
-Removed fix attempt 1 files.
+- Removed fix attempt 1 files.
+
 
 **Update 5.2023.01.30.2**
 
-That fixe worked so tied up check boxes and removed check box for sleep mode as who cares about carbon emissions.
+- That fixe worked so tied up check boxes and removed check box for sleep mode as who cares about carbon emissions.
+
 
 **Update 5.2023.01.30.1**
 
-That fix didn't work, fix attempt number 2.
+- That fix didn't work, fix attempt number 2.
+
 
 **Update 5.2023.01.30.0**
 
-Attemped to fix AC power sleep.
+- Attemped to fix AC power sleep.
+
 
 **Update 5.2023.01.24.4**
 
-Attempted to fix TeamViewer not installing.
+- Attempted to fix TeamViewer not installing.
+
 
 **Update 5.2023.01.24.3**
 
-Amended force command.
+- Amended force command.
+
 
 **Update 5.2023.01.24.2**
 
-Correct deleteFiles.ps1
+- Correct deleteFiles.ps1
+
 
 **Update 5.2023.01.24.1**
 
-If run on Windows 10 it will now update the Windows Store before installing Winget.
+- If run on Windows 10 it will now update the Windows Store before installing Winget.
+
 
 **Update 5.2023.01.24.0**
 
-Added force command if a program fails to install on the retry.
+- Added force command if a program fails to install on the retry.
+
 
 **Update 5.2023.01.23.9**
 
-Fixed typo in kaspersky download URL. It's too cold to type tonight.
+- Fixed typo in kaspersky download URL. It's too cold to type tonight.
+
 
 **Update 5.2023.01.23.8**
 
-Forgot to add Kaspersky move command.
+- Forgot to add Kaspersky move command.
+
 
 **Update 5.2023.01.23.7**
 
-Updated deleteFiles.ps1.  
-Re-enabled Kaspersky.  
-Added Kaspersky Standard exe temporarily until I figure out how to enable a silent install. This must be run manually after the install is complete.
+- Updated deleteFiles.ps1.  
+
+- Re-enabled Kaspersky.  
+
+- Added Kaspersky Standard exe temporarily until I figure out how to enable a silent install. This must be run manually after the install is complete.
+
 
 **Update 5.2023.01.23.6**
 
-Corrected typo stopping winget package from downloading.
+- Corrected typo stopping winget package from downloading.
+
 
 **Update 5.2023.01.23.5**
 
-Fixed issue with Microsoft .NET Windows Desktop Runtime 3.1.
+- Fixed issue with Microsoft .NET Windows Desktop Runtime 3.1.
+
 
 **Update 5.2023.01.23.4**
 
-If run on Windows 10 it will install winget and the prerequisites.  
-Added Microsoft .NET Windows Desktop Runtime 3.1.  
-Fixed hanging issue. 
+- If run on Windows 10 it will install winget and the prerequisites.  
+
+- Added Microsoft .NET Windows Desktop Runtime 3.1.  
+
+- Fixed hanging issue. 
+
 
 **Update 5.2023.01.23.3**
 
-Removed Microsoft .NET Windows Desktop Runtime 3.1.  
-Cleaned up checkboxes.
+- Removed Microsoft .NET Windows Desktop Runtime 3.1.  
+
+- Cleaned up checkboxes.
+
 
 **Update 5.2023.01.23.2**
 
-Changed the way winget installs.
+- Changed the way winget installs.
+
 
 **Update 5.2023.01.23.1**
 
-Added winget installation for Windows 10.
+- Added winget installation for Windows 10.
+
 
 **Update 5.2023.01.23.0**
 
-Moved from chocolatey from to winget.  
-Removed Microsoft Office 2019 and 2021.  
-Removed HashTab.  
-Removed uBlock Origin.  
-Disabled Kaspersky for now until I can work out a silent install.
+- Moved from chocolatey from to winget.  
+
+- Removed Microsoft Office 2019 and 2021.  
+
+- Removed HashTab.  
+
+- Removed uBlock Origin.  
+
+- Disabled Kaspersky for now until I can work out a silent install.
+
+</details>
+<details>
+<summary>Version 4.x</summary>
+
 
 **Update 4.2022.12.19.0**
 
-Updated copyright.
+- Updated copyright.
+
 
 **Update 4.2022.12.19.0**
 
-Made light mode default in Chandlers Ford as Adam is old.
+- Made light mode default in Chandlers Ford as Adam is old.
+
 
 **Update 4.2022.12.02.4**
 
-Added sleep after Christmas message.
+- Added sleep after Christmas message.
+
 
 **Update 4.2022.12.02.3**
 
-Removed Callum :(
+- Removed Callum :(
+
     
 **Update 4.2022.12.02.2**
 
-Remove misplaced number causing crashes.
+- Remove misplaced number causing crashes.
+
 
 **Update 4.2022.12.02.1**
 
-Corrected date.
+- Corrected date.
+
 
 **Update 4.2022.12.02.0**
 
-Fixed Christmas message.
+- Fixed Christmas message.
+
 
 **Update 4.2022.10.31.3**
 
-Fixed Halloween message not showing up.
+- Fixed Halloween message not showing up.
+
 
 **Update 4.2022.10.31.2**
 
-Added Christmas colours and message for December.
+- Added Christmas colours and message for December.
+
 
 **Update 4.2022.10.31.1**
 
-Added Halloween colours.
+- Added Halloween colours.
+
 
 **Update 4.2022.10.31.0**
 
-No longer sets "This PC" as default as the new Windows 11 home mode does the same thing.
+- No longer sets "This PC" as default as the new Windows 11 home mode does the same thing.
+
 
 **Update 4.2022.10.17.1**
 
-Fixed missing ".
+- Fixed missing ".
+
 
 **Update 4.2022.10.17.0**
 
-Reverted Office 2021 back to one file as issue wasn't with installer it was with download site cert.
+- Reverted Office 2021 back to one file as issue wasn't with installer it was with download site cert.
+
 
 **Update 4.2022.10.15.2**
 
-Fixed Office path typo.
+- Fixed Office path typo.
+
 
 **Update 4.2022.10.15.1**
 
-Fixed Office 2021 download error.  
-Added progress steps for each part of Office 2021.
+- Fixed Office 2021 download error.  
+
+- Added progress steps for each part of Office 2021.
+
 
 **Update 4.2022.10.15.0**
 
-Split Office 2021 into 3 zips as it's so big.  
-Added Office 2021 folder to the cleanup script.
+- Split Office 2021 into 3 zips as it's so big.  
+
+- Added Office 2021 folder to the cleanup script.
+
 
 **Update 4.2022.10.11.0**
 
-Updated domains for IP check.
+- Updated domains for IP check.
+
 
 **Update 4.2022.10.05.0**
 
-Stopped Office 2019 from installing on Windows 11.  
-Added Office 2021.
+- Stopped Office 2019 from installing on Windows 11.  
+
+- Added Office 2021.
+
 
 **Update 4.2022.09.24.0**
 
-Added Highcliffe phone number.
+- Added Highcliffe phone number.
+
 
 **Update 4.2022.09.17.0**
 
-Attempted to fix monitor and standby timeouts not changing.
+- Attempted to fix monitor and standby timeouts not changing.
+
 
 **Update 4.2022.09.14.0**
 
-Added known Highcliffe details, still awaiting phone number.
+- Added known Highcliffe details, still awaiting phone number.
+
 
 **Update 4.2022.09.10.4**
 
-Installer will now wait for the HP install.cmd to finish before continuing.
+- Installer will now wait for the HP install.cmd to finish before continuing.
+
 
 **Update 4.2022.09.10.3**
 
-Moved } that was in the wrong place stopping the HP software from installing.
+- Moved } that was in the wrong place stopping the HP software from installing.
+
 
 **Update 4.2022.09.10.2**
 
-Changed the order in which sleep will change timeout modes to make sure they're set correctly.
+- Changed the order in which sleep will change timeout modes to make sure they're set correctly.
+
 
 **Update 4.2022.09.10.1**
 
-Fixed two conflicting arguments.
+- Fixed two conflicting arguments.
+
 
 **Update 4.2022.09.10.0**
 
-Fixed not setting HP EliteBook status correctly.
+- Fixed not setting HP EliteBook status correctly.
+
 
 **Update 4.2022.09.09.0**
 
-Added HP Hotkey Support for HP EliteBooks as Steve can't install it.
+- Added HP Hotkey Support for HP EliteBooks as Steve can't install it.
+
 
 **Update 4.2022.09.07.1**
 
-Installer will now sing happy birthday.
+- Installer will now sing happy birthday.
+
 
 **Update 4.2022.09.07.0**
 
-Improved way of getting the IP.  
-Added Highcliffe.  
-Added Callum's birthday.
+- Improved way of getting the IP.  
+
+- Added Highcliffe.  
+
+- Added Callum's birthday.
+
 
 **Update 4.2022.08.04.0**
 
-Moved Office 2007 & Kaspersky files to BRM/FFITR domain for faster download speeds.
+- Moved Office 2007 & Kaspersky files to BRM/FFITR domain for faster download speeds.
+
 
 **Update 4.2022.07.21.2**
 
-Fixed typo.
+- Fixed typo.
+
 
 **Update 4.2022.07.21.1**
 
-Will now uninstall Kaspersky VPN & Secure Connection after checking if install has complete to make sure it removes just in case the install fails for any reason.
+- Will now uninstall Kaspersky VPN & Secure Connection after checking if install has complete to make sure it removes just in case the install fails for any reason.
+
 
 **Update 4.2022.07.21.0**
 
-Added "Reset chocolatey" button to remove previous installations of chocolatey if needed.
+- Added "Reset chocolatey" button to remove previous installations of chocolatey if needed.
+
 
 **Update 4.2022.07.18.2**
 
-Only downloads Windows 7 Games if it is selected to speed up loading the program.
+- Only downloads Windows 7 Games if it is selected to speed up loading the program.
+
 
 **Update 4.2022.07.18.1**
 
-Fixed Windows 7 Games check box from overlapping with Zoom.
+- Fixed Windows 7 Games check box from overlapping with Zoom.
+
 
 **Update 4.2022.07.18.0**
 
-Added Windows 7 Games as an install option.
+- Added Windows 7 Games as an install option.
+
 
 **Update 4.2022.07.08.2**
 
-Fixed iTunes icon.
+- Fixed iTunes icon.
+
 
 **Update 4.2022.07.08.1**
 
-Added birthday messages.  
-Changed all checkboxes to images rather than text.
+- Added birthday messages.  
+
+- Changed all checkboxes to images rather than text.
+
 
 **Update 4.2022.07.08.0**
 
-Fixed typo causing buttons to be blank.
+- Fixed typo causing buttons to be blank.
+
 
 **Update 4.2022.07.07.1**
 
-Added dark mode.  
-Modernised the GUI slightly.  
-Added check boxes for all branches that can be checked and unchecked if ever needed.  
-Added Highcliffe location but disabled until branch is opened.
+- Added dark mode.  
+
+- Modernised the GUI slightly.  
+
+- Added check boxes for all branches that can be checked and unchecked if ever needed.  
+
+- Added Highcliffe location but disabled until branch is opened.
+
 
 **Update 4.2022.07.07.0**
 
-Updated EXE to run first time every time.
+- Updated EXE to run first time every time.
+
+</details>
+<details>
+<summary>Version 3.x</summary>
 
 **Update 3.2022.07.02.5**
 
-Corrected progress bar.
+- Corrected progress bar.
+
 
 **Update 3.2022.07.02.4**
 
-Will now close Office 2019 installer once it has completed the install.
+- Will now close Office 2019 installer once it has completed the install.
+
 
 **Update 3.2022.07.02.3**
 
-Added last updated line when installer is run.
+- Added last updated line when installer is run.
+
 
 **Update 3.2022.07.02.2**
 
-Stopped the installer from deleting choco on every run.  
-Will now remove CRC Installer x64.exe from Desktop on reboot.
+- Stopped the installer from deleting choco on every run.  
+
+- Will now remove CRC Installer x64.exe from Desktop on reboot.
+
 
 **Update 3.2022.07.02.1**
 
-Fixed Word path error.
+- Fixed Word path error.
+
 
 **Update 3.2022.07.02.0**
 
-Fixed issue with installer not checking for already installed programs & fixed Office 2019 activation issue.
+- Fixed issue with installer not checking for already installed programs & fixed Office 2019 activation issue.
+
 
 **Update 3.2022.07.01.0**
 
-The installer will now check if a program is already installed before running the install command to speed up the installs on machines it has been run on previously.  
-Cleaned up Office 2019 install.  
-Added Desktop icons for Office 2007 and 2019 installs.  
-Attemped to fix progress bar but it might need some further tweaks to get the progress point correct.
+- The installer will now check if a program is already installed before running the install command to speed up the installs on machines it has been run on previously.  
+
+- Cleaned up Office 2019 install.  
+
+- Added Desktop icons for Office 2007 and 2019 installs.  
+
+- Attemped to fix progress bar but it might need some further tweaks to get the progress point correct.
+
 
 **Update 3.2022.05.22.0**
 
-Updated IP checker to check for Romsey IP instead of Chandler's Ford as the IP doesn't have to be update periodically.
+- Updated IP checker to check for Romsey IP instead of Chandler's Ford as the IP doesn't have to be update periodically.
+
 
 **Update 3.2022.05.19.1**
 
-Fixed darkmode overriding wallpaper selection.
+- Fixed darkmode overriding wallpaper selection.
+
 
 **Update 3.2022.05.19.0**
 
-Enabled dark mode by default.
+- Enabled dark mode by default.
+
 
 **Update 3.2022.05.07.0**
 
-Updated Kaspersky.
+- Updated Kaspersky.
+
 
 **Update 3.2022.05.07.0**
 
-Updated download link for Kaspersky.  
-Updated the readme to include new features I previously forgot to add.  
-Corrected some typos.  
-Removed taskbar pin as this currently doesn't work on Windows 11.  
-uBlock Origin is now disabled by default due to some customer complaints about removing it.
+- Updated download link for Kaspersky.  
+
+- Updated the readme to include new features I previously forgot to add.  
+
+- Corrected some typos.  
+
+- Removed taskbar pin as this currently doesn't work on Windows 11.  
+
+- uBlock Origin is now disabled by default due to some customer complaints about removing it.
+
 
 **Update 3.2021.12.13.1**
 
-Fixed progress bar.
+- Fixed progress bar.
+
 
 **Update 3.2021.12.13.0**
 
-Will now remove old installations of Chocolatey to prevent issues with programs not installing correctly if there is a crash or other issues.
+- Will now remove old installations of Chocolatey to prevent issues with programs not installing correctly if there is a crash or other issues.
+
 
 **Update 3.2021.10.26.0**
 
-Added HashTab to prerequisites for convenience.
+- Added HashTab to prerequisites for convenience.
+
 
 **Update 3.2021.10.25.0**
 
-Changed version format to keep track of when it was updated easier.  
-Added 4K support to Bing Wallpapers.
+- Changed version format to keep track of when it was updated easier.  
+
+- Added 4K support to Bing Wallpapers.
+
 
 **Update 3.10.12.9**
 
-Fixed typo causing 2 Bing wallpaper tasks.
+- Fixed typo causing 2 Bing wallpaper tasks.
+
 
 **Update 3.10.12.8**
 
-Changed Bing wallpaper to run at 1PM everyday and at every logon.  
-Corrected progress bar on installer.
+- Changed Bing wallpaper to run at 1PM everyday and at every logon.  
+
+- Corrected progress bar on installer.
+
 
 **Update 3.10.12.7**
 
-Changed all unzipping commands to overrite to avoid any future problems.
+- Changed all unzipping commands to overrite to avoid any future problems.
+
 
 **Update 3.10.12.6**
 
-Stopped installer from hanging on extracting zip files. I really hope this is the last one because this is boring now.
+- Stopped installer from hanging on extracting zip files. I really hope this is the last one because this is boring now.
+
 
 **Update 3.10.12.5**
 
-Changed how Bing wallpapers downloads files.
+- Changed how Bing wallpapers downloads files.
+
 
 **Update 3.10.12.4**
 
-Fixed spelling error.
+- Fixed spelling error.
+
 
 **Update 3.10.12.3**
 
-Fixed zipped files not extracting in time.
+- Fixed zipped files not extracting in time.
+
 
 **Update 3.10.12.2**
 
-Fixed Bing wallpapers not downloading.
+- Fixed Bing wallpapers not downloading.
+
 
 **Update 3.10.12.1**
 
-Bing wallpapers now saves the files it's own folder to keep things tidy.
+- Bing wallpapers now saves the files it's own folder to keep things tidy.
+
 
 **Update 3.10.12.0**
 
-Made some changes to Bing Wallpaper so it now saves the file with the date in the name so the user can keep wallpapers they like.  
-Zipped up the Bing Wallpaper files to stop files from failing from downloading.
+- Made some changes to Bing Wallpaper so it now saves the file with the date in the name so the user can keep wallpapers they like.  
+
+- Zipped up the Bing Wallpaper files to stop files from failing from downloading.
+
 
 **Update 3.10.11.2**
 
-Updated Choco.
+- Updated Choco.
+
 
 **Update 3.10.11.1**
 
-Fixed issue with Teams being installed with TeamViewer.
+- Fixed issue with Teams being installed with TeamViewer.
+
 
 **Update 3.10.11.0**
 
-Added MalwareBytes as install option.
-Fixed Teams icon.
+- Added MalwareBytes as install option.
+
+- Fixed Teams icon.
+
 
 **Update 3.10.10.0**
 
-Fixed Kaspersky mailing list issue.  
-Installer will now check software MD5 checksums before installation.  
-Added initial support for Windows 11.  
-Installer now installs Microsoft Visual C++ Redistributable as part of the prerequisites.  
-Added Teams as an install option.  
-Removed some Windows 10 tweaks to make it run nicer for the end user.  
-Added Windows 11 tweaks to match Windows 10. More to come later on release.
+- Fixed Kaspersky mailing list issue.  
+
+- Installer will now check software MD5 checksums before installation.  
+
+- Added initial support for Windows 11.  
+
+- Installer now installs Microsoft Visual C++ Redistributable as part of the prerequisites.  
+
+- Added Teams as an install option.  
+
+- Removed some Windows 10 tweaks to make it run nicer for the end user.  
+
+- Added Windows 11 tweaks to match Windows 10. More to come later on release.
+
 
 **Update 3.10.9.0**
 
-Updated Kaspersky Internet Security.
+- Updated Kaspersky Internet Security.
+
 
 **Update 3.10.8.2**
 
-Fixed text for reboot message going off the screen.
+- Fixed text for reboot message going off the screen.
+
 
 **Update 3.10.8.1**
 
-Added a message to indicate that the machine is recognised as a refurb unit.
+- Added a message to indicate that the machine is recognised as a refurb unit.
+
 
 **Update 3.10.8.0**
 
-The refurb and reboot box will now be ticked if the installer is run on a HP EliteBook as these are common refurb units.
+- The refurb and reboot box will now be ticked if the installer is run on a HP EliteBook as these are common refurb units.
+
 
 **Update 3.10.7.1**
 
-Updated Romsey hours.
+- Updated Romsey hours.
+
 
 **Update 3.10.7.0**
 
-The installer now disables the weather taskbar widget.
+- The installer now disables the weather taskbar widget.
+
 
 **Update 3.10.6.0**
 
-Bing Wallpapers task will now run at 1AM incase user leaves the device on and will run at earliest opportunity if not.
+- Bing Wallpapers task will now run at 1AM incase user leaves the device on and will run at earliest opportunity if not.
+
 
 **Update 3.10.5.0**
 
-Installer will now delete leftover files on next startup.
+- Installer will now delete leftover files on next startup.
+
 
 **Update 3.10.4.1**
 
-Fixed typo stopping Bing Wallpapers from working.
+- Fixed typo stopping Bing Wallpapers from working.
+
 
 **Update 3.10.4.0**
 
-Reverted Bing Wallapers to save into the Picture folder.  
-Fixed issue with user selected wallpapers.
+- Reverted Bing Wallapers to save into the Picture folder.  
+
+- Fixed issue with user selected wallpapers.
+
 
 **Update 3.10.3.0**
 
-Bing Wallpapers now saves the C Drive instead of the Pictures folder to allow slideslow mode.  
-Bing Wallpapers will no longer override user selected wallpapers.
+- Bing Wallpapers now saves the C Drive instead of the Pictures folder to allow slideslow mode.  
+
+- Bing Wallpapers will no longer override user selected wallpapers.
+
 
 **Update 3.10.2.0**
 
-Installer will now remove Kaspersky VPN after installing Kaspersky Internet Security.
+- Installer will now remove Kaspersky VPN after installing Kaspersky Internet Security.
+
 
 **Update 3.10.1.4**
 
-Stopped a Powershell window from appearing during the Bing wallpaper task.
+- Stopped a Powershell window from appearing during the Bing wallpaper task.
+
 
 **Update 3.10.1.3**
 
-Fixed Zoom interfering with Bing wallpapers.
+- Fixed Zoom interfering with Bing wallpapers.
+
 
 **Update 3.10.1.2**
 
-Fixed Kaspersky Internet Security icon.
+- Fixed Kaspersky Internet Security icon.
+
 
 **Update 3.10.1.1**
 
-Fixed Kaspersky Internet Security URL issue.
+- Fixed Kaspersky Internet Security URL issue.
+
 
 **Update 3.10.1.0**
 
-Updated Kaspersky Internet Security 2021 to 21.3.10.391.
+- Updated Kaspersky Internet Security 2021 to 21.3.10.391.
+
 
 **Update 3.10.0.1**
 
-Stopped Zoom from being checked by default.
+- Stopped Zoom from being checked by default.
+
 
 **Update 3.10.0.0**
 
-Added Zoom to installer options.
+- Added Zoom to installer options.
 
-If the user selects Kaspersky Internet Security they are now notified that the system requires a reboot.
 
-Updated Kaspersky Internet Security to 2021.
+- If the user selects Kaspersky Internet Security they are now notified that the system requires a reboot.
 
-Licensed under Mozilla Public License 2.0.
+
+- Updated Kaspersky Internet Security to 2021.
+
+
+- Licensed under Mozilla Public License 2.0.
+
 
 **Update 3.9.0.2**
 
-Fixed Bing Wallpaper resetting task every time it runs.
+- Fixed Bing Wallpaper resetting task every time it runs.
+
 
 **Update 3.9.0.1**
 
-Fixed issue with Bing wallpaper task not knowing what app to use.
+- Fixed issue with Bing wallpaper task not knowing what app to use.
+
 
 **Update 3.9.0.0**
 
-Updated Chandler's Ford IP address.
+- Updated Chandler's Ford IP address.
 
-Removed custom wallpaper and theme installation.
 
-Wallpaper option has been replaced with the option to install Bing wallpaper that will grab a new wallpaper everyday.
+- Removed custom wallpaper and theme installation.
 
-Removed wallpaper support on Windows 7.
+
+- Wallpaper option has been replaced with the option to install Bing wallpaper that will grab a new wallpaper everyday.
+
+
+- Removed wallpaper support on Windows 7.
+
 
 **Update 3.8.1.1**
 
-Removed Visual C++ Runtimes temporarily.
+- Removed Visual C++ Runtimes temporarily.
+
 
 **Update 3.8.1.0**
 
-Added a box to disable sleep mode on AC power.
+- Added a box to disable sleep mode on AC power.
 
-Installer will now instal various Visual C++ Runtimes as part of the prerequisites.
+
+- Installer will now instal various Visual C++ Runtimes as part of the prerequisites.
+
 
 **Update 3.8.0.0**
 
-Added a reboot box that if checked will reboot the computer once the installer has finished, with a 30 second delay so the user can cancel if required.
+- Added a reboot box that if checked will reboot the computer once the installer has finished, with a 30 second delay so the user can cancel if required.
 
-Added a countdown timer to the reboot button if a reboot is pending to show user how much time they have until the compuer is rebooted.
+
+- Added a countdown timer to the reboot button if a reboot is pending to show user how much time they have until the compuer is rebooted.
+
 
 **Update 3.7.2.1**
 
-Removed quotation marks causing crashes from previous update.
+- Removed quotation marks causing crashes from previous update.
+
 
 **Update 3.7.2.0**
 
-Installer will now notify you if the system needs a reboot.
+- Installer will now notify you if the system needs a reboot.
+
 
 **Update 3.7.1.3**
 
-Fixed typo causing Microsoft Office 2007 to not install.
+- Fixed typo causing Microsoft Office 2007 to not install.
+
 
 **Update 3.7.1.2**
 
-Changed how Microsoft Office activates to hopefully prevent Windows Defender disabling it.
+- Changed how Microsoft Office activates to hopefully prevent Windows Defender disabling it.
+
 
 **Update 3.7.1.1**
 
-Fixed Microsoft Office 2019 activation bug.
+- Fixed Microsoft Office 2019 activation bug.
+
 
 **Update 3.7.1.0**
 
-Microsoft Office 2019 should now automatically activate.
+- Microsoft Office 2019 should now automatically activate.
+
 
 **Update 3.7.0.2**
 
-Added Microsoft Office 2007 icon.
+- Added Microsoft Office 2007 icon.
+
 
 **Update 3.7.0.1**
 
-Microsoft Office 2007 will be auto selected in Chandler's Ford.
+- Microsoft Office 2007 will be auto selected in Chandler's Ford.
+
 
 **Update 3.7.0.0**
 
-Added Microsoft Office 2007 which will automatically activate.
+- Added Microsoft Office 2007 which will automatically activate.
+
 
 **Update 3.6.2.0**
 
-Microsoft Office 2019 should now automatically activate.
+- Microsoft Office 2019 should now automatically activate.
+
 
 **Update 3.6.1.0**
 
-Updated multiple icons.
+- Updated multiple icons.
+
 
 **Update 3.6.0.2**
 
-Fixed Microsoft Office icon.
+- Fixed Microsoft Office icon.
+
 
 **Update 3.6.0.1**
 
-Fixed crashing issue.
+- Fixed crashing issue.
+
 
 **Update 3.6.0.0**
 
-Updated for 2021, added option to install Microsoft Office 2019 Volume License and changed Chandler's Ford IP.
+- Updated for 2021, added option to install Microsoft Office 2019 Volume License and changed Chandler's Ford IP.
+
 
 **Update 3.5.5.0**
 
-Installer now enables the Action Centre and toast notifications.
+- Installer now enables the Action Centre and toast notifications.
+
 
 **Update 3.5.4.2**
 
-Google Chrome is now pinned again.
+- Google Chrome is now pinned again.
+
 
 **Update 3.5.4.1**
 
-Fixed link location for Kaspersky.
+- Fixed link location for Kaspersky.
+
 
 **Update 3.5.4.0**
 
-Updated Kaspersky.
+- Updated Kaspersky.
+
 
 **Update 3.5.3.2**
 
-Installer now leaves Cortana search bar in the taskbar. Again. Because of old people.
+- Installer now leaves Cortana search bar in the taskbar. Again. Because of old people.
+
 
 **Update 3.5.3.1**
 
-Fixed issue with Kaspersky not downloading.
+- Fixed issue with Kaspersky not downloading.
+
 
 **Update 3.5.3.0**
 
-Installer now leaves Cortana search bar in the taskbar.
+- Installer now leaves Cortana search bar in the taskbar.
+
 
 **Update 3.5.2.0**
 
-Added more wallpapers so installer with now randomly pick between two different wallpapers sets. Can easily add more in the future.
+- Added more wallpapers so installer with now randomly pick between two different wallpapers sets. Can easily add more in the future.
+
 
 **Update 3.5.1.0**
 
-Added Chocolatey to the prerequisites and stopped disabling monitor timeout on Windows 10 as it wasn't working.
+- Added Chocolatey to the prerequisites and stopped disabling monitor timeout on Windows 10 as it wasn't working.
+
 
 **Update 3.5.0.4**
 
-Fixed issue with default broswer sometimes not settings correctly.
+- Fixed issue with default broswer sometimes not settings correctly.
+
 
 **Update 3.5.0.3**
 
-Updated download URLs from legacy to current.
+- Updated download URLs from legacy to current.
+
 
 **Update 3.5.0.2**
 
-Installer now installs Microsoft .NET 3.5 and .NET 4.6.2 as a prerequisite.
+- Installer now installs Microsoft .NET 3.5 and .NET 4.6.2 as a prerequisite.
+
 
 **Update 3.5.0.1**
 
-When installing prerequisites the installer will now show what is being installed.
+- When installing prerequisites the installer will now show what is being installed.
+
 
 **Update 3.5.0.0**
 
-Removed most of the support for Windows 7, no future features will come to 7 but programs will continue to install and wallpapers will continue to be set.
+- Removed most of the support for Windows 7, no future features will come to 7 but programs will continue to install and wallpapers will continue to be set.
 
-Removed official support for Windows 8 & 8.1 but basic programs will continue to install.
 
-Default browser will change to Google Chrome if installed, Mozilla Firefox if installed or Mozilla Firefox is both Chrome and Firefox are installed.
+- Removed official support for Windows 8 & 8.1 but basic programs will continue to install.
+
+
+- Default browser will change to Google Chrome if installed, Mozilla Firefox if installed or Mozilla Firefox is both Chrome and Firefox are installed.
+
 
 **Update 3.4.1.1**
 
-Fixed bug causing installer to hang.
+- Fixed bug causing installer to hang.
+
 
 **Update 3.4.1.0**
 
-Re-enabled taskbar pinning for Windows 10.
+- Re-enabled taskbar pinning for Windows 10.
+
 
 **Update 3.4.0.1**
 
-Fixed missing token.
+- Fixed missing token.
+
 
 **Update 3.4.0.0**
 
-Installer can now enable the set theme in light and dark mode depending on the dark mode selection.
+- Installer can now enable the set theme in light and dark mode depending on the dark mode selection.
+
 
 **Update 3.3.5.3**
 
-Updated Chandler's Ford IP.
+- Updated Chandler's Ford IP.
+
 
 **Update 3.3.5.2**
 
-Fixed another issue with light mode. Take the hint old people.
+- Fixed another issue with light mode. Take the hint old people.
+
 
 **Update 3.3.5.1**
 
-Fixed issue with dark mode being enabled even with box not ticked. Because old people.
+- Fixed issue with dark mode being enabled even with box not ticked. Because old people.
 
-Fixed issue with installer only working on second launch, it should now work on first launch.
+
+- Fixed issue with installer only working on second launch, it should now work on first launch.
+
 
 **Update 3.3.5.0**
 
-Disabled Windows dark mode by default because old people and updated Chandler's Ford IP.
+- Disabled Windows dark mode by default because old people and updated Chandler's Ford IP.
+
 
 **Update 3.3.4.0**
 
-Updated Firefox logo.
+- Updated Firefox logo.
+
 
 **Update 3.3.3.1**
 
-Added in last update date to information box.
+- Added in last update date to information box.
+
 
 **Update 3.3.3.0**
 
-Updated Kaspersky Internet Security to 2020.
+- Updated Kaspersky Internet Security to 2020.
+
 
 **Update 3.3.2.0**
 
-Fixed issue with LibreOffice not installing correctly.
+- Fixed issue with LibreOffice not installing correctly.
+
 
 **Update 3.3.1.2**
 
-Fixed checksum issues.
+- Fixed checksum issues.
+
 
 **Update 3.3.1.1**
 
-Removed birthday messages.
+- Removed birthday messages.
+
 
 **Update 3.3.1.0**
 
-Enabled VLC by default.
+- Enabled VLC by default.
+
 
 **Update 3.3.0.0**
 
-Fixed Google Chrome and Mozilla Firefox uBlock Origin installs with the new version of Windows 1903.
+- Fixed Google Chrome and Mozilla Firefox uBlock Origin installs with the new version of Windows 1903.
 
-Temporarily disabled taskbar pining until a new solution is found for Windows 1903.
 
-Moved night mode to its own check box so it can be disabled. Fixed theme for Windows 1903.
+- Temporarily disabled taskbar pining until a new solution is found for Windows 1903.
+
+
+- Moved night mode to its own check box so it can be disabled. Fixed theme for Windows 1903.
+
 
 **Update 3.2.2.2**
 
-Removed old installer leftover files and cleaned up sleep functions.
+- Removed old installer leftover files and cleaned up sleep functions.
+
 
 **Update 3.2.2.1**
 
-Removed left over code.
+- Removed left over code.
+
 
 **Update 3.2.2.0**
 
-Birthday feature now says the name of whose birthday it is.
+- Birthday feature now says the name of whose birthday it is.
 
-Added close button.
+
+- Added close button.
+
 
 **Update 3.2.1.0**
 
-Added birthday easter egg.
+- Added birthday easter egg.
+
 
 **Update 3.2.0.2**
 
-Fixed wallpapers not downloading.
+- Fixed wallpapers not downloading.
+
 
 **Update 3.2.0.1**
 
-Fixed Computer Repair Centre icon not downloading.
+- Fixed Computer Repair Centre icon not downloading.
+
 
 **Update 3.2.0.0**
 
-Rewritten the executable in C++ so Windows Defender and other anti-virus software won't delete it. Added in loading form while the files download.
+- Rewritten the executable in C++ so Windows Defender and other anti-virus software won't delete it. Added in loading form while the files download.
+
 
 **Update 3.1.0.0**
 
-The installer is now multithreaded so the GUI uses one thread and the script uses another. This speeds it up and also stops the GUI from freezing while the script is in progress. Also added am adaptive progress bar to show much progress is left.
+- The installer is now multithreaded so the GUI uses one thread and the script uses another. This speeds it up and also stops the GUI from freezing while the script is in progress. Also added am adaptive progress bar to show much progress is left.
+
 
 **Update 3.0.9.11**
 
-Fixed progress box not auto-scrolling.
+- Fixed progress box not auto-scrolling.
+
 
 **Update 3.0.9.10**
 
-Fixed crashing issue.
+- Fixed crashing issue.
+
 
 **Update 3.0.9.9**
 
-Added features from 3.0.9.8.
+- Added features from 3.0.9.8.
+
 
 **Revert to 3.0.9.7**
 
-Reverted due to mass rename of "Checked".
+- Reverted due to mass rename of "Checked".
+
 
 **Update 3.0.9.8**
 
-Fixed some typos and added in some features for Windows 8.x.
+- Fixed some typos and added in some features for Windows 8.x.
+
 
 **Update 3.0.9.7**
 
-Reverted to 3.0.8.0 pinning.
+- Reverted to 3.0.8.0 pinning.
+
 
 **Update 3.0.9.6**
 
-Changed taskbar pinning to a VBS script.
+- Changed taskbar pinning to a VBS script.
+
 
 **Update 3.0.9.5**
 
-Reverted to old way of pinning taskbar icons and re-renabled Cortana search bar for Chandler's Ford.
+- Reverted to old way of pinning taskbar icons and re-renabled Cortana search bar for Chandler's Ford.
+
 
 **Update 3.0.9.4**
 
-Updated OEM logo.
+- Updated OEM logo.
+
 
 **Update 3.0.9.3**
 
-Fixed dark mode.
+- Fixed dark mode.
+
 
 **Update 3.0.9.2**
 
-Removed most of the build in Windows 10 tracking features.
+- Removed most of the build in Windows 10 tracking features.
+
 
 **Update 3.0.9.1**
 
-Fixed crashing issue.
+- Fixed crashing issue.
+
 
 **Update 3.0.9.0**
 
-Added XML file to replace taskbar pinning on Windows 10.
+- Added XML file to replace taskbar pinning on Windows 10.
+
 
 **Update 3.0.8.5**
 
-Removed auto-arranging Desktop icons due to locking issue.
+- Removed auto-arranging Desktop icons due to locking issue.
+
 
 **Update 3.0.8.4**
 
-Fixed crashing issue.
+- Fixed crashing issue.
+
 
 **Update 3.0.8.3**
 
-Installer cleans up files before downloading new files.
+- Installer cleans up files before downloading new files.
+
 
 **Update 3.0.8.2**
 
-Added auto-arranging Desktop, now removed Kaspersky Safe Money icon from the Desktop and updated taskbar pinning for Windows 8 and 8.1.
+- Added auto-arranging Desktop, now removed Kaspersky Safe Money icon from the Desktop and updated taskbar pinning for Windows 8 and 8.1.
+
 
 **Update 3.0.8.1**
 
-Fixed formatting issue and changed icon.
+- Fixed formatting issue and changed icon.
+
 
 **Update 3.0.8.0**
 
-Added dark mode for Windows 10, added more wallpapers, added option to disable taskbar repin and fixed pinning icons on Windows 7.
+- Added dark mode for Windows 10, added more wallpapers, added option to disable taskbar repin and fixed pinning icons on Windows 7.
+
 
 **Update 3.0.7.4**
 
-Replaced taskbar pin with better PowerShell script.
+- Replaced taskbar pin with better PowerShell script.
+
 
 **Update 3.0.7.3**
 
-Fixed paths.
+- Fixed paths.
+
 
 **Update 3.0.7.2**
 
-Fixed error with exe.
+- Fixed error with exe.
+
 
 **Update 3.0.7.1**
 
-Fixed crashing error.
+- Fixed crashing error.
+
 
 **Update 3.0.7.0**
 
-Fixed wallpaper icon not downloading and updated host address.
+- Fixed wallpaper icon not downloading and updated host address.
+
 
 **Update 3.0.6.3**
 
-Improved tashbar pinning.
+- Improved tashbar pinning.
+
 
 **Update 3.0.6.2**
 
-Fixed system pin and added Josh's birthday.
+- Fixed system pin and added Josh's birthday.
+
 
 **Update 3.0.6.1**
 
-Updated Kaspersky.
+- Updated Kaspersky.
+
 
 **Update 3.0.6.0**
 
-Updated UI and moved from Kaspersky 2018 to 2019.
+- Updated UI and moved from Kaspersky 2018 to 2019.
+
 
 **Update 3.0.5.4**
 
-Adding auto-arranging Desktop icons.
+- Adding auto-arranging Desktop icons.
+
 
 **Update 3.0.5.3**
 
-Fixed issue with pin to taskbar not working.
+- Fixed issue with pin to taskbar not working.
+
 
 **Update 3.0.5.2**
 
-Updated URL in executable.
+- Updated URL in executable.
+
 
 **Update 3.0.5.1**
 
-Fixed URL.
+- Fixed URL.
+
 
 **Update 3.0.5.0**
 
-Moved to self hosted GitLab to avoid download issues.
+- Moved to self hosted GitLab to avoid download issues.
+
 
 
 **Update 3.0.4.2**
 
-Improved the way uBlock Origin is installed on Firefox.
+- Improved the way uBlock Origin is installed on Firefox.
+
 
 **Update 3.0.4.1**
 
-Fixed problem with uBlock Origin icon.
+- Fixed problem with uBlock Origin icon.
+
 
 **Update 3.0.4.0**
 
-Updated UI and made interface smaller.
-Added option for uBlock Origin to be installed on Mozilla Firefox and Google Chrome.
+- Updated UI and made interface smaller.
+
+- Added option for uBlock Origin to be installed on Mozilla Firefox and Google Chrome.
+
 
 **Update 3.0.3.0**
 
-Added Skype as install option.
+- Added Skype as install option.
+
 
 **Update 3.0.2.2**
 
-Fixed issue with Kaspersky Internet Security 2018.
+- Fixed issue with Kaspersky Internet Security 2018.
+
 
 **Update 3.0.2.1**
 
-Removed progress bar due to invisible issues and added console that minimises on open.
+- Removed progress bar due to invisible issues and added console that minimises on open.
+
 
 **Update 3.0.2.0**
 
-Added loading bar during file downloads and reverted to Kaspersky Internet Security 2018 due to Windows 10 issues.
+- Added loading bar during file downloads and reverted to Kaspersky Internet Security 2018 due to Windows 10 issues.
+
 
 **Update 3.0.1.1**
 
-Removes Safe Money icon from Desktop.
+- Removes Safe Money icon from Desktop.
+
 
 **Update 3.0.1.0**
 
-Improved the cleanup process after installation and fixing locking up issue.
+- Improved the cleanup process after installation and fixing locking up issue.
+
 
 **Update 3.0.0.1**
 
-Removed testing bug and changed downloading so it now only downloads files if necessary.
+- Removed testing bug and changed downloading so it now only downloads files if necessary.
+
 
 **Update 3.0.0.0**
 
-Renamed to NorthPoint Installer and moved to GitLab. Modernised the GUI and improved performace.
+- Renamed to NorthPoint Installer and moved to GitLab. Modernised the GUI and improved performace.
+
+</details>
+<details>
+<summary>Version 2.x</summary>
 
 **Update 2.6.0**
 
-Now unistalls Kaspersky Secure Connection after installing Kaspersky Internet Security 2019.
+- Now unistalls Kaspersky Secure Connection after installing Kaspersky Internet Security 2019.
+
 
 **Update 2.5.2**
 
-Fixed IP issue with Chandlers Ford.
+- Fixed IP issue with Chandlers Ford.
+
 
 **Update 2.5.1**
 
-LibreOffice will be checked if run from Romsey and unchecked if run from Chandlers Ford.
+- LibreOffice will be checked if run from Romsey and unchecked if run from Chandlers Ford.
+
 
 **Update 2.5.0**
 
-Added Mozilla Thunderbird and iTunes. Set LibreOffice to be ticked by default.
+- Added Mozilla Thunderbird and iTunes. Set LibreOffice to be ticked by default.
+
 
 **Update 2.4.2**
 
-Updated Kaspersky Internet Security to 2019.
+- Updated Kaspersky Internet Security to 2019.
+
 
 **Update 2.4.1**
 
-Will now auto-arranges Desktop icons after the installer has finished.
+- Will now auto-arranges Desktop icons after the installer has finished.
+
 
 **Update 2.4.0**
 
-Deletes "Microsoft Edge" icon from the Desktop in the new April 2018 update of Windows 10.
+- Deletes "Microsoft Edge" icon from the Desktop in the new April 2018 update of Windows 10.
+
 
 **Update 2.3.1**
 
-Now disables standby and monitor timeout when plugged in.
+- Now disables standby and monitor timeout when plugged in.
+
 
 **Update 2.3.0**
 
-Added "close.ps1" to remove all unnecessary files after installation is complete.
+- Added "close.ps1" to remove all unnecessary files after installation is complete.
+
 
 **Update 2.2.4**
 
-Fixed issue with wallpapers hanging if folder already exists.
+- Fixed issue with wallpapers hanging if folder already exists.
+
 
 **Update 2.2.3**
 
-Cleaned up spacing in code.
+- Cleaned up spacing in code.
+
 
 **Update 2.2.2**
 
-Fixed birthday Easter egg.
+- Fixed birthday Easter egg.
+
 
 **Update 2.2.1**
 
-Removed orphan code.
+- Removed orphan code.
+
 
 **Update 2.2.0**
 
-Cleaned up code, changed requisites and added more wallpapers.
+- Cleaned up code, changed requisites and added more wallpapers.
+
 
 **Update 2.1.2**
 
-Added random wallpaper to checkboxes so you now have choice.
+- Added random wallpaper to checkboxes so you now have choice.
+
 
 **Update 2.1.1**
 
-Added "close.ps1" script that forces a restart of the computer.
+- Added "close.ps1" script that forces a restart of the computer.
+
 
 **Update 2.1.0**
 
-Added feature that sets random wallpaper per machine.
+- Added feature that sets random wallpaper per machine.
+
 
 **Update 2.0.3**
 
-Fixed problem with execution policy not changing.
+- Fixed problem with execution policy not changing.
+
 
 **Update 2.0.2**
 
-Executable now sets execution policy and fixed issue with Kaspersky Internet Kaspersky.
+- Executable now sets execution policy and fixed issue with Kaspersky Internet Kaspersky.
+
 
 **Update 2.0.1**
 
-Added Kaspersky Internet Security 2018 & changed spacing for icons.
+- Added Kaspersky Internet Security 2018 & changed spacing for icons.
+
 
 **Update 2.0.0**
 
-Rewritten executable to work with Windows Defender and download quicker. Removed log file, Apache OpenOffice & WPSOffice.
+- Rewritten executable to work with Windows Defender and download quicker. Removed log file, Apache OpenOffice & WPSOffice.
+
+</details>
+<details>
+<summary>Version .x</summary>
 
 **Update 1.12.1**
 
-Fixed crashing issue.
+- Fixed crashing issue.
+
 
 **Update 1.12.0**
 
-Added a lot more Windows 10 Tweaks.
+- Added a lot more Windows 10 Tweaks.
+
 
 **Update 1.11.4**
 
-No longer installs LibreOffice by defualt and added the new Mozilla Firefox Quantum.
+- No longer installs LibreOffice by defualt and added the new Mozilla Firefox Quantum.
+
 
 **Update 1.11.3**
 
-Removed the moving of Windows.Old folders due to permissions issue.
+- Removed the moving of Windows.Old folders due to permissions issue.
+
 
 **Update 1.11.2**
 
-Added sleep after moving previous "Users" folder.
+- Added sleep after moving previous "Users" folder.
+
 
 **Update 1.11.1**
 
-Fixed previous "Users" folder not being renamed.
+- Fixed previous "Users" folder not being renamed.
+
 
 **Update 1.11.0**
 
-Installer will check if the programs have installed successfully and notify you of any failures.
+- Installer will check if the programs have installed successfully and notify you of any failures.
+
 
 **Update 1.10.1**
 
-Now checks for up to 5 previous Windows installations instead of 1.
+- Now checks for up to 5 previous Windows installations instead of 1.
+
 
 **Update 1.10.0**
 
-Checks for previous Windows installation and then moves old documents to the desktop if it finds any.
+- Checks for previous Windows installation and then moves old documents to the desktop if it finds any.
+
 
 **Update 1.9.1**
 
-Installer now tells you local info in text box.
+- Installer now tells you local info in text box.
+
 
 **Update 1.9.0**
 
-Added Apache OpenOffice and WPS Office as install options.
+- Added Apache OpenOffice and WPS Office as install options.
+
 
 **Update 1.8.7**
 
-Fixed an issue where it should be checking IP instead of SSID.
+- Fixed an issue where it should be checking IP instead of SSID.
+
 
 **Update 1.8.6**
 
-Replaced SSID check with public IP check so it now works on towers as well as laptops and rearranged installation process.
+- Replaced SSID check with public IP check so it now works on towers as well as laptops and rearranged installation process.
+
 
 **Update 1.8.5**
 
-Moved location check to run immediately after "Install" is pressed.
+- Moved location check to run immediately after "Install" is pressed.
+
 
 **Update 1.8.4**
 
-Added form that lets you select your location if it can't find it.
+- Added form that lets you select your location if it can't find it.
+
 
 **Update 1.8.3**
 
-Added feature to find IP and then install the correct OEM information if Wi-Fi is nto available.
+- Added feature to find IP and then install the correct OEM information if Wi-Fi is nto available.
+
 
 **Update 1.8.2**
 
-Fixed crashing issue with Wi-Fi searching.
+- Fixed crashing issue with Wi-Fi searching.
+
 
 **Update 1.8.1**
 
-Improved taskbar pinning on Windows 7, 8, and 8.1. Reintroduced taskbar pinning for Windows 10.
+- Improved taskbar pinning on Windows 7, 8, and 8.1. Reintroduced taskbar pinning for Windows 10.
+
 
 **Update 1.8.0**
 
-Added feature that auto detects current Wi-Fi network, eliminating the need for multiple installers.
+- Added feature that auto detects current Wi-Fi network, eliminating the need for multiple installers.
+
 
 **Update 1.7.5**
 
-Removed commands that disable some telememtary and Cortana.
+- Removed commands that disable some telememtary and Cortana.
+
 
 **Update 1.7.4**
 
-Fixed incorrect wording when installing Mozilla Firefox.
+- Fixed incorrect wording when installing Mozilla Firefox.
+
 
 **Update 1.7.3**
 
-Fixed command prompt not going invisible on Romsey installer and changed wording for installation.
+- Fixed command prompt not going invisible on Romsey installer and changed wording for installation.
+
 
 **Update 1.7.2**
 
-Changed directory for icon file.
+- Changed directory for icon file.
+
 
 **Update 1.7.1**
 
-Updated exe to include icon and loading animation.
+- Updated exe to include icon and loading animation.
+
 
 **Update 1.7.0**
 
-Added loading form so you know the program is loading.
+- Added loading form so you know the program is loading.
+
 
 **Update 1.6.0**
 
-Made command line invisible for sleaker look.
+- Made command line invisible for sleaker look.
+
 
 **Update 1.5.6**
 
-Fixed crashing issue on Windows 7.
+- Fixed crashing issue on Windows 7.
+
 
 **Update 1.5.5**
 
-Fixed problem with Kaspersky and TeamViewer not installing.
+- Fixed problem with Kaspersky and TeamViewer not installing.
+
 
 **Update 1.5.4**
 
-Fixed crashing problem.
+- Fixed crashing problem.
+
 
 **Update 1.5.3**
 
-Fixed issue with Documents folder.
+- Fixed issue with Documents folder.
+
 
 **Update 1.5.2**
 
-Fixed file cleanup on completion.
+- Fixed file cleanup on completion.
+
 
 **Update 1.5.1**
 
-Removed extra lines for downloading files.
+- Removed extra lines for downloading files.
+
 
 **Update 1.5.0**
 
-Temporarily removed automatically setting taskbar icons in Windows 10 due to issue and added KIS Chocolatey package.
+- Temporarily removed automatically setting taskbar icons in Windows 10 due to issue and added KIS Chocolatey package.
+
 
 **Update 1.4.1**
 
-Fixed OEM website HTTPS information.
+- Fixed OEM website HTTPS information.
+
 
 **Update 1.4.0**
 
-Added autoscrolling feature to list box and reduced size of install window.
+- Added autoscrolling feature to list box and reduced size of install window.
+
 
 **Update 1.3.0**
 
-Renamed to CRC Installer and added new Romsey version.
+- Renamed to CRC Installer and added new Romsey version.
+
 
 **Update 1.2.1**
 
-Fixed issue with Google Chrome checksums.
+- Fixed issue with Google Chrome checksums.
+
 
 **Update 1.2.0**
 
-Replaced text with icon of program for cleaner look.
+- Replaced text with icon of program for cleaner look.
+
 
 **Update 1.1.3**
 
-Fixed crashing issue with icon file.
+- Fixed crashing issue with icon file.
+
 
 **Update 1.1.2**
 
-Removed exit button and will now close 15 seconds after the install has finished.
+- Removed exit button and will now close 15 seconds after the install has finished.
+
 
 **Update 1.1.1**
 
-Fixed issue with downloading CleanCF.ps1.
+- Fixed issue with downloading CleanCF.ps1.
+
 
 **Update 1.1.0**
 
-Programs now install in alphabetical order and added an exit button than cleans up temporary files.
+- Programs now install in alphabetical order and added an exit button than cleans up temporary files.
