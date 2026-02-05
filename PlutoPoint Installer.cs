@@ -4,23 +4,14 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Diagnostics.Eventing.Reader;
 using System.IO;
-using System.Management;
 using System.Media;
 using System.Net;
 using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
-using System.Security.Policy;
-using System.Threading;
 using System.Threading.Tasks;
-using System.Timers;
-using System.Windows.Forms;
-using System.Xml.Linq;
-using static System.Net.WebRequestMethods;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
-using System.Globalization;
+using System.Web.Script.Serialization;
 
 
 // Copyright © Charlie Howard 2026 All rights reserved.
@@ -29,8 +20,6 @@ namespace PlutoPoint_Installer
 {
 
     using System.Drawing;
-    using System.Drawing.Drawing2D;
-    using System.Drawing.Text;
     using System.Globalization;
     using System.Linq;
     using System.Management;
@@ -115,6 +104,7 @@ namespace PlutoPoint_Installer
             CheckforAMDHardware();
             CheckForNvidiaGPU();
             GetLibreOfficeVersion();
+            AppendLocation();
             Version version = Assembly.GetExecutingAssembly().GetName().Version;
             this.versionLabel.Text = $"Version {version}";
         }
@@ -155,10 +145,6 @@ namespace PlutoPoint_Installer
         private float _overlayRotationDegrees;
         private const string charliePasswordHash = "61a8b0026371a90d41b114644694485ecdaf999473977a125d028e39cb6d77b2";
         private const string CRCPasswordHash = "1c98fa014f3400abee047920e535036a74661fa0c88f34d24ebed7866a1fc630";
-        string romseyHash = "aebeec856af3585448c3d5cc72dc93f29d56fa7191027a35c345eba670c533b3";
-        string chandlersFordHash = "668cc649b9638504fe7d36a29637e740d44bd8ec2d8839e156c22b8f7a155b43";
-        string highcliffeHash = "a9c9ca550056bb3e3062acf0327f99f0e2959ad2421a5745687a49140aa9c4bc";
-        string charlieHomeHash = "67177374995543edf423de86cd086b9c6fad3ec80cdbb6d18de5a8c72e048199";
         private void PrintVersion()
         {
             Version version = Assembly.GetExecutingAssembly().GetName().Version;
@@ -705,40 +691,91 @@ namespace PlutoPoint_Installer
                 return BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
             }
         }
-        private async void CheckIP()
+        public class LocationHashes
         {
-            string publicIP = await GetPublicIPAddressAsync();
-            if (publicIP != null)
+            public string romsey { get; set; }
+            public string chandlersFord { get; set; }
+            public string highcliffe { get; set; }
+            public string charlieHome { get; set; }
+        }
+        private LocationHashes GetLocationHashes()
+        {
+            try
             {
-                string publicIPHash = HashIP(publicIP);
+                string url = "https://raw.githubusercontent.com/ProfessorShroom/PlutoPoint-Installer/refs/heads/main/Resources/json/internetProtocolHash.json";
 
-                if (publicIPHash == romseyHash)
+                using (var webClient = new WebClient())
                 {
-                    romsey = "1";
-                    safeLocation = "1";
-                }
-                else if (publicIPHash == chandlersFordHash)
-                {
-                    chandlersFord = "1";
-                    safeLocation = "1";
-                    microsoftOffice2007Check.Checked = true;
-                }
-                else if (publicIPHash == highcliffeHash)
-                {
-                    highcliffe = "1";
-                    safeLocation = "1";
-                }
-                else if (publicIPHash == charlieHomeHash)
-                {
-                    charlieHome = "1";
-                    safeLocation = "1";
-                }
-                else
-                {
-                    safeLocation = "0";
+                    string json = webClient.DownloadString(url);
+                    var serializer = new JavaScriptSerializer();
+                    return serializer.Deserialize<LocationHashes>(json);
                 }
             }
+            catch
+            {
+                return null;
+            }
+        }
+        private void CheckIP()
+        {
+            string publicIP = GetPublicIPAddress();
+            if (string.IsNullOrWhiteSpace(publicIP))
+                return;
+
+            string publicIPHash = HashIP(publicIP);
+
+            LocationHashes hashes = GetLocationHashes();
+            if (hashes == null)
+                return;
+
+            safeLocation = "0";
+
+            if (publicIPHash == hashes.romsey)
+            {
+                romsey = "1";
+                safeLocation = "1";
+            }
+            else if (publicIPHash == hashes.chandlersFord)
+            {
+                chandlersFord = "1";
+                safeLocation = "1";
+                microsoftOffice2007Check.Checked = true;
+            }
+            else if (publicIPHash == hashes.highcliffe)
+            {
+                highcliffe = "1";   
+                safeLocation = "1";
+            }
+            else if (publicIPHash == hashes.charlieHome)
+            {
+                charlieHome = "1"; 
+                safeLocation = "1";
+            }
+
             UpdateLocation();
+        }
+        private void AppendLocation()
+        {
+            if (romsey == "1") { AppendLine("📍 The installer is being run from the Romsey shop."); }
+            else if (chandlersFord == "1") { AppendLine("📍 The installer is being run from the Chandlers Ford shop."); }
+            else if (highcliffe == "1") { AppendLine("📍 The installer is being run from the Highcliffe shop."); }
+            else if (charlieHome == "1") { AppendLine("📍 The installer is being run from Charlie's house."); }
+        }
+        private string GetPublicIPAddress()
+        {
+            try
+            {
+                string url = "https://api.ipify.org";
+                using (var webClient = new WebClient())
+                {
+                    string ip = webClient.DownloadString(url).Trim();
+                    return ip;
+                }
+            }
+            catch
+            {
+                return null;
+            }
         }
         private void UpdateLocation()
         {
@@ -766,30 +803,30 @@ namespace PlutoPoint_Installer
         }
         Uri crcOEMURL = new Uri("https://raw.githubusercontent.com/professorshroom/PlutoPoint-Installer/refs/heads/main/Resources/computerRepairCentre/computerRepairCentreOEM.bmp");
         string crcOEMFilename = @"C:\Computer Repair Centre\oem\computerRepairCentreOEM.bmp";
-        Uri anyDeskURL = new Uri("https://files.crchq.net/installer/anyDesk.msi");
+        Uri anyDeskURL = new Uri("https://cloud.howardgb.com/public.php/dav/files/EFyAqCm3tEQ6W25/anyDesk.msi");
         string anyDeskFilename = @"C:\Computer Repair Centre\apps\anyDesks.msi";
-        Uri bingWallpapersURL = new Uri("https://files.crchq.net/installer/bingWallpapers.msi");
+        Uri bingWallpapersURL = new Uri("https://cloud.howardgb.com/public.php/dav/files/EFyAqCm3tEQ6W25/bingWallpapers.msi");
         string bingWallpapersFilename = @"C:\Computer Repair Centre\apps\bingWallpapers.msi";
-        Uri bitDefenderURL = new Uri("https://files.crchq.net/installer/bitDefender.exe");
+        Uri bitDefenderURL = new Uri("https://cloud.howardgb.com/public.php/dav/files/EFyAqCm3tEQ6W25/bitDefender.exe");
         string bitDefenderFilename = @"C:\Computer Repair Centre\apps\bitDefender.exe";
         Uri discordURL = new Uri("https://discord.com/api/download?platform=win");
         string discordFilename = @"C:\Computer Repair Centre\apps\discord.exe";
         Uri googleChromeURL = new Uri("https://dl.google.com/tag/s/appguid%3D%7B8A69D345-D564-463c-AFF1-A69D9E530F96%7D&iid=&lang=en&browser=4&usagestats=0&appname=Google%2520Chrome%2520Enterprise&needsadmin=false/edgedl/chrome/install/GoogleChromeStandaloneEnterprise64.msi");
         string googleChromeFilename = @"C:\Computer Repair Centre\apps\googleChrome.msi";
         string libreOfficeFilename = @"C:\Computer Repair Centre\apps\libreOffice.msi";
-        Uri microsoftOffice2007URL = new Uri("https://files.crchq.net/installer/office2007.zip");
+        Uri microsoftOffice2007URL = new Uri("https://cloud.howardgb.com/public.php/dav/files/EFyAqCm3tEQ6W25/office2007.zip");
         string microsoftOffice2007Filename = @"C:\Computer Repair Centre\apps\office2007.zip";
         Uri mozillaFirefoxURL = new Uri("https://download.mozilla.org/?product=firefox-msi-latest-ssl&os=win64&lang=en-GB");
         string mozillaFirefoxFilename = @"C:\Computer Repair Centre\apps\mozillaFirefox.msi";
         Uri mozillaThunderbirdURL = new Uri("https://download.mozilla.org/?product=thunderbird-msi-latest-ssl&os=win64&lang=en-GB");
         string mozillaThunderbirdFilename = @"C:\Computer Repair Centre\apps\mozillaThunderbird.msi";
-        Uri nanaZipURL = new Uri("https://files.crchq.net/installer/nanaZip.msixbundle");
+        Uri nanaZipURL = new Uri("https://cloud.howardgb.com/public.php/dav/files/EFyAqCm3tEQ6W25/nanaZip.msixbundle");
         string nanaZipFilename = @"C:\Computer Repair Centre\apps\nanaZip.msixbundle";
-        Uri steamURL = new Uri("https://files.crchq.net/installer/steam.exe");
+        Uri steamURL = new Uri("https://cloud.howardgb.com/public.php/dav/files/EFyAqCm3tEQ6W25/steam.exe");
         string steamFilename = @"C:\Computer Repair Centre\apps\steam.exe";
-        Uri hpHotkeySupportURL = new Uri("https://files.crchq.net/installer/HPHotkey.zip");
+        Uri hpHotkeySupportURL = new Uri("https://cloud.howardgb.com/public.php/dav/files/EFyAqCm3tEQ6W25/HPHotkey.zip");
         string hpHotkeySupportFilename = @"C:\Computer Repair Centre\apps\hpHotkeySupport.zip";
-        Uri vlcMediaPlayerURL = new Uri("https://files.crchq.net/installer/vlcMediaPlayer.msi");
+        Uri vlcMediaPlayerURL = new Uri("https://cloud.howardgb.com/public.php/dav/files/EFyAqCm3tEQ6W25/vlcMediaPlayer.msi");
         string vlcMediaPlayerFilename = @"C:\Computer Repair Centre\apps\vlcMediaPlayer.msi";
         string nvidiaAppFilename = @"C:\Computer Repair Centre\apps\nvidiaApp.exe";
         private SoundPlayer hoverSound;
@@ -1196,7 +1233,6 @@ namespace PlutoPoint_Installer
                 AppendLine("📌 Computer Repair Centre OEM information is selected.");
                 if (romsey == "1")
                 {
-                    AppendLine("📍 The installer is being run from the Romsey shop.");
                     AppendLine("📦 Installing Romsey Computer Repair Centre OEM information...");
                     using (WebClient wc = new WebClient())
                     {
@@ -1245,7 +1281,6 @@ namespace PlutoPoint_Installer
                 }
                 if (chandlersFord == "1")
                 {
-                    AppendLine("📍 The installer is being run from the Chandlers Ford shop.");
                     AppendLine("📦 Installing Chandlers Ford Computer Repair Centre OEM information...");
                     using (WebClient wc = new WebClient())
                     {
@@ -1294,8 +1329,7 @@ namespace PlutoPoint_Installer
                 }
                 if (highcliffe == "1")
                 {
-                    AppendLine("📍 The installer is being run from the Romsey shop.");
-                    AppendLine("📦 Installing Romsey Computer Repair Centre OEM information...");
+                    AppendLine("📦 Installing Highcliffe Computer Repair Centre OEM information...");
                     using (WebClient wc = new WebClient())
                     {
                         wc.DownloadFileCompleted += wc_progressBarStep;

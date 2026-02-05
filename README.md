@@ -1,6 +1,6 @@
  ![Arch](https://img.shields.io/badge/Arch-AMD64-blue) ![OS](https://img.shields.io/badge/OS-Windows%207%20|Windows%208(.1)%20|Windows%2010%20|%20Windows%2011-green)
 
-## PlutoPoint Installer Version 6.4.8.0
+## PlutoPoint Installer Version 6.5.0.0
 #### Copyright © Charlie Howard 2026 All rights reserved.
 
 A C# based GUI installer for Windows 10/11, it should also run on Windows 7, 8 & 8.1 but this isn't tested.
@@ -16,12 +16,19 @@ Disables sleep and screen timeout if plugged into AC power during the install an
 ### Changelog
 
 #### Latest Update
-Update 6.4.8.0
+
+**Update 6.5.0.0**
+
+- Moved all URL's to my OwnCloud as FTP was a pain.
+- Changed the way IP's are stored. They are now stored in a json file, hashed for security; this makes changing them a lot easier.
+- Movoed location text to run rather than install.
+
+#### Older Updates
+
+**Update 6.4.8.0**
 
 - Added shutdown button.
 - Moved Version/Readme link to [professorshroom.com](https://professorshroom.com)
-
-#### Older Updates
 
 **Update 6.4.7.2**
 
