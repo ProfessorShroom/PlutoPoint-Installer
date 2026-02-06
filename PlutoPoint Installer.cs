@@ -12,6 +12,7 @@ using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 using System.Web.Script.Serialization;
+using Shell32;
 
 
 // Copyright © Charlie Howard 2026 All rights reserved.
@@ -75,6 +76,8 @@ namespace PlutoPoint_Installer
             shutdown.Click += (s, e) => PlayClick();
             close.MouseEnter += (s, e) => PlayHover();
             close.Click += (s, e) => PlayClick();
+            test.MouseEnter += (s, e) => PlayHover();
+            test.Click += (s, e) => PlayClick();
             // Date checks
             CheckChristmas();
             CheckNewYear();
@@ -827,6 +830,8 @@ namespace PlutoPoint_Installer
         Uri hpHotkeySupportURL = new Uri("https://cloud.howardgb.com/public.php/dav/files/EFyAqCm3tEQ6W25/HPHotkey.zip");
         string hpHotkeySupportFilename = @"C:\Computer Repair Centre\apps\hpHotkeySupport.zip";
         Uri vlcMediaPlayerURL = new Uri("https://cloud.howardgb.com/public.php/dav/files/EFyAqCm3tEQ6W25/vlcMediaPlayer.msi");
+        string sysPinFilename = @"C:\Computer Repair Centre\apps\sysPin.exe";
+        Uri sysPinURL = new Uri("https://cloud.howardgb.com/public.php/dav/files/EFyAqCm3tEQ6W25/syspin.exe");
         string vlcMediaPlayerFilename = @"C:\Computer Repair Centre\apps\vlcMediaPlayer.msi";
         string nvidiaAppFilename = @"C:\Computer Repair Centre\apps\nvidiaApp.exe";
         private SoundPlayer hoverSound;
@@ -1122,13 +1127,30 @@ namespace PlutoPoint_Installer
                 }
             }
             progressBar.Maximum = 0;
+            // Paths
             string rootDir = @"C:\Computer Repair Centre";
-            string oemDir = @"C:\Computer Repair Centre\oem";
-            string appsDir = @"C:\Computer Repair Centre\apps";
+            string oemDir = System.IO.Path.Combine(rootDir, "oem");
+            string appsDir = System.IO.Path.Combine(rootDir, "apps");
+            // Installed apps
+            string googleChromeExePath = @"C:\Program Files\Google\Chrome\Application\chrome.exe";
+            string googleChromeShortcut = @"C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Google Chrome.lnk";
+            string mozillaFirefoxExePath = @"C:\Program Files\Mozilla Firefox\firefox.exe";
+            string mozillaFirefoxShortcut = @"C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Firefox.lnk";
+            string mozillaThunderbirdExePath = @"C:\Program Files\Mozilla Thunderbird\thunderbird.exe";
+            string mozillaThunderbirdShortcut = @"C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Thunderbird.lnk";
+            string microsoftEdgeShortcut = @"C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Microsoft Edge.lnk";
+            // Installer tools
+            string sysPinFilename = System.IO.Path.Combine(appsDir, "sysPin.exe");
+            // Downloaded installers
+            string googleChromeFilename = System.IO.Path.Combine(appsDir, "googleChrome.msi");
+            string mozillaFirefoxFilename = System.IO.Path.Combine(appsDir, "mozillaFirefox.msi");
+            // Other apps
             string bingWallpaperAppPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"Microsoft\BingWallpaperApp\BingWallpaperApp.exe");
             string discordAppPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"Discord\Update.exe");
-            string desktopPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop));
-            string launcherPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), @"Computer Repair Centre Installer Launcher.exe");
+            // Desktop
+            string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            string launcherPath = System.IO.Path.Combine(desktopPath, @"Computer Repair Centre Installer Launcher.exe");
+
             if (!Directory.Exists(rootDir))
             {
                 Directory.CreateDirectory(rootDir);
@@ -1487,6 +1509,34 @@ namespace PlutoPoint_Installer
                 }
                 progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
             }
+            if (googleChromeCheck.Checked || mozillaFirefoxCheck.Checked)
+            {
+                AppendLine("🔄 Preparing taskbar pinning...");
+                AppendLine("🔄 Downloading SysPin...");
+                try
+                {
+                    using (WebClient wc = new WebClient())
+                    {
+                        await wc.DownloadFileTaskAsync(sysPinURL, sysPinFilename);
+                    }
+                    AppendLine("✅ SysPin downloaded.");
+                }
+                catch (Exception ex)
+                {
+                    AppendLine("❌ Failed to download SysPin: " + ex.Message);
+                }
+                try
+                {
+                    Process.Start(sysPinFilename, $"\"{microsoftEdgeShortcut}\" 5387");
+                    AppendLine("📌 Microsoft Edge unpinned from taskbar.");
+                }
+                catch (Exception ex)
+                {
+                    AppendLine("⚠ Could not unpin Microsoft Edge: " + ex.Message);
+                }
+
+                AppendLine("✅ Taskbar pinning prep completed.");
+            }
             if (anyDeskCheck.Checked)
             {
                 AppendLine("📌 AnyDesk is selected.");
@@ -1697,50 +1747,60 @@ namespace PlutoPoint_Installer
             if (googleChromeCheck.Checked)
             {
                 AppendLine("📌 Google Chrome is selected.");
-                if (System.IO.File.Exists(@"C:\Program Files\Google\Chrome\Application\chrome.exe"))
-                {
-                    AppendLine("✅ Google Chrome is already installed, skipping installation.");
-                    progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
-                }
-                else
+                if (!File.Exists(googleChromeExePath))
                 {
                     AppendLine("🔄 Downloading Google Chrome...");
-                    using (WebClient wc = new WebClient())
+                    try
                     {
-                        wc.DownloadFileCompleted += wc_progressBarStep;
-                        await wc.DownloadFileTaskAsync(googleChromeURL, googleChromeFilename);
+                        using (WebClient wc = new WebClient())
+                        {
+                            await wc.DownloadFileTaskAsync(googleChromeURL, googleChromeFilename);
+                        }
+                        AppendLine("✅ Chrome download completed.");
                     }
+                    catch (WebException ex)
+                    {
+                        AppendLine("❌ Failed to download Google Chrome: " + ex.Message);
+                    } 
                     AppendLine("📦 Installing Google Chrome...");
-                    await Task.Run(() =>
+                    try
                     {
                         using (Process process = new Process())
                         {
                             process.StartInfo.FileName = "msiexec";
                             process.StartInfo.Arguments = $"/package \"{googleChromeFilename}\" /passive";
-                            process.StartInfo.UseShellExecute = false;
-                            process.StartInfo.RedirectStandardOutput = true;
-                            process.StartInfo.RedirectStandardError = true;
-                            process.StartInfo.CreateNoWindow = true;
-                            try
-                            {
-                                process.Start();
-                                string output = process.StandardOutput.ReadToEnd();
-                                string error = process.StandardError.ReadToEnd();
-                                process.WaitForExit();
-                                Console.WriteLine("Output: " + output);
-                                if (!string.IsNullOrEmpty(error))
-                                {
-                                    Console.WriteLine("Error: " + error);
-                                }
-                            }
-                            catch (Exception ex)
-                            {
-                                Console.WriteLine("An error occurred: " + ex.Message);
-                            }
+                            process.StartInfo.UseShellExecute = true;
+                            process.Start();
+                            process.WaitForExit();
                         }
-                    });
-                    AppendLine("✅ Completed installation of Google Chrome.");
+                        AppendLine("✅ Completed installation of Google Chrome.");
+                    }
+                    catch (Exception ex)
+                    {
+                        AppendLine("❌ Chrome installation failed: " + ex.Message);
+                    }
                     progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
+                }
+                else
+                {
+                    AppendLine("✅ Google Chrome is already installed, skipping installation.");
+                    progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
+                }
+                if (File.Exists(googleChromeShortcut))
+                {
+                    try
+                    {
+                        Process.Start(sysPinFilename, $"\"{googleChromeShortcut}\" 5386");
+                        AppendLine("📌 Google Chrome pinned to taskbar.");
+                    }
+                    catch (Exception ex)
+                    {
+                        AppendLine("⚠ Could not pin Chrome: " + ex.Message);
+                    }
+                }
+                else
+                {
+                    AppendLine("⚠ Chrome shortcut not found, cannot pin to taskbar.");
                 }
             }
             if (libreOfficeCheck.Checked)
@@ -2006,7 +2066,7 @@ namespace PlutoPoint_Installer
             if (mozillaFirefoxCheck.Checked)
             {
                 AppendLine("📌 Mozilla Firefox is selected.");
-                if (System.IO.File.Exists(@"C:\Program Files\Mozilla Firefox\firefox.exe"))
+                if (File.Exists(mozillaFirefoxExePath))
                 {
                     AppendLine("✅ Mozilla Firefox is already installed, skipping installation.");
                     progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
@@ -2030,6 +2090,7 @@ namespace PlutoPoint_Installer
                             process.StartInfo.RedirectStandardOutput = true;
                             process.StartInfo.RedirectStandardError = true;
                             process.StartInfo.CreateNoWindow = true;
+
                             try
                             {
                                 process.Start();
@@ -2038,37 +2099,55 @@ namespace PlutoPoint_Installer
                                 process.WaitForExit();
                                 Console.WriteLine("Output: " + output);
                                 if (!string.IsNullOrEmpty(error))
-                                {
                                     Console.WriteLine("Error: " + error);
-                                }
                             }
                             catch (Exception ex)
                             {
                                 Console.WriteLine("An error occurred: " + ex.Message);
                             }
                         }
-
                     });
                     AppendLine("✅ Completed installation of Mozilla Firefox.");
                     progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
+                }
+                if (File.Exists(mozillaFirefoxShortcut))
+                {
+                    try
+                    {
+                        Process.Start(sysPinFilename, $"\"{mozillaFirefoxShortcut}\" 5386");
+                        AppendLine("📌 Mozilla Firefox pinned to taskbar.");
+                    }
+                    catch (Exception ex)
+                    {
+                        AppendLine("⚠ Could not pin Firefox: " + ex.Message);
+                    }
+                }
+                else
+                {
+                    AppendLine("⚠ Firefox shortcut not found, cannot pin to taskbar.");
                 }
             }
             if (mozillaThunderbirdCheck.Checked)
             {
                 AppendLine("📌 Mozilla Thunderbird is selected.");
-                if (System.IO.File.Exists(@"C:\Program Files\Mozilla Thunderbird\thunderbird.exe"))
+
+                // Check if Thunderbird is already installed
+                if (File.Exists(mozillaThunderbirdExePath))
                 {
                     AppendLine("✅ Mozilla Thunderbird is already installed, skipping installation.");
                     progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
                 }
                 else
                 {
+                    // Download Thunderbird
                     AppendLine("🔄 Downloading Mozilla Thunderbird...");
                     using (WebClient wc = new WebClient())
                     {
                         wc.DownloadFileCompleted += wc_progressBarStep;
                         await wc.DownloadFileTaskAsync(mozillaThunderbirdURL, mozillaThunderbirdFilename);
                     }
+
+                    // Install Thunderbird
                     AppendLine("📦 Installing Mozilla Thunderbird...");
                     await Task.Run(() =>
                     {
@@ -2080,6 +2159,7 @@ namespace PlutoPoint_Installer
                             process.StartInfo.RedirectStandardOutput = true;
                             process.StartInfo.RedirectStandardError = true;
                             process.StartInfo.CreateNoWindow = true;
+
                             try
                             {
                                 process.Start();
@@ -2088,19 +2168,34 @@ namespace PlutoPoint_Installer
                                 process.WaitForExit();
                                 Console.WriteLine("Output: " + output);
                                 if (!string.IsNullOrEmpty(error))
-                                {
                                     Console.WriteLine("Error: " + error);
-                                }
                             }
                             catch (Exception ex)
                             {
                                 Console.WriteLine("An error occurred: " + ex.Message);
                             }
                         }
-
                     });
+
                     AppendLine("✅ Completed installation of Mozilla Thunderbird.");
                     progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
+                }
+
+                if (File.Exists(mozillaThunderbirdShortcut))
+                {
+                    try
+                    {
+                        Process.Start(sysPinFilename, $"\"{mozillaThunderbirdShortcut}\" 5386");
+                        AppendLine("📌 Mozilla Thunderbird pinned to taskbar.");
+                    }
+                    catch (Exception ex)
+                    {
+                        AppendLine("⚠ Could not pin Thunderbird: " + ex.Message);
+                    }
+                }
+                else
+                {
+                    AppendLine("⚠ Thunderbird shortcut not found, cannot pin to taskbar.");
                 }
             }
             if (steamCheck.Checked)
@@ -2664,6 +2759,10 @@ namespace PlutoPoint_Installer
         {
             await Task.Delay(325);
             Process.Start("shutdown", "/s /t 1");
+        }
+        private async void test_Click(object sender, EventArgs e)
+        {
+            AppendLine("❌ No current tests.");
         }
         private void versionLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {

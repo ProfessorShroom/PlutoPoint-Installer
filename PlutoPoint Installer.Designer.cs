@@ -152,6 +152,8 @@ namespace PlutoPoint_Installer
             this.roundedGroupBox1 = new PlutoPoint_Installer.RoundedGroupBox();
             this.shutdownToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.shutdown = new System.Windows.Forms.Button();
+            this.test = new System.Windows.Forms.Button();
+            this.testToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.roundedGroupBox2.SuspendLayout();
             this.roundedGroupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -161,7 +163,7 @@ namespace PlutoPoint_Installer
             this.install.BackColor = System.Drawing.SystemColors.MenuHighlight;
             this.install.FlatAppearance.BorderSize = 0;
             this.install.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.install.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Bold);
+            this.install.Font = Program.Ubuntu(15F, System.Drawing.FontStyle.Bold);
             this.install.ForeColor = System.Drawing.Color.White;
             this.install.Location = new System.Drawing.Point(12, 14);
             this.install.Name = "install";
@@ -177,7 +179,7 @@ namespace PlutoPoint_Installer
             this.installerTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.installerTextBox.Cursor = System.Windows.Forms.Cursors.Default;
             this.installerTextBox.DetectUrls = false;
-            this.installerTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
+            this.installerTextBox.Font = Program.Ubuntu(12F);
             this.installerTextBox.ForeColor = System.Drawing.SystemColors.Info;
             this.installerTextBox.Location = new System.Drawing.Point(267, 54);
             this.installerTextBox.Name = "installerTextBox";
@@ -204,7 +206,7 @@ namespace PlutoPoint_Installer
             this.close.BackColor = System.Drawing.SystemColors.MenuHighlight;
             this.close.FlatAppearance.BorderSize = 0;
             this.close.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.close.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold);
+            this.close.Font = Program.Ubuntu(9F, System.Drawing.FontStyle.Bold);
             this.close.ForeColor = System.Drawing.Color.White;
             this.close.Location = new System.Drawing.Point(195, 14);
             this.close.Name = "close";
@@ -219,7 +221,7 @@ namespace PlutoPoint_Installer
             this.restart.BackColor = System.Drawing.Color.OrangeRed;
             this.restart.FlatAppearance.BorderSize = 0;
             this.restart.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.restart.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.restart.Font = Program.Ubuntu(6.75F, System.Drawing.FontStyle.Bold);
             this.restart.ForeColor = System.Drawing.Color.White;
             this.restart.Location = new System.Drawing.Point(123, 14);
             this.restart.Name = "restart";
@@ -232,7 +234,7 @@ namespace PlutoPoint_Installer
             // versionLabel
             // 
             this.versionLabel.AutoSize = true;
-            this.versionLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold);
+            this.versionLabel.Font = Program.Ubuntu(8.25F, System.Drawing.FontStyle.Bold);
             this.versionLabel.LinkColor = System.Drawing.Color.White;
             this.versionLabel.Location = new System.Drawing.Point(12, 425);
             this.versionLabel.Name = "versionLabel";
@@ -244,7 +246,7 @@ namespace PlutoPoint_Installer
             // locationLabel
             // 
             this.locationLabel.AutoSize = true;
-            this.locationLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold);
+            this.locationLabel.Font = Program.Ubuntu(8.25F, System.Drawing.FontStyle.Bold);
             this.locationLabel.ForeColor = System.Drawing.Color.White;
             this.locationLabel.Location = new System.Drawing.Point(120, 425);
             this.locationLabel.Name = "locationLabel";
@@ -477,7 +479,7 @@ namespace PlutoPoint_Installer
             this.roundedGroupBox2.Controls.Add(this.libreOfficeCheck);
             this.roundedGroupBox2.Controls.Add(this.mozillaFirefoxCheck);
             this.roundedGroupBox2.CornerRadius = 4;
-            this.roundedGroupBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold);
+            this.roundedGroupBox2.Font = Program.Ubuntu(8.25F, System.Drawing.FontStyle.Bold);
             this.roundedGroupBox2.ForeColor = System.Drawing.Color.White;
             this.roundedGroupBox2.Location = new System.Drawing.Point(12, 70);
             this.roundedGroupBox2.Name = "roundedGroupBox2";
@@ -499,7 +501,7 @@ namespace PlutoPoint_Installer
             this.roundedGroupBox1.Controls.Add(this.nanaZipCheck);
             this.roundedGroupBox1.Controls.Add(this.bingWallpapersCheck);
             this.roundedGroupBox1.CornerRadius = 4;
-            this.roundedGroupBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold);
+            this.roundedGroupBox1.Font = Program.Ubuntu(8.25F, System.Drawing.FontStyle.Bold);
             this.roundedGroupBox1.ForeColor = System.Drawing.Color.White;
             this.roundedGroupBox1.Location = new System.Drawing.Point(177, 70);
             this.roundedGroupBox1.Name = "roundedGroupBox1";
@@ -514,7 +516,7 @@ namespace PlutoPoint_Installer
             this.shutdown.BackColor = System.Drawing.Color.OrangeRed;
             this.shutdown.FlatAppearance.BorderSize = 0;
             this.shutdown.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.shutdown.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.5F, System.Drawing.FontStyle.Bold);
+            this.shutdown.Font = Program.Ubuntu(6.5F, System.Drawing.FontStyle.Bold);
             this.shutdown.ForeColor = System.Drawing.Color.White;
             this.shutdown.Location = new System.Drawing.Point(123, 40);
             this.shutdown.Name = "shutdown";
@@ -523,12 +525,29 @@ namespace PlutoPoint_Installer
             this.shutdown.Text = "Shutdown";
             this.shutdown.UseVisualStyleBackColor = false;
             // 
+            // test
+            // 
+            this.test.BackColor = System.Drawing.SystemColors.MenuHighlight;
+            this.test.FlatAppearance.BorderSize = 0;
+            this.test.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.test.Font = Program.Ubuntu(10F, System.Drawing.FontStyle.Bold);
+            this.test.ForeColor = System.Drawing.Color.White;
+            this.test.Location = new System.Drawing.Point(800, 14);
+            this.test.Name = "test";
+            this.test.Size = new System.Drawing.Size(66, 24);
+            this.test.TabIndex = 28;
+            this.test.Text = "Test";
+            this.test.UseVisualStyleBackColor = false;
+            this.testToolTip.SetToolTip(this.test, "You've found my test button, you sneaky bastard.");
+            this.test.Click += new System.EventHandler(this.test_Click);
+            // 
             // installerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(41)))), ((int)(((byte)(41)))));
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.test);
             this.Controls.Add(this.shutdown);
             this.Controls.Add(this.shutdownCheck);
             this.Controls.Add(this.roundedGroupBox2);
@@ -604,5 +623,7 @@ namespace PlutoPoint_Installer
         private CheckBox shutdownCheck;
         private ToolTip shutdownToolTip;
         private Button shutdown;
+        private Button test;
+        private ToolTip testToolTip;
     }
 }
