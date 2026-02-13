@@ -830,8 +830,6 @@ namespace PlutoPoint_Installer
         Uri hpHotkeySupportURL = new Uri("https://cloud.howardgb.com/public.php/dav/files/EFyAqCm3tEQ6W25/HPHotkey.zip");
         string hpHotkeySupportFilename = @"C:\Computer Repair Centre\apps\hpHotkeySupport.zip";
         Uri vlcMediaPlayerURL = new Uri("https://cloud.howardgb.com/public.php/dav/files/EFyAqCm3tEQ6W25/vlcMediaPlayer.msi");
-        string sysPinFilename = @"C:\Computer Repair Centre\apps\sysPin.exe";
-        Uri sysPinURL = new Uri("https://cloud.howardgb.com/public.php/dav/files/EFyAqCm3tEQ6W25/syspin.exe");
         string vlcMediaPlayerFilename = @"C:\Computer Repair Centre\apps\vlcMediaPlayer.msi";
         string nvidiaAppFilename = @"C:\Computer Repair Centre\apps\nvidiaApp.exe";
         private SoundPlayer hoverSound;
@@ -1133,14 +1131,8 @@ namespace PlutoPoint_Installer
             string appsDir = System.IO.Path.Combine(rootDir, "apps");
             // Installed apps
             string googleChromeExePath = @"C:\Program Files\Google\Chrome\Application\chrome.exe";
-            string googleChromeShortcut = @"C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Google Chrome.lnk";
             string mozillaFirefoxExePath = @"C:\Program Files\Mozilla Firefox\firefox.exe";
-            string mozillaFirefoxShortcut = @"C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Firefox.lnk";
             string mozillaThunderbirdExePath = @"C:\Program Files\Mozilla Thunderbird\thunderbird.exe";
-            string mozillaThunderbirdShortcut = @"C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Thunderbird.lnk";
-            string microsoftEdgeShortcut = @"C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Microsoft Edge.lnk";
-            // Installer tools
-            string sysPinFilename = System.IO.Path.Combine(appsDir, "sysPin.exe");
             // Downloaded installers
             string googleChromeFilename = System.IO.Path.Combine(appsDir, "googleChrome.msi");
             string mozillaFirefoxFilename = System.IO.Path.Combine(appsDir, "mozillaFirefox.msi");
@@ -1509,34 +1501,6 @@ namespace PlutoPoint_Installer
                 }
                 progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
             }
-            if (googleChromeCheck.Checked || mozillaFirefoxCheck.Checked)
-            {
-                AppendLine("🔄 Preparing taskbar pinning...");
-                AppendLine("🔄 Downloading SysPin...");
-                try
-                {
-                    using (WebClient wc = new WebClient())
-                    {
-                        await wc.DownloadFileTaskAsync(sysPinURL, sysPinFilename);
-                    }
-                    AppendLine("✅ SysPin downloaded.");
-                }
-                catch (Exception ex)
-                {
-                    AppendLine("❌ Failed to download SysPin: " + ex.Message);
-                }
-                try
-                {
-                    Process.Start(sysPinFilename, $"\"{microsoftEdgeShortcut}\" 5387");
-                    AppendLine("📌 Microsoft Edge unpinned from taskbar.");
-                }
-                catch (Exception ex)
-                {
-                    AppendLine("⚠ Could not unpin Microsoft Edge: " + ex.Message);
-                }
-
-                AppendLine("✅ Taskbar pinning prep completed.");
-            }
             if (anyDeskCheck.Checked)
             {
                 AppendLine("📌 AnyDesk is selected.");
@@ -1785,22 +1749,6 @@ namespace PlutoPoint_Installer
                 {
                     AppendLine("✅ Google Chrome is already installed, skipping installation.");
                     progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
-                }
-                if (File.Exists(googleChromeShortcut))
-                {
-                    try
-                    {
-                        Process.Start(sysPinFilename, $"\"{googleChromeShortcut}\" 5386");
-                        AppendLine("📌 Google Chrome pinned to taskbar.");
-                    }
-                    catch (Exception ex)
-                    {
-                        AppendLine("⚠ Could not pin Chrome: " + ex.Message);
-                    }
-                }
-                else
-                {
-                    AppendLine("⚠ Chrome shortcut not found, cannot pin to taskbar.");
                 }
             }
             if (libreOfficeCheck.Checked)
@@ -2110,22 +2058,6 @@ namespace PlutoPoint_Installer
                     AppendLine("✅ Completed installation of Mozilla Firefox.");
                     progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
                 }
-                if (File.Exists(mozillaFirefoxShortcut))
-                {
-                    try
-                    {
-                        Process.Start(sysPinFilename, $"\"{mozillaFirefoxShortcut}\" 5386");
-                        AppendLine("📌 Mozilla Firefox pinned to taskbar.");
-                    }
-                    catch (Exception ex)
-                    {
-                        AppendLine("⚠ Could not pin Firefox: " + ex.Message);
-                    }
-                }
-                else
-                {
-                    AppendLine("⚠ Firefox shortcut not found, cannot pin to taskbar.");
-                }
             }
             if (mozillaThunderbirdCheck.Checked)
             {
@@ -2179,23 +2111,6 @@ namespace PlutoPoint_Installer
 
                     AppendLine("✅ Completed installation of Mozilla Thunderbird.");
                     progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
-                }
-
-                if (File.Exists(mozillaThunderbirdShortcut))
-                {
-                    try
-                    {
-                        Process.Start(sysPinFilename, $"\"{mozillaThunderbirdShortcut}\" 5386");
-                        AppendLine("📌 Mozilla Thunderbird pinned to taskbar.");
-                    }
-                    catch (Exception ex)
-                    {
-                        AppendLine("⚠ Could not pin Thunderbird: " + ex.Message);
-                    }
-                }
-                else
-                {
-                    AppendLine("⚠ Thunderbird shortcut not found, cannot pin to taskbar.");
                 }
             }
             if (steamCheck.Checked)

@@ -163,11 +163,11 @@ namespace PlutoPoint_Installer
             this.install.BackColor = System.Drawing.SystemColors.MenuHighlight;
             this.install.FlatAppearance.BorderSize = 0;
             this.install.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.install.Font = Program.Ubuntu(15F, System.Drawing.FontStyle.Bold);
+            this.install.Font = new System.Drawing.Font("Ubuntu", 15F, System.Drawing.FontStyle.Bold);
             this.install.ForeColor = System.Drawing.Color.White;
             this.install.Location = new System.Drawing.Point(12, 14);
             this.install.Name = "install";
-            this.install.Size = new System.Drawing.Size(105, 48);
+            this.install.Size = new System.Drawing.Size(105, 50);
             this.install.TabIndex = 0;
             this.install.Text = "Install";
             this.install.UseVisualStyleBackColor = false;
@@ -179,7 +179,6 @@ namespace PlutoPoint_Installer
             this.installerTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.installerTextBox.Cursor = System.Windows.Forms.Cursors.Default;
             this.installerTextBox.DetectUrls = false;
-            this.installerTextBox.Font = Program.Ubuntu(12F);
             this.installerTextBox.ForeColor = System.Drawing.SystemColors.Info;
             this.installerTextBox.Location = new System.Drawing.Point(267, 54);
             this.installerTextBox.Name = "installerTextBox";
@@ -206,7 +205,7 @@ namespace PlutoPoint_Installer
             this.close.BackColor = System.Drawing.SystemColors.MenuHighlight;
             this.close.FlatAppearance.BorderSize = 0;
             this.close.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.close.Font = Program.Ubuntu(9F, System.Drawing.FontStyle.Bold);
+            this.close.Font = new System.Drawing.Font("Ubuntu", 9F, System.Drawing.FontStyle.Bold);
             this.close.ForeColor = System.Drawing.Color.White;
             this.close.Location = new System.Drawing.Point(195, 14);
             this.close.Name = "close";
@@ -221,7 +220,7 @@ namespace PlutoPoint_Installer
             this.restart.BackColor = System.Drawing.Color.OrangeRed;
             this.restart.FlatAppearance.BorderSize = 0;
             this.restart.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.restart.Font = Program.Ubuntu(6.75F, System.Drawing.FontStyle.Bold);
+            this.restart.Font = new System.Drawing.Font("Ubuntu", 6.75F, System.Drawing.FontStyle.Bold);
             this.restart.ForeColor = System.Drawing.Color.White;
             this.restart.Location = new System.Drawing.Point(123, 14);
             this.restart.Name = "restart";
@@ -234,11 +233,11 @@ namespace PlutoPoint_Installer
             // versionLabel
             // 
             this.versionLabel.AutoSize = true;
-            this.versionLabel.Font = Program.Ubuntu(8.25F, System.Drawing.FontStyle.Bold);
+            this.versionLabel.Font = new System.Drawing.Font("Ubuntu", 8.25F, System.Drawing.FontStyle.Bold);
             this.versionLabel.LinkColor = System.Drawing.Color.White;
             this.versionLabel.Location = new System.Drawing.Point(12, 425);
             this.versionLabel.Name = "versionLabel";
-            this.versionLabel.Size = new System.Drawing.Size(0, 13);
+            this.versionLabel.Size = new System.Drawing.Size(0, 14);
             this.versionLabel.TabIndex = 9;
             this.versionLabel.TabStop = true;
             this.versionLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.versionLabel_LinkClicked);
@@ -246,11 +245,11 @@ namespace PlutoPoint_Installer
             // locationLabel
             // 
             this.locationLabel.AutoSize = true;
-            this.locationLabel.Font = Program.Ubuntu(8.25F, System.Drawing.FontStyle.Bold);
+            this.locationLabel.Font = new System.Drawing.Font("Ubuntu", 8.25F, System.Drawing.FontStyle.Bold);
             this.locationLabel.ForeColor = System.Drawing.Color.White;
             this.locationLabel.Location = new System.Drawing.Point(120, 425);
             this.locationLabel.Name = "locationLabel";
-            this.locationLabel.Size = new System.Drawing.Size(0, 13);
+            this.locationLabel.Size = new System.Drawing.Size(0, 14);
             this.locationLabel.TabIndex = 9;
             this.locationLabel.TabStop = true;
             // 
@@ -479,7 +478,7 @@ namespace PlutoPoint_Installer
             this.roundedGroupBox2.Controls.Add(this.libreOfficeCheck);
             this.roundedGroupBox2.Controls.Add(this.mozillaFirefoxCheck);
             this.roundedGroupBox2.CornerRadius = 4;
-            this.roundedGroupBox2.Font = Program.Ubuntu(8.25F, System.Drawing.FontStyle.Bold);
+            this.roundedGroupBox2.Font = new System.Drawing.Font("Ubuntu", 8.25F, System.Drawing.FontStyle.Bold);
             this.roundedGroupBox2.ForeColor = System.Drawing.Color.White;
             this.roundedGroupBox2.Location = new System.Drawing.Point(12, 70);
             this.roundedGroupBox2.Name = "roundedGroupBox2";
@@ -501,7 +500,7 @@ namespace PlutoPoint_Installer
             this.roundedGroupBox1.Controls.Add(this.nanaZipCheck);
             this.roundedGroupBox1.Controls.Add(this.bingWallpapersCheck);
             this.roundedGroupBox1.CornerRadius = 4;
-            this.roundedGroupBox1.Font = Program.Ubuntu(8.25F, System.Drawing.FontStyle.Bold);
+            this.roundedGroupBox1.Font = new System.Drawing.Font("Ubuntu", 8.25F, System.Drawing.FontStyle.Bold);
             this.roundedGroupBox1.ForeColor = System.Drawing.Color.White;
             this.roundedGroupBox1.Location = new System.Drawing.Point(177, 70);
             this.roundedGroupBox1.Name = "roundedGroupBox1";
@@ -516,7 +515,7 @@ namespace PlutoPoint_Installer
             this.shutdown.BackColor = System.Drawing.Color.OrangeRed;
             this.shutdown.FlatAppearance.BorderSize = 0;
             this.shutdown.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.shutdown.Font = Program.Ubuntu(6.5F, System.Drawing.FontStyle.Bold);
+            this.shutdown.Font = new System.Drawing.Font("Ubuntu", 6.5F, System.Drawing.FontStyle.Bold);
             this.shutdown.ForeColor = System.Drawing.Color.White;
             this.shutdown.Location = new System.Drawing.Point(123, 40);
             this.shutdown.Name = "shutdown";
@@ -530,15 +529,15 @@ namespace PlutoPoint_Installer
             this.test.BackColor = System.Drawing.SystemColors.MenuHighlight;
             this.test.FlatAppearance.BorderSize = 0;
             this.test.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.test.Font = Program.Ubuntu(10F, System.Drawing.FontStyle.Bold);
+            this.test.Font = new System.Drawing.Font("Ubuntu", 10F, System.Drawing.FontStyle.Bold);
             this.test.ForeColor = System.Drawing.Color.White;
             this.test.Location = new System.Drawing.Point(800, 14);
             this.test.Name = "test";
             this.test.Size = new System.Drawing.Size(66, 24);
             this.test.TabIndex = 28;
             this.test.Text = "Test";
+            this.testToolTip.SetToolTip(this.test, "You\'ve found my test button, you sneaky bastard.");
             this.test.UseVisualStyleBackColor = false;
-            this.testToolTip.SetToolTip(this.test, "You've found my test button, you sneaky bastard.");
             this.test.Click += new System.EventHandler(this.test_Click);
             // 
             // installerForm
