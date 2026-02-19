@@ -130,6 +130,7 @@ namespace PlutoPoint_Installer
             this.microsoftOffice2007Check = new System.Windows.Forms.CheckBox();
             this.nvidiaAppToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.nvidiaAppCheck = new System.Windows.Forms.CheckBox();
+            this.taskbarCheck = new System.Windows.Forms.CheckBox();
             this.aiCheck = new System.Windows.Forms.CheckBox();
             this.mozillaFirefoxToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.mozillaFirefoxCheck = new System.Windows.Forms.CheckBox();
@@ -154,6 +155,7 @@ namespace PlutoPoint_Installer
             this.shutdown = new System.Windows.Forms.Button();
             this.test = new System.Windows.Forms.Button();
             this.testToolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.taskbarToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.roundedGroupBox2.SuspendLayout();
             this.roundedGroupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -237,7 +239,7 @@ namespace PlutoPoint_Installer
             this.versionLabel.LinkColor = System.Drawing.Color.White;
             this.versionLabel.Location = new System.Drawing.Point(12, 425);
             this.versionLabel.Name = "versionLabel";
-            this.versionLabel.Size = new System.Drawing.Size(0, 14);
+            this.versionLabel.Size = new System.Drawing.Size(0, 16);
             this.versionLabel.TabIndex = 9;
             this.versionLabel.TabStop = true;
             this.versionLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.versionLabel_LinkClicked);
@@ -249,7 +251,7 @@ namespace PlutoPoint_Installer
             this.locationLabel.ForeColor = System.Drawing.Color.White;
             this.locationLabel.Location = new System.Drawing.Point(120, 425);
             this.locationLabel.Name = "locationLabel";
-            this.locationLabel.Size = new System.Drawing.Size(0, 14);
+            this.locationLabel.Size = new System.Drawing.Size(0, 16);
             this.locationLabel.TabIndex = 9;
             this.locationLabel.TabStop = true;
             // 
@@ -349,7 +351,7 @@ namespace PlutoPoint_Installer
             this.libreOfficeCheck.Name = "libreOfficeCheck";
             this.libreOfficeCheck.Size = new System.Drawing.Size(57, 50);
             this.libreOfficeCheck.TabIndex = 4;
-            this.libreOfficeToolTip.SetToolTip(this.libreOfficeCheck, "LibreOffice");
+            this.libreOfficeToolTip.SetToolTip(this.libreOfficeCheck, "LibreOffice (Free Microsoft Office alternative)");
             this.libreOfficeCheck.UseVisualStyleBackColor = true;
             // 
             // microsoftOffice2007Check
@@ -365,12 +367,24 @@ namespace PlutoPoint_Installer
             // nvidiaAppCheck
             // 
             this.nvidiaAppCheck.Image = global::PlutoPoint_Installer.Properties.Resources.nvidiaApp;
-            this.nvidiaAppCheck.Location = new System.Drawing.Point(10, 192);
+            this.nvidiaAppCheck.Location = new System.Drawing.Point(10, 237);
             this.nvidiaAppCheck.Name = "nvidiaAppCheck";
             this.nvidiaAppCheck.Size = new System.Drawing.Size(57, 50);
             this.nvidiaAppCheck.TabIndex = 21;
             this.nvidiaAppToolTip.SetToolTip(this.nvidiaAppCheck, "Nvidia Graphics App");
             this.nvidiaAppCheck.UseVisualStyleBackColor = true;
+            // 
+            // taskbarCheck
+            // 
+            this.taskbarCheck.Checked = true;
+            this.taskbarCheck.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.taskbarCheck.Image = global::PlutoPoint_Installer.Properties.Resources.taskbar;
+            this.taskbarCheck.Location = new System.Drawing.Point(10, 147);
+            this.taskbarCheck.Name = "taskbarCheck";
+            this.taskbarCheck.Size = new System.Drawing.Size(57, 50);
+            this.taskbarCheck.TabIndex = 23;
+            this.taskbarToolTip.SetToolTip(this.taskbarCheck, "Move Windows taskbar to the left like Windows 10");
+            this.taskbarCheck.UseVisualStyleBackColor = true;
             // 
             // aiCheck
             // 
@@ -411,7 +425,7 @@ namespace PlutoPoint_Installer
             this.nanaZipCheck.Checked = true;
             this.nanaZipCheck.CheckState = System.Windows.Forms.CheckState.Checked;
             this.nanaZipCheck.Image = global::PlutoPoint_Installer.Properties.Resources.nanaZip;
-            this.nanaZipCheck.Location = new System.Drawing.Point(10, 147);
+            this.nanaZipCheck.Location = new System.Drawing.Point(10, 192);
             this.nanaZipCheck.Name = "nanaZipCheck";
             this.nanaZipCheck.Size = new System.Drawing.Size(57, 50);
             this.nanaZipCheck.TabIndex = 18;
@@ -448,7 +462,7 @@ namespace PlutoPoint_Installer
             this.bingWallpapersCheck.Name = "bingWallpapersCheck";
             this.bingWallpapersCheck.Size = new System.Drawing.Size(57, 50);
             this.bingWallpapersCheck.TabIndex = 8;
-            this.bingWallpaperstoolTip.SetToolTip(this.bingWallpapersCheck, "Bing Wallpapers");
+            this.bingWallpaperstoolTip.SetToolTip(this.bingWallpapersCheck, "Bing Wallpapers (New wallpaper everyday)");
             this.bingWallpapersCheck.UseVisualStyleBackColor = false;
             // 
             // shutdownCheck
@@ -494,6 +508,7 @@ namespace PlutoPoint_Installer
             this.roundedGroupBox1.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(35)))), ((int)(((byte)(35)))));
             this.roundedGroupBox1.BorderColor = System.Drawing.Color.DodgerBlue;
             this.roundedGroupBox1.BorderColorOverride = null;
+            this.roundedGroupBox1.Controls.Add(this.taskbarCheck);
             this.roundedGroupBox1.Controls.Add(this.aiCheck);
             this.roundedGroupBox1.Controls.Add(this.crcCheck);
             this.roundedGroupBox1.Controls.Add(this.nvidiaAppCheck);
@@ -504,7 +519,7 @@ namespace PlutoPoint_Installer
             this.roundedGroupBox1.ForeColor = System.Drawing.Color.White;
             this.roundedGroupBox1.Location = new System.Drawing.Point(177, 70);
             this.roundedGroupBox1.Name = "roundedGroupBox1";
-            this.roundedGroupBox1.Size = new System.Drawing.Size(75, 250);
+            this.roundedGroupBox1.Size = new System.Drawing.Size(75, 296);
             this.roundedGroupBox1.TabIndex = 24;
             this.roundedGroupBox1.TabStop = false;
             this.roundedGroupBox1.Text = "Utilities";
@@ -624,5 +639,7 @@ namespace PlutoPoint_Installer
         private Button shutdown;
         private Button test;
         private ToolTip testToolTip;
+        private CheckBox taskbarCheck;
+        private ToolTip taskbarToolTip;
     }
 }

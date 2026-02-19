@@ -1161,7 +1161,7 @@ namespace PlutoPoint_Installer
                 if (romsey == "1") { progressBar.Maximum += 1; };
                 if (highcliffe == "1") { progressBar.Maximum += 1; };
             }
-            if (windows11 == "1") { progressBar.Maximum += 8; }
+            if (windows11 == "1") { progressBar.Maximum += 7; }
             if (powerCheck.Checked) { progressBar.Maximum += 1; }
             else { progressBar.Maximum += 2; }
             if (crcCheck.Checked) { progressBar.Maximum += 1; }
@@ -1179,6 +1179,7 @@ namespace PlutoPoint_Installer
             if (steamCheck.Checked) { progressBar.Maximum += 2; }
             if (aiCheck.Checked) { progressBar.Maximum += 1; }
             if (hpEliteBook == "1") { progressBar.Maximum += 4; }
+            if (taskbarCheck.Checked) { progressBar.Maximum += 1;  }
             if (christmas == "1")
             {
                 player = new SoundPlayer(Properties.Resources.christmas);
@@ -1499,6 +1500,21 @@ namespace PlutoPoint_Installer
                 {
                     AppendLine("❌ Not running on Windows 11; skipping removal of Windows AI.");
                 }
+                progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
+            }
+            if (taskbarCheck.Checked)
+            {
+                AppendLine("📌 Move taskbar is selected.");
+                AppendLine("✅ Aligning the taskbar to the left...");
+                const string taskbarRegPath = @"SOFTWARE\microsoft\windows\currentversion\explorer\advanced";
+                const string taskbarReg = "TaskbarAl";
+                const int taskbarRegData = 0;
+                using (RegistryKey registryKey = Registry.CurrentUser.OpenSubKey(taskbarRegPath, writable: true))
+                {
+                    registryKey.SetValue(taskbarReg, taskbarRegData, RegistryValueKind.DWord);
+                    Console.WriteLine($"Set '{taskbarReg}' to {taskbarRegData} in '{taskbarRegPath}'.");
+                }
+                AppendLine("✅ Moved taskbar to the left.");
                 progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
             }
             if (anyDeskCheck.Checked)
@@ -2413,16 +2429,6 @@ namespace PlutoPoint_Installer
                     {
                         if (build >= 22000)
                         {
-                            AppendLine("✅ Aligning the taskbar to the left...");
-                            const string taskbarRegPath = @"SOFTWARE\microsoft\windows\currentversion\explorer\advanced";
-                            const string taskbarReg = "TaskbarAl";
-                            const int taskbarRegData = 0;
-                            using (RegistryKey registryKey = Registry.CurrentUser.OpenSubKey(taskbarRegPath, writable: true))
-                            {
-                                registryKey.SetValue(taskbarReg, taskbarRegData, RegistryValueKind.DWord);
-                                Console.WriteLine($"Set '{taskbarReg}' to {taskbarRegData} in '{taskbarRegPath}'.");
-                            }
-                            progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
                             AppendLine("✅ Disabling device encryption...");
                             const string bitLockerRegPath = @"SYSTEM\CurrentControlSet\Control\BitLocker";
                             const string bitLockerReg = "PreventDeviceEncryption";
