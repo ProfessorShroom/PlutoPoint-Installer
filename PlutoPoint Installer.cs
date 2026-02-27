@@ -253,7 +253,7 @@ namespace PlutoPoint_Installer
             {
                 AppendLine("");
                 AppendLine("🦆 Today is National Duck day!");
-                AppendLine("Did someone say duck?");
+                AppendLine("🦆 Did someone say duck?");
                 AppendLine("");
             }
             else if (dachshund == "1")
