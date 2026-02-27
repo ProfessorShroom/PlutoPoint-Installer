@@ -130,8 +130,6 @@ namespace PlutoPoint_Installer
             this.microsoftOffice2007Check = new System.Windows.Forms.CheckBox();
             this.nvidiaAppToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.nvidiaAppCheck = new System.Windows.Forms.CheckBox();
-            this.taskbarCheck = new System.Windows.Forms.CheckBox();
-            this.aiCheck = new System.Windows.Forms.CheckBox();
             this.mozillaFirefoxToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.mozillaFirefoxCheck = new System.Windows.Forms.CheckBox();
             this.mozillaThunderbirdToolTip = new System.Windows.Forms.ToolTip(this.components);
@@ -149,13 +147,15 @@ namespace PlutoPoint_Installer
             this.restartToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.shutdownCheck = new System.Windows.Forms.CheckBox();
             this.aiToolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.roundedGroupBox2 = new PlutoPoint_Installer.RoundedGroupBox();
-            this.roundedGroupBox1 = new PlutoPoint_Installer.RoundedGroupBox();
+            this.aiCheck = new System.Windows.Forms.CheckBox();
             this.shutdownToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.shutdown = new System.Windows.Forms.Button();
             this.test = new System.Windows.Forms.Button();
             this.testToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.taskbarToolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.taskbarCheck = new System.Windows.Forms.CheckBox();
+            this.roundedGroupBox2 = new PlutoPoint_Installer.RoundedGroupBox();
+            this.roundedGroupBox1 = new PlutoPoint_Installer.RoundedGroupBox();
             this.roundedGroupBox2.SuspendLayout();
             this.roundedGroupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -374,30 +374,6 @@ namespace PlutoPoint_Installer
             this.nvidiaAppToolTip.SetToolTip(this.nvidiaAppCheck, "Nvidia Graphics App");
             this.nvidiaAppCheck.UseVisualStyleBackColor = true;
             // 
-            // taskbarCheck
-            // 
-            this.taskbarCheck.Checked = true;
-            this.taskbarCheck.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.taskbarCheck.Image = global::PlutoPoint_Installer.Properties.Resources.taskbar;
-            this.taskbarCheck.Location = new System.Drawing.Point(10, 147);
-            this.taskbarCheck.Name = "taskbarCheck";
-            this.taskbarCheck.Size = new System.Drawing.Size(57, 50);
-            this.taskbarCheck.TabIndex = 23;
-            this.taskbarToolTip.SetToolTip(this.taskbarCheck, "Move Windows taskbar to the left like Windows 10");
-            this.taskbarCheck.UseVisualStyleBackColor = true;
-            // 
-            // aiCheck
-            // 
-            this.aiCheck.Checked = true;
-            this.aiCheck.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.aiCheck.Image = global::PlutoPoint_Installer.Properties.Resources.aiRemoval;
-            this.aiCheck.Location = new System.Drawing.Point(10, 58);
-            this.aiCheck.Name = "aiCheck";
-            this.aiCheck.Size = new System.Drawing.Size(57, 50);
-            this.aiCheck.TabIndex = 22;
-            this.aiToolTip.SetToolTip(this.aiCheck, "Remove Windows AI Bollocks (this can take a few minutes)");
-            this.aiCheck.UseVisualStyleBackColor = true;
-            // 
             // mozillaFirefoxCheck
             // 
             this.mozillaFirefoxCheck.Checked = true;
@@ -475,6 +451,60 @@ namespace PlutoPoint_Installer
             this.shutdownToolTip.SetToolTip(this.shutdownCheck, "Shutdown Computer on Install Completion");
             this.shutdownCheck.UseVisualStyleBackColor = true;
             // 
+            // aiCheck
+            // 
+            this.aiCheck.Checked = true;
+            this.aiCheck.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.aiCheck.Image = global::PlutoPoint_Installer.Properties.Resources.aiRemoval;
+            this.aiCheck.Location = new System.Drawing.Point(10, 58);
+            this.aiCheck.Name = "aiCheck";
+            this.aiCheck.Size = new System.Drawing.Size(57, 50);
+            this.aiCheck.TabIndex = 22;
+            this.aiToolTip.SetToolTip(this.aiCheck, "Remove Windows AI Bollocks (this can take a few minutes)");
+            this.aiCheck.UseVisualStyleBackColor = true;
+            // 
+            // shutdown
+            // 
+            this.shutdown.BackColor = System.Drawing.Color.OrangeRed;
+            this.shutdown.FlatAppearance.BorderSize = 0;
+            this.shutdown.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.shutdown.Font = new System.Drawing.Font("Ubuntu", 6.5F, System.Drawing.FontStyle.Bold);
+            this.shutdown.ForeColor = System.Drawing.Color.White;
+            this.shutdown.Location = new System.Drawing.Point(123, 40);
+            this.shutdown.Name = "shutdown";
+            this.shutdown.Size = new System.Drawing.Size(66, 24);
+            this.shutdown.TabIndex = 27;
+            this.shutdown.Text = "Shutdown";
+            this.shutdown.UseVisualStyleBackColor = false;
+            // 
+            // test
+            // 
+            this.test.BackColor = System.Drawing.SystemColors.MenuHighlight;
+            this.test.FlatAppearance.BorderSize = 0;
+            this.test.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.test.Font = new System.Drawing.Font("Ubuntu", 10F, System.Drawing.FontStyle.Bold);
+            this.test.ForeColor = System.Drawing.Color.White;
+            this.test.Location = new System.Drawing.Point(800, 14);
+            this.test.Name = "test";
+            this.test.Size = new System.Drawing.Size(66, 24);
+            this.test.TabIndex = 28;
+            this.test.Text = "Test";
+            this.testToolTip.SetToolTip(this.test, "You\'ve found my test button, you sneaky bastard.");
+            this.test.UseVisualStyleBackColor = false;
+            this.test.Click += new System.EventHandler(this.test_Click);
+            // 
+            // taskbarCheck
+            // 
+            this.taskbarCheck.Checked = true;
+            this.taskbarCheck.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.taskbarCheck.Image = global::PlutoPoint_Installer.Properties.Resources.taskbar;
+            this.taskbarCheck.Location = new System.Drawing.Point(10, 147);
+            this.taskbarCheck.Name = "taskbarCheck";
+            this.taskbarCheck.Size = new System.Drawing.Size(57, 50);
+            this.taskbarCheck.TabIndex = 23;
+            this.taskbarToolTip.SetToolTip(this.taskbarCheck, "Move Windows taskbar to the left like Windows 10");
+            this.taskbarCheck.UseVisualStyleBackColor = true;
+            // 
             // roundedGroupBox2
             // 
             this.roundedGroupBox2.BackColor = System.Drawing.Color.Transparent;
@@ -524,36 +554,6 @@ namespace PlutoPoint_Installer
             this.roundedGroupBox1.TabStop = false;
             this.roundedGroupBox1.Text = "Utilities";
             this.roundedGroupBox1.TextColorOverride = null;
-            // 
-            // shutdown
-            // 
-            this.shutdown.BackColor = System.Drawing.Color.OrangeRed;
-            this.shutdown.FlatAppearance.BorderSize = 0;
-            this.shutdown.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.shutdown.Font = new System.Drawing.Font("Ubuntu", 6.5F, System.Drawing.FontStyle.Bold);
-            this.shutdown.ForeColor = System.Drawing.Color.White;
-            this.shutdown.Location = new System.Drawing.Point(123, 40);
-            this.shutdown.Name = "shutdown";
-            this.shutdown.Size = new System.Drawing.Size(66, 24);
-            this.shutdown.TabIndex = 27;
-            this.shutdown.Text = "Shutdown";
-            this.shutdown.UseVisualStyleBackColor = false;
-            // 
-            // test
-            // 
-            this.test.BackColor = System.Drawing.SystemColors.MenuHighlight;
-            this.test.FlatAppearance.BorderSize = 0;
-            this.test.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.test.Font = new System.Drawing.Font("Ubuntu", 10F, System.Drawing.FontStyle.Bold);
-            this.test.ForeColor = System.Drawing.Color.White;
-            this.test.Location = new System.Drawing.Point(800, 14);
-            this.test.Name = "test";
-            this.test.Size = new System.Drawing.Size(66, 24);
-            this.test.TabIndex = 28;
-            this.test.Text = "Test";
-            this.testToolTip.SetToolTip(this.test, "You\'ve found my test button, you sneaky bastard.");
-            this.test.UseVisualStyleBackColor = false;
-            this.test.Click += new System.EventHandler(this.test_Click);
             // 
             // installerForm
             // 

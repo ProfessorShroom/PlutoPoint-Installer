@@ -89,6 +89,7 @@ namespace PlutoPoint_Installer
             CheckPluto();
             CheckRhino();
             CheckHippo();
+            CheckDuck();
             CheckCharlieBirthday();
             CheckDeanBirthday();
             CheckSteveBirthday();
@@ -98,7 +99,7 @@ namespace PlutoPoint_Installer
             OverrideRoundedBoxColours();
             CheckIP();
             CheckEliteBook();
-            UpdateOverlayFromFlags();
+            UpdateGUIEvent();
             // Info checks
             PrintVersion();
             PrintDay();
@@ -119,6 +120,7 @@ namespace PlutoPoint_Installer
         string birthday = null;
         string pancake = null;
         string puffin = null;
+        string duck = null;
         string dachshund = null;
         string pluto = null;
         string hippo = null;
@@ -231,38 +233,45 @@ namespace PlutoPoint_Installer
             else if (valentines == "1")
             {
                 AppendLine("");
-                AppendLine("❤️ Happy Valentines day!");
+                AppendLine("❤️ Happy Valentines Day!");
                 AppendLine("");
             }
             else if (pancake == "1")
             {
                 AppendLine("");
-                AppendLine("🥞 It's pancake day!");
+                AppendLine("🥞 It's Pancake Day!");
                 AppendLine("🥞 Don't forget to have some pancakes you fat bastard!");
                 AppendLine("");
             }
             else if (puffin == "1")
             {
                 AppendLine("");
-                AppendLine("🐧 Today is world Puffin day!");
+                AppendLine("🐧 Today is World Puffin day!");
+                AppendLine("");
+            }
+            else if (duck == "1")
+            {
+                AppendLine("");
+                AppendLine("🦆 Today is National Duck day!");
+                AppendLine("Did someone say duck?");
                 AppendLine("");
             }
             else if (dachshund == "1")
             {
                 AppendLine("");
-                AppendLine("🌭 Today is world Dachshund day!");
+                AppendLine("🌭 Today is National Dachshund day!");
                 AppendLine("");
             }
             else if (hippo == "1")
             {
                 AppendLine("");
-                AppendLine("🦛 Today is world Hippo day!");
+                AppendLine("🦛 Today is World Hippo day!");
                 AppendLine("");
             }
             else if (rhino == "1")
             {
                 AppendLine("");
-                AppendLine("🦏 Today is world Rhino day!");
+                AppendLine("🦏 Today is World Rhino day!");
                 AppendLine("");
             }
             else if (birthday == "1" && !string.IsNullOrEmpty(birthdayName))
@@ -288,21 +297,30 @@ namespace PlutoPoint_Installer
                 }
             }
         }
+        private void SyncLabelsWithInstall()
+        {
+            versionLabel.ForeColor = install.BackColor;
+            locationLabel.ForeColor = install.BackColor;
+            versionLabel.LinkColor = install.BackColor;
+            versionLabel.ActiveLinkColor = install.BackColor;
+            versionLabel.VisitedLinkColor = install.BackColor;
+        }
         private void CheckChristmas()
         {
             if (DateTime.Now.Month == 12)
             {
                 christmas = "1";
-                this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(130)))), ((int)(((byte)(60)))));
-                install.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(214)))), ((int)(((byte)(0)))), ((int)(((byte)(28)))));
+                this.BackColor = System.Drawing.Color.FromArgb(0, 130, 60);
+                install.BackColor = System.Drawing.Color.FromArgb(214, 0, 28);
                 install.ForeColor = System.Drawing.Color.White;
-                close.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(214)))), ((int)(((byte)(0)))), ((int)(((byte)(28)))));
-                close.ForeColor = System.Drawing.Color.White;
-                restart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(214)))), ((int)(((byte)(0)))), ((int)(((byte)(28)))));
-                restart.ForeColor = System.Drawing.Color.White;
-                shutdown.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(214)))), ((int)(((byte)(0)))), ((int)(((byte)(28)))));
-                shutdown.ForeColor = System.Drawing.Color.White;
-                installerTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(135)))), ((int)(((byte)(62)))));
+                close.BackColor = install.BackColor;
+                close.ForeColor = install.ForeColor;
+                restart.BackColor = install.BackColor;
+                restart.ForeColor = install.ForeColor;
+                shutdown.BackColor = install.BackColor;
+                shutdown.ForeColor = install.ForeColor;
+                installerTextBox.BackColor = System.Drawing.Color.FromArgb(0, 135, 62);
+                SyncLabelsWithInstall();
                 this.Invalidate();
             }
         }
@@ -311,16 +329,18 @@ namespace PlutoPoint_Installer
             if (DateTime.Now.Month == 1 && (DateTime.Now.Day == 1 || DateTime.Now.Day == 2 || DateTime.Now.Day == 3 || DateTime.Now.Day == 4 || DateTime.Now.Day == 5 || DateTime.Now.Day == 6 || DateTime.Now.Day == 7))
             {
                 newyear = "1";
-                this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(247)))), ((int)(((byte)(183)))), ((int)(((byte)(58)))));
-                install.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(237)))), ((int)(((byte)(231)))));
+                this.BackColor = System.Drawing.Color.FromArgb(247, 183, 58);
+
+                install.BackColor = System.Drawing.Color.FromArgb(232, 237, 231);
                 install.ForeColor = System.Drawing.Color.Black;
-                close.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(237)))), ((int)(((byte)(231)))));
-                close.ForeColor = System.Drawing.Color.Black;
-                restart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(237)))), ((int)(((byte)(231)))));
-                restart.ForeColor = System.Drawing.Color.Black;
-                shutdown.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(237)))), ((int)(((byte)(231)))));
-                shutdown.ForeColor = System.Drawing.Color.Black;
-                installerTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(247)))), ((int)(((byte)(183)))), ((int)(((byte)(58)))));
+                close.BackColor = install.BackColor;
+                close.ForeColor = install.ForeColor;
+                restart.BackColor = install.BackColor;
+                restart.ForeColor = install.ForeColor;
+                shutdown.BackColor = install.BackColor;
+                shutdown.ForeColor = install.ForeColor;
+                installerTextBox.BackColor = this.BackColor;
+                SyncLabelsWithInstall();
                 this.Invalidate();
             }
         }
@@ -329,10 +349,15 @@ namespace PlutoPoint_Installer
             if (DateTime.Now.Month == 10 && (DateTime.Now.Day == 26 || DateTime.Now.Day == 27 || DateTime.Now.Day == 28 || DateTime.Now.Day == 29 || DateTime.Now.Day == 30 || DateTime.Now.Day == 31))
             {
                 halloween = "1";
-                install.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(252)))), ((int)(((byte)(76)))), ((int)(((byte)(2)))));
-                restart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(252)))), ((int)(((byte)(76)))), ((int)(((byte)(2)))));
-                shutdown.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(252)))), ((int)(((byte)(76)))), ((int)(((byte)(2)))));
-                close.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(252)))), ((int)(((byte)(76)))), ((int)(((byte)(2)))));
+                install.BackColor = System.Drawing.Color.FromArgb(252, 76, 2);
+                install.ForeColor = System.Drawing.Color.White;
+                restart.BackColor = install.BackColor;
+                restart.ForeColor = install.ForeColor;
+                shutdown.BackColor = install.BackColor;
+                shutdown.ForeColor = install.ForeColor;
+                close.BackColor = install.BackColor;
+                close.ForeColor = install.ForeColor;
+                SyncLabelsWithInstall();
                 this.Invalidate();
             }
         }
@@ -341,28 +366,41 @@ namespace PlutoPoint_Installer
             if (DateTime.Now.Month == 2 && DateTime.Now.Day == 14)
             {
                 valentines = "1";
-                this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(200)))), ((int)(((byte)(213)))));
-                install.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(160)))), ((int)(((byte)(0)))), ((int)(((byte)(28)))));
-                restart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(160)))), ((int)(((byte)(0)))), ((int)(((byte)(28)))));
-                shutdown.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(160)))), ((int)(((byte)(0)))), ((int)(((byte)(28)))));
-                close.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(160)))), ((int)(((byte)(0)))), ((int)(((byte)(28)))));
-                installerTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(200)))), ((int)(((byte)(213)))));
-                installerTextBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(160)))), ((int)(((byte)(0)))), ((int)(((byte)(28)))));
+                this.BackColor = System.Drawing.Color.FromArgb(231, 200, 213);
+                install.BackColor = System.Drawing.Color.FromArgb(160, 0, 28);
+                install.ForeColor = System.Drawing.Color.White;
+                restart.BackColor = install.BackColor;
+                restart.ForeColor = install.ForeColor;
+                shutdown.BackColor = install.BackColor;
+                shutdown.ForeColor = install.ForeColor;
+                close.BackColor = install.BackColor;
+                close.ForeColor = install.ForeColor;
+                installerTextBox.BackColor = this.BackColor;
+                installerTextBox.ForeColor = install.BackColor;
+                SyncLabelsWithInstall();
                 this.Invalidate();
             }
         }
+
         private void CheckPancake()
         {
-            if (DateTime.Now.Month == 3 && DateTime.Now.Day == 4 && DateTime.Now.Year == 2025 || DateTime.Now.Month == 2 && DateTime.Now.Day == 17 && DateTime.Now.Year == 2026 || DateTime.Now.Month == 2 && DateTime.Now.Day == 9 && DateTime.Now.Year == 2027 || DateTime.Now.Month == 2 && DateTime.Now.Day == 29 && DateTime.Now.Year == 2028)
+            if (DateTime.Now.Month == 2 && DateTime.Now.Day == 17 && DateTime.Now.Year == 2026
+                || DateTime.Now.Month == 2 && DateTime.Now.Day == 9 && DateTime.Now.Year == 2027
+                || DateTime.Now.Month == 2 && DateTime.Now.Day == 29 && DateTime.Now.Year == 2028)
             {
                 pancake = "1";
-                this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(183)))), ((int)(((byte)(139)))));
-                install.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(214)))), ((int)(((byte)(154)))), ((int)(((byte)(108)))));
-                restart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(214)))), ((int)(((byte)(154)))), ((int)(((byte)(108)))));
-                shutdown.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(214)))), ((int)(((byte)(154)))), ((int)(((byte)(108)))));
-                close.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(214)))), ((int)(((byte)(154)))), ((int)(((byte)(108)))));
-                installerTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(183)))), ((int)(((byte)(139)))));
-                installerTextBox.ForeColor = Color.Black;
+                this.BackColor = System.Drawing.Color.FromArgb(230, 183, 139);
+                install.BackColor = System.Drawing.Color.FromArgb(214, 154, 108);
+                install.ForeColor = System.Drawing.Color.Black;
+                restart.BackColor = install.BackColor;
+                restart.ForeColor = install.ForeColor;
+                shutdown.BackColor = install.BackColor;
+                shutdown.ForeColor = install.ForeColor;
+                close.BackColor = install.BackColor;
+                close.ForeColor = install.ForeColor;
+                installerTextBox.BackColor = this.BackColor;
+                installerTextBox.ForeColor = System.Drawing.Color.Black;
+                SyncLabelsWithInstall();
                 this.Invalidate();
             }
         }
@@ -373,12 +411,34 @@ namespace PlutoPoint_Installer
                 puffin = "1";
                 install.BackColor = System.Drawing.Color.White;
                 install.ForeColor = System.Drawing.Color.Black;
-                restart.BackColor = System.Drawing.Color.White;
-                restart.ForeColor = System.Drawing.Color.Black;
-                shutdown.BackColor = System.Drawing.Color.White;
-                shutdown.ForeColor = System.Drawing.Color.Black;
-                close.BackColor = System.Drawing.Color.White;
-                close.ForeColor = System.Drawing.Color.Black;
+                restart.BackColor = install.BackColor;
+                restart.ForeColor = install.ForeColor;
+                shutdown.BackColor = install.BackColor;
+                shutdown.ForeColor = install.ForeColor;
+                close.BackColor = install.BackColor;
+                close.ForeColor = install.ForeColor;
+                SyncLabelsWithInstall();
+                this.Invalidate();
+            }
+        }
+
+        private void CheckDuck()
+        {
+            if (DateTime.Now.Month == 4 && DateTime.Now.Day == 4)
+            {
+                duck = "1";
+                this.BackColor = System.Drawing.Color.FromArgb(199, 164, 110);
+                installerTextBox.BackColor = this.BackColor;
+                installerTextBox.ForeColor = System.Drawing.Color.FromArgb(76, 94, 64);
+                install.BackColor = System.Drawing.Color.FromArgb(76, 94, 64);
+                install.ForeColor = System.Drawing.Color.White;
+                restart.BackColor = install.BackColor;
+                restart.ForeColor = install.ForeColor;
+                shutdown.BackColor = install.BackColor;
+                shutdown.ForeColor = install.ForeColor;
+                close.BackColor = install.BackColor;
+                close.ForeColor = install.ForeColor;
+                SyncLabelsWithInstall();
                 this.Invalidate();
             }
         }
@@ -387,39 +447,38 @@ namespace PlutoPoint_Installer
             if (DateTime.Now.Month == 6 && DateTime.Now.Day == 21)
             {
                 dachshund = "1";
-                this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(224)))), ((int)(((byte)(205)))));
-                install.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(167)))), ((int)(((byte)(121)))), ((int)(((byte)(87)))));
-                install.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(224)))), ((int)(((byte)(205)))));
-                restart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(167)))), ((int)(((byte)(121)))), ((int)(((byte)(87)))));
-                restart.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(224)))), ((int)(((byte)(205)))));
-                shutdown.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(167)))), ((int)(((byte)(121)))), ((int)(((byte)(87)))));
-                shutdown.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(224)))), ((int)(((byte)(205)))));
-                close.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(167)))), ((int)(((byte)(121)))), ((int)(((byte)(87)))));   
-                close.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(224)))), ((int)(((byte)(205)))));
-                installerTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(167)))), ((int)(((byte)(121)))), ((int)(((byte)(87)))));
-                installerTextBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(224)))), ((int)(((byte)(205)))));
-                versionLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(167)))), ((int)(((byte)(121)))), ((int)(((byte)(87)))));
+                this.BackColor = System.Drawing.Color.FromArgb(245, 224, 205);
+                install.BackColor = System.Drawing.Color.FromArgb(167, 121, 87);
+                install.ForeColor = System.Drawing.Color.FromArgb(245, 224, 205);
+                restart.BackColor = install.BackColor;
+                restart.ForeColor = install.ForeColor;
+                shutdown.BackColor = install.BackColor;
+                shutdown.ForeColor = install.ForeColor;
+                close.BackColor = install.BackColor;
+                close.ForeColor = install.ForeColor;
+                installerTextBox.BackColor = install.BackColor;
+                installerTextBox.ForeColor = install.ForeColor;
+                SyncLabelsWithInstall();
                 this.Invalidate();
             }
         }
-
         private void CheckPluto()
         {
             if (DateTime.Now.Month == 3 && DateTime.Now.Day == 12)
             {
                 pluto = "1";
-                this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(224)))), ((int)(((byte)(205)))));
-                install.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(167)))), ((int)(((byte)(121)))), ((int)(((byte)(87)))));
-                install.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(224)))), ((int)(((byte)(205)))));
-                restart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(167)))), ((int)(((byte)(121)))), ((int)(((byte)(87)))));
-                restart.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(224)))), ((int)(((byte)(205)))));
-                shutdown.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(167)))), ((int)(((byte)(121)))), ((int)(((byte)(87)))));
-                shutdown.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(224)))), ((int)(((byte)(205)))));
-                close.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(167)))), ((int)(((byte)(121)))), ((int)(((byte)(87)))));
-                close.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(224)))), ((int)(((byte)(205)))));
-                installerTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(167)))), ((int)(((byte)(121)))), ((int)(((byte)(87)))));
-                installerTextBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(224)))), ((int)(((byte)(205)))));
-                versionLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(167)))), ((int)(((byte)(121)))), ((int)(((byte)(87)))));
+                this.BackColor = System.Drawing.Color.FromArgb(245, 224, 205);
+                install.BackColor = System.Drawing.Color.FromArgb(167, 121, 87);
+                install.ForeColor = System.Drawing.Color.FromArgb(245, 224, 205);
+                restart.BackColor = install.BackColor;
+                restart.ForeColor = install.ForeColor;
+                shutdown.BackColor = install.BackColor;
+                shutdown.ForeColor = install.ForeColor;
+                close.BackColor = install.BackColor;
+                close.ForeColor = install.ForeColor;
+                installerTextBox.BackColor = install.BackColor;
+                installerTextBox.ForeColor = install.ForeColor;
+                SyncLabelsWithInstall();
                 this.Invalidate();
             }
         }
@@ -429,218 +488,184 @@ namespace PlutoPoint_Installer
             if (DateTime.Now.Month == 2 && DateTime.Now.Day == 15)
             {
                 hippo = "1";
-                this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(83)))), ((int)(((byte)(83)))), ((int)(((byte)(83)))));
-                install.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(66)))), ((int)(((byte)(66)))), ((int)(((byte)(66)))));
+                this.BackColor = System.Drawing.Color.FromArgb(83, 83, 83);
+                install.BackColor = System.Drawing.Color.FromArgb(66, 66, 66);
                 install.ForeColor = System.Drawing.Color.White;
-                restart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(66)))), ((int)(((byte)(66)))), ((int)(((byte)(66)))));
-                restart.ForeColor = System.Drawing.Color.White;
-                shutdown.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(66)))), ((int)(((byte)(66)))), ((int)(((byte)(66)))));
-                shutdown.ForeColor = System.Drawing.Color.White;
-                close.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(66)))), ((int)(((byte)(66)))), ((int)(((byte)(66)))));
-                close.ForeColor = System.Drawing.Color.White;
-                installerTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(83)))), ((int)(((byte)(83)))), ((int)(((byte)(83)))));
+                restart.BackColor = install.BackColor;
+                restart.ForeColor = install.ForeColor;
+                shutdown.BackColor = install.BackColor;
+                shutdown.ForeColor = install.ForeColor;
+                close.BackColor = install.BackColor;
+                close.ForeColor = install.ForeColor;
+                installerTextBox.BackColor = this.BackColor;
                 installerTextBox.ForeColor = System.Drawing.Color.White;
-                versionLabel.LinkColor = System.Drawing.Color.White;
+                SyncLabelsWithInstall();
                 this.Invalidate();
             }
         }
+
         private void CheckRhino()
         {
             if (DateTime.Now.Month == 9 && DateTime.Now.Day == 22)
             {
                 rhino = "1";
-                this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(83)))), ((int)(((byte)(83)))), ((int)(((byte)(83)))));
-                install.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(66)))), ((int)(((byte)(66)))), ((int)(((byte)(66)))));
+                this.BackColor = System.Drawing.Color.FromArgb(83, 83, 83);
+                install.BackColor = System.Drawing.Color.FromArgb(66, 66, 66);
                 install.ForeColor = System.Drawing.Color.White;
-                restart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(66)))), ((int)(((byte)(66)))), ((int)(((byte)(66)))));
-                restart.ForeColor = System.Drawing.Color.White;
-                shutdown.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(66)))), ((int)(((byte)(66)))), ((int)(((byte)(66)))));
-                shutdown.ForeColor = System.Drawing.Color.White;
-                close.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(66)))), ((int)(((byte)(66)))), ((int)(((byte)(66)))));
-                close.ForeColor = System.Drawing.Color.White;
-                installerTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(83)))), ((int)(((byte)(83)))), ((int)(((byte)(83)))));
+                restart.BackColor = install.BackColor;
+                restart.ForeColor = install.ForeColor;
+                shutdown.BackColor = install.BackColor;
+                shutdown.ForeColor = install.ForeColor;
+                close.BackColor = install.BackColor;
+                close.ForeColor = install.ForeColor;
+                installerTextBox.BackColor = this.BackColor;
                 installerTextBox.ForeColor = System.Drawing.Color.White;
-                versionLabel.LinkColor = System.Drawing.Color.White;
+                SyncLabelsWithInstall();
                 this.Invalidate();
             }
         }
+
+        private void ApplyBirthdayTheme(string name)
+        {
+            birthday = "1";
+            birthdayName = name;
+            this.BackColor = System.Drawing.Color.FromArgb(155, 211, 221);
+            install.BackColor = System.Drawing.Color.FromArgb(242, 172, 185);
+            install.ForeColor = System.Drawing.Color.Black;
+            restart.BackColor = install.BackColor;
+            restart.ForeColor = install.ForeColor;
+            shutdown.BackColor = install.BackColor;
+            shutdown.ForeColor = install.ForeColor;
+            close.BackColor = install.BackColor;
+            close.ForeColor = install.ForeColor;
+            installerTextBox.BackColor = install.BackColor;
+            installerTextBox.ForeColor = System.Drawing.Color.Black;
+            SyncLabelsWithInstall();
+            this.Invalidate();
+        }
+
         private void CheckCharlieBirthday()
         {
             if (DateTime.Now.Month == 4 && DateTime.Now.Day == 6)
-            {
-                birthday = "1";
-                birthdayName = "Charlie";
-                this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(155)))), ((int)(((byte)(211)))), ((int)(((byte)(221)))));
-                install.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
-                restart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
-                shutdown.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
-                close.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
-                installerTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
-                installerTextBox.ForeColor = System.Drawing.Color.Black;
-                this.Invalidate();
-            }
+                ApplyBirthdayTheme("Charlie");
         }
         private void CheckDeanBirthday()
         {
             if (DateTime.Now.Month == 4 && DateTime.Now.Day == 21)
-            {
-                birthday = "1";
-                birthdayName = "Dean";
-                this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(155)))), ((int)(((byte)(211)))), ((int)(((byte)(221)))));
-                install.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
-                restart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
-                shutdown.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
-                close.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
-                installerTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
-                installerTextBox.ForeColor = System.Drawing.Color.Black;
-                this.Invalidate();
-            }
+                ApplyBirthdayTheme("Dean");
         }
         private void CheckSteveBirthday()
         {
             if (DateTime.Now.Month == 6 && DateTime.Now.Day == 24)
-            {
-                birthday = "1";
-                birthdayName = "Steve";
-                this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(155)))), ((int)(((byte)(211)))), ((int)(((byte)(221)))));
-                install.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
-                restart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
-                shutdown.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
-                close.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
-                installerTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
-                installerTextBox.ForeColor = System.Drawing.Color.Black;
-                this.Invalidate();
-            }
+                ApplyBirthdayTheme("Steve");
         }
         private void CheckHowardBirthday()
         {
             if (DateTime.Now.Month == 5 && DateTime.Now.Day == 16)
-            {
-                birthday = "1";
-                birthdayName = "Howard";
-                this.BackColor = System.Drawing.Color.FromArgb(155, 211, 221);
-                install.BackColor = System.Drawing.Color.FromArgb(242, 172, 185);
-                restart.BackColor = System.Drawing.Color.FromArgb(242, 172, 185);
-                shutdown.BackColor = System.Drawing.Color.FromArgb(242, 172, 185);
-                close.BackColor = System.Drawing.Color.FromArgb(242, 172, 185);
-                installerTextBox.BackColor = System.Drawing.Color.FromArgb(242, 172, 185);
-                installerTextBox.ForeColor = System.Drawing.Color.Black;
-
-                this.Invalidate();
-            }
+                ApplyBirthdayTheme("Howard");
         }
         private void CheckAdamBirthday()
         {
             if (DateTime.Now.Month == 6 && DateTime.Now.Day == 9)
-            {
-                birthday = "1";
-                birthdayName = "Adam";
-                this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(155)))), ((int)(((byte)(211)))), ((int)(((byte)(221)))));
-                install.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
-                restart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
-                shutdown.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
-                close.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
-                installerTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
-                installerTextBox.ForeColor = System.Drawing.Color.Black;
-                this.Invalidate();
-            }
+                ApplyBirthdayTheme("Adam");
         }
         private void CheckGeethBirthday()
         {
             if (DateTime.Now.Month == 7 && DateTime.Now.Day == 25)
-            {
-                birthday = "1";
-                birthdayName = "Geeth";
-                this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(155)))), ((int)(((byte)(211)))), ((int)(((byte)(221)))));
-                install.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
-                restart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
-                shutdown.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
-                close.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
-                installerTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(172)))), ((int)(((byte)(185)))));
-                installerTextBox.ForeColor = System.Drawing.Color.Black;
-                this.Invalidate();
-            }
+                ApplyBirthdayTheme("Geeth");
         }
-        private void UpdateOverlayFromFlags()
+        private void AdjustInstallerTextBoxSizeForOverlay()
+        {
+            bool hasOverlayImage = (_overlayImage != null);
+
+            this.installerTextBox.Size = hasOverlayImage
+                ? new System.Drawing.Size(521, 258)
+                : new System.Drawing.Size(521, 355);
+        }
+        private void UpdateGUIEvent()
         {
             _overlayImage = null;
             _overlayIcon = null;
             _overlayRotationDegrees = 0f;
 
-            _overlayX = 160;
+            _overlayX = 670;
             _overlayY = 320;
-            _overlayWidth = 100;
-            _overlayHeight = 100;
+
             if (christmas == "1")
             {
                 _overlayImage = Properties.Resources.christmasTree;
                 _overlayIcon = PlutoPoint_Installer.Properties.Resources.computerRepairCentreIconChristmas;
-                _overlayX = 160; _overlayY = 320; _overlayWidth = 100; _overlayHeight = 100;
             }
             else if (newyear == "1")
             {
                 _overlayImage = Properties.Resources.newyear;
                 _overlayIcon = null;
-                _overlayX = 160; _overlayY = 320; _overlayWidth = 100; _overlayHeight = 100;
             }
             else if (halloween == "1")
             {
                 _overlayImage = Properties.Resources.pumpkin;
                 _overlayIcon = PlutoPoint_Installer.Properties.Resources.computerRepairCentreIconHalloween;
-                _overlayX = 160; _overlayY = 320; _overlayWidth = 100; _overlayHeight = 100;
             }
             else if (valentines == "1")
             {
                 _overlayImage = Properties.Resources.heart;
                 _overlayIcon = PlutoPoint_Installer.Properties.Resources.computerRepairCentreIconValentines;
                 _overlayRotationDegrees = 30f;
-                _overlayX = 160; _overlayY = 320; _overlayWidth = 100; _overlayHeight = 100;
             }
             else if (pancake == "1")
             {
                 _overlayImage = Properties.Resources.pancake;
                 _overlayIcon = null;
-                _overlayX = 160; _overlayY = 320; _overlayWidth = 100; _overlayHeight = 100;
             }
             else if (puffin == "1")
             {
                 _overlayImage = Properties.Resources.puffin;
                 _overlayIcon = PlutoPoint_Installer.Properties.Resources.computerRepairCentreIconPuffin;
-                _overlayX = 320; _overlayY = 320; _overlayWidth = 100; _overlayHeight = 100;
+            }
+            else if (duck == "1")
+            {
+                _overlayImage = Properties.Resources.duck;
             }
             else if (dachshund == "1")
             {
                 _overlayImage = Properties.Resources.pluto;
                 _overlayIcon = PlutoPoint_Installer.Properties.Resources.plutoLogo;
-                _overlayX = 140; _overlayY = 320; _overlayWidth = 130; _overlayHeight = 100;
             }
             else if (pluto == "1")
             {
                 _overlayImage = Properties.Resources.pluto;
                 _overlayIcon = PlutoPoint_Installer.Properties.Resources.plutoLogo;
-                _overlayX = 140; _overlayY = 320; _overlayWidth = 130; _overlayHeight = 100;
-            }
+           }
             else if (hippo == "1")
             {
                 _overlayImage = Properties.Resources.hippo;
                 _overlayIcon = null;
-                _overlayX = 140; _overlayY = 320; _overlayWidth = 130; _overlayHeight = 100;
             }
             else if (rhino == "1")
             {
                 _overlayImage = Properties.Resources.rhino;
                 _overlayIcon = null;
-                _overlayX = 140; _overlayY = 320; _overlayWidth = 120; _overlayHeight = 100;
             }
             else if (birthday == "1")
             {
                 _overlayImage = Properties.Resources.present;
                 _overlayIcon = PlutoPoint_Installer.Properties.Resources.computerRepairCentreIconBirthday;
-                _overlayX = 160; _overlayY = 320; _overlayWidth = 100; _overlayHeight = 100;
             }
+
             if (_overlayIcon != null && this.Icon != _overlayIcon)
                 this.Icon = _overlayIcon;
+            AdjustInstallerTextBoxSizeForOverlay();
             this.Invalidate();
+        }
+        private static Rectangle GetScaledRect(Image img, int x, int y, int maxW, int maxH)
+        {
+            float ratioX = (float)maxW / img.Width;
+            float ratioY = (float)maxH / img.Height;
+            float ratio = Math.Min(ratioX, ratioY);
+            ratio = Math.Min(ratio, 1f);
+            int w = (int)Math.Round(img.Width * ratio);
+            int h = (int)Math.Round(img.Height * ratio);
+            return new Rectangle(x, y, w, h);
         }
         protected override void OnPaint(PaintEventArgs e)
         {
@@ -652,9 +677,7 @@ namespace PlutoPoint_Installer
             e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             e.Graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBilinear;
             e.Graphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
-
-            var dest = new Rectangle(_overlayX, _overlayY, _overlayWidth, _overlayHeight);
-
+            var dest = GetScaledRect(_overlayImage, _overlayX, _overlayY, 100, 100);
             if (_overlayRotationDegrees == 0f)
             {
                 e.Graphics.DrawImage(_overlayImage, dest);
@@ -663,13 +686,11 @@ namespace PlutoPoint_Installer
             var state = e.Graphics.Save();
             try
             {
-                float cx = _overlayX + (_overlayWidth / 2f);
-                float cy = _overlayY + (_overlayHeight / 2f);
-
+                float cx = dest.X + (dest.Width / 2f);
+                float cy = dest.Y + (dest.Height / 2f);
                 e.Graphics.TranslateTransform(cx, cy);
                 e.Graphics.RotateTransform(_overlayRotationDegrees);
                 e.Graphics.TranslateTransform(-cx, -cy);
-
                 e.Graphics.DrawImage(_overlayImage, dest);
             }
             finally
@@ -677,7 +698,6 @@ namespace PlutoPoint_Installer
                 e.Graphics.Restore(state);
             }
         }
-
         protected void OverrideRoundedBoxColours()
         {
             roundedGroupBox1.BorderColorOverride = versionLabel.LinkColor;
@@ -1195,26 +1215,6 @@ namespace PlutoPoint_Installer
             else if (valentines == "1")
             {
                 player = new SoundPlayer(Properties.Resources.valentines);
-            }
-            else if (pancake == "1")
-            {
-                player = new SoundPlayer(Properties.Resources.win98shutdown);
-            }
-            else if (puffin == "1")
-            {
-                player = new SoundPlayer(Properties.Resources.win98shutdown);
-            }
-            else if (dachshund == "1")
-            {
-                player = new SoundPlayer(Properties.Resources.win98shutdown);
-            }
-            else if (hippo == "1")
-            {
-                player = new SoundPlayer(Properties.Resources.win98shutdown);
-            }
-            else if (rhino == "1")
-            {
-                player = new SoundPlayer(Properties.Resources.win98shutdown);
             }
             else if (birthday == "1")
             {
