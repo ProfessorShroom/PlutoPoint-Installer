@@ -104,6 +104,12 @@
     <Compile Include="AssemblyUpdateDateAttribute.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RoundedGroupBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="RoundedProgressBar.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <EmbeddedResource Include="PlutoPoint Installer.resx">
       <DependentUpon>PlutoPoint Installer.cs</DependentUpon>
     </EmbeddedResource>

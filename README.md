@@ -1,6 +1,6 @@
  ![Arch](https://img.shields.io/badge/Arch-AMD64-blue) ![OS](https://img.shields.io/badge/OS-Windows%207%20|Windows%208(.1)%20|Windows%2010%20|%20Windows%2011-green)
 
-## PlutoPoint Installer Version 6.5.4.1
+## PlutoPoint Installer Version 6.6.0.0
 #### Copyright © Charlie Howard 2026 All rights reserved.
 
 A C# based GUI installer for Windows 10/11, it should also run on Windows 7, 8 & 8.1 but this isn't tested.
@@ -17,11 +17,21 @@ Disables sleep and screen timeout if plugged into AC power during the install an
 
 #### Latest Update
 
+**Update 6.6.0.0**
+
+- The Gradient Update.
+- Added gradient background.
+- Changed RichTextBox to a label within a panel to allow transparency.
+- Make all objects transparent.
+- Reconfigured AppendText to support label.
+- Added a custom rounded progress bar with gradient support.
+- Moved the rounded group box to its own cs file.
+
+#### Older Updates
+
 **Update 6.5.4.1**
 
 - Corrected minor typo.
-
-#### Older Updates
 
 **Update 6.5.4.0**
 

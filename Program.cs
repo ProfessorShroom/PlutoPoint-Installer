@@ -17,7 +17,10 @@ namespace PlutoPoint_Installer
         static void Main()
         {
             Application.EnableVisualStyles();
+
+            // Makes custom fonts render cleaner in WinForms
             Application.SetCompatibleTextRenderingDefault(false);
+
             Application.Run(new installerForm());
         }
 
@@ -51,7 +54,11 @@ namespace PlutoPoint_Installer
         {
             IntPtr ptr = Marshal.AllocCoTaskMem(fontData.Length);
             Marshal.Copy(fontData, 0, ptr, fontData.Length);
+
             _fonts.AddMemoryFont(ptr, fontData.Length);
+
+            // Prevent memory leak
+            Marshal.FreeCoTaskMem(ptr);
         }
     }
 }

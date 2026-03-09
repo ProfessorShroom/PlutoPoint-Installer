@@ -13,6 +13,7 @@ using System.Security.Cryptography;
 using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 using Shell32;
+using System.Drawing.Drawing2D;
 
 
 // Copyright © Charlie Howard 2026 All rights reserved.
@@ -33,6 +34,8 @@ namespace PlutoPoint_Installer
     {
         DateTime buildDate = File.GetLastWriteTime(Assembly.GetExecutingAssembly().Location);
         private bool isClickPlaying = false;
+        private Color _gradientTop = Color.FromArgb(30, 200, 255);
+        private Color _gradientBottom = Color.FromArgb(140, 0, 255);
         [DllImport("Shell32.dll", CharSet = CharSet.Unicode)]
         private static extern uint SHEmptyRecycleBin(IntPtr hwnd, string pszRootPath, uint dwFlags);
         private const uint SHERB_NOCONFIRMATION = 0x00000001;
@@ -41,11 +44,19 @@ namespace PlutoPoint_Installer
         public installerForm()
         {
             InitializeComponent();
+            
+            // Font
             this.installerTextBox.Font = Program.Ubuntu(12f, FontStyle.Regular);
+            // Sounds
             SoundPlayer hoverSound = new SoundPlayer(Properties.Resources.buttonHover);
             SoundPlayer clickSound = new SoundPlayer(Properties.Resources.buttonHover);
+            // Shutdown/restart checks
             shutdownCheck.CheckedChanged += ShutdownCheck_CheckedChanged;
             restartCheck.CheckedChanged += RestartCheck_CheckedChanged;
+            // Gradient/transparency
+            this.SetStyle(ControlStyles.AllPaintingInWmPaint |
+                          ControlStyles.UserPaint |
+                          ControlStyles.OptimizedDoubleBuffer, true);
             this.DoubleBuffered = true;
             void PlayHover()
             {
@@ -150,6 +161,24 @@ namespace PlutoPoint_Installer
         private float _overlayRotationDegrees;
         private const string charliePasswordHash = "61a8b0026371a90d41b114644694485ecdaf999473977a125d028e39cb6d77b2";
         private const string CRCPasswordHash = "1c98fa014f3400abee047920e535036a74661fa0c88f34d24ebed7866a1fc630";
+        protected override void OnPaintBackground(PaintEventArgs e)
+        {
+            base.OnPaintBackground(e);
+
+            if (this.ClientSize.Width <= 0 || this.ClientSize.Height <= 0)
+                return;
+            e.Graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+
+            using (LinearGradientBrush brush = new LinearGradientBrush(
+                new Point(0, 0),
+                new Point(this.ClientSize.Width, this.ClientSize.Height),
+                _gradientTop,
+                _gradientBottom))
+            {
+                e.Graphics.FillRectangle(brush, this.ClientRectangle);
+            }
+        }
         private void PrintVersion()
         {
             Version version = Assembly.GetExecutingAssembly().GetName().Version;
@@ -297,86 +326,113 @@ namespace PlutoPoint_Installer
                 }
             }
         }
+        private void ApplyButtonTheme(Color backColor, Color foreColor)
+        {
+            install.BackColor = backColor;
+            install.ForeColor = foreColor;
+
+            restart.BackColor = backColor;
+            restart.ForeColor = foreColor;
+
+            shutdown.BackColor = backColor;
+            shutdown.ForeColor = foreColor;
+
+            close.BackColor = backColor;
+            close.ForeColor = foreColor;
+        }
+
+        private void ApplyGradientTheme(Color topColor, Color bottomColor)
+        {
+            _gradientTop = topColor;
+            _gradientBottom = bottomColor;
+        }
+
+        private void ApplyLogTheme(Color foreColor)
+        {
+            installerTextBox.ForeColor = foreColor;
+        }
+
         private void SyncLabelsWithInstall()
         {
             versionLabel.ForeColor = install.BackColor;
             locationLabel.ForeColor = install.BackColor;
-            versionLabel.LinkColor = install.BackColor;
-            versionLabel.ActiveLinkColor = install.BackColor;
-            versionLabel.VisitedLinkColor = install.BackColor;
+
+            if (versionLabel is LinkLabel linkLabel)
+            {
+                linkLabel.LinkColor = install.BackColor;
+                linkLabel.ActiveLinkColor = install.BackColor;
+                linkLabel.VisitedLinkColor = install.BackColor;
+            }
         }
+
         private void CheckChristmas()
         {
             if (DateTime.Now.Month == 12)
             {
                 christmas = "1";
-                this.BackColor = System.Drawing.Color.FromArgb(0, 130, 60);
-                install.BackColor = System.Drawing.Color.FromArgb(214, 0, 28);
-                install.ForeColor = System.Drawing.Color.White;
-                close.BackColor = install.BackColor;
-                close.ForeColor = install.ForeColor;
-                restart.BackColor = install.BackColor;
-                restart.ForeColor = install.ForeColor;
-                shutdown.BackColor = install.BackColor;
-                shutdown.ForeColor = install.ForeColor;
-                installerTextBox.BackColor = System.Drawing.Color.FromArgb(0, 135, 62);
+                ApplyGradientTheme(
+                    Color.FromArgb(18, 110, 58),
+                    Color.FromArgb(120, 18, 32));
+                ApplyButtonTheme(
+                    Color.FromArgb(220, 235, 225),
+                    Color.FromArgb(120, 18, 32));
+                ApplyLogTheme(Color.White);
                 SyncLabelsWithInstall();
                 this.Invalidate();
             }
         }
+
         private void CheckNewYear()
         {
-            if (DateTime.Now.Month == 1 && (DateTime.Now.Day == 1 || DateTime.Now.Day == 2 || DateTime.Now.Day == 3 || DateTime.Now.Day == 4 || DateTime.Now.Day == 5 || DateTime.Now.Day == 6 || DateTime.Now.Day == 7))
+            if (DateTime.Now.Month == 1 &&
+                (DateTime.Now.Day == 1 || DateTime.Now.Day == 2 || DateTime.Now.Day == 3 ||
+                 DateTime.Now.Day == 4 || DateTime.Now.Day == 5 || DateTime.Now.Day == 6 ||
+                 DateTime.Now.Day == 7))
             {
                 newyear = "1";
-                this.BackColor = System.Drawing.Color.FromArgb(247, 183, 58);
-
-                install.BackColor = System.Drawing.Color.FromArgb(232, 237, 231);
-                install.ForeColor = System.Drawing.Color.Black;
-                close.BackColor = install.BackColor;
-                close.ForeColor = install.ForeColor;
-                restart.BackColor = install.BackColor;
-                restart.ForeColor = install.ForeColor;
-                shutdown.BackColor = install.BackColor;
-                shutdown.ForeColor = install.ForeColor;
-                installerTextBox.BackColor = this.BackColor;
+                ApplyGradientTheme(
+                    Color.FromArgb(255, 210, 90),
+                    Color.FromArgb(198, 140, 35));
+                ApplyButtonTheme(
+                    Color.FromArgb(245, 245, 240),
+                    Color.FromArgb(110, 80, 20));
+                ApplyLogTheme(Color.FromArgb(90, 65, 15));
                 SyncLabelsWithInstall();
                 this.Invalidate();
             }
         }
+
         private void CheckHalloween()
         {
-            if (DateTime.Now.Month == 10 && (DateTime.Now.Day == 26 || DateTime.Now.Day == 27 || DateTime.Now.Day == 28 || DateTime.Now.Day == 29 || DateTime.Now.Day == 30 || DateTime.Now.Day == 31))
+            if (DateTime.Now.Month == 10 &&
+                (DateTime.Now.Day == 26 || DateTime.Now.Day == 27 || DateTime.Now.Day == 28 ||
+                 DateTime.Now.Day == 29 || DateTime.Now.Day == 30 || DateTime.Now.Day == 31))
             {
                 halloween = "1";
-                install.BackColor = System.Drawing.Color.FromArgb(252, 76, 2);
-                install.ForeColor = System.Drawing.Color.White;
-                restart.BackColor = install.BackColor;
-                restart.ForeColor = install.ForeColor;
-                shutdown.BackColor = install.BackColor;
-                shutdown.ForeColor = install.ForeColor;
-                close.BackColor = install.BackColor;
-                close.ForeColor = install.ForeColor;
+                ApplyGradientTheme(
+                    Color.FromArgb(35, 35, 35),
+                    Color.FromArgb(120, 45, 0));
+                ApplyButtonTheme(
+                    Color.FromArgb(252, 104, 18),
+                    Color.White);
+                ApplyLogTheme(Color.White);
                 SyncLabelsWithInstall();
                 this.Invalidate();
             }
         }
+
         private void CheckValentines()
         {
             if (DateTime.Now.Month == 2 && DateTime.Now.Day == 14)
             {
                 valentines = "1";
-                this.BackColor = System.Drawing.Color.FromArgb(231, 200, 213);
-                install.BackColor = System.Drawing.Color.FromArgb(160, 0, 28);
-                install.ForeColor = System.Drawing.Color.White;
-                restart.BackColor = install.BackColor;
-                restart.ForeColor = install.ForeColor;
-                shutdown.BackColor = install.BackColor;
-                shutdown.ForeColor = install.ForeColor;
-                close.BackColor = install.BackColor;
-                close.ForeColor = install.ForeColor;
-                installerTextBox.BackColor = this.BackColor;
-                installerTextBox.ForeColor = install.BackColor;
+                ApplyGradientTheme(
+                    Color.FromArgb(245, 215, 225),
+                    Color.FromArgb(214, 150, 175));
+                ApplyButtonTheme(
+                    Color.FromArgb(160, 24, 60),
+                    Color.White);
+                ApplyLogTheme(Color.FromArgb(135, 20, 50));
                 SyncLabelsWithInstall();
                 this.Invalidate();
             }
@@ -384,39 +440,35 @@ namespace PlutoPoint_Installer
 
         private void CheckPancake()
         {
-            if (DateTime.Now.Month == 2 && DateTime.Now.Day == 17 && DateTime.Now.Year == 2026
-                || DateTime.Now.Month == 2 && DateTime.Now.Day == 9 && DateTime.Now.Year == 2027
-                || DateTime.Now.Month == 2 && DateTime.Now.Day == 29 && DateTime.Now.Year == 2028)
+            if ((DateTime.Now.Month == 2 && DateTime.Now.Day == 17 && DateTime.Now.Year == 2026) ||
+                (DateTime.Now.Month == 2 && DateTime.Now.Day == 9 && DateTime.Now.Year == 2027) ||
+                (DateTime.Now.Month == 2 && DateTime.Now.Day == 29 && DateTime.Now.Year == 2028))
             {
                 pancake = "1";
-                this.BackColor = System.Drawing.Color.FromArgb(230, 183, 139);
-                install.BackColor = System.Drawing.Color.FromArgb(214, 154, 108);
-                install.ForeColor = System.Drawing.Color.Black;
-                restart.BackColor = install.BackColor;
-                restart.ForeColor = install.ForeColor;
-                shutdown.BackColor = install.BackColor;
-                shutdown.ForeColor = install.ForeColor;
-                close.BackColor = install.BackColor;
-                close.ForeColor = install.ForeColor;
-                installerTextBox.BackColor = this.BackColor;
-                installerTextBox.ForeColor = System.Drawing.Color.Black;
+                ApplyGradientTheme(
+                    Color.FromArgb(242, 200, 150),
+                    Color.FromArgb(205, 145, 95));
+                ApplyButtonTheme(
+                    Color.FromArgb(176, 116, 72),
+                    Color.FromArgb(255, 245, 225));
+                ApplyLogTheme(Color.FromArgb(95, 55, 25));
                 SyncLabelsWithInstall();
                 this.Invalidate();
             }
         }
+
         private void CheckPuffin()
         {
             if (DateTime.Now.Month == 4 && DateTime.Now.Day == 14)
             {
                 puffin = "1";
-                install.BackColor = System.Drawing.Color.White;
-                install.ForeColor = System.Drawing.Color.Black;
-                restart.BackColor = install.BackColor;
-                restart.ForeColor = install.ForeColor;
-                shutdown.BackColor = install.BackColor;
-                shutdown.ForeColor = install.ForeColor;
-                close.BackColor = install.BackColor;
-                close.ForeColor = install.ForeColor;
+                ApplyGradientTheme(
+                    Color.FromArgb(35, 45, 70),
+                    Color.FromArgb(90, 125, 160));
+                ApplyButtonTheme(
+                    Color.FromArgb(245, 245, 245),
+                    Color.FromArgb(35, 45, 70));
+                ApplyLogTheme(Color.White);
                 SyncLabelsWithInstall();
                 this.Invalidate();
             }
@@ -427,57 +479,47 @@ namespace PlutoPoint_Installer
             if (DateTime.Now.Month == 4 && DateTime.Now.Day == 4)
             {
                 duck = "1";
-                this.BackColor = System.Drawing.Color.FromArgb(199, 164, 110);
-                installerTextBox.BackColor = this.BackColor;
-                installerTextBox.ForeColor = System.Drawing.Color.FromArgb(76, 94, 64);
-                install.BackColor = System.Drawing.Color.FromArgb(76, 94, 64);
-                install.ForeColor = System.Drawing.Color.White;
-                restart.BackColor = install.BackColor;
-                restart.ForeColor = install.ForeColor;
-                shutdown.BackColor = install.BackColor;
-                shutdown.ForeColor = install.ForeColor;
-                close.BackColor = install.BackColor;
-                close.ForeColor = install.ForeColor;
+                ApplyGradientTheme(
+                    Color.FromArgb(215, 185, 125),
+                    Color.FromArgb(150, 120, 78));
+                ApplyButtonTheme(
+                    Color.FromArgb(76, 94, 64),
+                    Color.White);
+                ApplyLogTheme(Color.FromArgb(76, 94, 64));
                 SyncLabelsWithInstall();
                 this.Invalidate();
             }
         }
+
         private void CheckDachshund()
         {
             if (DateTime.Now.Month == 6 && DateTime.Now.Day == 21)
             {
                 dachshund = "1";
-                this.BackColor = System.Drawing.Color.FromArgb(245, 224, 205);
-                install.BackColor = System.Drawing.Color.FromArgb(167, 121, 87);
-                install.ForeColor = System.Drawing.Color.FromArgb(245, 224, 205);
-                restart.BackColor = install.BackColor;
-                restart.ForeColor = install.ForeColor;
-                shutdown.BackColor = install.BackColor;
-                shutdown.ForeColor = install.ForeColor;
-                close.BackColor = install.BackColor;
-                close.ForeColor = install.ForeColor;
-                installerTextBox.BackColor = install.BackColor;
-                installerTextBox.ForeColor = install.ForeColor;
+                ApplyGradientTheme(
+                    Color.FromArgb(245, 228, 212),
+                    Color.FromArgb(205, 170, 138));
+                ApplyButtonTheme(
+                    Color.FromArgb(145, 95, 62),
+                    Color.FromArgb(250, 240, 225));
+                ApplyLogTheme(Color.FromArgb(110, 72, 45));
                 SyncLabelsWithInstall();
                 this.Invalidate();
             }
         }
+
         private void CheckPluto()
         {
             if (DateTime.Now.Month == 3 && DateTime.Now.Day == 12)
             {
                 pluto = "1";
-                this.BackColor = System.Drawing.Color.FromArgb(245, 224, 205);
-                install.BackColor = System.Drawing.Color.FromArgb(167, 121, 87);
-                install.ForeColor = System.Drawing.Color.FromArgb(245, 224, 205);
-                restart.BackColor = install.BackColor;
-                restart.ForeColor = install.ForeColor;
-                shutdown.BackColor = install.BackColor;
-                shutdown.ForeColor = install.ForeColor;
-                close.BackColor = install.BackColor;
-                close.ForeColor = install.ForeColor;
-                installerTextBox.BackColor = install.BackColor;
-                installerTextBox.ForeColor = install.ForeColor;
+                ApplyGradientTheme(
+                    Color.FromArgb(242, 225, 210),
+                    Color.FromArgb(182, 132, 92));
+                ApplyButtonTheme(
+                    Color.FromArgb(132, 88, 58),
+                    Color.FromArgb(248, 238, 228));
+                ApplyLogTheme(Color.FromArgb(108, 72, 48));
                 SyncLabelsWithInstall();
                 this.Invalidate();
             }
@@ -488,17 +530,13 @@ namespace PlutoPoint_Installer
             if (DateTime.Now.Month == 2 && DateTime.Now.Day == 15)
             {
                 hippo = "1";
-                this.BackColor = System.Drawing.Color.FromArgb(83, 83, 83);
-                install.BackColor = System.Drawing.Color.FromArgb(66, 66, 66);
-                install.ForeColor = System.Drawing.Color.White;
-                restart.BackColor = install.BackColor;
-                restart.ForeColor = install.ForeColor;
-                shutdown.BackColor = install.BackColor;
-                shutdown.ForeColor = install.ForeColor;
-                close.BackColor = install.BackColor;
-                close.ForeColor = install.ForeColor;
-                installerTextBox.BackColor = this.BackColor;
-                installerTextBox.ForeColor = System.Drawing.Color.White;
+                ApplyGradientTheme(
+                    Color.FromArgb(98, 98, 105),
+                    Color.FromArgb(58, 58, 64));
+                ApplyButtonTheme(
+                    Color.FromArgb(72, 72, 78),
+                    Color.White);
+                ApplyLogTheme(Color.White);
                 SyncLabelsWithInstall();
                 this.Invalidate();
             }
@@ -509,17 +547,13 @@ namespace PlutoPoint_Installer
             if (DateTime.Now.Month == 9 && DateTime.Now.Day == 22)
             {
                 rhino = "1";
-                this.BackColor = System.Drawing.Color.FromArgb(83, 83, 83);
-                install.BackColor = System.Drawing.Color.FromArgb(66, 66, 66);
-                install.ForeColor = System.Drawing.Color.White;
-                restart.BackColor = install.BackColor;
-                restart.ForeColor = install.ForeColor;
-                shutdown.BackColor = install.BackColor;
-                shutdown.ForeColor = install.ForeColor;
-                close.BackColor = install.BackColor;
-                close.ForeColor = install.ForeColor;
-                installerTextBox.BackColor = this.BackColor;
-                installerTextBox.ForeColor = System.Drawing.Color.White;
+                ApplyGradientTheme(
+                    Color.FromArgb(110, 110, 115),
+                    Color.FromArgb(62, 62, 68));
+                ApplyButtonTheme(
+                    Color.FromArgb(74, 74, 82),
+                    Color.White);
+                ApplyLogTheme(Color.White);
                 SyncLabelsWithInstall();
                 this.Invalidate();
             }
@@ -529,17 +563,13 @@ namespace PlutoPoint_Installer
         {
             birthday = "1";
             birthdayName = name;
-            this.BackColor = System.Drawing.Color.FromArgb(155, 211, 221);
-            install.BackColor = System.Drawing.Color.FromArgb(242, 172, 185);
-            install.ForeColor = System.Drawing.Color.Black;
-            restart.BackColor = install.BackColor;
-            restart.ForeColor = install.ForeColor;
-            shutdown.BackColor = install.BackColor;
-            shutdown.ForeColor = install.ForeColor;
-            close.BackColor = install.BackColor;
-            close.ForeColor = install.ForeColor;
-            installerTextBox.BackColor = install.BackColor;
-            installerTextBox.ForeColor = System.Drawing.Color.Black;
+            ApplyGradientTheme(
+                Color.FromArgb(175, 220, 228),
+                Color.FromArgb(245, 182, 198));
+            ApplyButtonTheme(
+                Color.FromArgb(255, 245, 235),
+                Color.FromArgb(95, 70, 85));
+            ApplyLogTheme(Color.FromArgb(80, 60, 75));
             SyncLabelsWithInstall();
             this.Invalidate();
         }
@@ -549,39 +579,48 @@ namespace PlutoPoint_Installer
             if (DateTime.Now.Month == 4 && DateTime.Now.Day == 6)
                 ApplyBirthdayTheme("Charlie");
         }
+
         private void CheckDeanBirthday()
         {
             if (DateTime.Now.Month == 4 && DateTime.Now.Day == 21)
                 ApplyBirthdayTheme("Dean");
         }
+
         private void CheckSteveBirthday()
         {
             if (DateTime.Now.Month == 6 && DateTime.Now.Day == 24)
                 ApplyBirthdayTheme("Steve");
         }
+
         private void CheckHowardBirthday()
         {
             if (DateTime.Now.Month == 5 && DateTime.Now.Day == 16)
                 ApplyBirthdayTheme("Howard");
         }
+
         private void CheckAdamBirthday()
         {
             if (DateTime.Now.Month == 6 && DateTime.Now.Day == 9)
                 ApplyBirthdayTheme("Adam");
         }
+
         private void CheckGeethBirthday()
         {
             if (DateTime.Now.Month == 7 && DateTime.Now.Day == 25)
                 ApplyBirthdayTheme("Geeth");
         }
+
         private void AdjustInstallerTextBoxSizeForOverlay()
         {
             bool hasOverlayImage = (_overlayImage != null);
 
-            this.installerTextBox.Size = hasOverlayImage
-                ? new System.Drawing.Size(521, 258)
-                : new System.Drawing.Size(521, 355);
+            this.installerLogPanel.Size = hasOverlayImage
+                ? new System.Drawing.Size(517, 258)
+                : new System.Drawing.Size(517, 355);
+
+            installerTextBox.MaximumSize = new Size(installerLogPanel.ClientSize.Width - 10, 0);
         }
+
         private void UpdateGUIEvent()
         {
             _overlayImage = null;
@@ -635,7 +674,7 @@ namespace PlutoPoint_Installer
             {
                 _overlayImage = Properties.Resources.pluto;
                 _overlayIcon = PlutoPoint_Installer.Properties.Resources.plutoLogo;
-           }
+            }
             else if (hippo == "1")
             {
                 _overlayImage = Properties.Resources.hippo;
@@ -654,6 +693,7 @@ namespace PlutoPoint_Installer
 
             if (_overlayIcon != null && this.Icon != _overlayIcon)
                 this.Icon = _overlayIcon;
+
             AdjustInstallerTextBoxSizeForOverlay();
             this.Invalidate();
         }
@@ -2683,7 +2723,7 @@ namespace PlutoPoint_Installer
         }
         private async void test_Click(object sender, EventArgs e)
         {
-            AppendLine("❌ No current tests.");
+            AppendLine("❌ No current tests. You nosy bastard.");
         }
         private void versionLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
@@ -2708,11 +2748,11 @@ namespace PlutoPoint_Installer
         }
         private void AppendLine(string text = "")
         {
-            installerTextBox.SelectionStart = installerTextBox.TextLength;
-            installerTextBox.SelectionLength = 0;
-            installerTextBox.SelectionFont = Program.Ubuntu(12f, FontStyle.Regular);
-            installerTextBox.AppendText(text + Environment.NewLine);
-            installerTextBox.ScrollToCaret();
+            installerTextBox.Text += text + Environment.NewLine;
+            installerTextBox.Update();
+            installerLogPanel.PerformLayout();
+
+            installerLogPanel.AutoScrollPosition = new Point(0, installerTextBox.Bottom);
         }
         private class PasswordForm : Form
         {
