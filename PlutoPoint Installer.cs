@@ -2664,8 +2664,6 @@ namespace PlutoPoint_Installer
                 }
 
             }
-
-
             player.Play();
 
             if (restartCheck.Checked)

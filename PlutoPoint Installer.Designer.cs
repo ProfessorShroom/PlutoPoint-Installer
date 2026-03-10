@@ -280,33 +280,6 @@ namespace PlutoPoint_Installer
             this.installerLogPanel.Size = new System.Drawing.Size(517, 355);
             this.installerLogPanel.TabIndex = 29;
             // 
-            // roundedGroupBox2
-            // 
-            this.roundedGroupBox2.BackColor = System.Drawing.Color.Transparent;
-            this.roundedGroupBox2.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(35)))), ((int)(((byte)(35)))));
-            this.roundedGroupBox2.BorderColor = System.Drawing.Color.DodgerBlue;
-            this.roundedGroupBox2.BorderColorOverride = null;
-            this.roundedGroupBox2.Controls.Add(this.anyDeskCheck);
-            this.roundedGroupBox2.Controls.Add(this.bitDefenderCheck);
-            this.roundedGroupBox2.Controls.Add(this.vlcMediaPlayerCheck);
-            this.roundedGroupBox2.Controls.Add(this.discordCheck);
-            this.roundedGroupBox2.Controls.Add(this.steamCheck);
-            this.roundedGroupBox2.Controls.Add(this.microsoftOffice2007Check);
-            this.roundedGroupBox2.Controls.Add(this.mozillaThunderbirdCheck);
-            this.roundedGroupBox2.Controls.Add(this.googleChromeCheck);
-            this.roundedGroupBox2.Controls.Add(this.libreOfficeCheck);
-            this.roundedGroupBox2.Controls.Add(this.mozillaFirefoxCheck);
-            this.roundedGroupBox2.CornerRadius = 4;
-            this.roundedGroupBox2.Font = new System.Drawing.Font("Ubuntu", 8.25F, System.Drawing.FontStyle.Bold);
-            this.roundedGroupBox2.ForeColor = System.Drawing.Color.White;
-            this.roundedGroupBox2.Location = new System.Drawing.Point(12, 70);
-            this.roundedGroupBox2.Name = "roundedGroupBox2";
-            this.roundedGroupBox2.Size = new System.Drawing.Size(149, 296);
-            this.roundedGroupBox2.TabIndex = 25;
-            this.roundedGroupBox2.TabStop = false;
-            this.roundedGroupBox2.Text = "Software";
-            this.roundedGroupBox2.TextColorOverride = null;
-            // 
             // anyDeskCheck
             // 
             this.anyDeskCheck.BackColor = System.Drawing.Color.Transparent;
@@ -419,7 +392,6 @@ namespace PlutoPoint_Installer
             // roundedGroupBox1
             // 
             this.roundedGroupBox1.BackColor = System.Drawing.Color.Transparent;
-            this.roundedGroupBox1.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(35)))), ((int)(((byte)(35)))));
             this.roundedGroupBox1.BorderColor = System.Drawing.Color.DodgerBlue;
             this.roundedGroupBox1.BorderColorOverride = null;
             this.roundedGroupBox1.Controls.Add(this.taskbarCheck);
@@ -428,7 +400,7 @@ namespace PlutoPoint_Installer
             this.roundedGroupBox1.Controls.Add(this.nvidiaAppCheck);
             this.roundedGroupBox1.Controls.Add(this.nanaZipCheck);
             this.roundedGroupBox1.Controls.Add(this.bingWallpapersCheck);
-            this.roundedGroupBox1.CornerRadius = 4;
+            this.roundedGroupBox1.CornerRadius = 5;
             this.roundedGroupBox1.Font = new System.Drawing.Font("Ubuntu", 8.25F, System.Drawing.FontStyle.Bold);
             this.roundedGroupBox1.ForeColor = System.Drawing.Color.White;
             this.roundedGroupBox1.Location = new System.Drawing.Point(177, 70);
@@ -438,6 +410,38 @@ namespace PlutoPoint_Installer
             this.roundedGroupBox1.TabStop = false;
             this.roundedGroupBox1.Text = "Utilities";
             this.roundedGroupBox1.TextColorOverride = null;
+            this.roundedGroupBox1.BorderThickness = 2f;
+            this.roundedGroupBox1.BorderShadowTop = 50;
+            this.roundedGroupBox1.BorderShadowBottom = 80;
+            // 
+            // roundedGroupBox2
+            // 
+            this.roundedGroupBox2.BackColor = System.Drawing.Color.Transparent;
+            this.roundedGroupBox2.BorderColor = System.Drawing.Color.DodgerBlue;
+            this.roundedGroupBox2.BorderColorOverride = null;
+            this.roundedGroupBox2.Controls.Add(this.anyDeskCheck);
+            this.roundedGroupBox2.Controls.Add(this.bitDefenderCheck);
+            this.roundedGroupBox2.Controls.Add(this.vlcMediaPlayerCheck);
+            this.roundedGroupBox2.Controls.Add(this.discordCheck);
+            this.roundedGroupBox2.Controls.Add(this.steamCheck);
+            this.roundedGroupBox2.Controls.Add(this.microsoftOffice2007Check);
+            this.roundedGroupBox2.Controls.Add(this.mozillaThunderbirdCheck);
+            this.roundedGroupBox2.Controls.Add(this.googleChromeCheck);
+            this.roundedGroupBox2.Controls.Add(this.libreOfficeCheck);
+            this.roundedGroupBox2.Controls.Add(this.mozillaFirefoxCheck);
+            this.roundedGroupBox2.CornerRadius = 5;
+            this.roundedGroupBox2.Font = new System.Drawing.Font("Ubuntu", 8.25F, System.Drawing.FontStyle.Bold);
+            this.roundedGroupBox2.ForeColor = System.Drawing.Color.White;
+            this.roundedGroupBox2.Location = new System.Drawing.Point(12, 70);
+            this.roundedGroupBox2.Name = "roundedGroupBox2";
+            this.roundedGroupBox2.Size = new System.Drawing.Size(149, 296);
+            this.roundedGroupBox2.TabIndex = 25;
+            this.roundedGroupBox2.TabStop = false;
+            this.roundedGroupBox2.Text = "Software";
+            this.roundedGroupBox2.TextColorOverride = null;
+            this.roundedGroupBox2.BorderThickness = 2f;
+            this.roundedGroupBox2.BorderShadowTop = 50;
+            this.roundedGroupBox2.BorderShadowBottom = 80;
             // 
             // taskbarCheck
             // 

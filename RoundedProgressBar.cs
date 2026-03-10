@@ -75,7 +75,6 @@ namespace PlutoPoint_Installer
             };
             _timer.Start();
         }
-
         protected override void OnPaint(PaintEventArgs e)
         {
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
@@ -100,10 +99,8 @@ namespace PlutoPoint_Installer
                     float tickTime = _timer.Interval;
                     _shineOffset += (fillWidth + shineWidth) * (tickTime / _shineDuration);
                     _shineOffset %= fillWidth + shineWidth;
-
                     int shineX = (int)(_shineOffset - shineWidth / 2);
                     Rectangle shineRect = new Rectangle(shineX, 0, shineWidth, Height);
-
                     using (LinearGradientBrush shineBrush = new LinearGradientBrush(shineRect,
                         Color.FromArgb(0, ShineShadeColor),
                         ShineShadeColor,
@@ -129,7 +126,6 @@ namespace PlutoPoint_Installer
                 }
             }
         }
-
         private GraphicsPath RoundedRect(Rectangle rect, int radius)
         {
             GraphicsPath path = new GraphicsPath();
