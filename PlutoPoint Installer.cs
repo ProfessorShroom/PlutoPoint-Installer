@@ -1434,13 +1434,10 @@ namespace PlutoPoint_Installer
             if (nanaZipCheck.Checked)
             {
                 AppendLine("📌 NanaZip is selected.");
-
                 string nanaZipExe = "NanaZip.Windows.exe";
                 string windowsAppsPath = @"C:\Program Files\WindowsApps";
                 string nanaZipPath = null;
-
                 AppendLine("🔄 Checking if NanaZip is installed...");
-
                 try
                 {
                     var files = Directory.GetFiles(windowsAppsPath, nanaZipExe, SearchOption.AllDirectories);
@@ -1831,9 +1828,17 @@ namespace PlutoPoint_Installer
                         wc.DownloadFileCompleted += wc_progressBarStep;
                         await wc.DownloadFileTaskAsync(libreOfficeURL, libreOfficeFilename);
                     }
-
+                    if (!File.Exists(libreOfficeFilename))
+                    {
+                        AppendLine("❌ LibreOffice download failed; falling back to known installer.");
+                        libreOfficeURL = new Uri("https://cloud.howardgb.com/public.php/dav/files/EFyAqCm3tEQ6W25/libreOffice.msi");
+                        using (WebClient wc = new WebClient())
+                        {
+                            wc.DownloadFileCompleted += wc_progressBarStep;
+                            await wc.DownloadFileTaskAsync(libreOfficeURL, libreOfficeFilename);
+                        }
+                    }
                     AppendLine("📦 Installing LibreOffice...");
-
                     await Task.Run(() =>
                     {
                         using (Process process = new Process())
@@ -1862,7 +1867,6 @@ namespace PlutoPoint_Installer
                             }
                         }
                     });
-
                     AppendLine("✅ Completed installation of LibreOffice.");
                     progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
                 }
