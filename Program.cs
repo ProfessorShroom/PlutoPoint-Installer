@@ -4,7 +4,6 @@ using System.Drawing.Text;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-
 namespace PlutoPoint_Installer
 {
     internal static class Program

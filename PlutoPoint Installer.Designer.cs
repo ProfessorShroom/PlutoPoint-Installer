@@ -17,7 +17,6 @@ namespace PlutoPoint_Installer
         /// Required designer variable.
         /// </summary>
         private System.ComponentModel.IContainer components = null;
-
         /// <summary>
         /// Clean up any resources being used.
         /// </summary>
@@ -30,9 +29,7 @@ namespace PlutoPoint_Installer
             }
             base.Dispose(disposing);
         }
-
         #region Windows Form Designer generated code
-
         /// <summary>
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
@@ -87,15 +84,15 @@ namespace PlutoPoint_Installer
             this.taskbarToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.taskbarCheck = new System.Windows.Forms.CheckBox();
             this.installerLogPanel = new System.Windows.Forms.Panel();
-            this.roundedGroupBox2 = new PlutoPoint_Installer.RoundedGroupBox();
+            this.softwareBox = new PlutoPoint_Installer.RoundedGroupBox();
             this.restart = new PlutoPoint_Installer.RoundedButton();
             this.close = new PlutoPoint_Installer.RoundedButton();
             this.progressBar = new PlutoPoint_Installer.RoundedGradientProgressBar();
             this.install = new PlutoPoint_Installer.RoundedButton();
-            this.roundedGroupBox1 = new PlutoPoint_Installer.RoundedGroupBox();
+            this.utilitiesBox = new PlutoPoint_Installer.RoundedGroupBox();
             this.installerLogPanel.SuspendLayout();
-            this.roundedGroupBox2.SuspendLayout();
-            this.roundedGroupBox1.SuspendLayout();
+            this.softwareBox.SuspendLayout();
+            this.utilitiesBox.SuspendLayout();
             this.SuspendLayout();
             // 
             // installerTextBox
@@ -261,7 +258,7 @@ namespace PlutoPoint_Installer
             this.mozillaFirefoxCheck.Checked = true;
             this.mozillaFirefoxCheck.CheckState = System.Windows.Forms.CheckState.Checked;
             this.mozillaFirefoxCheck.Image = global::PlutoPoint_Installer.Properties.Resources.mozillaFirefox;
-            this.mozillaFirefoxCheck.Location = new System.Drawing.Point(82, 13);
+            this.mozillaFirefoxCheck.Location = new System.Drawing.Point(14, 282);
             this.mozillaFirefoxCheck.Name = "mozillaFirefoxCheck";
             this.mozillaFirefoxCheck.Size = new System.Drawing.Size(57, 50);
             this.mozillaFirefoxCheck.TabIndex = 5;
@@ -271,7 +268,7 @@ namespace PlutoPoint_Installer
             // mozillaThunderbirdCheck
             // 
             this.mozillaThunderbirdCheck.Image = global::PlutoPoint_Installer.Properties.Resources.mozillaThunderbird;
-            this.mozillaThunderbirdCheck.Location = new System.Drawing.Point(82, 58);
+            this.mozillaThunderbirdCheck.Location = new System.Drawing.Point(77, 13);
             this.mozillaThunderbirdCheck.Name = "mozillaThunderbirdCheck";
             this.mozillaThunderbirdCheck.Size = new System.Drawing.Size(57, 50);
             this.mozillaThunderbirdCheck.TabIndex = 14;
@@ -293,7 +290,7 @@ namespace PlutoPoint_Installer
             // steamCheck
             // 
             this.steamCheck.Image = global::PlutoPoint_Installer.Properties.Resources.steam;
-            this.steamCheck.Location = new System.Drawing.Point(82, 101);
+            this.steamCheck.Location = new System.Drawing.Point(77, 56);
             this.steamCheck.Name = "steamCheck";
             this.steamCheck.Size = new System.Drawing.Size(57, 50);
             this.steamCheck.TabIndex = 17;
@@ -303,7 +300,7 @@ namespace PlutoPoint_Installer
             // vlcMediaPlayerCheck
             // 
             this.vlcMediaPlayerCheck.Image = global::PlutoPoint_Installer.Properties.Resources.vlcMediaPlayer;
-            this.vlcMediaPlayerCheck.Location = new System.Drawing.Point(82, 147);
+            this.vlcMediaPlayerCheck.Location = new System.Drawing.Point(77, 102);
             this.vlcMediaPlayerCheck.Name = "vlcMediaPlayerCheck";
             this.vlcMediaPlayerCheck.Size = new System.Drawing.Size(57, 50);
             this.vlcMediaPlayerCheck.TabIndex = 20;
@@ -380,49 +377,49 @@ namespace PlutoPoint_Installer
             this.installerLogPanel.AutoScroll = true;
             this.installerLogPanel.BackColor = System.Drawing.Color.Transparent;
             this.installerLogPanel.Controls.Add(this.installerTextBox);
-            this.installerLogPanel.Location = new System.Drawing.Point(271, 54);
+            this.installerLogPanel.Location = new System.Drawing.Point(258, 54);
             this.installerLogPanel.Name = "installerLogPanel";
-            this.installerLogPanel.Size = new System.Drawing.Size(517, 355);
+            this.installerLogPanel.Size = new System.Drawing.Size(530, 355);
             this.installerLogPanel.TabIndex = 29;
             // 
-            // roundedGroupBox2
+            // softwareBox
             // 
-            this.roundedGroupBox2.BackColor = System.Drawing.Color.Transparent;
-            this.roundedGroupBox2.BorderColor = System.Drawing.Color.DodgerBlue;
-            this.roundedGroupBox2.BorderColorOverride = null;
-            this.roundedGroupBox2.BorderShadowBottom = 80;
-            this.roundedGroupBox2.BorderShadowTop = 50;
-            this.roundedGroupBox2.BorderThickness = 2F;
-            this.roundedGroupBox2.Controls.Add(this.anyDeskCheck);
-            this.roundedGroupBox2.Controls.Add(this.bitDefenderCheck);
-            this.roundedGroupBox2.Controls.Add(this.vlcMediaPlayerCheck);
-            this.roundedGroupBox2.Controls.Add(this.discordCheck);
-            this.roundedGroupBox2.Controls.Add(this.steamCheck);
-            this.roundedGroupBox2.Controls.Add(this.microsoftOffice2007Check);
-            this.roundedGroupBox2.Controls.Add(this.mozillaThunderbirdCheck);
-            this.roundedGroupBox2.Controls.Add(this.googleChromeCheck);
-            this.roundedGroupBox2.Controls.Add(this.libreOfficeCheck);
-            this.roundedGroupBox2.Controls.Add(this.mozillaFirefoxCheck);
-            this.roundedGroupBox2.CornerRadius = 3;
-            this.roundedGroupBox2.Font = new System.Drawing.Font("Ubuntu", 8.25F, System.Drawing.FontStyle.Bold);
-            this.roundedGroupBox2.ForeColor = System.Drawing.Color.White;
-            this.roundedGroupBox2.Location = new System.Drawing.Point(12, 54);
-            this.roundedGroupBox2.Name = "roundedGroupBox2";
-            this.roundedGroupBox2.Size = new System.Drawing.Size(149, 296);
-            this.roundedGroupBox2.TabIndex = 25;
-            this.roundedGroupBox2.TabStop = false;
-            this.roundedGroupBox2.Text = "Software";
-            this.roundedGroupBox2.TextColorOverride = null;
+            this.softwareBox.BackColor = System.Drawing.Color.Transparent;
+            this.softwareBox.BorderColor = System.Drawing.Color.DodgerBlue;
+            this.softwareBox.BorderColorOverride = null;
+            this.softwareBox.BorderShadowBottom = 80;
+            this.softwareBox.BorderShadowTop = 50;
+            this.softwareBox.BorderThickness = 2F;
+            this.softwareBox.Controls.Add(this.anyDeskCheck);
+            this.softwareBox.Controls.Add(this.bitDefenderCheck);
+            this.softwareBox.Controls.Add(this.vlcMediaPlayerCheck);
+            this.softwareBox.Controls.Add(this.discordCheck);
+            this.softwareBox.Controls.Add(this.steamCheck);
+            this.softwareBox.Controls.Add(this.microsoftOffice2007Check);
+            this.softwareBox.Controls.Add(this.mozillaThunderbirdCheck);
+            this.softwareBox.Controls.Add(this.googleChromeCheck);
+            this.softwareBox.Controls.Add(this.libreOfficeCheck);
+            this.softwareBox.Controls.Add(this.mozillaFirefoxCheck);
+            this.softwareBox.CornerRadius = 3;
+            this.softwareBox.Font = new System.Drawing.Font("Ubuntu", 8.25F, System.Drawing.FontStyle.Bold);
+            this.softwareBox.ForeColor = System.Drawing.Color.White;
+            this.softwareBox.Location = new System.Drawing.Point(12, 54);
+            this.softwareBox.Name = "softwareBox";
+            this.softwareBox.Size = new System.Drawing.Size(149, 338);
+            this.softwareBox.TabIndex = 25;
+            this.softwareBox.TabStop = false;
+            this.softwareBox.Text = "Software";
+            this.softwareBox.TextColorOverride = null;
             // 
             // restart
             // 
             this.restart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
             this.restart.CornerRadius = 3;
             this.restart.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.restart.Font = new System.Drawing.Font("Ubuntu", 8F, System.Drawing.FontStyle.Bold);
+            this.restart.Font = new System.Drawing.Font("Ubuntu", 8.999999F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.restart.ForeColor = System.Drawing.Color.White;
             this.restart.HoverShadeColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            this.restart.Location = new System.Drawing.Point(123, 15);
+            this.restart.Location = new System.Drawing.Point(114, 15);
             this.restart.Name = "restart";
             this.restart.PressedShadeColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
             this.restart.Size = new System.Drawing.Size(66, 24);
@@ -435,10 +432,10 @@ namespace PlutoPoint_Installer
             this.close.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(255)))));
             this.close.CornerRadius = 3;
             this.close.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.close.Font = new System.Drawing.Font("Ubuntu", 8F, System.Drawing.FontStyle.Bold);
+            this.close.Font = new System.Drawing.Font("Ubuntu", 8.999999F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.close.ForeColor = System.Drawing.Color.White;
             this.close.HoverShadeColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            this.close.Location = new System.Drawing.Point(195, 15);
+            this.close.Location = new System.Drawing.Point(186, 15);
             this.close.Name = "close";
             this.close.PressedShadeColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
             this.close.Size = new System.Drawing.Size(66, 24);
@@ -452,12 +449,12 @@ namespace PlutoPoint_Installer
             this.progressBar.BackShadeColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
             this.progressBar.CornerRadius = 3;
             this.progressBar.FillShadeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.progressBar.Location = new System.Drawing.Point(267, 14);
+            this.progressBar.Location = new System.Drawing.Point(258, 14);
             this.progressBar.Maximum = 1;
             this.progressBar.Name = "progressBar";
             this.progressBar.ShineShadeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
             this.progressBar.ShineWidth = 32;
-            this.progressBar.Size = new System.Drawing.Size(521, 24);
+            this.progressBar.Size = new System.Drawing.Size(530, 24);
             this.progressBar.StepSize = 1;
             this.progressBar.TabIndex = 3;
             this.progressBar.Value = 0;
@@ -467,41 +464,41 @@ namespace PlutoPoint_Installer
             this.install.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(255)))));
             this.install.CornerRadius = 3;
             this.install.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.install.Font = new System.Drawing.Font("Ubuntu", 12F, System.Drawing.FontStyle.Bold);
+            this.install.Font = new System.Drawing.Font("Ubuntu", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.install.ForeColor = System.Drawing.Color.White;
             this.install.HoverShadeColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
             this.install.Location = new System.Drawing.Point(12, 15);
             this.install.Name = "install";
             this.install.PressedShadeColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.install.Size = new System.Drawing.Size(105, 24);
+            this.install.Size = new System.Drawing.Size(96, 24);
             this.install.TabIndex = 0;
             this.install.Text = "Install";
             this.install.Click += new System.EventHandler(this.install_Click);
             // 
-            // roundedGroupBox1
+            // utilitiesBox
             // 
-            this.roundedGroupBox1.BackColor = System.Drawing.Color.Transparent;
-            this.roundedGroupBox1.BorderColor = System.Drawing.Color.DodgerBlue;
-            this.roundedGroupBox1.BorderColorOverride = null;
-            this.roundedGroupBox1.BorderShadowBottom = 80;
-            this.roundedGroupBox1.BorderShadowTop = 50;
-            this.roundedGroupBox1.BorderThickness = 2F;
-            this.roundedGroupBox1.Controls.Add(this.taskbarCheck);
-            this.roundedGroupBox1.Controls.Add(this.aiCheck);
-            this.roundedGroupBox1.Controls.Add(this.crcCheck);
-            this.roundedGroupBox1.Controls.Add(this.nvidiaAppCheck);
-            this.roundedGroupBox1.Controls.Add(this.nanaZipCheck);
-            this.roundedGroupBox1.Controls.Add(this.bingWallpapersCheck);
-            this.roundedGroupBox1.CornerRadius = 3;
-            this.roundedGroupBox1.Font = new System.Drawing.Font("Ubuntu", 8.25F, System.Drawing.FontStyle.Bold);
-            this.roundedGroupBox1.ForeColor = System.Drawing.Color.White;
-            this.roundedGroupBox1.Location = new System.Drawing.Point(177, 54);
-            this.roundedGroupBox1.Name = "roundedGroupBox1";
-            this.roundedGroupBox1.Size = new System.Drawing.Size(75, 296);
-            this.roundedGroupBox1.TabIndex = 24;
-            this.roundedGroupBox1.TabStop = false;
-            this.roundedGroupBox1.Text = "Utilities";
-            this.roundedGroupBox1.TextColorOverride = null;
+            this.utilitiesBox.BackColor = System.Drawing.Color.Transparent;
+            this.utilitiesBox.BorderColor = System.Drawing.Color.DodgerBlue;
+            this.utilitiesBox.BorderColorOverride = null;
+            this.utilitiesBox.BorderShadowBottom = 80;
+            this.utilitiesBox.BorderShadowTop = 50;
+            this.utilitiesBox.BorderThickness = 2F;
+            this.utilitiesBox.Controls.Add(this.taskbarCheck);
+            this.utilitiesBox.Controls.Add(this.aiCheck);
+            this.utilitiesBox.Controls.Add(this.crcCheck);
+            this.utilitiesBox.Controls.Add(this.nvidiaAppCheck);
+            this.utilitiesBox.Controls.Add(this.nanaZipCheck);
+            this.utilitiesBox.Controls.Add(this.bingWallpapersCheck);
+            this.utilitiesBox.CornerRadius = 3;
+            this.utilitiesBox.Font = new System.Drawing.Font("Ubuntu", 8.25F, System.Drawing.FontStyle.Bold);
+            this.utilitiesBox.ForeColor = System.Drawing.Color.White;
+            this.utilitiesBox.Location = new System.Drawing.Point(177, 54);
+            this.utilitiesBox.Name = "utilitiesBox";
+            this.utilitiesBox.Size = new System.Drawing.Size(75, 296);
+            this.utilitiesBox.TabIndex = 24;
+            this.utilitiesBox.TabStop = false;
+            this.utilitiesBox.Text = "Utilities";
+            this.utilitiesBox.TextColorOverride = null;
             // 
             // installerForm
             // 
@@ -512,31 +509,29 @@ namespace PlutoPoint_Installer
             this.Controls.Add(this.installerLogPanel);
             this.Controls.Add(this.test);
             this.Controls.Add(this.shutdownCheck);
-            this.Controls.Add(this.roundedGroupBox2);
+            this.Controls.Add(this.softwareBox);
             this.Controls.Add(this.recycleBinCheck);
             this.Controls.Add(this.powerCheck);
+            this.Controls.Add(this.restart);
             this.Controls.Add(this.restartCheck);
             this.Controls.Add(this.versionLabel);
             this.Controls.Add(this.locationLabel);
-            this.Controls.Add(this.restart);
             this.Controls.Add(this.close);
             this.Controls.Add(this.progressBar);
             this.Controls.Add(this.install);
-            this.Controls.Add(this.roundedGroupBox1);
+            this.Controls.Add(this.utilitiesBox);
             this.Icon = global::PlutoPoint_Installer.Properties.Resources.computerRepairCentreIcon;
             this.Name = "installerForm";
             this.Text = "Computer Repair Centre Installer";
             this.installerLogPanel.ResumeLayout(false);
             this.installerLogPanel.PerformLayout();
-            this.roundedGroupBox2.ResumeLayout(false);
-            this.roundedGroupBox1.ResumeLayout(false);
+            this.softwareBox.ResumeLayout(false);
+            this.utilitiesBox.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
             }
-
         #endregion
-
         private RoundedButton install;
         private Label installerTextBox;
         private RoundedGradientProgressBar progressBar;
@@ -580,8 +575,8 @@ namespace PlutoPoint_Installer
         private ToolTip powerToolTip;
         private ToolTip restartToolTip;
         private ToolTip aiToolTip;
-        private RoundedGroupBox roundedGroupBox1;
-        private RoundedGroupBox roundedGroupBox2;
+        private RoundedGroupBox utilitiesBox;
+        private RoundedGroupBox softwareBox;
         private CheckBox aiCheck;
         private CheckBox shutdownCheck;
         private ToolTip shutdownToolTip;

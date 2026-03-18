@@ -2,7 +2,6 @@
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
-
 namespace PlutoPoint_Installer
 {
     internal class RoundedGradientProgressBar : Control
@@ -34,7 +33,6 @@ namespace PlutoPoint_Installer
                     Invoke((MethodInvoker)(() => Value = value));
                     return;
                 }
-
                 _value = Math.Max(0, Math.Min(value, Maximum));
             }
         }
@@ -44,7 +42,6 @@ namespace PlutoPoint_Installer
         private Timer _timer;
         private float _shineOffset = 0f;
         private float _shineDuration = 2000f;
-
         public RoundedGradientProgressBar()
         {
             DoubleBuffered = true;
@@ -52,10 +49,8 @@ namespace PlutoPoint_Installer
                      ControlStyles.UserPaint |
                      ControlStyles.AllPaintingInWmPaint |
                      ControlStyles.OptimizedDoubleBuffer, true);
-
             BackColor = Color.Transparent;
             Size = new Size(200, 24);
-
             _timer = new Timer();
             _timer.Interval = 15;
             _timer.Tick += (s, e) =>
@@ -70,7 +65,6 @@ namespace PlutoPoint_Installer
                     _displayedValue -= Math.Max(1, (_displayedValue - _displayedValue) * 0.2);
                     if (_displayedValue < _value) _displayedValue = _value;
                 }
-
                 Invalidate();
             };
             _timer.Start();
@@ -115,7 +109,6 @@ namespace PlutoPoint_Installer
                         };
                         blend.Positions = new float[] { 0f, 0.5f, 1f };
                         shineBrush.InterpolationColors = blend;
-
                         using (Region clip = new Region(fillPath))
                         {
                             e.Graphics.Clip = clip;
@@ -131,7 +124,6 @@ namespace PlutoPoint_Installer
             GraphicsPath path = new GraphicsPath();
             int diameter = radius * 2;
             Rectangle arc = new Rectangle(rect.Location, new Size(diameter, diameter));
-
             path.AddArc(arc, 180, 90);
             arc.X = rect.Right - diameter;
             path.AddArc(arc, 270, 90);
@@ -139,7 +131,6 @@ namespace PlutoPoint_Installer
             path.AddArc(arc, 0, 90);
             arc.X = rect.Left;
             path.AddArc(arc, 90, 90);
-
             path.CloseFigure();
             return path;
         }

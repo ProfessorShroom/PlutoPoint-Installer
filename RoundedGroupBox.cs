@@ -2,7 +2,6 @@
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
-
 namespace PlutoPoint_Installer
 {
     public class RoundedGroupBox : GroupBox
@@ -20,13 +19,11 @@ namespace PlutoPoint_Installer
                      ControlStyles.AllPaintingInWmPaint |
                      ControlStyles.OptimizedDoubleBuffer |
                      ControlStyles.SupportsTransparentBackColor, true);
-
             BackColor = Color.Transparent;
         }
         protected override void OnPaint(PaintEventArgs e)
         {
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-
             int topPadding = 7;
             int bottomPadding = 7;
             SizeF textSize = e.Graphics.MeasureString(Text, Font);
@@ -61,7 +58,6 @@ namespace PlutoPoint_Installer
                     using (Pen pen = new Pen(borderBrush, BorderThickness))
                         e.Graphics.DrawPath(pen, path);
                 }
-
                 e.Graphics.Clip = oldClip;
             }
             using (SolidBrush textBrush = new SolidBrush(TextColorOverride ?? ForeColor))

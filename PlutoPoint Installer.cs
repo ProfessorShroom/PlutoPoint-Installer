@@ -759,10 +759,10 @@ namespace PlutoPoint_Installer
         }
         protected void OverrideRoundedBoxColours()
         {
-            roundedGroupBox1.BorderColorOverride = versionLabel.LinkColor;
-            roundedGroupBox1.TextColorOverride = versionLabel.LinkColor;
-            roundedGroupBox2.BorderColorOverride = versionLabel.LinkColor;
-            roundedGroupBox2.TextColorOverride = versionLabel.LinkColor;
+            softwareBox.BorderColorOverride = versionLabel.LinkColor;
+            softwareBox.TextColorOverride = versionLabel.LinkColor;
+            utilitiesBox.BorderColorOverride = versionLabel.LinkColor;
+            utilitiesBox.TextColorOverride = versionLabel.LinkColor;
         }
         private string HashIP(string ip)
         {
