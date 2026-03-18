@@ -104,6 +104,9 @@
     <Compile Include="AssemblyUpdateDateAttribute.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RoundedButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="RoundedGroupBox.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -122,6 +125,7 @@
     <None Include="internetProtocolHash.json" />
     <None Include="LICENSE.md" />
     <None Include="packages.config" />
+    <None Include="passwordHash.json" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

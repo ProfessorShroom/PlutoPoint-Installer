@@ -1,6 +1,6 @@
  ![Arch](https://img.shields.io/badge/Arch-AMD64-blue) ![OS](https://img.shields.io/badge/OS-Windows%207%20|Windows%208(.1)%20|Windows%2010%20|%20Windows%2011-green)
 
-## PlutoPoint Installer Version 6.6.2.0
+## PlutoPoint Installer Version 6.6.3.0
 #### Copyright © Charlie Howard 2026 All rights reserved.
 
 A C# based GUI installer for Windows 10/11, it should also run on Windows 7, 8 & 8.1 but this isn't tested.
@@ -17,11 +17,21 @@ Disables sleep and screen timeout if plugged into AC power during the install an
 
 #### Latest Update
 
+**Update 6.6.3.0**
+
+- Added custom rounded buttons.
+- Removed shutdown button as it wasn't very useful.
+- Resized buttons for a more modern look.
+- Rewritten IP hash check with HttpClient instead of WebClient.
+- Moved password hash check to a json file for easier access.
+- Reworked the text box slightly to allow redrawing when GUI is resized.
+- Moved download URL's to a json to allow for easier changing of URL's if needed. 
+
+#### Older Updates
+
 **Update 6.6.2.0**
 
 - Added a fallback download for LibreOffice as their server is a bit flakey and the installer will sometimes hang if it cannot download the latest msi.
-
-#### Older Updates
 
 **Update 6.6.1.0**
 

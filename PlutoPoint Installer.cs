@@ -14,13 +14,9 @@ using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 using Shell32;
 using System.Drawing.Drawing2D;
-
-
 // Copyright © Charlie Howard 2026 All rights reserved.
-
 namespace PlutoPoint_Installer
 {
-
     using System.Drawing;
     using System.Globalization;
     using System.Linq;
@@ -36,15 +32,22 @@ namespace PlutoPoint_Installer
         private bool isClickPlaying = false;
         private Color _gradientTop = Color.FromArgb(30, 200, 255);
         private Color _gradientBottom = Color.FromArgb(140, 0, 255);
+        private Task _initialiseUrlsTask;
+        private Task _checkIpTask;
         [DllImport("Shell32.dll", CharSet = CharSet.Unicode)]
         private static extern uint SHEmptyRecycleBin(IntPtr hwnd, string pszRootPath, uint dwFlags);
         private const uint SHERB_NOCONFIRMATION = 0x00000001;
         private const uint SHERB_NOPROGRESSUI = 0x00000002;
         private const uint SHERB_NOSOUND = 0x00000004;
+        private string locationLine = "📍 Detecting location...";
         public installerForm()
         {
             InitializeComponent();
-            
+            this.Resize += (s, e) =>
+            {
+                this.Invalidate(true);
+            };
+            this.AutoScaleMode = AutoScaleMode.Dpi;
             // Font
             this.installerTextBox.Font = Program.Ubuntu(12f, FontStyle.Regular);
             // Sounds
@@ -58,6 +61,7 @@ namespace PlutoPoint_Installer
                           ControlStyles.UserPaint |
                           ControlStyles.OptimizedDoubleBuffer, true);
             this.DoubleBuffered = true;
+            // Button sounds
             void PlayHover()
             {
                 if (isClickPlaying) return;
@@ -83,8 +87,6 @@ namespace PlutoPoint_Installer
             install.Click += (s, e) => PlayClick();
             restart.MouseEnter += (s, e) => PlayHover();
             restart.Click += (s, e) => PlayClick();
-            shutdown.MouseEnter += (s, e) => PlayHover();
-            shutdown.Click += (s, e) => PlayClick();
             close.MouseEnter += (s, e) => PlayHover();
             close.Click += (s, e) => PlayClick();
             test.MouseEnter += (s, e) => PlayHover();
@@ -108,20 +110,75 @@ namespace PlutoPoint_Installer
             CheckAdamBirthday();
             CheckGeethBirthday();
             OverrideRoundedBoxColours();
-            CheckIP();
+            // Background tasks only
+            _initialiseUrlsTask = InitialiseUrlsAsync();
+            _checkIpTask = CheckIPAsync();
             CheckEliteBook();
             UpdateGUIEvent();
             // Info checks
             PrintVersion();
-            PrintDay();
             CheckWindowsVersion();
             CheckForIntelHardware();
             CheckforAMDHardware();
             CheckForNvidiaGPU();
             GetLibreOfficeVersion();
-            AppendLocation();
+            AppendLine(locationLine);
+            _ = PrintDayAsync();
             Version version = Assembly.GetExecutingAssembly().GetName().Version;
             this.versionLabel.Text = $"Version {version}";
+        }
+        private async Task CheckIPAsync()
+        {
+            string publicIP = await GetPublicIPAddressAsync();
+            if (string.IsNullOrWhiteSpace(publicIP))
+                return;
+            string publicIPHash = HashIP(publicIP);
+            LocationHashes hashes = await GetLocationHashesAsync();
+            if (hashes == null)
+                return;
+            safeLocation = "0";
+            romsey = "0";
+            chandlersFord = "0";
+            highcliffe = "0";
+            charlieHome = "0";
+            if (publicIPHash == hashes.romsey)
+            {
+                romsey = "1";
+                safeLocation = "1";
+            }
+            else if (publicIPHash == hashes.chandlersFord)
+            {
+                chandlersFord = "1";
+                safeLocation = "1";
+                microsoftOffice2007Check.Checked = true;
+            }
+            else if (publicIPHash == hashes.highcliffe)
+            {
+                highcliffe = "1";
+                safeLocation = "1";
+            }
+            else if (publicIPHash == hashes.charlieHome)
+            {
+                charlieHome = "1";
+                safeLocation = "1";
+            }
+            AppendLocation();
+            UpdateLocation();
+        }
+        private async Task<string> GetPublicIPAddressAsync()
+        {
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    string ip = await client.GetStringAsync("https://api.ipify.org");
+                    return ip?.Trim();
+                }
+            }
+            catch
+            {
+                return null;
+            }
         }
         // Set strings
         string christmas = null;
@@ -159,17 +216,13 @@ namespace PlutoPoint_Installer
         private int _overlayWidth;
         private int _overlayHeight;
         private float _overlayRotationDegrees;
-        private const string charliePasswordHash = "61a8b0026371a90d41b114644694485ecdaf999473977a125d028e39cb6d77b2";
-        private const string CRCPasswordHash = "1c98fa014f3400abee047920e535036a74661fa0c88f34d24ebed7866a1fc630";
         protected override void OnPaintBackground(PaintEventArgs e)
         {
             base.OnPaintBackground(e);
-
             if (this.ClientSize.Width <= 0 || this.ClientSize.Height <= 0)
                 return;
             e.Graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-
             using (LinearGradientBrush brush = new LinearGradientBrush(
                 new Point(0, 0),
                 new Point(this.ClientSize.Width, this.ClientSize.Height),
@@ -211,7 +264,6 @@ namespace PlutoPoint_Installer
             {
                 dateToUse = DateTime.Today;
             }
-
             string formatted = string.Format("{0} of {1} {2}",
                 WithDaySuffix(dateToUse.Day),
                 dateToUse.ToString("MMMM"),
@@ -219,14 +271,15 @@ namespace PlutoPoint_Installer
             AppendLine($"🛠️ Version {version}");
             AppendLine("📅 Last updated on " + formatted + ".");
         }
-        private void PrintDay()
+        private async Task PrintDayAsync()
         {
+            if (_checkIpTask != null)
+                await _checkIpTask;
             if (christmas == "1")
             {
                 AppendLine("");
                 var rm = Properties.Resources.ResourceManager;
                 var set = rm.GetResourceSet(CultureInfo.CurrentUICulture, true, true);
-                // Find all resources starting with "song"
                 var songKeys = set.Cast<DictionaryEntry>()
                                   .Where(e => e.Key.ToString().StartsWith("song"))
                                   .Select(e => e.Key.ToString())
@@ -239,8 +292,11 @@ namespace PlutoPoint_Installer
                     using (var reader = new StreamReader(new MemoryStream(bytes)))
                     {
                         string line;
-                        while ((line = reader.ReadLine()) != null)
+                        while ((line = await reader.ReadLineAsync()) != null)
+                        {
                             AppendLine(line);
+                            await Task.Delay(500);
+                        }
                     }
                 }
                 AppendLine("");
@@ -269,7 +325,7 @@ namespace PlutoPoint_Installer
             {
                 AppendLine("");
                 AppendLine("🥞 It's Pancake Day!");
-                AppendLine("🥞 Don't forget to have some pancakes you fat bastard!");
+                AppendLine("Don't forget to have some pancakes you fat bastard!");
                 AppendLine("");
             }
             else if (puffin == "1")
@@ -282,7 +338,7 @@ namespace PlutoPoint_Installer
             {
                 AppendLine("");
                 AppendLine("🦆 Today is National Duck day!");
-                AppendLine("🦆 Did someone say duck?");
+                AppendLine("Did someone say duck?");
                 AppendLine("");
             }
             else if (dachshund == "1")
@@ -330,33 +386,24 @@ namespace PlutoPoint_Installer
         {
             install.BackColor = backColor;
             install.ForeColor = foreColor;
-
             restart.BackColor = backColor;
             restart.ForeColor = foreColor;
-
-            shutdown.BackColor = backColor;
-            shutdown.ForeColor = foreColor;
-
             close.BackColor = backColor;
             close.ForeColor = foreColor;
         }
-
         private void ApplyGradientTheme(Color topColor, Color bottomColor)
         {
             _gradientTop = topColor;
             _gradientBottom = bottomColor;
         }
-
         private void ApplyLogTheme(Color foreColor)
         {
             installerTextBox.ForeColor = foreColor;
         }
-
         private void SyncLabelsWithInstall()
         {
             versionLabel.ForeColor = install.BackColor;
             locationLabel.ForeColor = install.BackColor;
-
             if (versionLabel is LinkLabel linkLabel)
             {
                 linkLabel.LinkColor = install.BackColor;
@@ -364,7 +411,6 @@ namespace PlutoPoint_Installer
                 linkLabel.VisitedLinkColor = install.BackColor;
             }
         }
-
         private void CheckChristmas()
         {
             if (DateTime.Now.Month == 12)
@@ -381,7 +427,6 @@ namespace PlutoPoint_Installer
                 this.Invalidate();
             }
         }
-
         private void CheckNewYear()
         {
             if (DateTime.Now.Month == 1 &&
@@ -401,7 +446,6 @@ namespace PlutoPoint_Installer
                 this.Invalidate();
             }
         }
-
         private void CheckHalloween()
         {
             if (DateTime.Now.Month == 10 &&
@@ -420,7 +464,6 @@ namespace PlutoPoint_Installer
                 this.Invalidate();
             }
         }
-
         private void CheckValentines()
         {
             if (DateTime.Now.Month == 2 && DateTime.Now.Day == 14)
@@ -437,7 +480,6 @@ namespace PlutoPoint_Installer
                 this.Invalidate();
             }
         }
-
         private void CheckPancake()
         {
             if ((DateTime.Now.Month == 2 && DateTime.Now.Day == 17 && DateTime.Now.Year == 2026) ||
@@ -456,7 +498,6 @@ namespace PlutoPoint_Installer
                 this.Invalidate();
             }
         }
-
         private void CheckPuffin()
         {
             if (DateTime.Now.Month == 4 && DateTime.Now.Day == 14)
@@ -473,7 +514,6 @@ namespace PlutoPoint_Installer
                 this.Invalidate();
             }
         }
-
         private void CheckDuck()
         {
             if (DateTime.Now.Month == 4 && DateTime.Now.Day == 4)
@@ -490,7 +530,6 @@ namespace PlutoPoint_Installer
                 this.Invalidate();
             }
         }
-
         private void CheckDachshund()
         {
             if (DateTime.Now.Month == 6 && DateTime.Now.Day == 21)
@@ -507,7 +546,6 @@ namespace PlutoPoint_Installer
                 this.Invalidate();
             }
         }
-
         private void CheckPluto()
         {
             if (DateTime.Now.Month == 3 && DateTime.Now.Day == 12)
@@ -524,7 +562,6 @@ namespace PlutoPoint_Installer
                 this.Invalidate();
             }
         }
-
         private void CheckHippo()
         {
             if (DateTime.Now.Month == 2 && DateTime.Now.Day == 15)
@@ -541,7 +578,6 @@ namespace PlutoPoint_Installer
                 this.Invalidate();
             }
         }
-
         private void CheckRhino()
         {
             if (DateTime.Now.Month == 9 && DateTime.Now.Day == 22)
@@ -558,7 +594,6 @@ namespace PlutoPoint_Installer
                 this.Invalidate();
             }
         }
-
         private void ApplyBirthdayTheme(string name)
         {
             birthday = "1";
@@ -573,63 +608,51 @@ namespace PlutoPoint_Installer
             SyncLabelsWithInstall();
             this.Invalidate();
         }
-
         private void CheckCharlieBirthday()
         {
             if (DateTime.Now.Month == 4 && DateTime.Now.Day == 6)
                 ApplyBirthdayTheme("Charlie");
         }
-
         private void CheckDeanBirthday()
         {
             if (DateTime.Now.Month == 4 && DateTime.Now.Day == 21)
                 ApplyBirthdayTheme("Dean");
         }
-
         private void CheckSteveBirthday()
         {
             if (DateTime.Now.Month == 6 && DateTime.Now.Day == 24)
                 ApplyBirthdayTheme("Steve");
         }
-
         private void CheckHowardBirthday()
         {
             if (DateTime.Now.Month == 5 && DateTime.Now.Day == 16)
                 ApplyBirthdayTheme("Howard");
         }
-
         private void CheckAdamBirthday()
         {
             if (DateTime.Now.Month == 6 && DateTime.Now.Day == 9)
                 ApplyBirthdayTheme("Adam");
         }
-
         private void CheckGeethBirthday()
         {
             if (DateTime.Now.Month == 7 && DateTime.Now.Day == 25)
                 ApplyBirthdayTheme("Geeth");
         }
-
         private void AdjustInstallerTextBoxSizeForOverlay()
         {
             bool hasOverlayImage = (_overlayImage != null);
-
             this.installerLogPanel.Size = hasOverlayImage
                 ? new System.Drawing.Size(517, 258)
                 : new System.Drawing.Size(517, 355);
-
             installerTextBox.MaximumSize = new Size(installerLogPanel.ClientSize.Width - 10, 0);
         }
-
         private void UpdateGUIEvent()
         {
             _overlayImage = null;
             _overlayIcon = null;
             _overlayRotationDegrees = 0f;
-
             _overlayX = 670;
             _overlayY = 320;
-
             if (christmas == "1")
             {
                 _overlayImage = Properties.Resources.christmasTree;
@@ -690,10 +713,8 @@ namespace PlutoPoint_Installer
                 _overlayImage = Properties.Resources.present;
                 _overlayIcon = PlutoPoint_Installer.Properties.Resources.computerRepairCentreIconBirthday;
             }
-
             if (_overlayIcon != null && this.Icon != _overlayIcon)
                 this.Icon = _overlayIcon;
-
             AdjustInstallerTextBoxSizeForOverlay();
             this.Invalidate();
         }
@@ -710,10 +731,8 @@ namespace PlutoPoint_Installer
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
-
             if (_overlayImage == null)
                 return;
-
             e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             e.Graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBilinear;
             e.Graphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
@@ -754,6 +773,28 @@ namespace PlutoPoint_Installer
                 return BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
             }
         }
+        public class PasswordHashes
+        {
+            public List<string> allowedHashes { get; set; }
+        }
+        private async Task<PasswordHashes> GetPasswordHashesAsync()
+        {
+            try
+            {
+                string url = "https://raw.githubusercontent.com/ProfessorShroom/PlutoPoint-Installer/refs/heads/main/Resources/json/passwordHash.json";
+                using (var client = new HttpClient())
+                {
+                    string json = await client.GetStringAsync(url);
+                    var serializer = new JavaScriptSerializer();
+                    return serializer.Deserialize<PasswordHashes>(json);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to load hashes: {ex.Message}");
+                return null;
+            }
+        }
         public class LocationHashes
         {
             public string romsey { get; set; }
@@ -761,68 +802,49 @@ namespace PlutoPoint_Installer
             public string highcliffe { get; set; }
             public string charlieHome { get; set; }
         }
-        private LocationHashes GetLocationHashes()
+        private async Task<LocationHashes> GetLocationHashesAsync()
         {
             try
             {
                 string url = "https://raw.githubusercontent.com/ProfessorShroom/PlutoPoint-Installer/refs/heads/main/Resources/json/internetProtocolHash.json";
-
-                using (var webClient = new WebClient())
+                using (var client = new HttpClient())
                 {
-                    string json = webClient.DownloadString(url);
+                    string json = await client.GetStringAsync(url);
                     var serializer = new JavaScriptSerializer();
                     return serializer.Deserialize<LocationHashes>(json);
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                MessageBox.Show($"Failed to load hashes: {ex.Message}");
                 return null;
             }
         }
-        private void CheckIP()
-        {
-            string publicIP = GetPublicIPAddress();
-            if (string.IsNullOrWhiteSpace(publicIP))
-                return;
-
-            string publicIPHash = HashIP(publicIP);
-
-            LocationHashes hashes = GetLocationHashes();
-            if (hashes == null)
-                return;
-
-            safeLocation = "0";
-
-            if (publicIPHash == hashes.romsey)
-            {
-                romsey = "1";
-                safeLocation = "1";
-            }
-            else if (publicIPHash == hashes.chandlersFord)
-            {
-                chandlersFord = "1";
-                safeLocation = "1";
-                microsoftOffice2007Check.Checked = true;
-            }
-            else if (publicIPHash == hashes.highcliffe)
-            {
-                highcliffe = "1";   
-                safeLocation = "1";
-            }
-            else if (publicIPHash == hashes.charlieHome)
-            {
-                charlieHome = "1"; 
-                safeLocation = "1";
-            }
-
-            UpdateLocation();
-        }
         private void AppendLocation()
         {
-            if (romsey == "1") { AppendLine("📍 The installer is being run from the Romsey shop."); }
-            else if (chandlersFord == "1") { AppendLine("📍 The installer is being run from the Chandlers Ford shop."); }
-            else if (highcliffe == "1") { AppendLine("📍 The installer is being run from the Highcliffe shop."); }
-            else if (charlieHome == "1") { AppendLine("📍 The installer is being run from Charlie's house."); }
+            if (romsey == "1")
+                locationLine = "📍 The installer is being run from the Romsey shop.";
+            else if (chandlersFord == "1")
+                locationLine = "📍 The installer is being run from the Chandlers Ford shop.";
+            else if (highcliffe == "1")
+                locationLine = "📍 The installer is being run from the Highcliffe shop.";
+            else if (charlieHome == "1")
+                locationLine = "📍 The installer is being run from Charlie's house.";
+            else
+                locationLine = "📍 Location unknown.";
+            // rebuild text safely
+            var lines = installerTextBox.Text.Split(new[] { Environment.NewLine }, StringSplitOptions.None).ToList();
+            for (int i = 0; i < lines.Count; i++)
+            {
+                if (lines[i].StartsWith("📍"))
+                {
+                    lines[i] = locationLine;
+                    break;
+                }
+            }
+            installerTextBox.Text = string.Join(Environment.NewLine, lines);
+            installerLogPanel.PerformLayout();
+            installerLogPanel.AutoScrollPosition = new Point(0, installerTextBox.Bottom);
         }
         private string GetPublicIPAddress()
         {
@@ -864,56 +886,81 @@ namespace PlutoPoint_Installer
             }
             locationLabel.Text = "Current location: " + location;
         }
-        Uri crcOEMURL = new Uri("https://raw.githubusercontent.com/professorshroom/PlutoPoint-Installer/refs/heads/main/Resources/computerRepairCentre/computerRepairCentreOEM.bmp");
-        string crcOEMFilename = @"C:\Computer Repair Centre\oem\computerRepairCentreOEM.bmp";
-        Uri anyDeskURL = new Uri("https://cloud.howardgb.com/public.php/dav/files/EFyAqCm3tEQ6W25/anyDesk.msi");
-        string anyDeskFilename = @"C:\Computer Repair Centre\apps\anyDesks.msi";
-        Uri bingWallpapersURL = new Uri("https://cloud.howardgb.com/public.php/dav/files/EFyAqCm3tEQ6W25/bingWallpapers.msi");
-        string bingWallpapersFilename = @"C:\Computer Repair Centre\apps\bingWallpapers.msi";
-        Uri bitDefenderURL = new Uri("https://cloud.howardgb.com/public.php/dav/files/EFyAqCm3tEQ6W25/bitDefender.exe");
-        string bitDefenderFilename = @"C:\Computer Repair Centre\apps\bitDefender.exe";
-        Uri discordURL = new Uri("https://discord.com/api/download?platform=win");
-        string discordFilename = @"C:\Computer Repair Centre\apps\discord.exe";
-        Uri googleChromeURL = new Uri("https://dl.google.com/tag/s/appguid%3D%7B8A69D345-D564-463c-AFF1-A69D9E530F96%7D&iid=&lang=en&browser=4&usagestats=0&appname=Google%2520Chrome%2520Enterprise&needsadmin=false/edgedl/chrome/install/GoogleChromeStandaloneEnterprise64.msi");
-        string googleChromeFilename = @"C:\Computer Repair Centre\apps\googleChrome.msi";
-        string libreOfficeFilename = @"C:\Computer Repair Centre\apps\libreOffice.msi";
-        Uri microsoftOffice2007URL = new Uri("https://cloud.howardgb.com/public.php/dav/files/EFyAqCm3tEQ6W25/office2007.zip");
-        string microsoftOffice2007Filename = @"C:\Computer Repair Centre\apps\office2007.zip";
-        Uri mozillaFirefoxURL = new Uri("https://download.mozilla.org/?product=firefox-msi-latest-ssl&os=win64&lang=en-GB");
-        string mozillaFirefoxFilename = @"C:\Computer Repair Centre\apps\mozillaFirefox.msi";
-        Uri mozillaThunderbirdURL = new Uri("https://download.mozilla.org/?product=thunderbird-msi-latest-ssl&os=win64&lang=en-GB");
-        string mozillaThunderbirdFilename = @"C:\Computer Repair Centre\apps\mozillaThunderbird.msi";
-        Uri nanaZipURL = new Uri("https://cloud.howardgb.com/public.php/dav/files/EFyAqCm3tEQ6W25/nanaZip.msixbundle");
-        string nanaZipFilename = @"C:\Computer Repair Centre\apps\nanaZip.msixbundle";
-        Uri steamURL = new Uri("https://cloud.howardgb.com/public.php/dav/files/EFyAqCm3tEQ6W25/steam.exe");
-        string steamFilename = @"C:\Computer Repair Centre\apps\steam.exe";
-        Uri hpHotkeySupportURL = new Uri("https://cloud.howardgb.com/public.php/dav/files/EFyAqCm3tEQ6W25/HPHotkey.zip");
-        string hpHotkeySupportFilename = @"C:\Computer Repair Centre\apps\hpHotkeySupport.zip";
-        Uri vlcMediaPlayerURL = new Uri("https://cloud.howardgb.com/public.php/dav/files/EFyAqCm3tEQ6W25/vlcMediaPlayer.msi");
-        string vlcMediaPlayerFilename = @"C:\Computer Repair Centre\apps\vlcMediaPlayer.msi";
-        string nvidiaAppFilename = @"C:\Computer Repair Centre\apps\nvidiaApp.exe";
-        private SoundPlayer hoverSound;
-        private SoundPlayer clickSound;
-
-        public bool IsClickPlaying { get; private set; }
-
-        private static async Task<string> GetPublicIPAddressAsync()
+        public class DownloadUrls
         {
-            using (HttpClient client = new HttpClient())
+            public string crcOEM { get; set; }
+            public string anyDesk { get; set; }
+            public string bingWallpapers { get; set; }
+            public string bitDefender { get; set; }
+            public string discord { get; set; }
+            public string googleChrome { get; set; }
+            public string microsoftOffice2007 { get; set; }
+            public string mozillaFirefox { get; set; }
+            public string mozillaThunderbird { get; set; }
+            public string nanaZip { get; set; }
+            public string steam { get; set; }
+            public string hpHotkeySupport { get; set; }
+            public string vlcMediaPlayer { get; set; }
+        }
+        private DownloadUrls urls;
+        private async Task InitialiseUrlsAsync()
+        {
+            urls = await GetDownloadUrlsAsync();
+            if (urls == null)
             {
-                try
-                {
-                    HttpResponseMessage response = await client.GetAsync("https://api.ipify.org");
-                    response.EnsureSuccessStatusCode();
-                    return await response.Content.ReadAsStringAsync();
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("Error fetching public IP: " + ex.Message);
-                    return null;
-                }
+                MessageBox.Show("Failed to load download URLs.");
             }
         }
+        private async Task<DownloadUrls> GetDownloadUrlsAsync()
+        {
+            try
+            {
+                string url = "https://raw.githubusercontent.com/professorshroom/PlutoPoint-Installer/main/Resources/json/downloads.json";
+                using (var client = new HttpClient())
+                {
+                    string json = await client.GetStringAsync(url);
+                    var serializer = new JavaScriptSerializer();
+                    return serializer.Deserialize<DownloadUrls>(json);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to load URLs: {ex.Message}");
+                return null;
+            }
+        }
+        private Uri crcOEMURL => new Uri(urls.crcOEM);
+        private Uri anyDeskURL => new Uri(urls.anyDesk);
+        private Uri bingWallpapersURL => new Uri(urls.bingWallpapers);
+        private Uri bitDefenderURL => new Uri(urls.bitDefender);
+        private Uri discordURL => new Uri(urls.discord);
+        private Uri googleChromeURL => new Uri(urls.googleChrome);
+        private Uri microsoftOffice2007URL => new Uri(urls.microsoftOffice2007);
+        private Uri mozillaFirefoxURL => new Uri(urls.mozillaFirefox);
+        private Uri mozillaThunderbirdURL => new Uri(urls.mozillaThunderbird);
+        private Uri nanaZipURL => new Uri(urls.nanaZip);
+        private Uri steamURL => new Uri(urls.steam);
+        private Uri hpHotkeySupportURL => new Uri(urls.hpHotkeySupport);
+        private Uri vlcMediaPlayerURL => new Uri(urls.vlcMediaPlayer);
+        string crcOEMFilename = @"C:\Computer Repair Centre\oem\computerRepairCentreOEM.bmp";
+        string anyDeskFilename = @"C:\Computer Repair Centre\apps\anyDesks.msi";
+        string bingWallpapersFilename = @"C:\Computer Repair Centre\apps\bingWallpapers.msi";
+        string bitDefenderFilename = @"C:\Computer Repair Centre\apps\bitDefender.exe";
+        string discordFilename = @"C:\Computer Repair Centre\apps\discord.exe";
+        string googleChromeFilename = @"C:\Computer Repair Centre\apps\googleChrome.msi";
+        string libreOfficeFilename = @"C:\Computer Repair Centre\apps\libreOffice.msi";
+        string microsoftOffice2007Filename = @"C:\Computer Repair Centre\apps\office2007.zip";
+        string mozillaFirefoxFilename = @"C:\Computer Repair Centre\apps\mozillaFirefox.msi";
+        string mozillaThunderbirdFilename = @"C:\Computer Repair Centre\apps\mozillaThunderbird.msi";
+        string nanaZipFilename = @"C:\Computer Repair Centre\apps\nanaZip.msixbundle";
+        string steamFilename = @"C:\Computer Repair Centre\apps\steam.exe";
+        string hpHotkeySupportFilename = @"C:\Computer Repair Centre\apps\hpHotkeySupport.zip";
+        string vlcMediaPlayerFilename = @"C:\Computer Repair Centre\apps\vlcMediaPlayer.msi";
+        string nvidiaAppFilename = @"C:\Computer Repair Centre\apps\nvidiaApp.exe";
+        // Sounds unchanged
+        private SoundPlayer hoverSound;
+        private SoundPlayer clickSound;
+        public bool IsClickPlaying { get; private set; }
         public class FileDeletionHelper
         {
             public async Task DeleteFilesAndDirectoryAsync(string appsDir, string launcherPath)
@@ -969,11 +1016,9 @@ namespace PlutoPoint_Installer
                     if (key != null)
                     {
                         string buildNumber = key.GetValue("CurrentBuild")?.ToString();
-
                         if (int.TryParse(buildNumber, out int build))
                         {
                             string versionText;
-
                             if (build >= 22000)
                             {
                                 versionText = "🪟 Windows 11 detected.";
@@ -1019,7 +1064,6 @@ namespace PlutoPoint_Installer
         {
             bool hasIntelGpu = false;
             bool hasIntelCpu = false;
-
             var gpuSearcher = new ManagementObjectSearcher("SELECT * FROM Win32_VideoController");
             foreach (ManagementObject queryObj in gpuSearcher.Get())
             {
@@ -1133,7 +1177,6 @@ namespace PlutoPoint_Installer
         private string GetLibreOfficeVersion()
         {
             string url = "https://www.libreoffice.org/download/download-libreoffice/";
-
             try
             {
                 var request = WebRequest.Create(url);
@@ -1158,29 +1201,35 @@ namespace PlutoPoint_Installer
             {
                 Console.WriteLine("Error: " + ex.Message);
             }
-
             return null;
         }
         private async void install_Click(object sender, EventArgs e)
         {
             if (safeLocation == "0")
             {
+                var hashes = await GetPasswordHashesAsync();
+                if (hashes?.allowedHashes == null || hashes.allowedHashes.Count == 0)
+                {
+                    MessageBox.Show("Unable to load password hashes.");
+                    return;
+                }
                 using (PasswordForm pf = new PasswordForm())
                 {
                     if (pf.ShowDialog() == DialogResult.OK)
                     {
                         string enteredHash = ComputeSHA256(pf.EnteredPassword);
-
-                        if (enteredHash != charliePasswordHash && enteredHash != CRCPasswordHash)
+                        if (!hashes.allowedHashes.Contains(enteredHash))
                         {
                             MessageBox.Show("Incorrect password. Exiting.");
                             this.Close();
+                            return;
                         }
                     }
                     else
                     {
                         MessageBox.Show("Password required. Exiting installer.");
                         Environment.Exit(0);
+                        return;
                     }
                 }
             }
@@ -1202,7 +1251,6 @@ namespace PlutoPoint_Installer
             // Desktop
             string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
             string launcherPath = System.IO.Path.Combine(desktopPath, @"Computer Repair Centre Installer Launcher.exe");
-
             if (!Directory.Exists(rootDir))
             {
                 Directory.CreateDirectory(rootDir);
@@ -1282,7 +1330,6 @@ namespace PlutoPoint_Installer
                 AppendLine("🔄 Disabling sleep and screen timeout while on AC power temporarily during install...");
                 progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
             }
-
             if (crcCheck.Checked)
             {
                 AppendLine("📌 Computer Repair Centre OEM information is selected.");
@@ -1450,16 +1497,12 @@ namespace PlutoPoint_Installer
                     else
                     {
                         AppendLine("❌ NanaZip not found, proceeding with installation.");
-
                         AppendLine("🔄 Downloading NanaZip...");
-
                         using (WebClient wc = new WebClient())
                         {
                             await wc.DownloadFileTaskAsync(nanaZipURL, nanaZipFilename);
                         }
-
                         AppendLine("📦 Installing NanaZip...");
-
                         Process nanaZipInstallProcess = Process.Start(new ProcessStartInfo
                         {
                             FileName = "powershell",
@@ -1469,12 +1512,10 @@ namespace PlutoPoint_Installer
                             RedirectStandardError = true,
                             CreateNoWindow = true
                         });
-
                         if (nanaZipInstallProcess != null)
                         {
                             await Task.Run(() => nanaZipInstallProcess.WaitForExit());
                         }
-
                         AppendLine("✅ Completed installation of NanaZip.");
                         progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
                     }
@@ -1494,7 +1535,6 @@ namespace PlutoPoint_Installer
                 {
                     AppendLine("📌 Remove Windows AI is selected.");
                     AppendLine("🔄 Removing Windows AI... (this can take a few minutes)");
-
                     await Task.Run(() =>
                     {
                         var psiAI = new ProcessStartInfo
@@ -1530,7 +1570,6 @@ namespace PlutoPoint_Installer
                             proc.WaitForExit();
                         }
                     });
-
                     AppendLine("✅ Completed removal of Windows AI and Copilot.");
                 }
                 else
@@ -1703,7 +1742,6 @@ namespace PlutoPoint_Installer
                         {
                             Console.WriteLine($"An error occurred: {ex.Message}");
                         }
-
                     });
                     AppendLine("✅ Completed installation of BitDefender.");
                     progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
@@ -1755,7 +1793,6 @@ namespace PlutoPoint_Installer
                         {
                             Console.WriteLine($"An error occurred: {ex.Message}");
                         }
-
                     });
                     AppendLine("✅ Completed installation of Discord.");
                     progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
@@ -1874,7 +1911,6 @@ namespace PlutoPoint_Installer
             if (microsoftOffice2007Check.Checked)
             {
                 AppendLine("📌 Microsoft Office 2007 is selected.");
-
                 string officePath = @"C:\Program Files (x86)\Microsoft Office\Office12\WINWORD.EXE";
                 string windowsAppsPath = @"C:\Program Files\WindowsApps";
                 string nanaZipExe = "NanaZip.Windows.exe";
@@ -1887,7 +1923,6 @@ namespace PlutoPoint_Installer
                 else
                 {
                     AppendLine("🔄 Downloading Microsoft Office 2007...");
-
                     using (WebClient wc = new WebClient())
                     {
                         wc.DownloadFileCompleted += wc_progressBarStep;
@@ -1956,7 +1991,6 @@ namespace PlutoPoint_Installer
                         Directory.CreateDirectory(microsoftOffice2007ExtractPath);
                     }
                     AppendLine("📂 Extracting Microsoft Office 2007 to Desktop...");
-
                     async Task RunNanaZipExtractionOfficeAsync()
                     {
                         ProcessStartInfo processStartInfo = new ProcessStartInfo
@@ -1975,17 +2009,13 @@ namespace PlutoPoint_Installer
                                 process.Start();
                                 Task<string> outputTask = process.StandardOutput.ReadToEndAsync();
                                 Task<string> errorTask = process.StandardError.ReadToEndAsync();
-
                                 await Task.Run(() => process.WaitForExit());
-
                                 string output = await outputTask;
                                 string errors = await errorTask;
-
                                 if (!string.IsNullOrEmpty(output))
                                 {
                                     AppendLine(output);
                                 }
-
                                 if (!string.IsNullOrEmpty(errors))
                                 {
                                     AppendLine("⚠️ Errors: " + errors);
@@ -2014,16 +2044,13 @@ namespace PlutoPoint_Installer
                         string baseUrl = edition.Equals("Enterprise", StringComparison.OrdinalIgnoreCase)
                             ? "https://www.nvidia.com/en-us/software/nvidia-app-enterprise/"
                             : "https://www.nvidia.com/en-us/software/nvidia-app/";
-
                         string htmlContent = await client.GetStringAsync(baseUrl);
                         string pattern = @"https:\/\/us\.download\.nvidia\.com\/nvapp\/client\/[\d\.]+\/NVIDIA_app_v[\d\.]+\.exe";
                         Match match = Regex.Match(htmlContent, pattern, RegexOptions.IgnoreCase);
-
                         if (match.Success)
                         {
                             string downloadUrl = match.Value;
                             AppendLine($"🔗 Found latest Nvidia installer: {downloadUrl}");
-
                             byte[] fileBytes = await client.GetByteArrayAsync(downloadUrl);
                             File.WriteAllBytes(nvidiaAppFilename, fileBytes);
                         }
@@ -2041,7 +2068,6 @@ namespace PlutoPoint_Installer
                 }
                 progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
                 AppendLine("📦 Installing Nvidia App silently...");
-
                 await Task.Run(() =>
                 {
                     ProcessStartInfo startInfo = new ProcessStartInfo
@@ -2051,7 +2077,6 @@ namespace PlutoPoint_Installer
                         UseShellExecute = true,
                         Verb = "runas"
                     };
-
                     try
                     {
                         using (Process process = Process.Start(startInfo))
@@ -2098,7 +2123,6 @@ namespace PlutoPoint_Installer
                             process.StartInfo.RedirectStandardOutput = true;
                             process.StartInfo.RedirectStandardError = true;
                             process.StartInfo.CreateNoWindow = true;
-
                             try
                             {
                                 process.Start();
@@ -2122,7 +2146,6 @@ namespace PlutoPoint_Installer
             if (mozillaThunderbirdCheck.Checked)
             {
                 AppendLine("📌 Mozilla Thunderbird is selected.");
-
                 // Check if Thunderbird is already installed
                 if (File.Exists(mozillaThunderbirdExePath))
                 {
@@ -2138,7 +2161,6 @@ namespace PlutoPoint_Installer
                         wc.DownloadFileCompleted += wc_progressBarStep;
                         await wc.DownloadFileTaskAsync(mozillaThunderbirdURL, mozillaThunderbirdFilename);
                     }
-
                     // Install Thunderbird
                     AppendLine("📦 Installing Mozilla Thunderbird...");
                     await Task.Run(() =>
@@ -2151,7 +2173,6 @@ namespace PlutoPoint_Installer
                             process.StartInfo.RedirectStandardOutput = true;
                             process.StartInfo.RedirectStandardError = true;
                             process.StartInfo.CreateNoWindow = true;
-
                             try
                             {
                                 process.Start();
@@ -2168,7 +2189,6 @@ namespace PlutoPoint_Installer
                             }
                         }
                     });
-
                     AppendLine("✅ Completed installation of Mozilla Thunderbird.");
                     progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
                 }
@@ -2219,7 +2239,6 @@ namespace PlutoPoint_Installer
                         {
                             Console.WriteLine($"An error occurred: {ex.Message}");
                         }
-
                     });
                     AppendLine("✅ Completed installation of Steam.");
                     progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
@@ -2269,7 +2288,6 @@ namespace PlutoPoint_Installer
                                 Console.WriteLine("An error occurred: " + ex.Message);
                             }
                         }
-
                     });
                     AppendLine("✅ Completed installation of VLC Media Player.");
                     progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
@@ -2278,21 +2296,16 @@ namespace PlutoPoint_Installer
             if (hpEliteBook == "1")
             {
                 AppendLine("💻 The installer is being run on an HP EliteBook.");
-
                 AppendLine("🔄 Downloading HP Hotkey Support...");
-
                 using (WebClient wc = new WebClient())
                 {
                     wc.DownloadFileCompleted += wc_progressBarStep;
                     await wc.DownloadFileTaskAsync(hpHotkeySupportURL, hpHotkeySupportFilename);
                 }
-
                 AppendLine("🔄 Checking if NanaZip is installed...");
-
                 string windowsAppsPath = @"C:\Program Files\WindowsApps";
                 string nanaZipExe = "NanaZip.Windows.exe";
                 string nanaZipPath = null;
-
                 try
                 {
                     var files = Directory.GetFiles(windowsAppsPath, nanaZipExe, SearchOption.AllDirectories);
@@ -2306,19 +2319,15 @@ namespace PlutoPoint_Installer
                 {
                     AppendLine("⚠️ Access denied to WindowsApps. Try running as Administrator.");
                 }
-
                 if (string.IsNullOrEmpty(nanaZipPath))
                 {
                     AppendLine("⚠️ NanaZip is not installed and is required for extraction.");
                     AppendLine("🔄 Downloading NanaZip...");
-
                     using (WebClient wc = new WebClient())
                     {
                         await wc.DownloadFileTaskAsync(nanaZipURL, nanaZipFilename);
                     }
-
                     AppendLine("📦 Installing NanaZip...");
-
                     Process nanaZipInstallProcess = Process.Start(new ProcessStartInfo
                     {
                         FileName = "powershell",
@@ -2328,14 +2337,11 @@ namespace PlutoPoint_Installer
                         RedirectStandardError = true,
                         CreateNoWindow = true
                     });
-
                     if (nanaZipInstallProcess != null)
                     {
                         await Task.Run(() => nanaZipInstallProcess.WaitForExit());
                     }
-
                     AppendLine("✅ Completed installation of NanaZip.");
-
                     try
                     {
                         var files = Directory.GetFiles(windowsAppsPath, nanaZipExe, SearchOption.AllDirectories);
@@ -2356,11 +2362,8 @@ namespace PlutoPoint_Installer
                         return;
                     }
                 }
-
                 AppendLine("📂 Extracting HP Hotkey Support...");
-
                 string hpHotkeySupportExtractPath = @"C:\Computer Repair Centre\apps\hpHotkeySupport";
-
                 async Task RunNanaZipExtractionHPAsync()
                 {
                     ProcessStartInfo processStartInfo = new ProcessStartInfo
@@ -2372,7 +2375,6 @@ namespace PlutoPoint_Installer
                         RedirectStandardError = true,
                         CreateNoWindow = true
                     };
-
                     try
                     {
                         using (Process process = new Process { StartInfo = processStartInfo })
@@ -2380,17 +2382,13 @@ namespace PlutoPoint_Installer
                             process.Start();
                             Task<string> outputTask = process.StandardOutput.ReadToEndAsync();
                             Task<string> errorTask = process.StandardError.ReadToEndAsync();
-
                             await Task.Run(() => process.WaitForExit());
-
                             string output = await outputTask;
                             string errors = await errorTask;
-
                             if (!string.IsNullOrEmpty(output))
                             {
                                 AppendLine(output);
                             }
-
                             if (!string.IsNullOrEmpty(errors))
                             {
                                 AppendLine("❌ Errors: " + errors);
@@ -2402,29 +2400,22 @@ namespace PlutoPoint_Installer
                         AppendLine("❌ Exception: " + ex.Message);
                     }
                 }
-
                 if (!Directory.Exists(hpHotkeySupportExtractPath))
                 {
                     Directory.CreateDirectory(hpHotkeySupportExtractPath);
                 }
-
                 await RunNanaZipExtractionHPAsync();
-
                 AppendLine("✅ Completed extraction of HP Hotkey Support.");
                 progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
-
                 AppendLine("📦 Installing HP Hotkey Support...");
-
                 async Task InstallHPHotkeySupport()
                 {
                     await StartProcessAsync(@"C:\Computer Repair Centre\apps\hpHotkeySupport\SP103615\src\install.cmd");
                 }
-
                 async Task InstallHPFramework()
                 {
                     await StartProcessAsync(@"C:\Computer Repair Centre\SP103615\src\install.cmd");
                 }
-
                 async Task StartProcessAsync(string filePath)
                 {
                     try
@@ -2434,7 +2425,6 @@ namespace PlutoPoint_Installer
                             FileName = filePath,
                             UseShellExecute = false
                         };
-
                         using (Process process = Process.Start(processInfo))
                         {
                             if (process != null)
@@ -2453,15 +2443,11 @@ namespace PlutoPoint_Installer
                         AppendLine("❌ An error occurred: " + ex.Message);
                     }
                 }
-
                 await InstallHPHotkeySupport();
                 progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
-
                 AppendLine("📦 Installing HP Framework...");
-
                 await InstallHPFramework();
                 progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
-
                 AppendLine("✅ Completed installation of HP Hotkey Support.");
             }
             using (RegistryKey key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion"))
@@ -2483,7 +2469,6 @@ namespace PlutoPoint_Installer
                                 Console.WriteLine($"Set '{bitLockerReg}' to {bitLockerRegData} in '{bitLockerRegPath}'.");
                             }
                             progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
-
                             AppendLine("✅ Disabling fastboot mode...");
                             const string hiberbootRegPath = @"SYSTEM\CurrentControlSet\Control\Session Manager\Power";
                             const string hiberbootReg = "HiberbootEnabled";
@@ -2494,7 +2479,6 @@ namespace PlutoPoint_Installer
                                 Console.WriteLine($"Set '{hiberbootReg}' to {hiberbootRegData} in '{hiberbootRegPath}'.");
                             }
                             progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
-
                             AppendLine("✅ Disabling location tracking...");
                             const string locationRegPath1 = @"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Sensor\Overrides\{BFA794E4-F964-4FDB-90F6-51056BFE4B44}";
                             const string locationReg1 = "SensorPermissionState";
@@ -2514,7 +2498,6 @@ namespace PlutoPoint_Installer
                                 Console.WriteLine($"Set '{locationReg2}' to {locationRegData2} in '{locationRegPath2}'.");
                             }
                             progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
-
                             AppendLine("✅ Disabling People icon...");
                             const string peopleRegPath1 = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People";
                             const string peopleRegPath2 = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People";
@@ -2530,7 +2513,6 @@ namespace PlutoPoint_Installer
                                 Console.WriteLine($"Set '{peopleReg2}' to {peopleRegData2} in '{peopleRegPath2}'.");
                             }
                             progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
-
                             AppendLine("✅ Hiding recently used files and folders in File Explorer...");
                             const string recentRegPath = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer";
                             const string recentReg = "ShowRecent";
@@ -2549,7 +2531,6 @@ namespace PlutoPoint_Installer
                                 Console.WriteLine($"Set '{frequentReg}' to {frequentRegData} in '{recentRegPath}'.");
                             }
                             progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
-
                         }
                         else if (build >= 19041)
                         {
@@ -2563,7 +2544,6 @@ namespace PlutoPoint_Installer
                                 Console.WriteLine($"Set '{thisPCReg}' to {thisPCRegData} in '{thisPCRegPath}'.");
                             }
                             progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
-
                             AppendLine("✅ Disabling fastboot mode...");
                             const string hiberbootRegPath = @"SYSTEM\CurrentControlSet\Control\Session Manager\Power";
                             const string hiberbootReg = "HiberbootEnabled";
@@ -2574,7 +2554,6 @@ namespace PlutoPoint_Installer
                                 Console.WriteLine($"Set '{hiberbootReg}' to {hiberbootRegData} in '{hiberbootRegPath}'.");
                             }
                             progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
-
                             AppendLine("✅ Disabling location tracking...");
                             const string locationRegPath1 = @"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Sensor\Overrides\{BFA794E4-F964-4FDB-90F6-51056BFE4B44}";
                             const string locationReg1 = "SensorPermissionState";
@@ -2594,7 +2573,6 @@ namespace PlutoPoint_Installer
                                 Console.WriteLine($"Set '{locationReg2}' to {locationRegData2} in '{locationRegPath2}'.");
                             }
                             progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
-
                             AppendLine("✅ Disabling People icon...");
                             const string peopleRegPath1 = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People";
                             const string peopleRegPath2 = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People";
@@ -2610,7 +2588,6 @@ namespace PlutoPoint_Installer
                                 Console.WriteLine($"Set '{peopleReg2}' to {peopleRegData2} in '{peopleRegPath2}'.");
                             }
                             progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
-
                             AppendLine("✅ Hiding recently used files and folders in File Explorer...");
                             const string recentRegPath = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer";
                             const string recentReg = "ShowRecent";
@@ -2637,7 +2614,6 @@ namespace PlutoPoint_Installer
                     }
                 }
             }
-
             if (powerCheck.Checked) { }
             else
             {
@@ -2646,17 +2622,14 @@ namespace PlutoPoint_Installer
                 Process.Start("powercfg", "/change standby-timeout-ac 20");
                 progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
             }
-
             AppendLine("✅ Cleaning up installation files...");
             var deletionHelper = new FileDeletionHelper();
             await deletionHelper.DeleteFilesAndDirectoryAsync(appsDir, launcherPath);
             progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
-
             if (recycleBinCheck.Checked)
             {
                 AppendLine("✅ Empty Recycle Bin is checked.");
                 AppendLine("🗑️ Emptying Recycle Bin...");
-
                 try
                 {
                     SHEmptyRecycleBin(IntPtr.Zero, null, SHERB_NOCONFIRMATION | SHERB_NOPROGRESSUI | SHERB_NOSOUND);
@@ -2666,24 +2639,19 @@ namespace PlutoPoint_Installer
                 {
                     AppendLine($"⚠️ Failed to empty Recycle Bin: {ex.Message}");
                 }
-
             }
             player.Play();
-
             if (restartCheck.Checked)
             {
                 Process.Start("shutdown", "/r /t 60");
                 AppendLine("🔄 System will restart in 60 seconds. If you need to cancel this press the close button.");
             }
-
             if (shutdownCheck.Checked)
             {
                 Process.Start("shutdown", "/s /t 60");
                 AppendLine("⏻ System will shutdown in 60 seconds. If you need to cancel this press the close button.");
             }
-
             AppendLine("✅ The installation has completed.");
-
         }
         private void wc_progressBarStep(object sender, AsyncCompletedEventArgs e)
         {
@@ -2706,7 +2674,6 @@ namespace PlutoPoint_Installer
             if (restartCheck.Checked)
                 shutdownCheck.Checked = false;
         }
-
         private async void close_Click(object sender, EventArgs e)
         {
             await Task.Delay(325);
@@ -2725,7 +2692,9 @@ namespace PlutoPoint_Installer
         }
         private async void test_Click(object sender, EventArgs e)
         {
-            AppendLine("❌ No current tests. You nosy bastard.");
+            AppendLine("Setting safe location to 0.");
+            safeLocation = "0";
+            //AppendLine("❌ No current tests. You nosey bastard.");
         }
         private void versionLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
@@ -2751,9 +2720,7 @@ namespace PlutoPoint_Installer
         private void AppendLine(string text = "")
         {
             installerTextBox.Text += text + Environment.NewLine;
-            installerTextBox.Update();
             installerLogPanel.PerformLayout();
-
             installerLogPanel.AutoScrollPosition = new Point(0, installerTextBox.Bottom);
         }
         private class PasswordForm : Form
@@ -2762,7 +2729,6 @@ namespace PlutoPoint_Installer
             private TextBox txtPassword;
             private Button btnOK;
             private Label passwordText;
-
             public PasswordForm()
             {
                 this.Text = "Password Required.";
