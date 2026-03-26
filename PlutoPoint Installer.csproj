@@ -122,6 +122,7 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="app.manifest" />
+    <None Include="downloads.json" />
     <None Include="internetProtocolHash.json" />
     <None Include="LICENSE.md" />
     <None Include="packages.config" />

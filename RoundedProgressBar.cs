@@ -2,6 +2,9 @@
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
+
+// Copyright © Charlie Howard 2026 All rights reserved.
+
 namespace PlutoPoint_Installer
 {
     internal class RoundedGradientProgressBar : Control

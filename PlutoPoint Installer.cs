@@ -14,7 +14,9 @@ using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 using Shell32;
 using System.Drawing.Drawing2D;
+
 // Copyright © Charlie Howard 2026 All rights reserved.
+
 namespace PlutoPoint_Installer
 {
     using System.Drawing;
@@ -1481,7 +1483,7 @@ namespace PlutoPoint_Installer
             if (nanaZipCheck.Checked)
             {
                 AppendLine("📌 NanaZip is selected.");
-                string nanaZipExe = "NanaZip.Windows.exe";
+                string nanaZipExe = "NanaZip.Modern.FileManager.exe";
                 string windowsAppsPath = @"C:\Program Files\WindowsApps";
                 string nanaZipPath = null;
                 AppendLine("🔄 Checking if NanaZip is installed...");
@@ -2692,9 +2694,7 @@ namespace PlutoPoint_Installer
         }
         private async void test_Click(object sender, EventArgs e)
         {
-            AppendLine("Setting safe location to 0.");
-            safeLocation = "0";
-            //AppendLine("❌ No current tests. You nosey bastard.");
+            AppendLine("❌ No current tests. You nosey bastard.");
         }
         private void versionLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
@@ -2741,7 +2741,7 @@ namespace PlutoPoint_Installer
                 this.Icon = global::PlutoPoint_Installer.Properties.Resources.computerRepairCentreIcon;
                 passwordText = new Label()
                 {
-                    Text = "The installer is not being run from a safe location, please enter password to continue.",
+                    Text = "The installer is not being run from a known location, please enter password to continue.",
                     Left = 10,
                     Top = 10,
                     Width = 260,
