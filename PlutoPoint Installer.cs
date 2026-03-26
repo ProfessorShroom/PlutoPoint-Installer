@@ -955,6 +955,7 @@ namespace PlutoPoint_Installer
         string mozillaFirefoxFilename = @"C:\Computer Repair Centre\apps\mozillaFirefox.msi";
         string mozillaThunderbirdFilename = @"C:\Computer Repair Centre\apps\mozillaThunderbird.msi";
         string nanaZipFilename = @"C:\Computer Repair Centre\apps\nanaZip.msixbundle";
+        string nanaZipExe = "NanaZip.Modern.FileManager.exe";
         string steamFilename = @"C:\Computer Repair Centre\apps\steam.exe";
         string hpHotkeySupportFilename = @"C:\Computer Repair Centre\apps\hpHotkeySupport.zip";
         string vlcMediaPlayerFilename = @"C:\Computer Repair Centre\apps\vlcMediaPlayer.msi";
@@ -1483,7 +1484,6 @@ namespace PlutoPoint_Installer
             if (nanaZipCheck.Checked)
             {
                 AppendLine("📌 NanaZip is selected.");
-                string nanaZipExe = "NanaZip.Modern.FileManager.exe";
                 string windowsAppsPath = @"C:\Program Files\WindowsApps";
                 string nanaZipPath = null;
                 AppendLine("🔄 Checking if NanaZip is installed...");
@@ -2305,8 +2305,7 @@ namespace PlutoPoint_Installer
                     await wc.DownloadFileTaskAsync(hpHotkeySupportURL, hpHotkeySupportFilename);
                 }
                 AppendLine("🔄 Checking if NanaZip is installed...");
-                string windowsAppsPath = @"C:\Program Files\WindowsApps";
-                string nanaZipExe = "NanaZip.Windows.exe";
+                string windowsAppsPath = @"C:\Program Files\WindowsApps";               
                 string nanaZipPath = null;
                 try
                 {

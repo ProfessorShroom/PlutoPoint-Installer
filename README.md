@@ -1,6 +1,6 @@
  ![Arch](https://img.shields.io/badge/Arch-AMD64-blue) ![OS](https://img.shields.io/badge/OS-Windows%207%20|Windows%208(.1)%20|Windows%2010%20|%20Windows%2011-green)
 
-## PlutoPoint Installer Version 6.6.3.2
+## PlutoPoint Installer Version 6.6.3.3
 #### Copyright © Charlie Howard 2026 All rights reserved.
 
 A C# based GUI installer for Windows 10/11, it should also run on Windows 7, 8 & 8.1 but this isn't tested.
@@ -17,11 +17,15 @@ Disables sleep and screen timeout if plugged into AC power during the install an
 
 #### Latest Update
 
+**Update 6.6.3.3**
+
+- Moved NanaZip exe string out of the if statement, so it can be used across the installer.
+
+#### Older Updates
+
 **Update 6.6.3.2**
 
 - Updated NanaZip exe name due to new version.
-
-#### Older Updates
 
 **Update 6.6.3.1**
 
