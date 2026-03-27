@@ -1915,7 +1915,6 @@ namespace PlutoPoint_Installer
                 AppendLine("📌 Microsoft Office 2007 is selected.");
                 string officePath = @"C:\Program Files (x86)\Microsoft Office\Office12\WINWORD.EXE";
                 string windowsAppsPath = @"C:\Program Files\WindowsApps";
-                string nanaZipExe = "NanaZip.Windows.exe";
                 string nanaZipPath = null;
                 if (File.Exists(officePath))
                 {
