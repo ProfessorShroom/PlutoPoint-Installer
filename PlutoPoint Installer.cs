@@ -2651,6 +2651,8 @@ namespace PlutoPoint_Installer
                 Process.Start("shutdown", "/s /t 60");
                 AppendLine("⏻ System will shutdown in 60 seconds. If you need to cancel this press the close button.");
             }
+            progressBar.Value = Math.Min(progressBar.Maximum, progressBar.Value);
+            progressBar.Value = progressBar.Maximum;
             AppendLine("✅ The installation has completed.");
         }
         private void wc_progressBarStep(object sender, AsyncCompletedEventArgs e)
