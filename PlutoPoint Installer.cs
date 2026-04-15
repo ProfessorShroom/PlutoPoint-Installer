@@ -1179,24 +1179,24 @@ namespace PlutoPoint_Installer
         }
         private string GetLibreOfficeVersion()
         {
-            string url = "https://www.libreoffice.org/download/download-libreoffice/";
+            string url = "https://www.libreoffice.org/download/";
             try
             {
-                var request = WebRequest.Create(url);
-                using (var response = request.GetResponse())
-                using (var stream = response.GetResponseStream())
-                using (var reader = new StreamReader(stream))
+                using (var client = new HttpClient())
                 {
-                    string html = reader.ReadToEnd();
-                    int index = html.IndexOf("Our latest stable release", StringComparison.OrdinalIgnoreCase);
-                    if (index != -1)
+                    client.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0");
+
+                    string html = client.GetStringAsync(url).Result;
+
+                    var match = Regex.Match(
+                        html,
+                        @"(\d+\.\d+(?:\.\d+)?)[^0-9]{0,100}Windows \(x86-64\)",
+                        RegexOptions.IgnoreCase
+                    );
+
+                    if (match.Success)
                     {
-                        string snippet = html.Substring(index, Math.Min(1000, html.Length - index));
-                        var versionMatch = Regex.Match(snippet, @"\b\d+\.\d+\.\d+\b");
-                        if (versionMatch.Success)
-                        {
-                            return versionMatch.Value;
-                        }
+                        return match.Groups[1].Value;
                     }
                 }
             }
@@ -1204,6 +1204,7 @@ namespace PlutoPoint_Installer
             {
                 Console.WriteLine("Error: " + ex.Message);
             }
+
             return null;
         }
         private async void install_Click(object sender, EventArgs e)
