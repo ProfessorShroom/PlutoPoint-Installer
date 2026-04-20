@@ -152,7 +152,6 @@ namespace PlutoPoint_Installer
             {
                 chandlersFord = "1";
                 safeLocation = "1";
-                microsoftOffice2007Check.Checked = true;
             }
             else if (publicIPHash == hashes.highcliffe)
             {
@@ -896,7 +895,6 @@ namespace PlutoPoint_Installer
             public string bitDefender { get; set; }
             public string discord { get; set; }
             public string googleChrome { get; set; }
-            public string microsoftOffice2007 { get; set; }
             public string mozillaFirefox { get; set; }
             public string mozillaThunderbird { get; set; }
             public string nanaZip { get; set; }
@@ -937,29 +935,12 @@ namespace PlutoPoint_Installer
         private Uri bitDefenderURL => new Uri(urls.bitDefender);
         private Uri discordURL => new Uri(urls.discord);
         private Uri googleChromeURL => new Uri(urls.googleChrome);
-        private Uri microsoftOffice2007URL => new Uri(urls.microsoftOffice2007);
         private Uri mozillaFirefoxURL => new Uri(urls.mozillaFirefox);
         private Uri mozillaThunderbirdURL => new Uri(urls.mozillaThunderbird);
         private Uri nanaZipURL => new Uri(urls.nanaZip);
         private Uri steamURL => new Uri(urls.steam);
         private Uri hpHotkeySupportURL => new Uri(urls.hpHotkeySupport);
         private Uri vlcMediaPlayerURL => new Uri(urls.vlcMediaPlayer);
-        string crcOEMFilename = @"C:\Computer Repair Centre\oem\computerRepairCentreOEM.bmp";
-        string anyDeskFilename = @"C:\Computer Repair Centre\apps\anyDesks.msi";
-        string bingWallpapersFilename = @"C:\Computer Repair Centre\apps\bingWallpapers.msi";
-        string bitDefenderFilename = @"C:\Computer Repair Centre\apps\bitDefender.exe";
-        string discordFilename = @"C:\Computer Repair Centre\apps\discord.exe";
-        string googleChromeFilename = @"C:\Computer Repair Centre\apps\googleChrome.msi";
-        string libreOfficeFilename = @"C:\Computer Repair Centre\apps\libreOffice.msi";
-        string microsoftOffice2007Filename = @"C:\Computer Repair Centre\apps\office2007.zip";
-        string mozillaFirefoxFilename = @"C:\Computer Repair Centre\apps\mozillaFirefox.msi";
-        string mozillaThunderbirdFilename = @"C:\Computer Repair Centre\apps\mozillaThunderbird.msi";
-        string nanaZipFilename = @"C:\Computer Repair Centre\apps\nanaZip.msixbundle";
-        string nanaZipExe = "NanaZip.Modern.FileManager.exe";
-        string steamFilename = @"C:\Computer Repair Centre\apps\steam.exe";
-        string hpHotkeySupportFilename = @"C:\Computer Repair Centre\apps\hpHotkeySupport.zip";
-        string vlcMediaPlayerFilename = @"C:\Computer Repair Centre\apps\vlcMediaPlayer.msi";
-        string nvidiaAppFilename = @"C:\Computer Repair Centre\apps\nvidiaApp.exe";
         // Sounds unchanged
         private SoundPlayer hoverSound;
         private SoundPlayer clickSound;
@@ -1242,13 +1223,28 @@ namespace PlutoPoint_Installer
             string rootDir = @"C:\Computer Repair Centre";
             string oemDir = System.IO.Path.Combine(rootDir, "oem");
             string appsDir = System.IO.Path.Combine(rootDir, "apps");
+            string windowsAppsPath = @"C:\Program Files\WindowsApps";
             // Installed apps
             string googleChromeExePath = @"C:\Program Files\Google\Chrome\Application\chrome.exe";
             string mozillaFirefoxExePath = @"C:\Program Files\Mozilla Firefox\firefox.exe";
             string mozillaThunderbirdExePath = @"C:\Program Files\Mozilla Thunderbird\thunderbird.exe";
+            string nanaZipExe = "NanaZip.Modern.FileManager.exe";
+            string nanaZipPath = null;
             // Downloaded installers
+            string crcOEMFilename = System.IO.Path.Combine(oemDir, "computerRepairCentreOEM.bmp");
             string googleChromeFilename = System.IO.Path.Combine(appsDir, "googleChrome.msi");
             string mozillaFirefoxFilename = System.IO.Path.Combine(appsDir, "mozillaFirefox.msi");
+            string anyDeskFilename = System.IO.Path.Combine(appsDir, "anyDesk.msi");
+            string bingWallpapersFilename = System.IO.Path.Combine(appsDir, "bingWallpapers.msi");
+            string bitDefenderFilename = System.IO.Path.Combine(appsDir, "bitDefender.exe");
+            string discordFilename = System.IO.Path.Combine(appsDir, "discord.exe");
+            string libreOfficeFilename = System.IO.Path.Combine(appsDir, "libreOffice.msi");
+            string mozillaThunderbirdFilename = System.IO.Path.Combine(appsDir, "mozillaThunderbird.msi");
+            string nanaZipFilename = System.IO.Path.Combine(appsDir, "nanaZip.msixbundle");
+            string steamFilename = System.IO.Path.Combine(appsDir, "steam.exe");
+            string hpHotkeySupportFilename = System.IO.Path.Combine(appsDir, "hpHotkeySupport.zip");
+            string vlcMediaPlayerFilename = System.IO.Path.Combine(appsDir, "\vlcMediaPlayer.msi");
+            string nvidiaAppFilename = System.IO.Path.Combine(appsDir, "nvidiaApp.exe");
             // Other apps
             string bingWallpaperAppPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"Microsoft\BingWallpaperApp\BingWallpaperApp.exe");
             string discordAppPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"Discord\Update.exe");
@@ -1285,11 +1281,9 @@ namespace PlutoPoint_Installer
             if (googleChromeCheck.Checked) { progressBar.Maximum += 2; }
             if (libreOfficeCheck.Checked) { progressBar.Maximum += 2; }
             if (nvidiaAppCheck.Checked) { progressBar.Maximum += 2; }
-            if (microsoftOffice2007Check.Checked) { progressBar.Maximum += 2; }
             if (mozillaFirefoxCheck.Checked) { progressBar.Maximum += 2; }
             if (mozillaThunderbirdCheck.Checked) { progressBar.Maximum += 2; }
             if (steamCheck.Checked) { progressBar.Maximum += 2; }
-            if (aiCheck.Checked) { progressBar.Maximum += 1; }
             if (hpEliteBook == "1") { progressBar.Maximum += 4; }
             if (taskbarCheck.Checked) { progressBar.Maximum += 1;  }
             if (christmas == "1")
@@ -1485,8 +1479,6 @@ namespace PlutoPoint_Installer
             if (nanaZipCheck.Checked)
             {
                 AppendLine("📌 NanaZip is selected.");
-                string windowsAppsPath = @"C:\Program Files\WindowsApps";
-                string nanaZipPath = null;
                 AppendLine("🔄 Checking if NanaZip is installed...");
                 try
                 {
@@ -1531,55 +1523,6 @@ namespace PlutoPoint_Installer
                 {
                     AppendLine("❌ Error: " + ex.Message);
                 }
-            }
-            if (aiCheck.Checked)
-            {
-                if (windows11 == "1")
-                {
-                    AppendLine("📌 Remove Windows AI is selected.");
-                    AppendLine("🔄 Removing Windows AI... (this can take a few minutes)");
-                    await Task.Run(() =>
-                    {
-                        var psiAI = new ProcessStartInfo
-                        {
-                            FileName = "powershell.exe",
-                            Arguments =
-                                "-NoLogo -NoProfile -WindowStyle Hidden -NonInteractive " +
-                                "& ([scriptblock]::Create((irm \"https://raw.githubusercontent.com/zoicware/RemoveWindowsAI/main/RemoveWindowsAi.ps1\"))) " +
-                                "-nonInteractive -Options DisableRegKeys,PreventAIPackageReinstall,DisableCopilotPolicies,RemoveRecallFeature,RemoveCBSPackages,HideAIComponents,DisableRewrite,RemoveRecallTasks",
-                            RedirectStandardOutput = false,
-                            RedirectStandardError = false,
-                            UseShellExecute = false,
-                            CreateNoWindow = true
-                        };
-                        AppendLine("🔄 Removing Copilot");
-                        using (var proc = Process.Start(psiAI))
-                        {
-                            proc.WaitForExit();
-                        }
-                        var psiCopilot = new ProcessStartInfo
-                        {
-                            FileName = "powershell.exe",
-                            Arguments =
-                                "-NoLogo -NoProfile -WindowStyle Hidden -NonInteractive " +
-                                "Get-AppxPackage -AllUsers *Copilot* | Remove-AppxPackage -ErrorAction SilentlyContinue",
-                            RedirectStandardOutput = false,
-                            RedirectStandardError = false,
-                            UseShellExecute = false,
-                            CreateNoWindow = true
-                        };
-                        using (var proc = Process.Start(psiCopilot))
-                        {
-                            proc.WaitForExit();
-                        }
-                    });
-                    AppendLine("✅ Completed removal of Windows AI and Copilot.");
-                }
-                else
-                {
-                    AppendLine("❌ Not running on Windows 11; skipping removal of Windows AI.");
-                }
-                progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
             }
             if (taskbarCheck.Checked)
             {
@@ -1911,129 +1854,6 @@ namespace PlutoPoint_Installer
                     progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
                 }
             }
-            if (microsoftOffice2007Check.Checked)
-            {
-                AppendLine("📌 Microsoft Office 2007 is selected.");
-                string officePath = @"C:\Program Files (x86)\Microsoft Office\Office12\WINWORD.EXE";
-                string windowsAppsPath = @"C:\Program Files\WindowsApps";
-                string nanaZipPath = null;
-                if (File.Exists(officePath))
-                {
-                    AppendLine("✅ Microsoft Office 2007 is already installed, skipping installation.");
-                    progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
-                }
-                else
-                {
-                    AppendLine("🔄 Downloading Microsoft Office 2007...");
-                    using (WebClient wc = new WebClient())
-                    {
-                        wc.DownloadFileCompleted += wc_progressBarStep;
-                        await wc.DownloadFileTaskAsync(microsoftOffice2007URL, microsoftOffice2007Filename);
-                    }
-                    AppendLine("🔎 Checking if NanaZip is installed...");
-                    try
-                    {
-                        var files = Directory.GetFiles(windowsAppsPath, nanaZipExe, SearchOption.AllDirectories);
-                        if (files.Length > 0)
-                        {
-                            nanaZipPath = files[0];
-                            AppendLine($"✅ NanaZip is already installed.");
-                        }
-                    }
-                    catch (UnauthorizedAccessException)
-                    {
-                        AppendLine("⚠️ Access denied to WindowsApps. Try running as Administrator.");
-                    }
-                    if (string.IsNullOrEmpty(nanaZipPath))
-                    {
-                        AppendLine("🚀 NanaZip is not installed and is required for extraction.");
-                        AppendLine("📥 Downloading NanaZip...");
-                        using (WebClient wc = new WebClient())
-                        {
-                            await wc.DownloadFileTaskAsync(nanaZipURL, nanaZipFilename);
-                        }
-                        AppendLine("📦 Installing NanaZip...");
-                        Process nanaZipInstallProcess = Process.Start(new ProcessStartInfo
-                        {
-                            FileName = "powershell",
-                            Arguments = $"-Command Add-AppxPackage -Path '{nanaZipFilename}'",
-                            UseShellExecute = false,
-                            RedirectStandardOutput = true,
-                            RedirectStandardError = true,
-                            CreateNoWindow = true
-                        });
-                        if (nanaZipInstallProcess != null)
-                        {
-                            await Task.Run(() => nanaZipInstallProcess.WaitForExit());
-                        }
-                        AppendLine("✅ NanaZip installation completed.");
-                        try
-                        {
-                            var files = Directory.GetFiles(windowsAppsPath, nanaZipExe, SearchOption.AllDirectories);
-                            if (files.Length > 0)
-                            {
-                                nanaZipPath = files[0];
-                                AppendLine($"✅ NanaZip is already installed.");
-                            }
-                            else
-                            {
-                                AppendLine("❌ Failed to find NanaZip after installation.");
-                                return;
-                            }
-                        }
-                        catch (UnauthorizedAccessException)
-                        {
-                            AppendLine("⚠️ Access denied while searching for NanaZip after installation.");
-                            return;
-                        }
-                    }
-                    string microsoftOffice2007ExtractPath = Path.Combine(desktopPath, "Microsoft Office 2007");
-                    if (!Directory.Exists(microsoftOffice2007ExtractPath))
-                    {
-                        Directory.CreateDirectory(microsoftOffice2007ExtractPath);
-                    }
-                    AppendLine("📂 Extracting Microsoft Office 2007 to Desktop...");
-                    async Task RunNanaZipExtractionOfficeAsync()
-                    {
-                        ProcessStartInfo processStartInfo = new ProcessStartInfo
-                        {
-                            FileName = nanaZipPath,
-                            Arguments = $"x \"{microsoftOffice2007Filename}\" -o\"{microsoftOffice2007ExtractPath}\" -aoa",
-                            UseShellExecute = false,
-                            RedirectStandardOutput = true,
-                            RedirectStandardError = true,
-                            CreateNoWindow = true
-                        };
-                        try
-                        {
-                            using (Process process = new Process { StartInfo = processStartInfo })
-                            {
-                                process.Start();
-                                Task<string> outputTask = process.StandardOutput.ReadToEndAsync();
-                                Task<string> errorTask = process.StandardError.ReadToEndAsync();
-                                await Task.Run(() => process.WaitForExit());
-                                string output = await outputTask;
-                                string errors = await errorTask;
-                                if (!string.IsNullOrEmpty(output))
-                                {
-                                    AppendLine(output);
-                                }
-                                if (!string.IsNullOrEmpty(errors))
-                                {
-                                    AppendLine("⚠️ Errors: " + errors);
-                                }
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            AppendLine("❌ Exception: " + ex.Message);
-                        }
-                    }
-                    await RunNanaZipExtractionOfficeAsync();
-                    AppendLine("✅ Completed extraction of Microsoft Office 2007.");
-                    progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
-                }
-            }
             if (nvidiaAppCheck.Checked)
             {
                 AppendLine("📌 Nvidia App is selected.");
@@ -2304,9 +2124,7 @@ namespace PlutoPoint_Installer
                     wc.DownloadFileCompleted += wc_progressBarStep;
                     await wc.DownloadFileTaskAsync(hpHotkeySupportURL, hpHotkeySupportFilename);
                 }
-                AppendLine("🔄 Checking if NanaZip is installed...");
-                string windowsAppsPath = @"C:\Program Files\WindowsApps";               
-                string nanaZipPath = null;
+                AppendLine("🔄 Checking if NanaZip is installed...");                
                 try
                 {
                     var files = Directory.GetFiles(windowsAppsPath, nanaZipExe, SearchOption.AllDirectories);

@@ -57,7 +57,6 @@ namespace PlutoPoint_Installer
             this.libreOfficeToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.libreOfficeCheck = new System.Windows.Forms.CheckBox();
             this.microsoftOffice2007ToolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.microsoftOffice2007Check = new System.Windows.Forms.CheckBox();
             this.nvidiaAppToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.nvidiaAppCheck = new System.Windows.Forms.CheckBox();
             this.mozillaFirefoxToolTip = new System.Windows.Forms.ToolTip(this.components);
@@ -77,7 +76,6 @@ namespace PlutoPoint_Installer
             this.restartToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.shutdownCheck = new System.Windows.Forms.CheckBox();
             this.aiToolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.aiCheck = new System.Windows.Forms.CheckBox();
             this.shutdownToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.testToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.test = new PlutoPoint_Installer.RoundedButton();
@@ -233,20 +231,10 @@ namespace PlutoPoint_Installer
             this.libreOfficeToolTip.SetToolTip(this.libreOfficeCheck, "LibreOffice (Free Microsoft Office alternative)");
             this.libreOfficeCheck.UseVisualStyleBackColor = true;
             // 
-            // microsoftOffice2007Check
-            // 
-            this.microsoftOffice2007Check.Image = global::PlutoPoint_Installer.Properties.Resources.microsoftOffice2007;
-            this.microsoftOffice2007Check.Location = new System.Drawing.Point(14, 237);
-            this.microsoftOffice2007Check.Name = "microsoftOffice2007Check";
-            this.microsoftOffice2007Check.Size = new System.Drawing.Size(57, 50);
-            this.microsoftOffice2007Check.TabIndex = 19;
-            this.microsoftOffice2007ToolTip.SetToolTip(this.microsoftOffice2007Check, "Microsoft Office 2007. Move on grandad");
-            this.microsoftOffice2007Check.UseVisualStyleBackColor = true;
-            // 
             // nvidiaAppCheck
             // 
             this.nvidiaAppCheck.Image = global::PlutoPoint_Installer.Properties.Resources.nvidiaApp;
-            this.nvidiaAppCheck.Location = new System.Drawing.Point(10, 237);
+            this.nvidiaAppCheck.Location = new System.Drawing.Point(10, 192);
             this.nvidiaAppCheck.Name = "nvidiaAppCheck";
             this.nvidiaAppCheck.Size = new System.Drawing.Size(57, 50);
             this.nvidiaAppCheck.TabIndex = 21;
@@ -258,7 +246,7 @@ namespace PlutoPoint_Installer
             this.mozillaFirefoxCheck.Checked = true;
             this.mozillaFirefoxCheck.CheckState = System.Windows.Forms.CheckState.Checked;
             this.mozillaFirefoxCheck.Image = global::PlutoPoint_Installer.Properties.Resources.mozillaFirefox;
-            this.mozillaFirefoxCheck.Location = new System.Drawing.Point(14, 282);
+            this.mozillaFirefoxCheck.Location = new System.Drawing.Point(14, 237);
             this.mozillaFirefoxCheck.Name = "mozillaFirefoxCheck";
             this.mozillaFirefoxCheck.Size = new System.Drawing.Size(57, 50);
             this.mozillaFirefoxCheck.TabIndex = 5;
@@ -280,7 +268,7 @@ namespace PlutoPoint_Installer
             this.nanaZipCheck.Checked = true;
             this.nanaZipCheck.CheckState = System.Windows.Forms.CheckState.Checked;
             this.nanaZipCheck.Image = global::PlutoPoint_Installer.Properties.Resources.nanaZip;
-            this.nanaZipCheck.Location = new System.Drawing.Point(10, 192);
+            this.nanaZipCheck.Location = new System.Drawing.Point(10, 147);
             this.nanaZipCheck.Name = "nanaZipCheck";
             this.nanaZipCheck.Size = new System.Drawing.Size(57, 50);
             this.nanaZipCheck.TabIndex = 18;
@@ -300,7 +288,7 @@ namespace PlutoPoint_Installer
             // vlcMediaPlayerCheck
             // 
             this.vlcMediaPlayerCheck.Image = global::PlutoPoint_Installer.Properties.Resources.vlcMediaPlayer;
-            this.vlcMediaPlayerCheck.Location = new System.Drawing.Point(77, 102);
+            this.vlcMediaPlayerCheck.Location = new System.Drawing.Point(77, 101);
             this.vlcMediaPlayerCheck.Name = "vlcMediaPlayerCheck";
             this.vlcMediaPlayerCheck.Size = new System.Drawing.Size(57, 50);
             this.vlcMediaPlayerCheck.TabIndex = 20;
@@ -313,7 +301,7 @@ namespace PlutoPoint_Installer
             this.bingWallpapersCheck.Checked = true;
             this.bingWallpapersCheck.CheckState = System.Windows.Forms.CheckState.Checked;
             this.bingWallpapersCheck.Image = global::PlutoPoint_Installer.Properties.Resources.bingWallpaper;
-            this.bingWallpapersCheck.Location = new System.Drawing.Point(10, 104);
+            this.bingWallpapersCheck.Location = new System.Drawing.Point(10, 56);
             this.bingWallpapersCheck.Name = "bingWallpapersCheck";
             this.bingWallpapersCheck.Size = new System.Drawing.Size(57, 50);
             this.bingWallpapersCheck.TabIndex = 8;
@@ -330,18 +318,6 @@ namespace PlutoPoint_Installer
             this.shutdownCheck.TabIndex = 26;
             this.shutdownToolTip.SetToolTip(this.shutdownCheck, "Shutdown Computer on Install Completion");
             this.shutdownCheck.UseVisualStyleBackColor = false;
-            // 
-            // aiCheck
-            // 
-            this.aiCheck.Checked = true;
-            this.aiCheck.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.aiCheck.Image = global::PlutoPoint_Installer.Properties.Resources.aiRemoval;
-            this.aiCheck.Location = new System.Drawing.Point(10, 58);
-            this.aiCheck.Name = "aiCheck";
-            this.aiCheck.Size = new System.Drawing.Size(57, 50);
-            this.aiCheck.TabIndex = 22;
-            this.aiToolTip.SetToolTip(this.aiCheck, "Remove Windows AI Bollocks (this can take a few minutes)");
-            this.aiCheck.UseVisualStyleBackColor = true;
             // 
             // test
             // 
@@ -365,7 +341,7 @@ namespace PlutoPoint_Installer
             this.taskbarCheck.Checked = true;
             this.taskbarCheck.CheckState = System.Windows.Forms.CheckState.Checked;
             this.taskbarCheck.Image = global::PlutoPoint_Installer.Properties.Resources.taskbar;
-            this.taskbarCheck.Location = new System.Drawing.Point(10, 147);
+            this.taskbarCheck.Location = new System.Drawing.Point(10, 101);
             this.taskbarCheck.Name = "taskbarCheck";
             this.taskbarCheck.Size = new System.Drawing.Size(57, 50);
             this.taskbarCheck.TabIndex = 23;
@@ -395,7 +371,6 @@ namespace PlutoPoint_Installer
             this.softwareBox.Controls.Add(this.vlcMediaPlayerCheck);
             this.softwareBox.Controls.Add(this.discordCheck);
             this.softwareBox.Controls.Add(this.steamCheck);
-            this.softwareBox.Controls.Add(this.microsoftOffice2007Check);
             this.softwareBox.Controls.Add(this.mozillaThunderbirdCheck);
             this.softwareBox.Controls.Add(this.googleChromeCheck);
             this.softwareBox.Controls.Add(this.libreOfficeCheck);
@@ -405,7 +380,7 @@ namespace PlutoPoint_Installer
             this.softwareBox.ForeColor = System.Drawing.Color.White;
             this.softwareBox.Location = new System.Drawing.Point(12, 54);
             this.softwareBox.Name = "softwareBox";
-            this.softwareBox.Size = new System.Drawing.Size(149, 338);
+            this.softwareBox.Size = new System.Drawing.Size(149, 296);
             this.softwareBox.TabIndex = 25;
             this.softwareBox.TabStop = false;
             this.softwareBox.Text = "Software";
@@ -484,7 +459,6 @@ namespace PlutoPoint_Installer
             this.utilitiesBox.BorderShadowTop = 50;
             this.utilitiesBox.BorderThickness = 2F;
             this.utilitiesBox.Controls.Add(this.taskbarCheck);
-            this.utilitiesBox.Controls.Add(this.aiCheck);
             this.utilitiesBox.Controls.Add(this.crcCheck);
             this.utilitiesBox.Controls.Add(this.nvidiaAppCheck);
             this.utilitiesBox.Controls.Add(this.nanaZipCheck);
@@ -494,7 +468,7 @@ namespace PlutoPoint_Installer
             this.utilitiesBox.ForeColor = System.Drawing.Color.White;
             this.utilitiesBox.Location = new System.Drawing.Point(177, 54);
             this.utilitiesBox.Name = "utilitiesBox";
-            this.utilitiesBox.Size = new System.Drawing.Size(75, 296);
+            this.utilitiesBox.Size = new System.Drawing.Size(75, 249);
             this.utilitiesBox.TabIndex = 24;
             this.utilitiesBox.TabStop = false;
             this.utilitiesBox.Text = "Utilities";
@@ -552,7 +526,6 @@ namespace PlutoPoint_Installer
         private CheckBox discordCheck;
         private CheckBox steamCheck;
         private CheckBox nanaZipCheck;
-        private CheckBox microsoftOffice2007Check;
         private CheckBox vlcMediaPlayerCheck;
         private CheckBox nvidiaAppCheck;
         private CheckBox recycleBinCheck;
@@ -577,7 +550,6 @@ namespace PlutoPoint_Installer
         private ToolTip aiToolTip;
         private RoundedGroupBox utilitiesBox;
         private RoundedGroupBox softwareBox;
-        private CheckBox aiCheck;
         private CheckBox shutdownCheck;
         private ToolTip shutdownToolTip;
         private RoundedButton test;
