@@ -1243,7 +1243,7 @@ namespace PlutoPoint_Installer
             string nanaZipFilename = System.IO.Path.Combine(appsDir, "nanaZip.msixbundle");
             string steamFilename = System.IO.Path.Combine(appsDir, "steam.exe");
             string hpHotkeySupportFilename = System.IO.Path.Combine(appsDir, "hpHotkeySupport.zip");
-            string vlcMediaPlayerFilename = System.IO.Path.Combine(appsDir, "\vlcMediaPlayer.msi");
+            string vlcMediaPlayerFilename = System.IO.Path.Combine(appsDir, "vlcMediaPlayer.msi");
             string nvidiaAppFilename = System.IO.Path.Combine(appsDir, "nvidiaApp.exe");
             // Other apps
             string bingWallpaperAppPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"Microsoft\BingWallpaperApp\BingWallpaperApp.exe");
