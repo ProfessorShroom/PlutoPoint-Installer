@@ -105,6 +105,7 @@ namespace PlutoPoint_Installer
             CheckRhino();
             CheckHippo();
             CheckDuck();
+            CheckStarWars();
             CheckCharlieBirthday();
             CheckDeanBirthday();
             CheckSteveBirthday();
@@ -194,6 +195,7 @@ namespace PlutoPoint_Installer
         string pluto = null;
         string hippo = null;
         string rhino = null;
+        string starwars = null;
         string birthdayName = null;
         string hpEliteBook = null;
         string safeLocation = null;
@@ -358,6 +360,13 @@ namespace PlutoPoint_Installer
             {
                 AppendLine("");
                 AppendLine("🦏 Today is World Rhino day!");
+                AppendLine("");
+            }
+            else if (starwars == "1")
+            {                 
+                AppendLine("");
+                AppendLine("🌌 Today is Star Wars day!");
+                AppendLine("May the 4th be with you!");
                 AppendLine("");
             }
             else if (birthday == "1" && !string.IsNullOrEmpty(birthdayName))
@@ -595,6 +604,22 @@ namespace PlutoPoint_Installer
                 this.Invalidate();
             }
         }
+        private void CheckStarWars()
+        {
+            if (DateTime.Now.Month == 5 && DateTime.Now.Day == 4)
+            {
+                starwars = "1";
+                ApplyGradientTheme(
+                    Color.FromArgb(34, 34, 34),
+                    Color.FromArgb(40, 40, 40));
+                ApplyButtonTheme(
+                    Color.FromArgb(243, 213, 0),
+                    Color.White);
+                ApplyLogTheme(Color.White);
+                SyncLabelsWithInstall();
+                this.Invalidate();
+            }
+        }
         private void ApplyBirthdayTheme(string name)
         {
             birthday = "1";
@@ -707,6 +732,11 @@ namespace PlutoPoint_Installer
             else if (rhino == "1")
             {
                 _overlayImage = Properties.Resources.rhino;
+                _overlayIcon = null;
+            }
+            else if (starwars == "1")
+            {
+                _overlayImage = Properties.Resources.starwars;
                 _overlayIcon = null;
             }
             else if (birthday == "1")
