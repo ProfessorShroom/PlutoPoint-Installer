@@ -45,13 +45,12 @@ namespace PlutoPoint_Installer
         public installerForm()
         {
             InitializeComponent();
+            ApplyFonts();
             this.Resize += (s, e) =>
             {
                 this.Invalidate(true);
             };
-            this.AutoScaleMode = AutoScaleMode.Dpi;
-            // Font
-            this.installerTextBox.Font = Program.Ubuntu(12f, FontStyle.Regular);
+            this.AutoScaleMode = AutoScaleMode.Dpi;            
             // Sounds
             SoundPlayer hoverSound = new SoundPlayer(Properties.Resources.buttonHover);
             SoundPlayer clickSound = new SoundPlayer(Properties.Resources.buttonHover);
@@ -128,7 +127,20 @@ namespace PlutoPoint_Installer
             AppendLine(locationLine);
             _ = PrintDayAsync();
             Version version = Assembly.GetExecutingAssembly().GetName().Version;
-            this.versionLabel.Text = $"Version {version}";
+            versionLabel.Text = $"Version {version}";
+        }
+        private void ApplyFonts()
+        {
+            installerTextBox.Font = Program.Ubuntu(12f, FontStyle.Regular);
+            close.Font = Program.Ubuntu(9F, FontStyle.Regular);
+            restart.Font = Program.Ubuntu(9F, FontStyle.Regular);
+            softwareBox.Font = Program.Ubuntu(8F, FontStyle.Regular);
+            versionLabel.Font = Program.Ubuntu(8.25f, FontStyle.Regular);
+            locationLabel.Font = Program.Ubuntu(8.25f, FontStyle.Regular);
+            test.Font = Program.Ubuntu(8F, FontStyle.Regular);
+            install.Font = Program.Ubuntu(12, FontStyle.Regular);
+            utilitiesBox.Font = Program.Ubuntu(8.25f, FontStyle.Regular);
+
         }
         private async Task CheckIPAsync()
         {

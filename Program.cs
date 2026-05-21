@@ -14,6 +14,7 @@ namespace PlutoPoint_Installer
         private static PrivateFontCollection _fonts;
         private static FontFamily _ubuntuFamily;
         private static bool _initialized;
+
         [STAThread]
         static void Main()
         {
@@ -21,31 +22,49 @@ namespace PlutoPoint_Installer
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new installerForm());
         }
+
         public static Font Ubuntu(float size, FontStyle style = FontStyle.Regular)
         {
             EnsureFonts();
+
+            if (_ubuntuFamily == null)
+                throw new InvalidOperationException("Ubuntu font not initialized.");
+
             return new Font(_ubuntuFamily, size, style);
         }
+
         private static void EnsureFonts()
         {
             if (_initialized)
                 return;
+
             _fonts = new PrivateFontCollection();
+
+            // Load ONLY regular font (important)
             AddFont(Properties.Resources.Ubuntu_Regular);
-            AddFont(Properties.Resources.Ubuntu_Bold);
-            AddFont(Properties.Resources.Ubuntu_Italic);
+
             _ubuntuFamily = _fonts.Families
-                .FirstOrDefault(f => f.Name == "Ubuntu");
+                .FirstOrDefault();
+
             if (_ubuntuFamily == null)
-                throw new InvalidOperationException("Ubuntu font failed to load.");
+                throw new Exception("Ubuntu font NOT loaded correctly");
+
             _initialized = true;
         }
+
         private static void AddFont(byte[] fontData)
         {
             IntPtr ptr = Marshal.AllocCoTaskMem(fontData.Length);
-            Marshal.Copy(fontData, 0, ptr, fontData.Length);
-            _fonts.AddMemoryFont(ptr, fontData.Length);
-            Marshal.FreeCoTaskMem(ptr);
+
+            try
+            {
+                Marshal.Copy(fontData, 0, ptr, fontData.Length);
+                _fonts.AddMemoryFont(ptr, fontData.Length);
+            }
+            finally
+            {
+                Marshal.FreeCoTaskMem(ptr);
+            }
         }
     }
 }

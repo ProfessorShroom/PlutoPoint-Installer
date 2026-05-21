@@ -104,10 +104,16 @@
     <Compile Include="AssemblyUpdateDateAttribute.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="GradientButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="RoundedButton.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="RoundedGroupBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ProgressBar.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="RoundedProgressBar.cs">

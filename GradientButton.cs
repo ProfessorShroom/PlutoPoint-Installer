@@ -1,0 +1,134 @@
+﻿using System;
+using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Windows.Forms;
+
+// Copyright © Charlie Howard 2026 All rights reserved.
+
+namespace PlutoPoint_Installer
+{
+    internal class GradientButton : Control
+    {
+        private bool _hovered;
+        private bool _pressed;
+        private Color _buttonColor = Color.FromArgb(80, 80, 255);
+        public override Color BackColor
+        {
+            get => _buttonColor;
+            set
+            {
+                _buttonColor = value;
+                Invalidate();
+            }
+        }
+        public Color HoverShadeColor { get; set; } = Color.FromArgb(25, Color.White);
+        public Color PressedShadeColor { get; set; } = Color.FromArgb(50, Color.Black);
+        public GradientButton()
+        {
+            DoubleBuffered = true;
+            SetStyle(ControlStyles.UserPaint |
+                     ControlStyles.AllPaintingInWmPaint |
+                     ControlStyles.OptimizedDoubleBuffer |
+                     ControlStyles.ResizeRedraw |
+                     ControlStyles.SupportsTransparentBackColor, true);
+            base.BackColor = Color.Transparent;
+            ForeColor = Color.White;
+            Size = new Size(105, 32);
+            Cursor = Cursors.Hand;
+        }
+        protected override void OnMouseEnter(EventArgs e)
+        {
+            base.OnMouseEnter(e);
+            _hovered = true;
+            Invalidate();
+        }
+        protected override void OnMouseLeave(EventArgs e)
+        {
+            base.OnMouseLeave(e);
+            _hovered = false;
+            _pressed = false;
+            Invalidate();
+        }
+        protected override void OnMouseDown(MouseEventArgs e)
+        {
+            base.OnMouseDown(e);
+            if (e.Button == MouseButtons.Left)
+            {
+                _pressed = true;
+                Invalidate();
+            }
+        }
+        protected override void OnMouseUp(MouseEventArgs e)
+        {
+            base.OnMouseUp(e);
+            _pressed = false;
+            Invalidate();
+        }
+        protected override void OnPaintBackground(PaintEventArgs pevent)
+        {
+            if (Parent == null)
+            {
+                base.OnPaintBackground(pevent);
+                return;
+            }
+            Graphics g = pevent.Graphics;
+            GraphicsState state = g.Save();
+            try
+            {
+                g.TranslateTransform(-Left, -Top);
+                PaintEventArgs pea = new PaintEventArgs(
+                    g,
+                    new Rectangle(Left, Top, Width, Height));
+                InvokePaintBackground(Parent, pea);
+                InvokePaint(Parent, pea);
+            }
+            finally
+            {
+                g.Restore(state);
+            }
+        }
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            e.Graphics.SmoothingMode = SmoothingMode.None;
+
+            Rectangle rect = new Rectangle(0, 0, Width, Height);
+
+            // BASE COLOR
+            using (SolidBrush backBrush = new SolidBrush(_buttonColor))
+            {
+                e.Graphics.FillRectangle(backBrush, rect);
+            }
+
+            // HOVER / PRESS overlays
+            if (_hovered && !_pressed)
+            {
+                using (SolidBrush hoverBrush = new SolidBrush(HoverShadeColor))
+                {
+                    e.Graphics.FillRectangle(hoverBrush, rect);
+                }
+            }
+
+            if (_pressed)
+            {
+                using (SolidBrush pressedBrush = new SolidBrush(PressedShadeColor))
+                {
+                    e.Graphics.FillRectangle(pressedBrush, rect);
+                }
+            }
+
+            // TEXT (unchanged, but cleaner centering)
+            TextFormatFlags flags =
+                TextFormatFlags.HorizontalCenter |
+                TextFormatFlags.VerticalCenter |
+                TextFormatFlags.SingleLine;
+
+            TextRenderer.DrawText(
+                e.Graphics,
+                Text,
+                Font,
+                rect,
+                ForeColor,
+                flags);
+        }
+    }
+}

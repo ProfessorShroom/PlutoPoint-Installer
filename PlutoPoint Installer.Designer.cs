@@ -78,15 +78,15 @@ namespace PlutoPoint_Installer
             this.aiToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.shutdownToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.testToolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.test = new PlutoPoint_Installer.RoundedButton();
+            this.test = new PlutoPoint_Installer.GradientButton();
             this.taskbarToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.taskbarCheck = new System.Windows.Forms.CheckBox();
             this.installerLogPanel = new System.Windows.Forms.Panel();
             this.softwareBox = new PlutoPoint_Installer.RoundedGroupBox();
-            this.restart = new PlutoPoint_Installer.RoundedButton();
-            this.close = new PlutoPoint_Installer.RoundedButton();
-            this.progressBar = new PlutoPoint_Installer.RoundedGradientProgressBar();
-            this.install = new PlutoPoint_Installer.RoundedButton();
+            this.restart = new PlutoPoint_Installer.GradientButton();
+            this.close = new PlutoPoint_Installer.GradientButton();
+            this.progressBar = new PlutoPoint_Installer.GradientProgressBar();
+            this.install = new PlutoPoint_Installer.GradientButton();
             this.utilitiesBox = new PlutoPoint_Installer.RoundedGroupBox();
             this.installerLogPanel.SuspendLayout();
             this.softwareBox.SuspendLayout();
@@ -108,7 +108,7 @@ namespace PlutoPoint_Installer
             // 
             this.versionLabel.AutoSize = true;
             this.versionLabel.BackColor = System.Drawing.Color.Transparent;
-            this.versionLabel.Font = new System.Drawing.Font("Ubuntu", 8.25F, System.Drawing.FontStyle.Bold);
+            this.versionLabel.Font = new Font("Segoe UI",8.25f);
             this.versionLabel.LinkColor = System.Drawing.Color.White;
             this.versionLabel.Location = new System.Drawing.Point(12, 425);
             this.versionLabel.Name = "versionLabel";
@@ -121,7 +121,7 @@ namespace PlutoPoint_Installer
             // 
             this.locationLabel.AutoSize = true;
             this.locationLabel.BackColor = System.Drawing.Color.Transparent;
-            this.locationLabel.Font = new System.Drawing.Font("Ubuntu", 8.25F, System.Drawing.FontStyle.Bold);
+            this.locationLabel.Font = new Font("Segoe UI",8.25f);
             this.locationLabel.ForeColor = System.Drawing.Color.White;
             this.locationLabel.Location = new System.Drawing.Point(120, 425);
             this.locationLabel.Name = "locationLabel";
@@ -322,9 +322,8 @@ namespace PlutoPoint_Installer
             // test
             // 
             this.test.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-            this.test.CornerRadius = 4;
             this.test.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.test.Font = new System.Drawing.Font("Ubuntu", 8F, System.Drawing.FontStyle.Bold);
+            this.test.Font = new Font("Segoe UI",8F);
             this.test.ForeColor = System.Drawing.Color.White;
             this.test.HoverShadeColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
             this.test.Location = new System.Drawing.Point(800, 15);
@@ -376,7 +375,7 @@ namespace PlutoPoint_Installer
             this.softwareBox.Controls.Add(this.libreOfficeCheck);
             this.softwareBox.Controls.Add(this.mozillaFirefoxCheck);
             this.softwareBox.CornerRadius = 3;
-            this.softwareBox.Font = new System.Drawing.Font("Ubuntu", 8.25F, System.Drawing.FontStyle.Bold);
+            this.softwareBox.Font = new Font("Segoe UI",8F);
             this.softwareBox.ForeColor = System.Drawing.Color.White;
             this.softwareBox.Location = new System.Drawing.Point(12, 54);
             this.softwareBox.Name = "softwareBox";
@@ -389,10 +388,8 @@ namespace PlutoPoint_Installer
             // restart
             // 
             this.restart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-            this.restart.CornerRadius = 3;
             this.restart.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.restart.Font = new System.Drawing.Font("Ubuntu", 8.999999F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.restart.ForeColor = System.Drawing.Color.White;
+            this.restart.Font = new Font("Segoe UI",9F);
             this.restart.HoverShadeColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
             this.restart.Location = new System.Drawing.Point(114, 15);
             this.restart.Name = "restart";
@@ -405,9 +402,8 @@ namespace PlutoPoint_Installer
             // close
             // 
             this.close.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(255)))));
-            this.close.CornerRadius = 3;
             this.close.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.close.Font = new System.Drawing.Font("Ubuntu", 8.999999F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.close.Font = new Font("Segoe UI",9F);
             this.close.ForeColor = System.Drawing.Color.White;
             this.close.HoverShadeColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
             this.close.Location = new System.Drawing.Point(186, 15);
@@ -422,7 +418,6 @@ namespace PlutoPoint_Installer
             // 
             this.progressBar.BackColor = System.Drawing.Color.Transparent;
             this.progressBar.BackShadeColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.progressBar.CornerRadius = 3;
             this.progressBar.FillShadeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
             this.progressBar.Location = new System.Drawing.Point(258, 14);
             this.progressBar.Maximum = 1;
@@ -437,9 +432,8 @@ namespace PlutoPoint_Installer
             // install
             // 
             this.install.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(255)))));
-            this.install.CornerRadius = 3;
             this.install.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.install.Font = new System.Drawing.Font("Ubuntu", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.install.Font = new Font("Segoe UI",12);
             this.install.ForeColor = System.Drawing.Color.White;
             this.install.HoverShadeColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
             this.install.Location = new System.Drawing.Point(12, 15);
@@ -464,7 +458,7 @@ namespace PlutoPoint_Installer
             this.utilitiesBox.Controls.Add(this.nanaZipCheck);
             this.utilitiesBox.Controls.Add(this.bingWallpapersCheck);
             this.utilitiesBox.CornerRadius = 3;
-            this.utilitiesBox.Font = new System.Drawing.Font("Ubuntu", 8.25F, System.Drawing.FontStyle.Bold);
+            this.utilitiesBox.Font = new Font("Segoe UI",8.25f);
             this.utilitiesBox.ForeColor = System.Drawing.Color.White;
             this.utilitiesBox.Location = new System.Drawing.Point(177, 54);
             this.utilitiesBox.Name = "utilitiesBox";
@@ -506,14 +500,14 @@ namespace PlutoPoint_Installer
 
             }
         #endregion
-        private RoundedButton install;
+        private GradientButton install;
         private Label installerTextBox;
-        private RoundedGradientProgressBar progressBar;
+        private GradientProgressBar progressBar;
         private CheckBox libreOfficeCheck;
         private CheckBox mozillaFirefoxCheck;
         private CheckBox googleChromeCheck;
-        private RoundedButton close;
-        private RoundedButton restart;
+        private GradientButton close;
+        private GradientButton restart;
         private CheckBox bingWallpapersCheck;
         private LinkLabel versionLabel;
         private Label locationLabel;
@@ -552,7 +546,7 @@ namespace PlutoPoint_Installer
         private RoundedGroupBox softwareBox;
         private CheckBox shutdownCheck;
         private ToolTip shutdownToolTip;
-        private RoundedButton test;
+        private GradientButton test;
         private ToolTip testToolTip;
         private CheckBox taskbarCheck;
         private ToolTip taskbarToolTip;
