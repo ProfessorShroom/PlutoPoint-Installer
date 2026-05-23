@@ -44,33 +44,20 @@ namespace PlutoPoint_Installer
             this.powerCheck = new System.Windows.Forms.CheckBox();
             this.recycleBinCheck = new System.Windows.Forms.CheckBox();
             this.crcToolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.crcCheck = new System.Windows.Forms.CheckBox();
             this.amdToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.anyDeskToolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.anyDeskCheck = new System.Windows.Forms.CheckBox();
             this.bitDefenderToolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.bitDefenderCheck = new System.Windows.Forms.CheckBox();
             this.discordToolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.discordCheck = new System.Windows.Forms.CheckBox();
             this.googleChromeToolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.googleChromeCheck = new System.Windows.Forms.CheckBox();
             this.libreOfficeToolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.libreOfficeCheck = new System.Windows.Forms.CheckBox();
             this.microsoftOffice2007ToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.nvidiaAppToolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.nvidiaAppCheck = new System.Windows.Forms.CheckBox();
             this.mozillaFirefoxToolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.mozillaFirefoxCheck = new System.Windows.Forms.CheckBox();
             this.mozillaThunderbirdToolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.mozillaThunderbirdCheck = new System.Windows.Forms.CheckBox();
             this.nanaZipToolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.nanaZipCheck = new System.Windows.Forms.CheckBox();
             this.steamToolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.steamCheck = new System.Windows.Forms.CheckBox();
             this.vlcMediaPlayerToolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.vlcMediaPlayerCheck = new System.Windows.Forms.CheckBox();
             this.bingWallpaperstoolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.bingWallpapersCheck = new System.Windows.Forms.CheckBox();
             this.recycleBinToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.powerToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.restartToolTip = new System.Windows.Forms.ToolTip(this.components);
@@ -78,16 +65,29 @@ namespace PlutoPoint_Installer
             this.aiToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.shutdownToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.testToolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.test = new PlutoPoint_Installer.GradientButton();
             this.taskbarToolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.taskbarCheck = new System.Windows.Forms.CheckBox();
             this.installerLogPanel = new System.Windows.Forms.Panel();
+            this.test = new PlutoPoint_Installer.GradientButton();
             this.softwareBox = new PlutoPoint_Installer.RoundedGroupBox();
+            this.anyDeskCheck = new System.Windows.Forms.CheckBox();
+            this.bitDefenderCheck = new System.Windows.Forms.CheckBox();
+            this.vlcMediaPlayerCheck = new System.Windows.Forms.CheckBox();
+            this.discordCheck = new System.Windows.Forms.CheckBox();
+            this.steamCheck = new System.Windows.Forms.CheckBox();
+            this.mozillaThunderbirdCheck = new System.Windows.Forms.CheckBox();
+            this.googleChromeCheck = new System.Windows.Forms.CheckBox();
+            this.libreOfficeCheck = new System.Windows.Forms.CheckBox();
+            this.mozillaFirefoxCheck = new System.Windows.Forms.CheckBox();
             this.restart = new PlutoPoint_Installer.GradientButton();
             this.close = new PlutoPoint_Installer.GradientButton();
             this.progressBar = new PlutoPoint_Installer.GradientProgressBar();
             this.install = new PlutoPoint_Installer.GradientButton();
             this.utilitiesBox = new PlutoPoint_Installer.RoundedGroupBox();
+            this.taskbarCheck = new System.Windows.Forms.CheckBox();
+            this.crcCheck = new System.Windows.Forms.CheckBox();
+            this.nvidiaAppCheck = new System.Windows.Forms.CheckBox();
+            this.nanaZipCheck = new System.Windows.Forms.CheckBox();
+            this.bingWallpapersCheck = new System.Windows.Forms.CheckBox();
             this.installerLogPanel.SuspendLayout();
             this.softwareBox.SuspendLayout();
             this.utilitiesBox.SuspendLayout();
@@ -108,11 +108,11 @@ namespace PlutoPoint_Installer
             // 
             this.versionLabel.AutoSize = true;
             this.versionLabel.BackColor = System.Drawing.Color.Transparent;
-            this.versionLabel.Font = new Font("Segoe UI",8.25f);
+            this.versionLabel.Font = new System.Drawing.Font("Segoe UI", 8.25F);
             this.versionLabel.LinkColor = System.Drawing.Color.White;
             this.versionLabel.Location = new System.Drawing.Point(12, 425);
             this.versionLabel.Name = "versionLabel";
-            this.versionLabel.Size = new System.Drawing.Size(0, 16);
+            this.versionLabel.Size = new System.Drawing.Size(0, 13);
             this.versionLabel.TabIndex = 9;
             this.versionLabel.TabStop = true;
             this.versionLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.versionLabel_LinkClicked);
@@ -121,11 +121,11 @@ namespace PlutoPoint_Installer
             // 
             this.locationLabel.AutoSize = true;
             this.locationLabel.BackColor = System.Drawing.Color.Transparent;
-            this.locationLabel.Font = new Font("Segoe UI",8.25f);
+            this.locationLabel.Font = new System.Drawing.Font("Segoe UI", 8.25F);
             this.locationLabel.ForeColor = System.Drawing.Color.White;
             this.locationLabel.Location = new System.Drawing.Point(120, 425);
             this.locationLabel.Name = "locationLabel";
-            this.locationLabel.Size = new System.Drawing.Size(0, 16);
+            this.locationLabel.Size = new System.Drawing.Size(0, 13);
             this.locationLabel.TabIndex = 9;
             this.locationLabel.TabStop = true;
             // 
@@ -162,17 +162,70 @@ namespace PlutoPoint_Installer
             this.recycleBinToolTip.SetToolTip(this.recycleBinCheck, "Empty Recycle Bin");
             this.recycleBinCheck.UseVisualStyleBackColor = false;
             // 
-            // crcCheck
+            // shutdownCheck
             // 
-            this.crcCheck.Checked = true;
-            this.crcCheck.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.crcCheck.Image = global::PlutoPoint_Installer.Properties.Resources.computerRepairCentre;
-            this.crcCheck.Location = new System.Drawing.Point(10, 13);
-            this.crcCheck.Name = "crcCheck";
-            this.crcCheck.Size = new System.Drawing.Size(57, 50);
-            this.crcCheck.TabIndex = 11;
-            this.crcToolTip.SetToolTip(this.crcCheck, "Computer Repair Centre OEM Information");
-            this.crcCheck.UseVisualStyleBackColor = true;
+            this.shutdownCheck.BackColor = System.Drawing.Color.Transparent;
+            this.shutdownCheck.Image = global::PlutoPoint_Installer.Properties.Resources.shutdown;
+            this.shutdownCheck.Location = new System.Drawing.Point(740, 415);
+            this.shutdownCheck.Name = "shutdownCheck";
+            this.shutdownCheck.Size = new System.Drawing.Size(48, 34);
+            this.shutdownCheck.TabIndex = 26;
+            this.shutdownToolTip.SetToolTip(this.shutdownCheck, "Shutdown Computer on Install Completion");
+            this.shutdownCheck.UseVisualStyleBackColor = false;
+            // 
+            // installerLogPanel
+            // 
+            this.installerLogPanel.AutoScroll = true;
+            this.installerLogPanel.BackColor = System.Drawing.Color.Transparent;
+            this.installerLogPanel.Controls.Add(this.installerTextBox);
+            this.installerLogPanel.Location = new System.Drawing.Point(258, 54);
+            this.installerLogPanel.Name = "installerLogPanel";
+            this.installerLogPanel.Size = new System.Drawing.Size(530, 355);
+            this.installerLogPanel.TabIndex = 29;
+            // 
+            // test
+            // 
+            this.test.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
+            this.test.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.test.Font = new System.Drawing.Font("Segoe UI", 8F);
+            this.test.ForeColor = System.Drawing.Color.White;
+            this.test.HoverShadeColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.test.Location = new System.Drawing.Point(800, 15);
+            this.test.Name = "test";
+            this.test.PressedShadeColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.test.Size = new System.Drawing.Size(66, 24);
+            this.test.TabIndex = 28;
+            this.test.Text = "Test";
+            this.testToolTip.SetToolTip(this.test, "You\'ve found my test button, you sneaky bastard.");
+            this.test.Click += new System.EventHandler(this.test_Click);
+            // 
+            // softwareBox
+            // 
+            this.softwareBox.BackColor = System.Drawing.Color.Transparent;
+            this.softwareBox.BorderColor = System.Drawing.Color.DodgerBlue;
+            this.softwareBox.BorderColorOverride = null;
+            this.softwareBox.BorderShadowBottom = 80;
+            this.softwareBox.BorderShadowTop = 50;
+            this.softwareBox.BorderThickness = 2F;
+            this.softwareBox.Controls.Add(this.anyDeskCheck);
+            this.softwareBox.Controls.Add(this.bitDefenderCheck);
+            this.softwareBox.Controls.Add(this.vlcMediaPlayerCheck);
+            this.softwareBox.Controls.Add(this.discordCheck);
+            this.softwareBox.Controls.Add(this.steamCheck);
+            this.softwareBox.Controls.Add(this.mozillaThunderbirdCheck);
+            this.softwareBox.Controls.Add(this.googleChromeCheck);
+            this.softwareBox.Controls.Add(this.libreOfficeCheck);
+            this.softwareBox.Controls.Add(this.mozillaFirefoxCheck);
+            this.softwareBox.CornerRadius = 3;
+            this.softwareBox.Font = new System.Drawing.Font("Segoe UI", 8F);
+            this.softwareBox.ForeColor = System.Drawing.Color.White;
+            this.softwareBox.Location = new System.Drawing.Point(12, 54);
+            this.softwareBox.Name = "softwareBox";
+            this.softwareBox.Size = new System.Drawing.Size(149, 296);
+            this.softwareBox.TabIndex = 25;
+            this.softwareBox.TabStop = false;
+            this.softwareBox.Text = "Software";
+            this.softwareBox.TextColorOverride = null;
             // 
             // anyDeskCheck
             // 
@@ -197,6 +250,16 @@ namespace PlutoPoint_Installer
             this.bitDefenderToolTip.SetToolTip(this.bitDefenderCheck, "BitDefender Anti-Virus");
             this.bitDefenderCheck.UseVisualStyleBackColor = true;
             // 
+            // vlcMediaPlayerCheck
+            // 
+            this.vlcMediaPlayerCheck.Image = global::PlutoPoint_Installer.Properties.Resources.vlcMediaPlayer;
+            this.vlcMediaPlayerCheck.Location = new System.Drawing.Point(77, 101);
+            this.vlcMediaPlayerCheck.Name = "vlcMediaPlayerCheck";
+            this.vlcMediaPlayerCheck.Size = new System.Drawing.Size(57, 50);
+            this.vlcMediaPlayerCheck.TabIndex = 20;
+            this.vlcMediaPlayerToolTip.SetToolTip(this.vlcMediaPlayerCheck, "VLC Media Player");
+            this.vlcMediaPlayerCheck.UseVisualStyleBackColor = true;
+            // 
             // discordCheck
             // 
             this.discordCheck.Image = global::PlutoPoint_Installer.Properties.Resources.discord;
@@ -206,6 +269,26 @@ namespace PlutoPoint_Installer
             this.discordCheck.TabIndex = 16;
             this.discordToolTip.SetToolTip(this.discordCheck, "Discord");
             this.discordCheck.UseVisualStyleBackColor = true;
+            // 
+            // steamCheck
+            // 
+            this.steamCheck.Image = global::PlutoPoint_Installer.Properties.Resources.steam;
+            this.steamCheck.Location = new System.Drawing.Point(77, 56);
+            this.steamCheck.Name = "steamCheck";
+            this.steamCheck.Size = new System.Drawing.Size(57, 50);
+            this.steamCheck.TabIndex = 17;
+            this.steamToolTip.SetToolTip(this.steamCheck, "Steam");
+            this.steamCheck.UseVisualStyleBackColor = true;
+            // 
+            // mozillaThunderbirdCheck
+            // 
+            this.mozillaThunderbirdCheck.Image = global::PlutoPoint_Installer.Properties.Resources.mozillaThunderbird;
+            this.mozillaThunderbirdCheck.Location = new System.Drawing.Point(77, 13);
+            this.mozillaThunderbirdCheck.Name = "mozillaThunderbirdCheck";
+            this.mozillaThunderbirdCheck.Size = new System.Drawing.Size(57, 50);
+            this.mozillaThunderbirdCheck.TabIndex = 14;
+            this.mozillaThunderbirdToolTip.SetToolTip(this.mozillaThunderbirdCheck, "Mozilla Thunderbird");
+            this.mozillaThunderbirdCheck.UseVisualStyleBackColor = true;
             // 
             // googleChromeCheck
             // 
@@ -231,16 +314,6 @@ namespace PlutoPoint_Installer
             this.libreOfficeToolTip.SetToolTip(this.libreOfficeCheck, "LibreOffice (Free Microsoft Office alternative)");
             this.libreOfficeCheck.UseVisualStyleBackColor = true;
             // 
-            // nvidiaAppCheck
-            // 
-            this.nvidiaAppCheck.Image = global::PlutoPoint_Installer.Properties.Resources.nvidiaApp;
-            this.nvidiaAppCheck.Location = new System.Drawing.Point(10, 192);
-            this.nvidiaAppCheck.Name = "nvidiaAppCheck";
-            this.nvidiaAppCheck.Size = new System.Drawing.Size(57, 50);
-            this.nvidiaAppCheck.TabIndex = 21;
-            this.nvidiaAppToolTip.SetToolTip(this.nvidiaAppCheck, "Nvidia Graphics App");
-            this.nvidiaAppCheck.UseVisualStyleBackColor = true;
-            // 
             // mozillaFirefoxCheck
             // 
             this.mozillaFirefoxCheck.Checked = true;
@@ -253,143 +326,12 @@ namespace PlutoPoint_Installer
             this.mozillaFirefoxToolTip.SetToolTip(this.mozillaFirefoxCheck, "Mozilla Firefox");
             this.mozillaFirefoxCheck.UseVisualStyleBackColor = true;
             // 
-            // mozillaThunderbirdCheck
-            // 
-            this.mozillaThunderbirdCheck.Image = global::PlutoPoint_Installer.Properties.Resources.mozillaThunderbird;
-            this.mozillaThunderbirdCheck.Location = new System.Drawing.Point(77, 13);
-            this.mozillaThunderbirdCheck.Name = "mozillaThunderbirdCheck";
-            this.mozillaThunderbirdCheck.Size = new System.Drawing.Size(57, 50);
-            this.mozillaThunderbirdCheck.TabIndex = 14;
-            this.mozillaThunderbirdToolTip.SetToolTip(this.mozillaThunderbirdCheck, "Mozilla Thunderbird");
-            this.mozillaThunderbirdCheck.UseVisualStyleBackColor = true;
-            // 
-            // nanaZipCheck
-            // 
-            this.nanaZipCheck.Checked = true;
-            this.nanaZipCheck.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.nanaZipCheck.Image = global::PlutoPoint_Installer.Properties.Resources.nanaZip;
-            this.nanaZipCheck.Location = new System.Drawing.Point(10, 147);
-            this.nanaZipCheck.Name = "nanaZipCheck";
-            this.nanaZipCheck.Size = new System.Drawing.Size(57, 50);
-            this.nanaZipCheck.TabIndex = 18;
-            this.nanaZipToolTip.SetToolTip(this.nanaZipCheck, "NanaZip Extraction Software");
-            this.nanaZipCheck.UseVisualStyleBackColor = true;
-            // 
-            // steamCheck
-            // 
-            this.steamCheck.Image = global::PlutoPoint_Installer.Properties.Resources.steam;
-            this.steamCheck.Location = new System.Drawing.Point(77, 56);
-            this.steamCheck.Name = "steamCheck";
-            this.steamCheck.Size = new System.Drawing.Size(57, 50);
-            this.steamCheck.TabIndex = 17;
-            this.steamToolTip.SetToolTip(this.steamCheck, "Steam");
-            this.steamCheck.UseVisualStyleBackColor = true;
-            // 
-            // vlcMediaPlayerCheck
-            // 
-            this.vlcMediaPlayerCheck.Image = global::PlutoPoint_Installer.Properties.Resources.vlcMediaPlayer;
-            this.vlcMediaPlayerCheck.Location = new System.Drawing.Point(77, 101);
-            this.vlcMediaPlayerCheck.Name = "vlcMediaPlayerCheck";
-            this.vlcMediaPlayerCheck.Size = new System.Drawing.Size(57, 50);
-            this.vlcMediaPlayerCheck.TabIndex = 20;
-            this.vlcMediaPlayerToolTip.SetToolTip(this.vlcMediaPlayerCheck, "VLC Media Player");
-            this.vlcMediaPlayerCheck.UseVisualStyleBackColor = true;
-            // 
-            // bingWallpapersCheck
-            // 
-            this.bingWallpapersCheck.BackColor = System.Drawing.Color.Transparent;
-            this.bingWallpapersCheck.Checked = true;
-            this.bingWallpapersCheck.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.bingWallpapersCheck.Image = global::PlutoPoint_Installer.Properties.Resources.bingWallpaper;
-            this.bingWallpapersCheck.Location = new System.Drawing.Point(10, 56);
-            this.bingWallpapersCheck.Name = "bingWallpapersCheck";
-            this.bingWallpapersCheck.Size = new System.Drawing.Size(57, 50);
-            this.bingWallpapersCheck.TabIndex = 8;
-            this.bingWallpaperstoolTip.SetToolTip(this.bingWallpapersCheck, "Bing Wallpapers (New wallpaper everyday)");
-            this.bingWallpapersCheck.UseVisualStyleBackColor = false;
-            // 
-            // shutdownCheck
-            // 
-            this.shutdownCheck.BackColor = System.Drawing.Color.Transparent;
-            this.shutdownCheck.Image = global::PlutoPoint_Installer.Properties.Resources.shutdown;
-            this.shutdownCheck.Location = new System.Drawing.Point(740, 415);
-            this.shutdownCheck.Name = "shutdownCheck";
-            this.shutdownCheck.Size = new System.Drawing.Size(48, 34);
-            this.shutdownCheck.TabIndex = 26;
-            this.shutdownToolTip.SetToolTip(this.shutdownCheck, "Shutdown Computer on Install Completion");
-            this.shutdownCheck.UseVisualStyleBackColor = false;
-            // 
-            // test
-            // 
-            this.test.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-            this.test.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.test.Font = new Font("Segoe UI",8F);
-            this.test.ForeColor = System.Drawing.Color.White;
-            this.test.HoverShadeColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            this.test.Location = new System.Drawing.Point(800, 15);
-            this.test.Name = "test";
-            this.test.PressedShadeColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.test.Size = new System.Drawing.Size(66, 24);
-            this.test.TabIndex = 28;
-            this.test.Text = "Test";
-            this.testToolTip.SetToolTip(this.test, "You\'ve found my test button, you sneaky bastard.");
-            this.test.Click += new System.EventHandler(this.test_Click);
-            // 
-            // taskbarCheck
-            // 
-            this.taskbarCheck.Checked = true;
-            this.taskbarCheck.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.taskbarCheck.Image = global::PlutoPoint_Installer.Properties.Resources.taskbar;
-            this.taskbarCheck.Location = new System.Drawing.Point(10, 101);
-            this.taskbarCheck.Name = "taskbarCheck";
-            this.taskbarCheck.Size = new System.Drawing.Size(57, 50);
-            this.taskbarCheck.TabIndex = 23;
-            this.taskbarToolTip.SetToolTip(this.taskbarCheck, "Move Windows taskbar to the left like Windows 10");
-            this.taskbarCheck.UseVisualStyleBackColor = true;
-            // 
-            // installerLogPanel
-            // 
-            this.installerLogPanel.AutoScroll = true;
-            this.installerLogPanel.BackColor = System.Drawing.Color.Transparent;
-            this.installerLogPanel.Controls.Add(this.installerTextBox);
-            this.installerLogPanel.Location = new System.Drawing.Point(258, 54);
-            this.installerLogPanel.Name = "installerLogPanel";
-            this.installerLogPanel.Size = new System.Drawing.Size(530, 355);
-            this.installerLogPanel.TabIndex = 29;
-            // 
-            // softwareBox
-            // 
-            this.softwareBox.BackColor = System.Drawing.Color.Transparent;
-            this.softwareBox.BorderColor = System.Drawing.Color.DodgerBlue;
-            this.softwareBox.BorderColorOverride = null;
-            this.softwareBox.BorderShadowBottom = 80;
-            this.softwareBox.BorderShadowTop = 50;
-            this.softwareBox.BorderThickness = 2F;
-            this.softwareBox.Controls.Add(this.anyDeskCheck);
-            this.softwareBox.Controls.Add(this.bitDefenderCheck);
-            this.softwareBox.Controls.Add(this.vlcMediaPlayerCheck);
-            this.softwareBox.Controls.Add(this.discordCheck);
-            this.softwareBox.Controls.Add(this.steamCheck);
-            this.softwareBox.Controls.Add(this.mozillaThunderbirdCheck);
-            this.softwareBox.Controls.Add(this.googleChromeCheck);
-            this.softwareBox.Controls.Add(this.libreOfficeCheck);
-            this.softwareBox.Controls.Add(this.mozillaFirefoxCheck);
-            this.softwareBox.CornerRadius = 3;
-            this.softwareBox.Font = new Font("Segoe UI",8F);
-            this.softwareBox.ForeColor = System.Drawing.Color.White;
-            this.softwareBox.Location = new System.Drawing.Point(12, 54);
-            this.softwareBox.Name = "softwareBox";
-            this.softwareBox.Size = new System.Drawing.Size(149, 296);
-            this.softwareBox.TabIndex = 25;
-            this.softwareBox.TabStop = false;
-            this.softwareBox.Text = "Software";
-            this.softwareBox.TextColorOverride = null;
-            // 
             // restart
             // 
             this.restart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
             this.restart.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.restart.Font = new Font("Segoe UI",9F);
+            this.restart.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.restart.ForeColor = System.Drawing.Color.White;
             this.restart.HoverShadeColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
             this.restart.Location = new System.Drawing.Point(114, 15);
             this.restart.Name = "restart";
@@ -403,7 +345,7 @@ namespace PlutoPoint_Installer
             // 
             this.close.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(255)))));
             this.close.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.close.Font = new Font("Segoe UI",9F);
+            this.close.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.close.ForeColor = System.Drawing.Color.White;
             this.close.HoverShadeColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
             this.close.Location = new System.Drawing.Point(186, 15);
@@ -419,7 +361,7 @@ namespace PlutoPoint_Installer
             this.progressBar.BackColor = System.Drawing.Color.Transparent;
             this.progressBar.BackShadeColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
             this.progressBar.FillShadeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.progressBar.Location = new System.Drawing.Point(258, 14);
+            this.progressBar.Location = new System.Drawing.Point(258, 15);
             this.progressBar.Maximum = 1;
             this.progressBar.Name = "progressBar";
             this.progressBar.ShineShadeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
@@ -433,7 +375,7 @@ namespace PlutoPoint_Installer
             // 
             this.install.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(255)))));
             this.install.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.install.Font = new Font("Segoe UI",12);
+            this.install.Font = new System.Drawing.Font("Segoe UI", 12F);
             this.install.ForeColor = System.Drawing.Color.White;
             this.install.HoverShadeColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
             this.install.Location = new System.Drawing.Point(12, 15);
@@ -458,7 +400,7 @@ namespace PlutoPoint_Installer
             this.utilitiesBox.Controls.Add(this.nanaZipCheck);
             this.utilitiesBox.Controls.Add(this.bingWallpapersCheck);
             this.utilitiesBox.CornerRadius = 3;
-            this.utilitiesBox.Font = new Font("Segoe UI",8.25f);
+            this.utilitiesBox.Font = new System.Drawing.Font("Segoe UI", 8.25F);
             this.utilitiesBox.ForeColor = System.Drawing.Color.White;
             this.utilitiesBox.Location = new System.Drawing.Point(177, 54);
             this.utilitiesBox.Name = "utilitiesBox";
@@ -467,6 +409,65 @@ namespace PlutoPoint_Installer
             this.utilitiesBox.TabStop = false;
             this.utilitiesBox.Text = "Utilities";
             this.utilitiesBox.TextColorOverride = null;
+            // 
+            // taskbarCheck
+            // 
+            this.taskbarCheck.Checked = true;
+            this.taskbarCheck.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.taskbarCheck.Image = global::PlutoPoint_Installer.Properties.Resources.taskbar;
+            this.taskbarCheck.Location = new System.Drawing.Point(10, 101);
+            this.taskbarCheck.Name = "taskbarCheck";
+            this.taskbarCheck.Size = new System.Drawing.Size(57, 50);
+            this.taskbarCheck.TabIndex = 23;
+            this.taskbarToolTip.SetToolTip(this.taskbarCheck, "Move Windows taskbar to the left like Windows 10");
+            this.taskbarCheck.UseVisualStyleBackColor = true;
+            // 
+            // crcCheck
+            // 
+            this.crcCheck.Checked = true;
+            this.crcCheck.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.crcCheck.Image = global::PlutoPoint_Installer.Properties.Resources.computerRepairCentre;
+            this.crcCheck.Location = new System.Drawing.Point(10, 13);
+            this.crcCheck.Name = "crcCheck";
+            this.crcCheck.Size = new System.Drawing.Size(57, 50);
+            this.crcCheck.TabIndex = 11;
+            this.crcToolTip.SetToolTip(this.crcCheck, "Computer Repair Centre OEM Information");
+            this.crcCheck.UseVisualStyleBackColor = true;
+            // 
+            // nvidiaAppCheck
+            // 
+            this.nvidiaAppCheck.Image = global::PlutoPoint_Installer.Properties.Resources.nvidiaApp;
+            this.nvidiaAppCheck.Location = new System.Drawing.Point(10, 192);
+            this.nvidiaAppCheck.Name = "nvidiaAppCheck";
+            this.nvidiaAppCheck.Size = new System.Drawing.Size(57, 50);
+            this.nvidiaAppCheck.TabIndex = 21;
+            this.nvidiaAppToolTip.SetToolTip(this.nvidiaAppCheck, "Nvidia Graphics App");
+            this.nvidiaAppCheck.UseVisualStyleBackColor = true;
+            // 
+            // nanaZipCheck
+            // 
+            this.nanaZipCheck.Checked = true;
+            this.nanaZipCheck.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.nanaZipCheck.Image = global::PlutoPoint_Installer.Properties.Resources.nanaZip;
+            this.nanaZipCheck.Location = new System.Drawing.Point(10, 147);
+            this.nanaZipCheck.Name = "nanaZipCheck";
+            this.nanaZipCheck.Size = new System.Drawing.Size(57, 50);
+            this.nanaZipCheck.TabIndex = 18;
+            this.nanaZipToolTip.SetToolTip(this.nanaZipCheck, "NanaZip Extraction Software");
+            this.nanaZipCheck.UseVisualStyleBackColor = true;
+            // 
+            // bingWallpapersCheck
+            // 
+            this.bingWallpapersCheck.BackColor = System.Drawing.Color.Transparent;
+            this.bingWallpapersCheck.Checked = true;
+            this.bingWallpapersCheck.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.bingWallpapersCheck.Image = global::PlutoPoint_Installer.Properties.Resources.bingWallpaper;
+            this.bingWallpapersCheck.Location = new System.Drawing.Point(10, 56);
+            this.bingWallpapersCheck.Name = "bingWallpapersCheck";
+            this.bingWallpapersCheck.Size = new System.Drawing.Size(57, 50);
+            this.bingWallpapersCheck.TabIndex = 8;
+            this.bingWallpaperstoolTip.SetToolTip(this.bingWallpapersCheck, "Bing Wallpapers (New wallpaper everyday)");
+            this.bingWallpapersCheck.UseVisualStyleBackColor = false;
             // 
             // installerForm
             // 
