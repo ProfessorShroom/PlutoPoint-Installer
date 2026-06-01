@@ -1869,7 +1869,7 @@ namespace PlutoPoint_Installer
                         using (Process process = new Process())
                         {
                             process.StartInfo.FileName = "msiexec";
-                            process.StartInfo.Arguments = $"/package \"{libreOfficeFilename}\" /passive";
+                            process.StartInfo.Arguments = $"/package \"{libreOfficeFilename}\" /passive /norestart";
                             process.StartInfo.UseShellExecute = false;
                             process.StartInfo.RedirectStandardOutput = true;
                             process.StartInfo.RedirectStandardError = true;
