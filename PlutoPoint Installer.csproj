@@ -76,13 +76,43 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Win32.Registry, Version=4.1.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.Win32.Registry.4.7.0\lib\net461\Microsoft.Win32.Registry.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Win32.TaskScheduler, Version=2.11.0.0, Culture=neutral, PublicKeyToken=e25603a88b3aa7da, processorArchitecture=MSIL">
       <HintPath>packages\TaskScheduler.2.11.0\lib\net48\Microsoft.Win32.TaskScheduler.dll</HintPath>
+    </Reference>
+    <Reference Include="NAudio, Version=2.2.1.0, Culture=neutral, PublicKeyToken=e279aa5131008a41, processorArchitecture=MSIL">
+      <HintPath>packages\NAudio.2.2.1\lib\net472\NAudio.dll</HintPath>
+    </Reference>
+    <Reference Include="NAudio.Asio, Version=2.2.1.0, Culture=neutral, PublicKeyToken=e279aa5131008a41, processorArchitecture=MSIL">
+      <HintPath>packages\NAudio.Asio.2.2.1\lib\netstandard2.0\NAudio.Asio.dll</HintPath>
+    </Reference>
+    <Reference Include="NAudio.Core, Version=2.2.1.0, Culture=neutral, PublicKeyToken=e279aa5131008a41, processorArchitecture=MSIL">
+      <HintPath>packages\NAudio.Core.2.2.1\lib\netstandard2.0\NAudio.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="NAudio.Midi, Version=2.2.1.0, Culture=neutral, PublicKeyToken=e279aa5131008a41, processorArchitecture=MSIL">
+      <HintPath>packages\NAudio.Midi.2.2.1\lib\netstandard2.0\NAudio.Midi.dll</HintPath>
+    </Reference>
+    <Reference Include="NAudio.Wasapi, Version=2.2.1.0, Culture=neutral, PublicKeyToken=e279aa5131008a41, processorArchitecture=MSIL">
+      <HintPath>packages\NAudio.Wasapi.2.2.1\lib\netstandard2.0\NAudio.Wasapi.dll</HintPath>
+    </Reference>
+    <Reference Include="NAudio.WinForms, Version=2.2.1.0, Culture=neutral, PublicKeyToken=e279aa5131008a41, processorArchitecture=MSIL">
+      <HintPath>packages\NAudio.WinForms.2.2.1\lib\net472\NAudio.WinForms.dll</HintPath>
+    </Reference>
+    <Reference Include="NAudio.WinMM, Version=2.2.1.0, Culture=neutral, PublicKeyToken=e279aa5131008a41, processorArchitecture=MSIL">
+      <HintPath>packages\NAudio.WinMM.2.2.1\lib\netstandard2.0\NAudio.WinMM.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.Management" />
+    <Reference Include="System.Security.AccessControl, Version=4.1.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Security.AccessControl.4.7.0\lib\net461\System.Security.AccessControl.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Principal.Windows, Version=4.1.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Security.Principal.Windows.4.7.0\lib\net461\System.Security.Principal.Windows.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -95,28 +125,31 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\InstallerEvent.cs" />
+    <Compile Include="UI\ThemeManager.cs" />
+    <Compile Include="Utilities\AudioEffects.cs" />
     <Compile Include="PlutoPoint Installer.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="PlutoPoint Installer.Designer.cs">
       <DependentUpon>PlutoPoint Installer.cs</DependentUpon>
     </Compile>
-    <Compile Include="AssemblyUpdateDateAttribute.cs" />
+    <Compile Include="Attributes\AssemblyUpdateDateAttribute.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="GradientButton.cs">
+    <Compile Include="UI\GradientButton.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="RoundedButton.cs">
+    <Compile Include="UI\RoundedButton.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="RoundedGroupBox.cs">
+    <Compile Include="UI\RoundedGroupBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ProgressBar.cs">
+    <Compile Include="UI\ProgressBar.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="RoundedProgressBar.cs">
+    <Compile Include="UI\RoundedProgressBar.cs">
       <SubType>Component</SubType>
     </Compile>
     <EmbeddedResource Include="PlutoPoint Installer.resx">
@@ -128,11 +161,12 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="app.manifest" />
+    <None Include="Data\Downloads.json" />
+    <None Include="Data\IPs.json" />
+    <None Include="Data\Passwords.json" />
     <None Include="downloads.json" />
-    <None Include="internetProtocolHash.json" />
     <None Include="LICENSE.md" />
     <None Include="packages.config" />
-    <None Include="passwordHash.json" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -215,5 +249,6 @@
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

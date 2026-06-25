@@ -14,7 +14,6 @@ namespace PlutoPoint_Installer
         private static PrivateFontCollection _fonts;
         private static FontFamily _ubuntuFamily;
         private static bool _initialized;
-
         [STAThread]
         static void Main()
         {
@@ -22,49 +21,31 @@ namespace PlutoPoint_Installer
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new installerForm());
         }
-
         public static Font Ubuntu(float size, FontStyle style = FontStyle.Regular)
         {
             EnsureFonts();
 
             if (_ubuntuFamily == null)
                 throw new InvalidOperationException("Ubuntu font not initialized.");
-
             return new Font(_ubuntuFamily, size, style);
         }
-
+        private static IntPtr _fontPtr;
         private static void EnsureFonts()
         {
-            if (_initialized)
-                return;
-
+            if (_initialized) return;
             _fonts = new PrivateFontCollection();
-
-            // Load ONLY regular font (important)
-            AddFont(Properties.Resources.Ubuntu_Regular);
-
-            _ubuntuFamily = _fonts.Families
-                .FirstOrDefault();
-
+            _fontPtr = AddFont(Properties.Resources.Ubuntu_Regular);
+            _ubuntuFamily = _fonts.Families.FirstOrDefault(f => f.Name == "Ubuntu");
             if (_ubuntuFamily == null)
-                throw new Exception("Ubuntu font NOT loaded correctly");
-
+                throw new Exception("Ubuntu font NOT loaded correctly. Ensure resource name is correct.");
             _initialized = true;
         }
-
-        private static void AddFont(byte[] fontData)
+        private static IntPtr AddFont(byte[] fontData)
         {
             IntPtr ptr = Marshal.AllocCoTaskMem(fontData.Length);
-
-            try
-            {
-                Marshal.Copy(fontData, 0, ptr, fontData.Length);
-                _fonts.AddMemoryFont(ptr, fontData.Length);
-            }
-            finally
-            {
-                Marshal.FreeCoTaskMem(ptr);
-            }
+            Marshal.Copy(fontData, 0, ptr, fontData.Length);
+            _fonts.AddMemoryFont(ptr, fontData.Length);
+            return ptr;
         }
     }
 }

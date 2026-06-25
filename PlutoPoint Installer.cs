@@ -1,9 +1,11 @@
 ﻿using Microsoft.Win32;
+using Shell32;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Drawing.Drawing2D;
 using System.IO;
 using System.Media;
 using System.Net;
@@ -12,8 +14,10 @@ using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 using System.Web.Script.Serialization;
-using Shell32;
-using System.Drawing.Drawing2D;
+using PlutoPoint_Installer.Utilities;
+using PlutoPoint_Installer.Attributes;
+using PlutoPoint_Installer.UI;
+using PlutoPoint_Installer.Models;
 
 // Copyright © Charlie Howard 2026 All rights reserved.
 
@@ -31,7 +35,6 @@ namespace PlutoPoint_Installer
     public partial class installerForm : Form
     {
         DateTime buildDate = File.GetLastWriteTime(Assembly.GetExecutingAssembly().Location);
-        private bool isClickPlaying = false;
         private Color _gradientTop = Color.FromArgb(30, 200, 255);
         private Color _gradientBottom = Color.FromArgb(140, 0, 255);
         private Task _initialiseUrlsTask;
@@ -42,18 +45,20 @@ namespace PlutoPoint_Installer
         private const uint SHERB_NOPROGRESSUI = 0x00000002;
         private const uint SHERB_NOSOUND = 0x00000004;
         private string locationLine = "📍 Detecting location...";
+        private Image _overlayImage;
+        private Icon _overlayIcon;
+        private float _overlayRotationDegrees;
+        public Image OverlayImage { get { return _overlayImage; } set { _overlayImage = value; } }
+        public float OverlayRotationDegrees { get { return _overlayRotationDegrees; } set { _overlayRotationDegrees = value; } }
         public installerForm()
         {
             InitializeComponent();
-            ApplyFonts();
-            this.Resize += (s, e) =>
-            {
-                this.Invalidate(true);
+            this.Resize += (s, e) => {
+                AdjustInstallerTextBoxSizeForOverlay();
+                this.Invalidate();
             };
+            ApplyFonts();
             this.AutoScaleMode = AutoScaleMode.Dpi;            
-            // Sounds
-            SoundPlayer hoverSound = new SoundPlayer(Properties.Resources.buttonHover);
-            SoundPlayer clickSound = new SoundPlayer(Properties.Resources.buttonHover);
             // Shutdown/restart checks
             shutdownCheck.CheckedChanged += ShutdownCheck_CheckedChanged;
             restartCheck.CheckedChanged += RestartCheck_CheckedChanged;
@@ -62,61 +67,21 @@ namespace PlutoPoint_Installer
                           ControlStyles.UserPaint |
                           ControlStyles.OptimizedDoubleBuffer, true);
             this.DoubleBuffered = true;
-            // Button sounds
-            void PlayHover()
-            {
-                if (isClickPlaying) return;
-                hoverSound.Stop();
-                hoverSound.Play();
-            }
-            void PlayClick()
-            {
-                hoverSound.Stop();
-                clickSound.Stop();
-                clickSound.Play();
-                isClickPlaying = true;
-                var t = new System.Timers.Timer(150);
-                t.AutoReset = false;
-                t.Elapsed += (s, e) =>
-                {
-                    isClickPlaying = false;
-                    t.Dispose();
-                };
-                t.Start();
-            }
-            install.MouseEnter += (s, e) => PlayHover();
-            install.Click += (s, e) => PlayClick();
-            restart.MouseEnter += (s, e) => PlayHover();
-            restart.Click += (s, e) => PlayClick();
-            close.MouseEnter += (s, e) => PlayHover();
-            close.Click += (s, e) => PlayClick();
-            test.MouseEnter += (s, e) => PlayHover();
-            test.Click += (s, e) => PlayClick();
-            // Date checks
-            CheckChristmas();
-            CheckNewYear();
-            CheckHalloween();
-            CheckValentines();
-            CheckPancake();
-            CheckPuffin();
-            CheckDachshund();
-            CheckPluto();
-            CheckRhino();
-            CheckHippo();
-            CheckDuck();
-            CheckStarWars();
-            CheckCharlieBirthday();
-            CheckDeanBirthday();
-            CheckSteveBirthday();
-            CheckHowardBirthday();
-            CheckAdamBirthday();
-            CheckGeethBirthday();
+            // Hover
+            install.MouseEnter += (s, e) => AudioEffects.PlayHoverPop();
+            restart.MouseEnter += (s, e) => AudioEffects.PlayHoverPop();
+            close.MouseEnter += (s, e) => AudioEffects.PlayHoverPop();
+            test.MouseEnter += (s, e) => AudioEffects.PlayHoverPop();
+            // Click
+            install.Click += (s, e) => AudioEffects.PlayClickChime();
+            restart.Click += (s, e) => AudioEffects.PlayClickChime();
+            close.Click += (s, e) => AudioEffects.PlayClickChime();
+            test.Click += (s, e) => AudioEffects.PlayClickChime();
             OverrideRoundedBoxColours();
             // Background tasks only
             _initialiseUrlsTask = InitialiseUrlsAsync();
             _checkIpTask = CheckIPAsync();
             CheckEliteBook();
-            UpdateGUIEvent();
             // Info checks
             PrintVersion();
             CheckWindowsVersion();
@@ -129,6 +94,7 @@ namespace PlutoPoint_Installer
             Version version = Assembly.GetExecutingAssembly().GetName().Version;
             versionLabel.Text = $"Version {version}";
         }
+        private UI.ThemeManager _themeManager = new UI.ThemeManager();
         private void ApplyFonts()
         {
             installerTextBox.Font = Program.Ubuntu(12f, FontStyle.Regular);
@@ -140,7 +106,46 @@ namespace PlutoPoint_Installer
             test.Font = Program.Ubuntu(8F, FontStyle.Regular);
             install.Font = Program.Ubuntu(12, FontStyle.Regular);
             utilitiesBox.Font = Program.Ubuntu(8.25f, FontStyle.Regular);
+        }
+            protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
 
+            _themeManager.ApplyThemeAndMessages(
+                (top, bottom, log) => {
+                    this.ApplyGradientTheme(top, bottom);
+                    this.ApplyLogTheme(log);
+                    this.Invalidate();
+                },
+                (msg) => this.AppendLine(msg)
+            );
+
+            _themeManager.UpdateGUIEvent(this);
+            this.Invalidate();
+        }
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            base.OnPaint(e);
+            if (this.OverlayImage == null) return;
+            e.Graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+            Rectangle dest = PlutoPoint_Installer.UI.ThemeManager.GetScaledRect(this.OverlayImage, 670, 320, 100, 100);
+            using (Matrix m = new Matrix())
+            {
+                float centerX = dest.Left + dest.Width / 2f;
+                float centerY = dest.Top + dest.Height / 2f;
+                m.RotateAt(this.OverlayRotationDegrees, new PointF(centerX, centerY));
+                e.Graphics.Transform = m;
+                e.Graphics.DrawImage(this.OverlayImage, dest);
+            }
+        }
+        public void AdjustInstallerTextBoxSizeForOverlay()
+        {
+            bool hasOverlayImage = (_overlayImage != null);
+            this.installerLogPanel.Size = hasOverlayImage
+                ? new System.Drawing.Size(517, 258)
+                : new System.Drawing.Size(517, 355);
+            installerTextBox.MaximumSize = new Size(installerLogPanel.ClientSize.Width - 10, 0);
         }
         private async Task CheckIPAsync()
         {
@@ -195,20 +200,6 @@ namespace PlutoPoint_Installer
             }
         }
         // Set strings
-        string christmas = null;
-        string newyear = null;
-        string halloween = null;
-        string valentines = null;
-        string birthday = null;
-        string pancake = null;
-        string puffin = null;
-        string duck = null;
-        string dachshund = null;
-        string pluto = null;
-        string hippo = null;
-        string rhino = null;
-        string starwars = null;
-        string birthdayName = null;
         string hpEliteBook = null;
         string safeLocation = null;
         string location = null;
@@ -224,13 +215,6 @@ namespace PlutoPoint_Installer
         string amd = null;
         string nvidia = null;
         string intel = null;
-        private Image _overlayImage;
-        private Icon _overlayIcon;
-        private int _overlayX;
-        private int _overlayY;
-        private int _overlayWidth;
-        private int _overlayHeight;
-        private float _overlayRotationDegrees;
         protected override void OnPaintBackground(PaintEventArgs e)
         {
             base.OnPaintBackground(e);
@@ -290,104 +274,6 @@ namespace PlutoPoint_Installer
         {
             if (_checkIpTask != null)
                 await _checkIpTask;
-            if (christmas == "1")
-            {
-                AppendLine("");
-                var rm = Properties.Resources.ResourceManager;
-                var set = rm.GetResourceSet(CultureInfo.CurrentUICulture, true, true);
-                var songKeys = set.Cast<DictionaryEntry>()
-                                  .Where(e => e.Key.ToString().StartsWith("song"))
-                                  .Select(e => e.Key.ToString())
-                                  .ToList();
-                if (songKeys.Count > 0)
-                {
-                    var rnd = new Random();
-                    string chosenKey = songKeys[rnd.Next(songKeys.Count)];
-                    var bytes = (byte[])rm.GetObject(chosenKey);
-                    using (var reader = new StreamReader(new MemoryStream(bytes)))
-                    {
-                        string line;
-                        while ((line = await reader.ReadLineAsync()) != null)
-                        {
-                            AppendLine(line);
-                            await Task.Delay(500);
-                        }
-                    }
-                }
-                AppendLine("");
-                AppendLine("🎄 Merry Christmas!");
-                AppendLine("");
-            }
-            else if (newyear == "1")
-            {
-                AppendLine("");
-                AppendLine("🎉 Happy New Year!");
-                AppendLine("");
-            }
-            else if (halloween == "1")
-            {
-                AppendLine("");
-                AppendLine("🎃 Boo! Happy Halloween!");
-                AppendLine("");
-            }
-            else if (valentines == "1")
-            {
-                AppendLine("");
-                AppendLine("❤️ Happy Valentines Day!");
-                AppendLine("");
-            }
-            else if (pancake == "1")
-            {
-                AppendLine("");
-                AppendLine("🥞 It's Pancake Day!");
-                AppendLine("Don't forget to have some pancakes you fat bastard!");
-                AppendLine("");
-            }
-            else if (puffin == "1")
-            {
-                AppendLine("");
-                AppendLine("🐧 Today is World Puffin day!");
-                AppendLine("");
-            }
-            else if (duck == "1")
-            {
-                AppendLine("");
-                AppendLine("🦆 Today is National Duck day!");
-                AppendLine("Did someone say duck?");
-                AppendLine("");
-            }
-            else if (dachshund == "1")
-            {
-                AppendLine("");
-                AppendLine("🌭 Today is National Dachshund day!");
-                AppendLine("");
-            }
-            else if (hippo == "1")
-            {
-                AppendLine("");
-                AppendLine("🦛 Today is World Hippo day!");
-                AppendLine("");
-            }
-            else if (rhino == "1")
-            {
-                AppendLine("");
-                AppendLine("🦏 Today is World Rhino day!");
-                AppendLine("");
-            }
-            else if (starwars == "1")
-            {                 
-                AppendLine("");
-                AppendLine("🌌 Today is Star Wars day!");
-                AppendLine("May the 4th be with you!");
-                AppendLine("");
-            }
-            else if (birthday == "1" && !string.IsNullOrEmpty(birthdayName))
-            {
-                AppendLine("");
-                AppendLine($"🎂 It is {birthdayName}'s birthday today!");
-                AppendLine($"🎉 Happy birthday {birthdayName}!");
-                AppendLine("");
-            }
         }
         private void CheckEliteBook()
         {
@@ -433,373 +319,6 @@ namespace PlutoPoint_Installer
                 linkLabel.VisitedLinkColor = install.BackColor;
             }
         }
-        private void CheckChristmas()
-        {
-            if (DateTime.Now.Month == 12)
-            {
-                christmas = "1";
-                ApplyGradientTheme(
-                    Color.FromArgb(18, 110, 58),
-                    Color.FromArgb(120, 18, 32));
-                ApplyButtonTheme(
-                    Color.FromArgb(220, 235, 225),
-                    Color.FromArgb(120, 18, 32));
-                ApplyLogTheme(Color.White);
-                SyncLabelsWithInstall();
-                this.Invalidate();
-            }
-        }
-        private void CheckNewYear()
-        {
-            if (DateTime.Now.Month == 1 &&
-                (DateTime.Now.Day == 1 || DateTime.Now.Day == 2 || DateTime.Now.Day == 3 ||
-                 DateTime.Now.Day == 4 || DateTime.Now.Day == 5 || DateTime.Now.Day == 6 ||
-                 DateTime.Now.Day == 7))
-            {
-                newyear = "1";
-                ApplyGradientTheme(
-                    Color.FromArgb(255, 210, 90),
-                    Color.FromArgb(198, 140, 35));
-                ApplyButtonTheme(
-                    Color.FromArgb(245, 245, 240),
-                    Color.FromArgb(110, 80, 20));
-                ApplyLogTheme(Color.FromArgb(90, 65, 15));
-                SyncLabelsWithInstall();
-                this.Invalidate();
-            }
-        }
-        private void CheckHalloween()
-        {
-            if (DateTime.Now.Month == 10 &&
-                (DateTime.Now.Day == 26 || DateTime.Now.Day == 27 || DateTime.Now.Day == 28 ||
-                 DateTime.Now.Day == 29 || DateTime.Now.Day == 30 || DateTime.Now.Day == 31))
-            {
-                halloween = "1";
-                ApplyGradientTheme(
-                    Color.FromArgb(35, 35, 35),
-                    Color.FromArgb(120, 45, 0));
-                ApplyButtonTheme(
-                    Color.FromArgb(252, 104, 18),
-                    Color.White);
-                ApplyLogTheme(Color.White);
-                SyncLabelsWithInstall();
-                this.Invalidate();
-            }
-        }
-        private void CheckValentines()
-        {
-            if (DateTime.Now.Month == 2 && DateTime.Now.Day == 14)
-            {
-                valentines = "1";
-                ApplyGradientTheme(
-                    Color.FromArgb(245, 215, 225),
-                    Color.FromArgb(214, 150, 175));
-                ApplyButtonTheme(
-                    Color.FromArgb(160, 24, 60),
-                    Color.White);
-                ApplyLogTheme(Color.FromArgb(135, 20, 50));
-                SyncLabelsWithInstall();
-                this.Invalidate();
-            }
-        }
-        private void CheckPancake()
-        {
-            if ((DateTime.Now.Month == 2 && DateTime.Now.Day == 17 && DateTime.Now.Year == 2026) ||
-                (DateTime.Now.Month == 2 && DateTime.Now.Day == 9 && DateTime.Now.Year == 2027) ||
-                (DateTime.Now.Month == 2 && DateTime.Now.Day == 29 && DateTime.Now.Year == 2028))
-            {
-                pancake = "1";
-                ApplyGradientTheme(
-                    Color.FromArgb(242, 200, 150),
-                    Color.FromArgb(205, 145, 95));
-                ApplyButtonTheme(
-                    Color.FromArgb(176, 116, 72),
-                    Color.FromArgb(255, 245, 225));
-                ApplyLogTheme(Color.FromArgb(95, 55, 25));
-                SyncLabelsWithInstall();
-                this.Invalidate();
-            }
-        }
-        private void CheckPuffin()
-        {
-            if (DateTime.Now.Month == 4 && DateTime.Now.Day == 14)
-            {
-                puffin = "1";
-                ApplyGradientTheme(
-                    Color.FromArgb(35, 45, 70),
-                    Color.FromArgb(90, 125, 160));
-                ApplyButtonTheme(
-                    Color.FromArgb(245, 245, 245),
-                    Color.FromArgb(35, 45, 70));
-                ApplyLogTheme(Color.White);
-                SyncLabelsWithInstall();
-                this.Invalidate();
-            }
-        }
-        private void CheckDuck()
-        {
-            if (DateTime.Now.Month == 4 && DateTime.Now.Day == 4)
-            {
-                duck = "1";
-                ApplyGradientTheme(
-                    Color.FromArgb(215, 185, 125),
-                    Color.FromArgb(150, 120, 78));
-                ApplyButtonTheme(
-                    Color.FromArgb(76, 94, 64),
-                    Color.White);
-                ApplyLogTheme(Color.FromArgb(76, 94, 64));
-                SyncLabelsWithInstall();
-                this.Invalidate();
-            }
-        }
-        private void CheckDachshund()
-        {
-            if (DateTime.Now.Month == 6 && DateTime.Now.Day == 21)
-            {
-                dachshund = "1";
-                ApplyGradientTheme(
-                    Color.FromArgb(245, 228, 212),
-                    Color.FromArgb(205, 170, 138));
-                ApplyButtonTheme(
-                    Color.FromArgb(145, 95, 62),
-                    Color.FromArgb(250, 240, 225));
-                ApplyLogTheme(Color.FromArgb(110, 72, 45));
-                SyncLabelsWithInstall();
-                this.Invalidate();
-            }
-        }
-        private void CheckPluto()
-        {
-            if (DateTime.Now.Month == 3 && DateTime.Now.Day == 12)
-            {
-                pluto = "1";
-                ApplyGradientTheme(
-                    Color.FromArgb(242, 225, 210),
-                    Color.FromArgb(182, 132, 92));
-                ApplyButtonTheme(
-                    Color.FromArgb(132, 88, 58),
-                    Color.FromArgb(248, 238, 228));
-                ApplyLogTheme(Color.FromArgb(108, 72, 48));
-                SyncLabelsWithInstall();
-                this.Invalidate();
-            }
-        }
-        private void CheckHippo()
-        {
-            if (DateTime.Now.Month == 2 && DateTime.Now.Day == 15)
-            {
-                hippo = "1";
-                ApplyGradientTheme(
-                    Color.FromArgb(98, 98, 105),
-                    Color.FromArgb(58, 58, 64));
-                ApplyButtonTheme(
-                    Color.FromArgb(72, 72, 78),
-                    Color.White);
-                ApplyLogTheme(Color.White);
-                SyncLabelsWithInstall();
-                this.Invalidate();
-            }
-        }
-        private void CheckRhino()
-        {
-            if (DateTime.Now.Month == 9 && DateTime.Now.Day == 22)
-            {
-                rhino = "1";
-                ApplyGradientTheme(
-                    Color.FromArgb(110, 110, 115),
-                    Color.FromArgb(62, 62, 68));
-                ApplyButtonTheme(
-                    Color.FromArgb(74, 74, 82),
-                    Color.White);
-                ApplyLogTheme(Color.White);
-                SyncLabelsWithInstall();
-                this.Invalidate();
-            }
-        }
-        private void CheckStarWars()
-        {
-            if (DateTime.Now.Month == 5 && DateTime.Now.Day == 4)
-            {
-                starwars = "1";
-                ApplyGradientTheme(
-                    Color.FromArgb(34, 34, 34),
-                    Color.FromArgb(40, 40, 40));
-                ApplyButtonTheme(
-                    Color.FromArgb(243, 213, 0),
-                    Color.White);
-                ApplyLogTheme(Color.White);
-                SyncLabelsWithInstall();
-                this.Invalidate();
-            }
-        }
-        private void ApplyBirthdayTheme(string name)
-        {
-            birthday = "1";
-            birthdayName = name;
-            ApplyGradientTheme(
-                Color.FromArgb(175, 220, 228),
-                Color.FromArgb(245, 182, 198));
-            ApplyButtonTheme(
-                Color.FromArgb(255, 245, 235),
-                Color.FromArgb(95, 70, 85));
-            ApplyLogTheme(Color.FromArgb(80, 60, 75));
-            SyncLabelsWithInstall();
-            this.Invalidate();
-        }
-        private void CheckCharlieBirthday()
-        {
-            if (DateTime.Now.Month == 4 && DateTime.Now.Day == 6)
-                ApplyBirthdayTheme("Charlie");
-        }
-        private void CheckDeanBirthday()
-        {
-            if (DateTime.Now.Month == 4 && DateTime.Now.Day == 21)
-                ApplyBirthdayTheme("Dean");
-        }
-        private void CheckSteveBirthday()
-        {
-            if (DateTime.Now.Month == 6 && DateTime.Now.Day == 24)
-                ApplyBirthdayTheme("Steve");
-        }
-        private void CheckHowardBirthday()
-        {
-            if (DateTime.Now.Month == 5 && DateTime.Now.Day == 16)
-                ApplyBirthdayTheme("Howard");
-        }
-        private void CheckAdamBirthday()
-        {
-            if (DateTime.Now.Month == 6 && DateTime.Now.Day == 9)
-                ApplyBirthdayTheme("Adam");
-        }
-        private void CheckGeethBirthday()
-        {
-            if (DateTime.Now.Month == 7 && DateTime.Now.Day == 25)
-                ApplyBirthdayTheme("Geeth");
-        }
-        private void AdjustInstallerTextBoxSizeForOverlay()
-        {
-            bool hasOverlayImage = (_overlayImage != null);
-            this.installerLogPanel.Size = hasOverlayImage
-                ? new System.Drawing.Size(517, 258)
-                : new System.Drawing.Size(517, 355);
-            installerTextBox.MaximumSize = new Size(installerLogPanel.ClientSize.Width - 10, 0);
-        }
-        private void UpdateGUIEvent()
-        {
-            _overlayImage = null;
-            _overlayIcon = null;
-            _overlayRotationDegrees = 0f;
-            _overlayX = 670;
-            _overlayY = 320;
-            if (christmas == "1")
-            {
-                _overlayImage = Properties.Resources.christmasTree;
-                _overlayIcon = PlutoPoint_Installer.Properties.Resources.computerRepairCentreIconChristmas;
-            }
-            else if (newyear == "1")
-            {
-                _overlayImage = Properties.Resources.newyear;
-                _overlayIcon = null;
-            }
-            else if (halloween == "1")
-            {
-                _overlayImage = Properties.Resources.pumpkin;
-                _overlayIcon = PlutoPoint_Installer.Properties.Resources.computerRepairCentreIconHalloween;
-            }
-            else if (valentines == "1")
-            {
-                _overlayImage = Properties.Resources.heart;
-                _overlayIcon = PlutoPoint_Installer.Properties.Resources.computerRepairCentreIconValentines;
-                _overlayRotationDegrees = 30f;
-            }
-            else if (pancake == "1")
-            {
-                _overlayImage = Properties.Resources.pancake;
-                _overlayIcon = null;
-            }
-            else if (puffin == "1")
-            {
-                _overlayImage = Properties.Resources.puffin;
-                _overlayIcon = PlutoPoint_Installer.Properties.Resources.computerRepairCentreIconPuffin;
-            }
-            else if (duck == "1")
-            {
-                _overlayImage = Properties.Resources.duck;
-            }
-            else if (dachshund == "1")
-            {
-                _overlayImage = Properties.Resources.pluto;
-                _overlayIcon = PlutoPoint_Installer.Properties.Resources.plutoLogo;
-            }
-            else if (pluto == "1")
-            {
-                _overlayImage = Properties.Resources.pluto;
-                _overlayIcon = PlutoPoint_Installer.Properties.Resources.plutoLogo;
-            }
-            else if (hippo == "1")
-            {
-                _overlayImage = Properties.Resources.hippo;
-                _overlayIcon = null;
-            }
-            else if (rhino == "1")
-            {
-                _overlayImage = Properties.Resources.rhino;
-                _overlayIcon = null;
-            }
-            else if (starwars == "1")
-            {
-                _overlayImage = Properties.Resources.starwars;
-                _overlayIcon = null;
-            }
-            else if (birthday == "1")
-            {
-                _overlayImage = Properties.Resources.present;
-                _overlayIcon = PlutoPoint_Installer.Properties.Resources.computerRepairCentreIconBirthday;
-            }
-            if (_overlayIcon != null && this.Icon != _overlayIcon)
-                this.Icon = _overlayIcon;
-            AdjustInstallerTextBoxSizeForOverlay();
-            this.Invalidate();
-        }
-        private static Rectangle GetScaledRect(Image img, int x, int y, int maxW, int maxH)
-        {
-            float ratioX = (float)maxW / img.Width;
-            float ratioY = (float)maxH / img.Height;
-            float ratio = Math.Min(ratioX, ratioY);
-            ratio = Math.Min(ratio, 1f);
-            int w = (int)Math.Round(img.Width * ratio);
-            int h = (int)Math.Round(img.Height * ratio);
-            return new Rectangle(x, y, w, h);
-        }
-        protected override void OnPaint(PaintEventArgs e)
-        {
-            base.OnPaint(e);
-            if (_overlayImage == null)
-                return;
-            e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-            e.Graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBilinear;
-            e.Graphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
-            var dest = GetScaledRect(_overlayImage, _overlayX, _overlayY, 100, 100);
-            if (_overlayRotationDegrees == 0f)
-            {
-                e.Graphics.DrawImage(_overlayImage, dest);
-                return;
-            }
-            var state = e.Graphics.Save();
-            try
-            {
-                float cx = dest.X + (dest.Width / 2f);
-                float cy = dest.Y + (dest.Height / 2f);
-                e.Graphics.TranslateTransform(cx, cy);
-                e.Graphics.RotateTransform(_overlayRotationDegrees);
-                e.Graphics.TranslateTransform(-cx, -cy);
-                e.Graphics.DrawImage(_overlayImage, dest);
-            }
-            finally
-            {
-                e.Graphics.Restore(state);
-            }
-        }
         protected void OverrideRoundedBoxColours()
         {
             softwareBox.BorderColorOverride = versionLabel.LinkColor;
@@ -824,7 +343,7 @@ namespace PlutoPoint_Installer
         {
             try
             {
-                string url = "https://raw.githubusercontent.com/ProfessorShroom/PlutoPoint-Installer/refs/heads/main/Resources/json/passwordHash.json";
+                string url = "https://raw.githubusercontent.com/ProfessorShroom/PlutoPoint-Installer/refs/heads/main/Data/Passwords.json";
                 using (var client = new HttpClient())
                 {
                     string json = await client.GetStringAsync(url);
@@ -849,7 +368,7 @@ namespace PlutoPoint_Installer
         {
             try
             {
-                string url = "https://raw.githubusercontent.com/ProfessorShroom/PlutoPoint-Installer/refs/heads/main/Resources/json/internetProtocolHash.json";
+                string url = "https://raw.githubusercontent.com/ProfessorShroom/PlutoPoint-Installer/refs/heads/main/Data/IPs.json";
                 using (var client = new HttpClient())
                 {
                     string json = await client.GetStringAsync(url);
@@ -957,7 +476,7 @@ namespace PlutoPoint_Installer
         {
             try
             {
-                string url = "https://raw.githubusercontent.com/professorshroom/PlutoPoint-Installer/main/Resources/json/downloads.json";
+                string url = "https://raw.githubusercontent.com/professorshroom/PlutoPoint-Installer/main/Data/Downloads.json";
                 using (var client = new HttpClient())
                 {
                     string json = await client.GetStringAsync(url);
@@ -983,9 +502,6 @@ namespace PlutoPoint_Installer
         private Uri steamURL => new Uri(urls.steam);
         private Uri hpHotkeySupportURL => new Uri(urls.hpHotkeySupport);
         private Uri vlcMediaPlayerURL => new Uri(urls.vlcMediaPlayer);
-        // Sounds unchanged
-        private SoundPlayer hoverSound;
-        private SoundPlayer clickSound;
         public bool IsClickPlaying { get; private set; }
         public class FileDeletionHelper
         {
@@ -1305,7 +821,6 @@ namespace PlutoPoint_Installer
             {
                 Directory.CreateDirectory(appsDir);
             }
-            SoundPlayer player;
             if (windows10 == "1")
             {
                 if (romsey == "1") { progressBar.Maximum += 1; };
@@ -1328,30 +843,6 @@ namespace PlutoPoint_Installer
             if (steamCheck.Checked) { progressBar.Maximum += 2; }
             if (hpEliteBook == "1") { progressBar.Maximum += 4; }
             if (taskbarCheck.Checked) { progressBar.Maximum += 1;  }
-            if (christmas == "1")
-            {
-                player = new SoundPlayer(Properties.Resources.christmas);
-            }
-            else if (newyear == "1")
-            {
-                player = new SoundPlayer(Properties.Resources.newYearFireworks);
-            }
-            else if (halloween == "1")
-            {
-                player = new SoundPlayer(Properties.Resources.halloween);
-            }
-            else if (valentines == "1")
-            {
-                player = new SoundPlayer(Properties.Resources.valentines);
-            }
-            else if (birthday == "1")
-            {
-                player = new SoundPlayer(Properties.Resources.birthday);
-            }
-            else
-            {
-                player = new SoundPlayer(Properties.Resources.win98shutdown);
-            }
             if (nvidiaAppCheck.Checked & nvidia == "1")
             {
                 AppendLine("🎮 Nvidia GPU has been detected and selected, Nvidia App will be installed.");
@@ -2501,7 +1992,15 @@ namespace PlutoPoint_Installer
                     AppendLine($"⚠️ Failed to empty Recycle Bin: {ex.Message}");
                 }
             }
-            player.Play();
+            var currentEvent = _themeManager.GetCurrentEvent();
+            if (currentEvent != null && currentEvent.PlaySound != null)
+            {
+                currentEvent.PlaySound();
+            }
+            else
+            {
+                AudioEffects.PlayCompleteChime();
+            }
             if (restartCheck.Checked)
             {
                 Process.Start("shutdown", "/r /t 60");

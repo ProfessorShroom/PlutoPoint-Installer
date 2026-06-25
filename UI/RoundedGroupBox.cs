@@ -5,8 +5,8 @@ using System.Windows.Forms;
 
 // Copyright © Charlie Howard 2026 All rights reserved.
 
-namespace PlutoPoint_Installer
-{
+namespace PlutoPoint_Installer.UI
+{ 
     public class RoundedGroupBox : GroupBox
     {
         public int CornerRadius { get; set; } = 3;

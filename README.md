@@ -1,6 +1,6 @@
  ![Arch](https://img.shields.io/badge/Arch-AMD64-blue) ![OS](https://img.shields.io/badge/OS-Windows%207%20|Windows%208(.1)%20|Windows%2010%20|%20Windows%2011-green)
 
-## PlutoPoint Installer Version 6.6.6.2
+## PlutoPoint Installer Version 6.7.0.0
 #### Copyright © Charlie Howard 2026 All rights reserved.
 
 A C# based GUI installer for Windows 10/11, it should also run on Windows 7, 8 & 8.1 but this isn't tested.
@@ -17,11 +17,18 @@ Disables sleep and screen timeout if plugged into AC power during the install an
 
 #### Latest Update
 
+**Update 6.7.0.0 - The Sound/Class Update**
+
+- Moved most classes to their own files for easier editing and maintenance.
+- Reworked the sound system to allow for easier adding of new sounds and to allow for different sounds to be played on different events.
+- Moved from wav files to NAudio for smaller file sizes and better sound quality.
+- Reworked the way the installer checks for holidays and birthdays to allow for easier adding of new holidays and birthdays.
+
+#### Older Updates
+
 **Update 6.6.6.2**
 
 - Added /norestart to LibreOffice installer.
-
-#### Older Updates
 
 **Update 6.6.6.1**
 
@@ -88,9 +95,8 @@ Disables sleep and screen timeout if plugged into AC power during the install an
 
 - Added gradient support to the rounded boxes.
 
-**Update 6.6.0.0**
+**Update 6.6.0.0 - The Gradient Update**
 
-- The Gradient Update.
 - Added gradient background.
 - Changed RichTextBox to a label within a panel to allow transparency.
 - Made all objects transparent.

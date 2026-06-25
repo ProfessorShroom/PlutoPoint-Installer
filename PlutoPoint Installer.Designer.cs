@@ -6,6 +6,7 @@ using System.Runtime.Remoting.Activation;
 using System.Security.Cryptography;
 using System.Security.Policy;
 using System.Windows.Forms;
+using PlutoPoint_Installer.UI;
 
 // Copyright © Charlie Howard 2026 All rights reserved.
 
@@ -67,8 +68,8 @@ namespace PlutoPoint_Installer
             this.testToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.taskbarToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.installerLogPanel = new System.Windows.Forms.Panel();
-            this.test = new PlutoPoint_Installer.GradientButton();
-            this.softwareBox = new PlutoPoint_Installer.RoundedGroupBox();
+            this.test = new PlutoPoint_Installer.UI.GradientButton();
+            this.softwareBox = new PlutoPoint_Installer.UI.RoundedGroupBox();
             this.anyDeskCheck = new System.Windows.Forms.CheckBox();
             this.bitDefenderCheck = new System.Windows.Forms.CheckBox();
             this.vlcMediaPlayerCheck = new System.Windows.Forms.CheckBox();
@@ -78,11 +79,11 @@ namespace PlutoPoint_Installer
             this.googleChromeCheck = new System.Windows.Forms.CheckBox();
             this.libreOfficeCheck = new System.Windows.Forms.CheckBox();
             this.mozillaFirefoxCheck = new System.Windows.Forms.CheckBox();
-            this.restart = new PlutoPoint_Installer.GradientButton();
-            this.close = new PlutoPoint_Installer.GradientButton();
-            this.progressBar = new PlutoPoint_Installer.GradientProgressBar();
-            this.install = new PlutoPoint_Installer.GradientButton();
-            this.utilitiesBox = new PlutoPoint_Installer.RoundedGroupBox();
+            this.restart = new PlutoPoint_Installer.UI.GradientButton();
+            this.close = new PlutoPoint_Installer.UI.GradientButton();
+            this.progressBar = new PlutoPoint_Installer.UI.GradientProgressBar();
+            this.install = new PlutoPoint_Installer.UI.GradientButton();
+            this.utilitiesBox = new PlutoPoint_Installer.UI.RoundedGroupBox();
             this.taskbarCheck = new System.Windows.Forms.CheckBox();
             this.crcCheck = new System.Windows.Forms.CheckBox();
             this.nvidiaAppCheck = new System.Windows.Forms.CheckBox();

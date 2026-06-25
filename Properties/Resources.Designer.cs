@@ -101,39 +101,12 @@ namespace PlutoPoint_Installer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.IO.UnmanagedMemoryStream similar to System.IO.MemoryStream.
-        /// </summary>
-        internal static System.IO.UnmanagedMemoryStream birthday {
-            get {
-                return ResourceManager.GetStream("birthday", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap bitDefender {
             get {
                 object obj = ResourceManager.GetObject("bitDefender", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.IO.UnmanagedMemoryStream similar to System.IO.MemoryStream.
-        /// </summary>
-        internal static System.IO.UnmanagedMemoryStream buttonHover {
-            get {
-                return ResourceManager.GetStream("buttonHover", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.IO.UnmanagedMemoryStream similar to System.IO.MemoryStream.
-        /// </summary>
-        internal static System.IO.UnmanagedMemoryStream christmas {
-            get {
-                return ResourceManager.GetStream("christmas", resourceCulture);
             }
         }
         
@@ -248,15 +221,6 @@ namespace PlutoPoint_Installer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.IO.UnmanagedMemoryStream similar to System.IO.MemoryStream.
-        /// </summary>
-        internal static System.IO.UnmanagedMemoryStream halloween {
-            get {
-                return ResourceManager.GetStream("halloween", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap heart {
@@ -333,15 +297,6 @@ namespace PlutoPoint_Installer.Properties {
             get {
                 object obj = ResourceManager.GetObject("newyear", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.IO.UnmanagedMemoryStream similar to System.IO.MemoryStream.
-        /// </summary>
-        internal static System.IO.UnmanagedMemoryStream newYearFireworks {
-            get {
-                return ResourceManager.GetStream("newYearFireworks", resourceCulture);
             }
         }
         
@@ -586,30 +541,12 @@ namespace PlutoPoint_Installer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.IO.UnmanagedMemoryStream similar to System.IO.MemoryStream.
-        /// </summary>
-        internal static System.IO.UnmanagedMemoryStream valentines {
-            get {
-                return ResourceManager.GetStream("valentines", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap vlcMediaPlayer {
             get {
                 object obj = ResourceManager.GetObject("vlcMediaPlayer", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.IO.UnmanagedMemoryStream similar to System.IO.MemoryStream.
-        /// </summary>
-        internal static System.IO.UnmanagedMemoryStream win98shutdown {
-            get {
-                return ResourceManager.GetStream("win98shutdown", resourceCulture);
             }
         }
     }
