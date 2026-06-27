@@ -6,7 +6,7 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-// Copyright © Charlie Howard 2025 All rights reserved.
+// Copyright © Charlie Howard 2026 All rights reserved.
 
 namespace PlutoPoint_Launcher
 {
