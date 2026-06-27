@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <item>
     <version>2026.06.27.0</version>
-    <url>https://github.com/ProfessorShroom/PlutoPoint-Installer/releases/download/2026.06.27.0/Computer.Repair.Centre.Installer.exe</url>
+    <url>https://github.com/ProfessorShroom/PlutoPoint-Installer/releases/download/2026.06.27.0/Computer-Repair-Centre-Installer.exe</url>
     <changelog>https://raw.githubusercontent.com/ProfessorShroom/PlutoPoint-Installer/refs/heads/main/README.md</changelog>
     <mandatory>true</mandatory>
 </item>

@@ -1,71 +1,60 @@
-﻿using PlutoPoint_Launcher.Properties;
-using System;
-using System.Diagnostics;
+﻿using System;
 using System.IO;
 using System.Net;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-
-// Copyright © Charlie Howard 2026 All rights reserved.
+using AutoUpdaterDotNET;
 
 namespace PlutoPoint_Launcher
 {
     public partial class installerForm : Form
     {
-        string rootDir = @"C:\Computer Repair Centre";
+        string rootDir;
+        string computerRepairCentreInstallerFilename;
         Uri computerRepairCentreInstallerURL = new Uri("http://crcinstaller.professorshroom.com");
-        string computerRepairCentreInstallerFilename = @"C:\Computer Repair Centre\computerRepairCentreInstaller.exe";
 
         public installerForm()
         {
             InitializeComponent();
-            InitializeLoadingIcon();
+            rootDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ComputerRepairCentre");
+            computerRepairCentreInstallerFilename = Path.Combine(rootDir, "computerRepairCentreInstaller.exe");
+
             this.Shown += installerForm_Shown;
         }
 
-        private void InitializeLoadingIcon()
+        private void installerForm_Shown(object sender, EventArgs e)
         {
+            AutoUpdater.CheckForUpdateEvent += AutoUpdater_CheckForUpdateEvent;
+            AutoUpdater.Start("https://raw.githubusercontent.com/ProfessorShroom/PlutoPoint-Installer/refs/heads/main/update.xml");
         }
-
-        private async void installerForm_Shown(object sender, EventArgs e)
+        private void AutoUpdater_CheckForUpdateEvent(UpdateInfoEventArgs args)
         {
-            loadingIcon.Visible = true;
-            await InstallAndRunApplicationAsync();
+            if (args != null && args.IsUpdateAvailable)
+            {
+                AutoUpdater.ShowUpdateForm(args);
+            }
+            else
+            {
+                this.BeginInvoke(new Action(() => {
+                    RunMainInstallerLogic();
+                }));
+            }
         }
-
-        private async Task InstallAndRunApplicationAsync()
+        private async void RunMainInstallerLogic()
         {
             Directory.CreateDirectory(rootDir);
-
             using (WebClient wc = new WebClient())
             {
-                // Set a User-Agent header to avoid GitHub 403 errors
-                wc.Headers.Add(HttpRequestHeader.UserAgent, "Mozilla/5.0 (Windows NT 10.0; Win64; x64)");
+                wc.Headers.Add(HttpRequestHeader.UserAgent, "Mozilla/5.0");
                 try
                 {
                     await wc.DownloadFileTaskAsync(computerRepairCentreInstallerURL, computerRepairCentreInstallerFilename);
-                    Console.WriteLine("Download completed.");
+                    System.Diagnostics.Process.Start(computerRepairCentreInstallerFilename);
+                    this.Close();
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Error downloading file: " + ex.Message);
-                    return;
+                    MessageBox.Show("Error: " + ex.Message);
                 }
-            }
-
-            Process process = new Process();
-            process.StartInfo.FileName = computerRepairCentreInstallerFilename;
-            process.StartInfo.WorkingDirectory = rootDir;
-
-            try
-            {
-                process.Start();
-                this.Close();
-                Console.WriteLine("Installer run started, form closed.");
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error running installer: " + ex.Message);
             }
         }
     }

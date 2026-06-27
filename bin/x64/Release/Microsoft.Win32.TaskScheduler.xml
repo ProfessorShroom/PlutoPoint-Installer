@@ -4196,10 +4196,15 @@
             </param>
             <param name="exceptionOnNotExists">Set this value to false to avoid having an exception called if the task does not exist.</param>
         </member>
-        <member name="M:Microsoft.Win32.TaskScheduler.TaskFolder.EnumerateFolders(System.Predicate{Microsoft.Win32.TaskScheduler.TaskFolder})">
+        <member name="M:Microsoft.Win32.TaskScheduler.TaskFolder.EnumerateFolders(System.Predicate{Microsoft.Win32.TaskScheduler.TaskFolder},System.Boolean)">
             <summary>Returns an enumerable collection of folders that matches a specified filter and recursion option.</summary>
             <param name="filter">An optional predicate used to filter the returned <see cref="T:Microsoft.Win32.TaskScheduler.TaskFolder"/> instances.</param>
-            <returns>An enumerable collection of folders that matches <paramref name="filter"/>.</returns>
+            <param name="recurse">Specifies whether the enumeration should include all subfolders.</param>
+            <returns>
+            <para>An enumerable collection of folders that matches <paramref name="filter"/>.</para>
+            <note type="note">If a filter is supplied and filters out a folder, none of its subfolders will be processed, regardless of them
+            matching the filter.</note>
+            </returns>
         </member>
         <member name="M:Microsoft.Win32.TaskScheduler.TaskFolder.EnumerateTasks(System.Predicate{Microsoft.Win32.TaskScheduler.Task},System.Boolean)">
             <summary>Returns an enumerable collection of tasks that matches a specified filter and recursion option.</summary>

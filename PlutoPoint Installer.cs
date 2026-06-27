@@ -45,6 +45,8 @@ namespace PlutoPoint_Installer
         private const uint SHERB_NOPROGRESSUI = 0x00000002;
         private const uint SHERB_NOSOUND = 0x00000004;
         private string locationLine = "📍 Detecting location...";
+        string rootDir;
+        string programDataDir;
         private Image _overlayImage;
         private Icon _overlayIcon;
         private float _overlayRotationDegrees;
@@ -778,8 +780,9 @@ namespace PlutoPoint_Installer
             }
             progressBar.Maximum = 0;
             // Paths
-            string rootDir = @"C:\Computer Repair Centre";
-            string oemDir = System.IO.Path.Combine(rootDir, "oem");
+            rootDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ComputerRepairCentre");
+            programDataDir = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
+            string oemDir = System.IO.Path.Combine(programDataDir, "Computer Repair Centre\\OEM\\");
             string appsDir = System.IO.Path.Combine(rootDir, "apps");
             string windowsAppsPath = @"C:\Program Files\WindowsApps";
             // Installed apps
@@ -874,7 +877,7 @@ namespace PlutoPoint_Installer
                     }
                     const string oemRegPath = @"SOFTWARE\Microsoft\Windows\CurrentVersion\OEMInformation";
                     const string logoReg = "Logo";
-                    const string logoRegData = @"C:\Computer Repair Centre\oem\computerRepairCentreOEM.bmp";
+                    const string logoRegData = @"C:\ProgramData\Computer Repair Centre\OEM\computerRepairCentreOEM.bmp";
                     const string manufacturerReg = "Manufacturer";
                     const string manufacturerRegData = "Computer Repair Centre";
                     const string supportHoursReg = "SupportHours";
@@ -922,7 +925,7 @@ namespace PlutoPoint_Installer
                     }
                     const string oemRegPath = @"SOFTWARE\Microsoft\Windows\CurrentVersion\OEMInformation";
                     const string logoReg = "Logo";
-                    const string logoRegData = @"C:\Computer Repair Centre\oem\computerRepairCentreOEM.bmp";
+                    const string logoRegData = @"C:\ProgramData\Computer Repair Centre\OEM\computerRepairCentreOEM.bmp";
                     const string manufacturerReg = "Manufacturer";
                     const string manufacturerRegData = "Computer Repair Centre";
                     const string supportHoursReg = "SupportHours";
@@ -970,7 +973,7 @@ namespace PlutoPoint_Installer
                     }
                     const string oemRegPath = @"SOFTWARE\Microsoft\Windows\CurrentVersion\OEMInformation";
                     const string logoReg = "Logo";
-                    const string logoRegData = @"C:\Computer Repair Centre\oem\computerRepairCentreOEM.bmp";
+                    const string logoRegData = @"C:\ProgramData\Computer Repair Centre\OEM\computerRepairCentreOEM.bmp";
                     const string manufacturerReg = "Manufacturer";
                     const string manufacturerRegData = "Computer Repair Centre";
                     const string supportHoursReg = "SupportHours";
