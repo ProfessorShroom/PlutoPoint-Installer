@@ -141,6 +141,22 @@ namespace PlutoPoint_Installer
                 e.Graphics.DrawImage(this.OverlayImage, dest);
             }
         }
+        public void RunSilentCommand(string fileName, string arguments)
+        {
+            ProcessStartInfo startInfo = new ProcessStartInfo
+            {
+                FileName = fileName,
+                Arguments = arguments,
+                CreateNoWindow = true,
+                UseShellExecute = false,
+                WindowStyle = ProcessWindowStyle.Hidden
+            };
+
+            using (Process process = Process.Start(startInfo))
+            {
+                process.WaitForExit();
+            }
+        }
         public void AdjustInstallerTextBoxSizeForOverlay()
         {
             bool hasOverlayImage = (_overlayImage != null);
@@ -855,8 +871,8 @@ namespace PlutoPoint_Installer
             {
                 AppendLine("📌 Disable sleep on AC power is selected.");
                 AppendLine("🔄 Disabling sleep and screen timeout while on AC power...");
-                Process.Start("powercfg", "/change monitor-timeout-ac 0");
-                Process.Start("powercfg", "/change standby-timeout-ac 0");
+                RunSilentCommand("powercfg", "/change standby-timeout-ac 0");
+                RunSilentCommand("powercfg", "/change monitor-timeout-ac 0");
                 progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
             }
             else
@@ -1973,8 +1989,8 @@ namespace PlutoPoint_Installer
             else
             {
                 AppendLine("✅ Re-enabling sleep and screen timeout on AC power...");
-                Process.Start("powercfg", "/change monitor-timeout-ac 10");
-                Process.Start("powercfg", "/change standby-timeout-ac 20");
+                RunSilentCommand("powercfg", "/change monitor-timeout-ac 10");
+                RunSilentCommand("powercfg", "/change standby-timeout-ac 20");
                 progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
             }
             AppendLine("✅ Cleaning up installation files...");
