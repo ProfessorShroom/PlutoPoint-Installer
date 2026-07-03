@@ -827,7 +827,7 @@ namespace PlutoPoint_Installer
             string discordAppPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"Discord\Update.exe");
             // Desktop
             string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-            string launcherPath = System.IO.Path.Combine(desktopPath, @"Computer Repair Centre Installer Launcher.exe");
+            string launcherPath = System.IO.Path.Combine(desktopPath, @"Computer Repair Centre Installer.exe");
             if (!Directory.Exists(rootDir))
             {
                 Directory.CreateDirectory(rootDir);
@@ -1094,7 +1094,8 @@ namespace PlutoPoint_Installer
             if (anyDeskCheck.Checked)
             {
                 AppendLine("📌 AnyDesk is selected.");
-                if (System.IO.File.Exists(@"C:\Program Files (x86)\AnyDeskMSI\AnyDeskMSI.exe"))
+                if (System.IO.File.Exists(@"C:\Program Files (x86)\AnyDeskMSI\AnyDeskMSI
+"))
                 {
                     AppendLine("✅ AnyDesk is already installed, skipping installation.");
                     progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
