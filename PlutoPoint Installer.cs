@@ -873,6 +873,8 @@ namespace PlutoPoint_Installer
                 AppendLine("🔄 Disabling sleep and screen timeout while on AC power...");
                 RunSilentCommand("powercfg", "/change standby-timeout-ac 0");
                 RunSilentCommand("powercfg", "/change monitor-timeout-ac 0");
+                AppendLine("🔄 Changing power button behavior to shutdown...");
+                RunSilentCommand("powercfg", "/setacvalueindex SCHEME_CURRENT 4f971e89-eebd-4455-a8de-9e59040e7347 7648efa3-dd9c-4e3e-b566-50f929386280 3");
                 progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
             }
             else
