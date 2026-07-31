@@ -83,7 +83,6 @@ namespace PlutoPoint_Installer
             // Background tasks only
             _initialiseUrlsTask = InitialiseUrlsAsync();
             _checkIpTask = CheckIPAsync();
-            CheckEliteBook();
             // Info checks
             PrintVersion();
             CheckWindowsVersion();
@@ -218,7 +217,6 @@ namespace PlutoPoint_Installer
             }
         }
         // Set strings
-        string hpEliteBook = null;
         string safeLocation = null;
         string location = null;
         string romsey = null;
@@ -292,21 +290,6 @@ namespace PlutoPoint_Installer
         {
             if (_checkIpTask != null)
                 await _checkIpTask;
-        }
-        private void CheckEliteBook()
-        {
-            using (ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT Model FROM Win32_ComputerSystem"))
-            {
-                foreach (ManagementObject computerSystem in searcher.Get())
-                {
-                    string model = computerSystem["Model"]?.ToString() ?? "";
-                    if (model.Contains("EliteBook"))
-                    {
-                        hpEliteBook = "1";
-                        break;
-                    }
-                }
-            }
         }
         private void ApplyButtonTheme(Color backColor, Color foreColor)
         {
@@ -478,7 +461,6 @@ namespace PlutoPoint_Installer
             public string mozillaThunderbird { get; set; }
             public string nanaZip { get; set; }
             public string steam { get; set; }
-            public string hpHotkeySupport { get; set; }
             public string vlcMediaPlayer { get; set; }
         }
         private DownloadUrls urls;
@@ -518,7 +500,6 @@ namespace PlutoPoint_Installer
         private Uri mozillaThunderbirdURL => new Uri(urls.mozillaThunderbird);
         private Uri nanaZipURL => new Uri(urls.nanaZip);
         private Uri steamURL => new Uri(urls.steam);
-        private Uri hpHotkeySupportURL => new Uri(urls.hpHotkeySupport);
         private Uri vlcMediaPlayerURL => new Uri(urls.vlcMediaPlayer);
         public bool IsClickPlaying { get; private set; }
         public class FileDeletionHelper
@@ -819,7 +800,6 @@ namespace PlutoPoint_Installer
             string mozillaThunderbirdFilename = System.IO.Path.Combine(appsDir, "mozillaThunderbird.msi");
             string nanaZipFilename = System.IO.Path.Combine(appsDir, "nanaZip.msixbundle");
             string steamFilename = System.IO.Path.Combine(appsDir, "steam.exe");
-            string hpHotkeySupportFilename = System.IO.Path.Combine(appsDir, "hpHotkeySupport.zip");
             string vlcMediaPlayerFilename = System.IO.Path.Combine(appsDir, "vlcMediaPlayer.msi");
             string nvidiaAppFilename = System.IO.Path.Combine(appsDir, "nvidiaApp.exe");
             // Other apps
@@ -860,7 +840,6 @@ namespace PlutoPoint_Installer
             if (mozillaFirefoxCheck.Checked) { progressBar.Maximum += 2; }
             if (mozillaThunderbirdCheck.Checked) { progressBar.Maximum += 2; }
             if (steamCheck.Checked) { progressBar.Maximum += 2; }
-            if (hpEliteBook == "1") { progressBar.Maximum += 4; }
             if (taskbarCheck.Checked) { progressBar.Maximum += 1;  }
             if (nvidiaAppCheck.Checked & nvidia == "1")
             {
@@ -1669,160 +1648,6 @@ namespace PlutoPoint_Installer
                     AppendLine("✅ Completed installation of VLC Media Player.");
                     progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
                 }
-            }
-            if (hpEliteBook == "1")
-            {
-                AppendLine("💻 The installer is being run on an HP EliteBook.");
-                AppendLine("🔄 Downloading HP Hotkey Support...");
-                using (WebClient wc = new WebClient())
-                {
-                    wc.DownloadFileCompleted += wc_progressBarStep;
-                    await wc.DownloadFileTaskAsync(hpHotkeySupportURL, hpHotkeySupportFilename);
-                }
-                AppendLine("🔄 Checking if NanaZip is installed...");                
-                try
-                {
-                    var files = Directory.GetFiles(windowsAppsPath, nanaZipExe, SearchOption.AllDirectories);
-                    if (files.Length > 0)
-                    {
-                        nanaZipPath = files[0];
-                        AppendLine($"✅ NanaZip is already installed.");
-                    }
-                }
-                catch (UnauthorizedAccessException)
-                {
-                    AppendLine("⚠️ Access denied to WindowsApps. Try running as Administrator.");
-                }
-                if (string.IsNullOrEmpty(nanaZipPath))
-                {
-                    AppendLine("⚠️ NanaZip is not installed and is required for extraction.");
-                    AppendLine("🔄 Downloading NanaZip...");
-                    using (WebClient wc = new WebClient())
-                    {
-                        await wc.DownloadFileTaskAsync(nanaZipURL, nanaZipFilename);
-                    }
-                    AppendLine("📦 Installing NanaZip...");
-                    Process nanaZipInstallProcess = Process.Start(new ProcessStartInfo
-                    {
-                        FileName = "powershell",
-                        Arguments = $"-Command Add-AppxPackage -Path '{nanaZipFilename}'",
-                        UseShellExecute = false,
-                        RedirectStandardOutput = true,
-                        RedirectStandardError = true,
-                        CreateNoWindow = true
-                    });
-                    if (nanaZipInstallProcess != null)
-                    {
-                        await Task.Run(() => nanaZipInstallProcess.WaitForExit());
-                    }
-                    AppendLine("✅ Completed installation of NanaZip.");
-                    try
-                    {
-                        var files = Directory.GetFiles(windowsAppsPath, nanaZipExe, SearchOption.AllDirectories);
-                        if (files.Length > 0)
-                        {
-                            nanaZipPath = files[0];
-                            AppendLine($"✅ NanaZip is already installed.");
-                        }
-                        else
-                        {
-                            AppendLine("❌ Failed to find NanaZip after installation.");
-                            return;
-                        }
-                    }
-                    catch (UnauthorizedAccessException)
-                    {
-                        AppendLine("⚠️ Access denied while searching for NanaZip after installation.");
-                        return;
-                    }
-                }
-                AppendLine("📂 Extracting HP Hotkey Support...");
-                string hpHotkeySupportExtractPath = @"C:\Computer Repair Centre\apps\hpHotkeySupport";
-                async Task RunNanaZipExtractionHPAsync()
-                {
-                    ProcessStartInfo processStartInfo = new ProcessStartInfo
-                    {
-                        FileName = nanaZipPath,
-                        Arguments = $"x \"{hpHotkeySupportFilename}\" -o\"{hpHotkeySupportExtractPath}\" -aoa",
-                        UseShellExecute = false,
-                        RedirectStandardOutput = true,
-                        RedirectStandardError = true,
-                        CreateNoWindow = true
-                    };
-                    try
-                    {
-                        using (Process process = new Process { StartInfo = processStartInfo })
-                        {
-                            process.Start();
-                            Task<string> outputTask = process.StandardOutput.ReadToEndAsync();
-                            Task<string> errorTask = process.StandardError.ReadToEndAsync();
-                            await Task.Run(() => process.WaitForExit());
-                            string output = await outputTask;
-                            string errors = await errorTask;
-                            if (!string.IsNullOrEmpty(output))
-                            {
-                                AppendLine(output);
-                            }
-                            if (!string.IsNullOrEmpty(errors))
-                            {
-                                AppendLine("❌ Errors: " + errors);
-                            }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        AppendLine("❌ Exception: " + ex.Message);
-                    }
-                }
-                if (!Directory.Exists(hpHotkeySupportExtractPath))
-                {
-                    Directory.CreateDirectory(hpHotkeySupportExtractPath);
-                }
-                await RunNanaZipExtractionHPAsync();
-                AppendLine("✅ Completed extraction of HP Hotkey Support.");
-                progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
-                AppendLine("📦 Installing HP Hotkey Support...");
-                async Task InstallHPHotkeySupport()
-                {
-                    await StartProcessAsync(@"C:\Computer Repair Centre\apps\hpHotkeySupport\SP103615\src\install.cmd");
-                }
-                async Task InstallHPFramework()
-                {
-                    await StartProcessAsync(@"C:\Computer Repair Centre\SP103615\src\install.cmd");
-                }
-                async Task StartProcessAsync(string filePath)
-                {
-                    try
-                    {
-                        ProcessStartInfo processInfo = new ProcessStartInfo
-                        {
-                            FileName = filePath,
-                            UseShellExecute = false
-                        };
-                        using (Process process = Process.Start(processInfo))
-                        {
-                            if (process != null)
-                            {
-                                await Task.Run(() => process.WaitForExit());
-                                AppendLine($"✅ Process completed successfully for {filePath}.");
-                            }
-                            else
-                            {
-                                AppendLine($"❌ Failed to start the process: {filePath}.");
-                            }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        AppendLine("❌ An error occurred: " + ex.Message);
-                    }
-                }
-                await InstallHPHotkeySupport();
-                progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
-                AppendLine("📦 Installing HP Framework...");
-                await InstallHPFramework();
-                progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
-                AppendLine("✅ Completed installation of HP Hotkey Support.");
             }
             using (RegistryKey key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion"))
             {
