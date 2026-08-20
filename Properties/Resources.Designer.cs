@@ -73,16 +73,6 @@ namespace PlutoPoint_Installer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap amd {
-            get {
-                object obj = ResourceManager.GetObject("amd", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         internal static System.Drawing.Bitmap anyDesk {
             get {
                 object obj = ResourceManager.GetObject("anyDesk", resourceCulture);
@@ -246,16 +236,6 @@ namespace PlutoPoint_Installer.Properties {
         internal static System.Drawing.Bitmap libreOffice {
             get {
                 object obj = ResourceManager.GetObject("libreOffice", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap microsoftOffice2007 {
-            get {
-                object obj = ResourceManager.GetObject("microsoftOffice2007", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -526,6 +506,16 @@ namespace PlutoPoint_Installer.Properties {
         internal static System.Drawing.Bitmap taskbar {
             get {
                 object obj = ResourceManager.GetObject("taskbar", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap taskbarPin {
+            get {
+                object obj = ResourceManager.GetObject("taskbarPin", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

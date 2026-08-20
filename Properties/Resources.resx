@@ -121,9 +121,6 @@
   <data name="aiRemoval" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\aiRemoval.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="amd" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\icons\amd.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="anyDesk" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\anyDesk.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -174,9 +171,6 @@
   </data>
   <data name="libreOffice" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\libreOffice.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="microsoftOffice2007" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\icons\microsoftOffice2007.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="mozillaFirefox" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\mozillaFirefox.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -258,6 +252,9 @@
   </data>
   <data name="taskbar" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\taskbar.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="taskbarPin" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons\taskbarPin.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Ubuntu-Regular" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\fonts\Ubuntu-Regular.ttf;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>

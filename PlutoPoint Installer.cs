@@ -60,7 +60,7 @@ namespace PlutoPoint_Installer
                 this.Invalidate();
             };
             ApplyFonts();
-            this.AutoScaleMode = AutoScaleMode.Dpi;            
+            this.AutoScaleMode = AutoScaleMode.Dpi;
             // Shutdown/restart checks
             shutdownCheck.CheckedChanged += ShutdownCheck_CheckedChanged;
             restartCheck.CheckedChanged += RestartCheck_CheckedChanged;
@@ -108,7 +108,7 @@ namespace PlutoPoint_Installer
             install.Font = Program.Ubuntu(12, FontStyle.Regular);
             utilitiesBox.Font = Program.Ubuntu(8.25f, FontStyle.Regular);
         }
-            protected override void OnLoad(EventArgs e)
+        protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
 
@@ -745,6 +745,90 @@ namespace PlutoPoint_Installer
 
             return null;
         }
+        private string ResolveShortcutPath(string shortcutFileName)
+        {
+            string[] searchDirs =
+            {
+                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonStartMenu), "Programs"),
+                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.StartMenu), "Programs")
+            };
+
+            foreach (var dir in searchDirs)
+            {
+                try
+                {
+                    if (!Directory.Exists(dir)) continue;
+                    var matches = Directory.GetFiles(dir, shortcutFileName, SearchOption.AllDirectories);
+                    if (matches.Length > 0)
+                        return matches[0];
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error searching {dir} for {shortcutFileName}: {ex.Message}");
+                }
+            }
+            return null;
+        }
+
+        private bool AddPinEntry(StringBuilder sb, bool wasChecked, string shortcutFileName, string label)
+        {
+            if (!wasChecked)
+                return false;
+
+            string lnkPath = ResolveShortcutPath(shortcutFileName);
+            if (lnkPath == null)
+            {
+                AppendLine($"⚠️ Could not find {label} shortcut to pin, skipping.");
+                return false;
+            }
+
+            sb.AppendLine($"        <taskbar:DesktopApp DesktopApplicationLinkPath=\"{lnkPath}\" />");
+            return true;
+        }
+
+        private void ApplyTaskbarPinLayout()
+        {
+            var pins = new StringBuilder();
+            int pinnedCount = 0;
+
+            if (AddPinEntry(pins, googleChromeCheck.Checked, "Google Chrome.lnk", "Google Chrome")) pinnedCount++;
+            if (AddPinEntry(pins, mozillaFirefoxCheck.Checked, "Firefox.lnk", "Mozilla Firefox")) pinnedCount++;
+            if (AddPinEntry(pins, mozillaThunderbirdCheck.Checked, "Thunderbird.lnk", "Mozilla Thunderbird")) pinnedCount++;
+            if (AddPinEntry(pins, libreOfficeCheck.Checked, "LibreOffice Writer.lnk", "LibreOffice Writer")) pinnedCount++;
+            if (AddPinEntry(pins, libreOfficeCheck.Checked, "LibreOffice Calc.lnk", "LibreOffice Calc")) pinnedCount++;
+            if (pinnedCount == 0)
+            {
+                AppendLine("⚠️ No apps available to pin, skipping taskbar layout.");
+                return;
+            }
+            string xml = $@"<?xml version=""1.0"" encoding=""utf-8""?>
+<LayoutModificationTemplate
+    xmlns=""http://schemas.microsoft.com/Start/2014/LayoutModification""
+    xmlns:defaultlayout=""http://schemas.microsoft.com/Start/2014/FullDefaultLayout""
+    xmlns:taskbar=""http://schemas.microsoft.com/Start/2014/TaskbarLayout""
+    Version=""1"">
+  <CustomTaskbarLayoutCollection PinListPlacement=""Replace"">
+    <defaultlayout:TaskbarLayout>
+      <taskbar:TaskbarPinList>
+{pins}      </taskbar:TaskbarPinList>
+    </defaultlayout:TaskbarLayout>
+  </CustomTaskbarLayoutCollection>
+</LayoutModificationTemplate>";
+
+            string shellDir = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                @"Microsoft\Windows\Shell");
+            Directory.CreateDirectory(shellDir);
+            string layoutPath = Path.Combine(shellDir, "LayoutModification.xml");
+            File.WriteAllText(layoutPath, xml);
+            using (RegistryKey key = Registry.CurrentUser.OpenSubKey(
+                @"Software\Microsoft\Windows\CurrentVersion\Explorer", writable: true))
+            {
+                key?.DeleteSubKeyTree("Taskband", throwOnMissingSubKey: false);
+            }
+
+            AppendLine($"✅ Taskbar layout built with {pinnedCount} app(s), will apply after next reboot or sign-in.");
+        }
         private async void install_Click(object sender, EventArgs e)
         {
             if (safeLocation == "0")
@@ -822,8 +906,10 @@ namespace PlutoPoint_Installer
             }
             if (windows10 == "1")
             {
-                if (romsey == "1") { progressBar.Maximum += 1; };
-                if (highcliffe == "1") { progressBar.Maximum += 1; };
+                if (romsey == "1") { progressBar.Maximum += 1; }
+                ;
+                if (highcliffe == "1") { progressBar.Maximum += 1; }
+                ;
             }
             if (windows11 == "1") { progressBar.Maximum += 7; }
             if (powerCheck.Checked) { progressBar.Maximum += 1; }
@@ -840,7 +926,8 @@ namespace PlutoPoint_Installer
             if (mozillaFirefoxCheck.Checked) { progressBar.Maximum += 2; }
             if (mozillaThunderbirdCheck.Checked) { progressBar.Maximum += 2; }
             if (steamCheck.Checked) { progressBar.Maximum += 2; }
-            if (taskbarCheck.Checked) { progressBar.Maximum += 1;  }
+            if (taskbarCheck.Checked) { progressBar.Maximum += 1; }
+            if (pinAppsCheck.Checked) { progressBar.Maximum += 1; }
             if (nvidiaAppCheck.Checked & nvidia == "1")
             {
                 AppendLine("🎮 Nvidia GPU has been detected and selected, Nvidia App will be installed.");
@@ -1295,7 +1382,7 @@ namespace PlutoPoint_Installer
                     catch (WebException ex)
                     {
                         AppendLine("❌ Failed to download Google Chrome: " + ex.Message);
-                    } 
+                    }
                     AppendLine("📦 Installing Google Chrome...");
                     try
                     {
@@ -1649,6 +1736,20 @@ namespace PlutoPoint_Installer
                     progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
                 }
             }
+            if (pinAppsCheck.Checked)
+            {
+                AppendLine("📌 Pin apps to taskbar is selected.");
+                AppendLine("✅ Building taskbar layout from installed apps...");
+                try
+                {
+                    ApplyTaskbarPinLayout();
+                }
+                catch (Exception ex)
+                {
+                    AppendLine("❌ Failed to set taskbar layout: " + ex.Message);
+                }
+                progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
+            }
             using (RegistryKey key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion"))
             {
                 if (key != null)
@@ -1892,7 +1993,7 @@ namespace PlutoPoint_Installer
         private async void restart_Click(object sender, EventArgs e)
         {
             await Task.Delay(325);
-            Process.Start("shutdown","/r /t 1");
+            Process.Start("shutdown", "/r /t 1");
         }
         private async void shutdown_Click(object sender, EventArgs e)
         {
