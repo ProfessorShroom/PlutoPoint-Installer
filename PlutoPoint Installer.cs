@@ -769,8 +769,21 @@ namespace PlutoPoint_Installer
             }
             return null;
         }
-
-        private bool AddPinEntry(StringBuilder sb, bool wasChecked, string shortcutFileName, string label)
+        private void CopyShortcutToDesktop(string sourceLnkPath, string label)
+        {
+            try
+            {
+                string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+                string destPath = Path.Combine(desktopPath, Path.GetFileName(sourceLnkPath));
+                File.Copy(sourceLnkPath, destPath, overwrite: true);
+                AppendLine($"✅ Added {label} shortcut to Desktop.");
+            }
+            catch (Exception ex)
+            {
+                AppendLine($"⚠️ Failed to add {label} shortcut to Desktop: {ex.Message}");
+            }
+        }
+        private bool AddPinEntry(StringBuilder sb, bool wasChecked, string shortcutFileName, string label, bool alsoAddToDesktop = false)
         {
             if (!wasChecked)
                 return false;
@@ -783,9 +796,12 @@ namespace PlutoPoint_Installer
             }
 
             sb.AppendLine($"        <taskbar:DesktopApp DesktopApplicationLinkPath=\"{lnkPath}\" />");
+
+            if (alsoAddToDesktop)
+                CopyShortcutToDesktop(lnkPath, label);
+
             return true;
         }
-
         private void ApplyTaskbarPinLayout()
         {
             var pins = new StringBuilder();
@@ -794,8 +810,8 @@ namespace PlutoPoint_Installer
             if (AddPinEntry(pins, googleChromeCheck.Checked, "Google Chrome.lnk", "Google Chrome")) pinnedCount++;
             if (AddPinEntry(pins, mozillaFirefoxCheck.Checked, "Firefox.lnk", "Mozilla Firefox")) pinnedCount++;
             if (AddPinEntry(pins, mozillaThunderbirdCheck.Checked, "Thunderbird.lnk", "Mozilla Thunderbird")) pinnedCount++;
-            if (AddPinEntry(pins, libreOfficeCheck.Checked, "LibreOffice Writer.lnk", "LibreOffice Writer")) pinnedCount++;
-            if (AddPinEntry(pins, libreOfficeCheck.Checked, "LibreOffice Calc.lnk", "LibreOffice Calc")) pinnedCount++;
+            if (AddPinEntry(pins, libreOfficeCheck.Checked, "LibreOffice Writer.lnk", "LibreOffice Writer", alsoAddToDesktop: true)) pinnedCount++;
+            if (AddPinEntry(pins, libreOfficeCheck.Checked, "LibreOffice Calc.lnk", "LibreOffice Calc", alsoAddToDesktop: true)) pinnedCount++;
             if (AddPinEntry(pins, true, "File Explorer.lnk", "File Explorer")) pinnedCount++;
             if (pinnedCount == 0)
             {
@@ -827,7 +843,6 @@ namespace PlutoPoint_Installer
             {
                 key?.DeleteSubKeyTree("Taskband", throwOnMissingSubKey: false);
             }
-
             AppendLine($"✅ Taskbar layout built with {pinnedCount} app(s), will apply after next reboot or sign-in.");
         }
         private async void install_Click(object sender, EventArgs e)
