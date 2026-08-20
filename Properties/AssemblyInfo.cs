@@ -15,6 +15,6 @@ using PlutoPoint_Installer.Attributes;
 [assembly: AssemblyCulture("")]
 [assembly: ComVisible(false)]
 [assembly: Guid("be5f5489-1412-42da-8d0c-4022fdcb8446")]
-[assembly: AssemblyVersion("6.7.4.2")]
-[assembly: AssemblyFileVersion("6.7.4.2")]
+[assembly: AssemblyVersion("6.7.4.3")]
+[assembly: AssemblyFileVersion("6.7.4.3")]
 [assembly: AssemblyUpdateDate("20/08/2026")]

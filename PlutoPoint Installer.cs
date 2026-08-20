@@ -802,6 +802,15 @@ namespace PlutoPoint_Installer
 
             return true;
         }
+        private void ScheduleLayoutFileCleanup(string layoutPath)
+        {
+            string cmd = $"cmd.exe /c ping -n 16 127.0.0.1 >nul & del \"{layoutPath}\"";
+            using (RegistryKey key = Registry.CurrentUser.OpenSubKey(
+                @"Software\Microsoft\Windows\CurrentVersion\RunOnce", writable: true))
+            {
+                key?.SetValue("PlutoPointTaskbarLayoutCleanup", cmd, RegistryValueKind.String);
+            }
+        }
         private void ApplyTaskbarPinLayout()
         {
             var pins = new StringBuilder();
@@ -843,6 +852,7 @@ namespace PlutoPoint_Installer
             {
                 key?.DeleteSubKeyTree("Taskband", throwOnMissingSubKey: false);
             }
+            ScheduleLayoutFileCleanup(layoutPath);
             AppendLine($"✅ Taskbar layout built with {pinnedCount} app(s), will apply after next reboot or sign-in.");
         }
         private async void install_Click(object sender, EventArgs e)
