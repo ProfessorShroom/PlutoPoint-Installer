@@ -796,6 +796,7 @@ namespace PlutoPoint_Installer
             if (AddPinEntry(pins, mozillaThunderbirdCheck.Checked, "Thunderbird.lnk", "Mozilla Thunderbird")) pinnedCount++;
             if (AddPinEntry(pins, libreOfficeCheck.Checked, "LibreOffice Writer.lnk", "LibreOffice Writer")) pinnedCount++;
             if (AddPinEntry(pins, libreOfficeCheck.Checked, "LibreOffice Calc.lnk", "LibreOffice Calc")) pinnedCount++;
+            if (AddPinEntry(pins, true, "File Explorer.lnk", "File Explorer")) pinnedCount++;
             if (pinnedCount == 0)
             {
                 AppendLine("⚠️ No apps available to pin, skipping taskbar layout.");
