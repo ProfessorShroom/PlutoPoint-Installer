@@ -89,7 +89,6 @@ namespace PlutoPoint_Installer
             CheckForIntelHardware();
             CheckforAMDHardware();
             CheckForNvidiaGPU();
-            GetLibreOfficeVersion();
             AppendLine(locationLine);
             _ = PrintDayAsync();
             Version version = Assembly.GetExecutingAssembly().GetName().Version;
@@ -336,10 +335,6 @@ namespace PlutoPoint_Installer
                 return BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
             }
         }
-        public class PasswordHashes
-        {
-            public List<string> allowedHashes { get; set; }
-        }
         private async Task<PasswordHashes> GetPasswordHashesAsync()
         {
             try
@@ -357,13 +352,6 @@ namespace PlutoPoint_Installer
                 MessageBox.Show($"Failed to load hashes: {ex.Message}");
                 return null;
             }
-        }
-        public class LocationHashes
-        {
-            public string romsey { get; set; }
-            public string chandlersFord { get; set; }
-            public string highcliffe { get; set; }
-            public string charlieHome { get; set; }
         }
         private async Task<LocationHashes> GetLocationHashesAsync()
         {
@@ -449,20 +437,6 @@ namespace PlutoPoint_Installer
             }
             locationLabel.Text = "Current location: " + location;
         }
-        public class DownloadUrls
-        {
-            public string crcOEM { get; set; }
-            public string anyDesk { get; set; }
-            public string bingWallpapers { get; set; }
-            public string bitDefender { get; set; }
-            public string discord { get; set; }
-            public string googleChrome { get; set; }
-            public string mozillaFirefox { get; set; }
-            public string mozillaThunderbird { get; set; }
-            public string nanaZip { get; set; }
-            public string steam { get; set; }
-            public string vlcMediaPlayer { get; set; }
-        }
         private DownloadUrls urls;
         private async Task InitialiseUrlsAsync()
         {
@@ -502,52 +476,6 @@ namespace PlutoPoint_Installer
         private Uri steamURL => new Uri(urls.steam);
         private Uri vlcMediaPlayerURL => new Uri(urls.vlcMediaPlayer);
         public bool IsClickPlaying { get; private set; }
-        public class FileDeletionHelper
-        {
-            public async Task DeleteFilesAndDirectoryAsync(string appsDir, string launcherPath)
-            {
-                var deleteFileTasks = new List<Task>();
-                foreach (var file in Directory.EnumerateFiles(appsDir))
-                {
-                    deleteFileTasks.Add(Task.Run(() =>
-                    {
-                        try
-                        {
-                            System.IO.File.Delete(file);
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine($"Error deleting file {file}: {ex.Message}");
-                        }
-                    }));
-                }
-                await Task.WhenAll(deleteFileTasks);
-                try
-                {
-                    await Task.Run(() => Directory.Delete(appsDir, true));
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Error deleting directory {appsDir}: {ex.Message}");
-                }
-                if (System.IO.File.Exists(launcherPath))
-                {
-                    try
-                    {
-                        await Task.Run(() => System.IO.File.Delete(launcherPath));
-                        Console.WriteLine("File deleted successfully.");
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"Error deleting file: {ex.Message}");
-                    }
-                }
-                else
-                {
-                    Console.WriteLine("File does not exist.");
-                }
-            }
-        }
         private void CheckWindowsVersion()
         {
             try
@@ -804,7 +732,18 @@ namespace PlutoPoint_Installer
         }
         private void ScheduleLayoutFileCleanup(string layoutPath)
         {
-            string cmd = $"cmd.exe /c ping -n 16 127.0.0.1 >nul & del \"{layoutPath}\"";
+            string vbsPath = Path.Combine(Path.GetTempPath(), "PlutoPointTaskbarCleanup.vbs");
+
+            string vbsContent =
+                "Set objShell = CreateObject(\"WScript.Shell\")\r\n" +
+                $"objShell.Run \"cmd.exe /c ping -n 16 127.0.0.1 >nul & del \"\"{layoutPath}\"\"\", 0, True\r\n" +
+                "Set objFSO = CreateObject(\"Scripting.FileSystemObject\")\r\n" +
+                "On Error Resume Next\r\n" +
+                "objFSO.DeleteFile WScript.ScriptFullName, True\r\n";
+
+            File.WriteAllText(vbsPath, vbsContent);
+
+            string cmd = $"wscript.exe //B //Nologo \"{vbsPath}\"";
             using (RegistryKey key = Registry.CurrentUser.OpenSubKey(
                 @"Software\Microsoft\Windows\CurrentVersion\RunOnce", writable: true))
             {
@@ -855,8 +794,74 @@ namespace PlutoPoint_Installer
             ScheduleLayoutFileCleanup(layoutPath);
             AppendLine($"✅ Taskbar layout built with {pinnedCount} app(s), will apply after next reboot or sign-in.");
         }
+        private void SetOemInfo(string hours, string phone, string url)
+        {
+            const string oemRegPath = @"SOFTWARE\Microsoft\Windows\CurrentVersion\OEMInformation";
+            const string logoRegData = @"C:\ProgramData\Computer Repair Centre\OEM\computerRepairCentreOEM.bmp";
+            const string manufacturerRegData = "Computer Repair Centre";
+
+            using (RegistryKey registryKey = Registry.LocalMachine.CreateSubKey(oemRegPath, writable: true))
+            {
+                registryKey.SetValue("Logo", logoRegData, RegistryValueKind.String);
+                registryKey.SetValue("Manufacturer", manufacturerRegData, RegistryValueKind.String);
+                registryKey.SetValue("SupportHours", hours, RegistryValueKind.String);
+                registryKey.SetValue("SupportPhone", phone, RegistryValueKind.String);
+                registryKey.SetValue("SupportURL", url, RegistryValueKind.String);
+                Console.WriteLine($"Set OEM info in '{oemRegPath}': hours='{hours}', phone='{phone}', url='{url}'.");
+            }
+        }
+        private async Task DownloadWithRetryAsync(Uri url, string destinationPath, int maxAttempts = 3)
+        {
+            for (int attempt = 1; attempt <= maxAttempts; attempt++)
+            {
+                try
+                {
+                    using (WebClient wc = new WebClient())
+                    {
+                        wc.DownloadFileCompleted += wc_progressBarStep;
+                        await wc.DownloadFileTaskAsync(url, destinationPath);
+                    }
+                    return;
+                }
+                catch (Exception ex) when (attempt < maxAttempts)
+                {
+                    AppendLine($"⚠️ Download failed (attempt {attempt}/{maxAttempts}): {ex.Message}. Retrying...");
+                    await Task.Delay(1500 * attempt);
+                }
+            }
+        }
+        private List<(string Name, string Status)> installResults;
+
+        private void TrackResult(string name, string status)
+        {
+            installResults?.Add((name, status));
+        }
+
+        private void AppendInstallSummary()
+        {
+            if (installResults == null || installResults.Count == 0)
+                return;
+
+            int total = installResults.Count;
+            int succeeded = installResults.Count(r => r.Status == "Installed" || r.Status == "Already Installed" || r.Status == "Applied");
+            int skipped = installResults.Count(r => r.Status == "Skipped");
+            int failed = installResults.Count(r => r.Status == "Failed");
+
+            AppendLine("");
+            AppendLine("📋 Summary:");
+            AppendLine($"✅ {succeeded}/{total} succeeded");
+            if (skipped > 0) AppendLine($"⏭️ {skipped} skipped");
+            if (failed > 0)
+            {
+                AppendLine($"❌ {failed} failed:");
+                foreach (var r in installResults.Where(r => r.Status == "Failed"))
+                    AppendLine($"   • {r.Name}");
+            }
+        }
+
         private async void install_Click(object sender, EventArgs e)
         {
+            installResults = new List<(string, string)>();
             if (safeLocation == "0")
             {
                 var hashes = await GetPasswordHashesAsync();
@@ -980,146 +985,37 @@ namespace PlutoPoint_Installer
                 if (romsey == "1")
                 {
                     AppendLine("📦 Installing Romsey Computer Repair Centre OEM information...");
-                    using (WebClient wc = new WebClient())
-                    {
-                        wc.DownloadFileCompleted += wc_progressBarStep;
-                        await wc.DownloadFileTaskAsync(crcOEMURL, crcOEMFilename);
-                    }
-                    const string oemRegPath = @"SOFTWARE\Microsoft\Windows\CurrentVersion\OEMInformation";
-                    const string logoReg = "Logo";
-                    const string logoRegData = @"C:\ProgramData\Computer Repair Centre\OEM\computerRepairCentreOEM.bmp";
-                    const string manufacturerReg = "Manufacturer";
-                    const string manufacturerRegData = "Computer Repair Centre";
-                    const string supportHoursReg = "SupportHours";
-                    const string supportHoursData = "Mon-Fri 9:15am-5:00pm - Sat 9:15am-4:00pm";
-                    const string supportPhoneReg = "SupportPhone";
-                    const string supportPhoneData = "01794 517142";
-                    const string supportURLReg = "SupportURL";
-                    const string supportURLRegData = "https://www.thecomputerrepaircentre.co.uk/romsey";
-                    using (RegistryKey registryKey = Registry.LocalMachine.CreateSubKey(oemRegPath, writable: true))
-                    {
-                    }
-                    using (RegistryKey registryKey = Registry.LocalMachine.OpenSubKey(oemRegPath, writable: true))
-                    {
-                        registryKey.SetValue(logoReg, logoRegData, RegistryValueKind.String);
-                        Console.WriteLine($"Set '{logoReg}' to {logoRegData} in '{oemRegPath}'.");
-                    }
-                    using (RegistryKey registryKey = Registry.LocalMachine.OpenSubKey(oemRegPath, writable: true))
-                    {
-                        registryKey.SetValue(manufacturerReg, manufacturerRegData, RegistryValueKind.String);
-                        Console.WriteLine($"Set '{manufacturerReg}' to {manufacturerRegData} in '{oemRegPath}'.");
-                    }
-                    using (RegistryKey registryKey = Registry.LocalMachine.OpenSubKey(oemRegPath, writable: true))
-                    {
-                        registryKey.SetValue(supportHoursReg, supportHoursData, RegistryValueKind.String);
-                        Console.WriteLine($"Set '{supportHoursReg}' to {supportHoursData} in '{oemRegPath}'.");
-                    }
-                    using (RegistryKey registryKey = Registry.LocalMachine.OpenSubKey(oemRegPath, writable: true))
-                    {
-                        registryKey.SetValue(supportPhoneReg, supportPhoneData, RegistryValueKind.String);
-                        Console.WriteLine($"Set '{supportPhoneReg}' to {supportPhoneData} in '{oemRegPath}'.");
-                    }
-                    using (RegistryKey registryKey = Registry.LocalMachine.OpenSubKey(oemRegPath, writable: true))
-                    {
-                        registryKey.SetValue(supportURLReg, supportURLRegData, RegistryValueKind.String);
-                        Console.WriteLine($"Set '{supportURLReg}' to {supportURLRegData} in '{oemRegPath}'.");
-                    }
+                    await DownloadWithRetryAsync(crcOEMURL, crcOEMFilename);
+                    SetOemInfo(
+                        hours: "Mon-Fri 9:15am-5:00pm - Sat 9:15am-4:00pm",
+                        phone: "01794 517142",
+                        url: "https://www.thecomputerrepaircentre.co.uk/romsey");
+                    TrackResult("Computer Repair Centre OEM Info", "Installed");
                 }
-                if (chandlersFord == "1")
+                else if (chandlersFord == "1")
                 {
                     AppendLine("📦 Installing Chandlers Ford Computer Repair Centre OEM information...");
-                    using (WebClient wc = new WebClient())
-                    {
-                        wc.DownloadFileCompleted += wc_progressBarStep;
-                        await wc.DownloadFileTaskAsync(crcOEMURL, crcOEMFilename);
-                    }
-                    const string oemRegPath = @"SOFTWARE\Microsoft\Windows\CurrentVersion\OEMInformation";
-                    const string logoReg = "Logo";
-                    const string logoRegData = @"C:\ProgramData\Computer Repair Centre\OEM\computerRepairCentreOEM.bmp";
-                    const string manufacturerReg = "Manufacturer";
-                    const string manufacturerRegData = "Computer Repair Centre";
-                    const string supportHoursReg = "SupportHours";
-                    const string supportHoursData = "Mon-Fri 9:00am-5:30pm - Sat 9:00am-2:00pm";
-                    const string supportPhoneReg = "SupportPhone";
-                    const string supportPhoneData = "02380 270271";
-                    const string supportURLReg = "SupportURL";
-                    const string supportURLRegData = "https://www.thecomputerrepaircentre.co.uk/chandlers-ford";
-                    using (RegistryKey registryKey = Registry.LocalMachine.CreateSubKey(oemRegPath, writable: true))
-                    {
-                    }
-                    using (RegistryKey registryKey = Registry.LocalMachine.OpenSubKey(oemRegPath, writable: true))
-                    {
-                        registryKey.SetValue(logoReg, logoRegData, RegistryValueKind.String);
-                        Console.WriteLine($"Set '{logoReg}' to {logoRegData} in '{oemRegPath}'.");
-                    }
-                    using (RegistryKey registryKey = Registry.LocalMachine.OpenSubKey(oemRegPath, writable: true))
-                    {
-                        registryKey.SetValue(manufacturerReg, manufacturerRegData, RegistryValueKind.String);
-                        Console.WriteLine($"Set '{manufacturerReg}' to {manufacturerRegData} in '{oemRegPath}'.");
-                    }
-                    using (RegistryKey registryKey = Registry.LocalMachine.OpenSubKey(oemRegPath, writable: true))
-                    {
-                        registryKey.SetValue(supportHoursReg, supportHoursData, RegistryValueKind.String);
-                        Console.WriteLine($"Set '{supportHoursReg}' to {supportHoursData} in '{oemRegPath}'.");
-                    }
-                    using (RegistryKey registryKey = Registry.LocalMachine.OpenSubKey(oemRegPath, writable: true))
-                    {
-                        registryKey.SetValue(supportPhoneReg, supportPhoneData, RegistryValueKind.String);
-                        Console.WriteLine($"Set '{supportPhoneReg}' to {supportPhoneData} in '{oemRegPath}'.");
-                    }
-                    using (RegistryKey registryKey = Registry.LocalMachine.OpenSubKey(oemRegPath, writable: true))
-                    {
-                        registryKey.SetValue(supportURLReg, supportURLRegData, RegistryValueKind.String);
-                        Console.WriteLine($"Set '{supportURLReg}' to {supportURLRegData} in '{oemRegPath}'.");
-                    }
+                    await DownloadWithRetryAsync(crcOEMURL, crcOEMFilename);
+                    SetOemInfo(
+                        hours: "Mon-Fri 9:00am-5:30pm - Sat 9:00am-2:00pm",
+                        phone: "02380 270271",
+                        url: "https://www.thecomputerrepaircentre.co.uk/chandlers-ford");
+                    TrackResult("Computer Repair Centre OEM Info", "Installed");
                 }
-                if (highcliffe == "1")
+                else if (highcliffe == "1")
                 {
                     AppendLine("📦 Installing Highcliffe Computer Repair Centre OEM information...");
-                    using (WebClient wc = new WebClient())
-                    {
-                        wc.DownloadFileCompleted += wc_progressBarStep;
-                        await wc.DownloadFileTaskAsync(crcOEMURL, crcOEMFilename);
-                    }
-                    const string oemRegPath = @"SOFTWARE\Microsoft\Windows\CurrentVersion\OEMInformation";
-                    const string logoReg = "Logo";
-                    const string logoRegData = @"C:\ProgramData\Computer Repair Centre\OEM\computerRepairCentreOEM.bmp";
-                    const string manufacturerReg = "Manufacturer";
-                    const string manufacturerRegData = "Computer Repair Centre";
-                    const string supportHoursReg = "SupportHours";
-                    const string supportHoursData = "Mon-Fri 9:15am-5:00pm - Sat 9:15am-2:00pm";
-                    const string supportPhoneReg = "SupportPhone";
-                    const string supportPhoneData = "01425 278579";
-                    const string supportURLReg = "SupportURL";
-                    const string supportURLRegData = "https://www.thecomputerrepaircentre.co.uk/highcliffe";
-                    using (RegistryKey registryKey = Registry.LocalMachine.CreateSubKey(oemRegPath, writable: true))
-                    {
-                    }
-                    using (RegistryKey registryKey = Registry.LocalMachine.OpenSubKey(oemRegPath, writable: true))
-                    {
-                        registryKey.SetValue(logoReg, logoRegData, RegistryValueKind.String);
-                        Console.WriteLine($"Set '{logoReg}' to {logoRegData} in '{oemRegPath}'.");
-                    }
-                    using (RegistryKey registryKey = Registry.LocalMachine.OpenSubKey(oemRegPath, writable: true))
-                    {
-                        registryKey.SetValue(manufacturerReg, manufacturerRegData, RegistryValueKind.String);
-                        Console.WriteLine($"Set '{manufacturerReg}' to {manufacturerRegData} in '{oemRegPath}'.");
-                    }
-                    using (RegistryKey registryKey = Registry.LocalMachine.OpenSubKey(oemRegPath, writable: true))
-                    {
-                        registryKey.SetValue(supportHoursReg, supportHoursData, RegistryValueKind.String);
-                        Console.WriteLine($"Set '{supportHoursReg}' to {supportHoursData} in '{oemRegPath}'.");
-                    }
-                    using (RegistryKey registryKey = Registry.LocalMachine.OpenSubKey(oemRegPath, writable: true))
-                    {
-                        registryKey.SetValue(supportPhoneReg, supportPhoneData, RegistryValueKind.String);
-                        Console.WriteLine($"Set '{supportPhoneReg}' to {supportPhoneData} in '{oemRegPath}'.");
-                    }
-                    using (RegistryKey registryKey = Registry.LocalMachine.OpenSubKey(oemRegPath, writable: true))
-                    {
-                        registryKey.SetValue(supportURLReg, supportURLRegData, RegistryValueKind.String);
-                        Console.WriteLine($"Set '{supportURLReg}' to {supportURLRegData} in '{oemRegPath}'.");
-                    }
+                    await DownloadWithRetryAsync(crcOEMURL, crcOEMFilename);
+                    SetOemInfo(
+                        hours: "Mon-Fri 9:15am-5:00pm - Sat 9:15am-2:00pm",
+                        phone: "01425 278579",
+                        url: "https://www.thecomputerrepaircentre.co.uk/highcliffe");
+                    TrackResult("Computer Repair Centre OEM Info", "Installed");
+                }
+                else
+                {
+                    AppendLine("⚠️ No known shop location detected, skipping OEM info.");
+                    TrackResult("Computer Repair Centre OEM Info", "Skipped");
                 }
             }
             if (nanaZipCheck.Checked)
@@ -1133,16 +1029,14 @@ namespace PlutoPoint_Installer
                     {
                         nanaZipPath = files[0];
                         AppendLine($"✅ NanaZip is already installed.");
+                        TrackResult("NanaZip", "Already Installed");
                         progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
                     }
                     else
                     {
                         AppendLine("❌ NanaZip not found, proceeding with installation.");
                         AppendLine("🔄 Downloading NanaZip...");
-                        using (WebClient wc = new WebClient())
-                        {
-                            await wc.DownloadFileTaskAsync(nanaZipURL, nanaZipFilename);
-                        }
+                        await DownloadWithRetryAsync(nanaZipURL, nanaZipFilename);
                         AppendLine("📦 Installing NanaZip...");
                         Process nanaZipInstallProcess = Process.Start(new ProcessStartInfo
                         {
@@ -1158,12 +1052,14 @@ namespace PlutoPoint_Installer
                             await Task.Run(() => nanaZipInstallProcess.WaitForExit());
                         }
                         AppendLine("✅ Completed installation of NanaZip.");
+                        TrackResult("NanaZip", "Installed");
                         progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
                     }
                 }
                 catch (UnauthorizedAccessException)
                 {
                     AppendLine("⚠️ Access denied to WindowsApps. Try running as Administrator.");
+                    TrackResult("NanaZip", "Failed");
                 }
                 catch (Exception ex)
                 {
@@ -1183,30 +1079,28 @@ namespace PlutoPoint_Installer
                     Console.WriteLine($"Set '{taskbarReg}' to {taskbarRegData} in '{taskbarRegPath}'.");
                 }
                 AppendLine("✅ Moved taskbar to the left.");
+                TrackResult("Taskbar Alignment", "Applied");
                 progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
             }
             if (anyDeskCheck.Checked)
             {
                 AppendLine("📌 AnyDesk is selected.");
-                if (System.IO.File.Exists(@"C:\Program Files (x86)\AnyDeskMSI\AnyDeskMSI
-"))
+                if (System.IO.File.Exists(@"C:\Program Files (x86)\AnyDeskMSI\AnyDeskMSI.exe"))
                 {
                     AppendLine("✅ AnyDesk is already installed, skipping installation.");
+                    TrackResult("AnyDesk", "Already Installed");
                     progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
                 }
                 else if (System.IO.File.Exists(@"C:\Program Files (x86)\AnyDesk\AnyDesk.exe"))
                 {
                     AppendLine("✅ AnyDesk is already installed, skipping installation.");
+                    TrackResult("AnyDesk", "Already Installed");
                     progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
                 }
                 else
                 {
                     AppendLine("🔄 Downloading AnyDesk...");
-                    using (WebClient wc = new WebClient())
-                    {
-                        wc.DownloadFileCompleted += wc_progressBarStep;
-                        await wc.DownloadFileTaskAsync(anyDeskURL, anyDeskFilename);
-                    }
+                    await DownloadWithRetryAsync(anyDeskURL, anyDeskFilename);
                     AppendLine("📦 Installing AnyDesk...");
                     await Task.Run(() =>
                     {
@@ -1237,6 +1131,7 @@ namespace PlutoPoint_Installer
                         }
                     });
                     AppendLine("✅ Completed installation of AnyDesk.");
+                    TrackResult("AnyDesk", "Installed");
                     progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
                 }
             }
@@ -1246,16 +1141,13 @@ namespace PlutoPoint_Installer
                 if (System.IO.File.Exists(bingWallpaperAppPath))
                 {
                     AppendLine("✅ Bing Wallpapers is already installed, skipping installation.");
+                    TrackResult("Bing Wallpapers", "Already Installed");
                     progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
                 }
                 else
                 {
                     AppendLine("🔄 Downloading Bing Wallpapers...");
-                    using (WebClient wc = new WebClient())
-                    {
-                        wc.DownloadFileCompleted += wc_progressBarStep;
-                        await wc.DownloadFileTaskAsync(bingWallpapersURL, bingWallpapersFilename);
-                    }
+                    await DownloadWithRetryAsync(bingWallpapersURL, bingWallpapersFilename);
                     AppendLine("📦 Installing Bing Wallpapers...");
                     await Task.Run(() =>
                     {
@@ -1286,6 +1178,7 @@ namespace PlutoPoint_Installer
                         }
                     });
                     AppendLine("✅ Completed installation of Bing Wallpapers.");
+                    TrackResult("Bing Wallpapers", "Installed");
                     progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
                 }
             }
@@ -1295,16 +1188,13 @@ namespace PlutoPoint_Installer
                 if (System.IO.File.Exists(@"C:\Program Files\Bitdefender\Bitdefender Security App\seccenter.exe"))
                 {
                     AppendLine("✅ BitDefender is already installed, skipping installation.");
+                    TrackResult("BitDefender", "Already Installed");
                     progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
                 }
                 else
                 {
                     AppendLine("🔄 Downloading BitDefender...");
-                    using (WebClient wc = new WebClient())
-                    {
-                        wc.DownloadFileCompleted += wc_progressBarStep;
-                        await wc.DownloadFileTaskAsync(bitDefenderURL, bitDefenderFilename);
-                    }
+                    await DownloadWithRetryAsync(bitDefenderURL, bitDefenderFilename);
                     AppendLine("📦 Installing BitDefender...");
                     await Task.Run(() =>
                     {
@@ -1337,6 +1227,7 @@ namespace PlutoPoint_Installer
                         }
                     });
                     AppendLine("✅ Completed installation of BitDefender.");
+                    TrackResult("BitDefender", "Installed");
                     progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
                 }
             }
@@ -1346,16 +1237,13 @@ namespace PlutoPoint_Installer
                 if (System.IO.File.Exists(discordAppPath))
                 {
                     AppendLine("✅ Discord is already installed, skipping installation.");
+                    TrackResult("Discord", "Already Installed");
                     progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
                 }
                 else
                 {
                     AppendLine("🔄 Downloading Discord...");
-                    using (WebClient wc = new WebClient())
-                    {
-                        wc.DownloadFileCompleted += wc_progressBarStep;
-                        await wc.DownloadFileTaskAsync(discordURL, discordFilename);
-                    }
+                    await DownloadWithRetryAsync(discordURL, discordFilename);
                     AppendLine("📦 Installing Discord...");
                     await Task.Run(() =>
                     {
@@ -1388,6 +1276,7 @@ namespace PlutoPoint_Installer
                         }
                     });
                     AppendLine("✅ Completed installation of Discord.");
+                    TrackResult("Discord", "Installed");
                     progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
                 }
             }
@@ -1399,15 +1288,13 @@ namespace PlutoPoint_Installer
                     AppendLine("🔄 Downloading Google Chrome...");
                     try
                     {
-                        using (WebClient wc = new WebClient())
-                        {
-                            await wc.DownloadFileTaskAsync(googleChromeURL, googleChromeFilename);
-                        }
+                        await DownloadWithRetryAsync(googleChromeURL, googleChromeFilename);
                         AppendLine("✅ Chrome download completed.");
                     }
                     catch (WebException ex)
                     {
                         AppendLine("❌ Failed to download Google Chrome: " + ex.Message);
+                        TrackResult("Google Chrome", "Failed");
                     }
                     AppendLine("📦 Installing Google Chrome...");
                     try
@@ -1421,16 +1308,19 @@ namespace PlutoPoint_Installer
                             process.WaitForExit();
                         }
                         AppendLine("✅ Completed installation of Google Chrome.");
+                        TrackResult("Google Chrome", "Installed");
                     }
                     catch (Exception ex)
                     {
                         AppendLine("❌ Chrome installation failed: " + ex.Message);
+                        TrackResult("Google Chrome", "Failed");
                     }
                     progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
                 }
                 else
                 {
                     AppendLine("✅ Google Chrome is already installed, skipping installation.");
+                    TrackResult("Google Chrome", "Already Installed");
                     progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
                 }
             }
@@ -1440,6 +1330,7 @@ namespace PlutoPoint_Installer
                 if (System.IO.File.Exists(@"C:\Program Files\LibreOffice\program\soffice.exe"))
                 {
                     AppendLine("✅ LibreOffice is already installed, skipping installation.");
+                    TrackResult("LibreOffice", "Already Installed");
                     progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
                 }
                 else
@@ -1449,24 +1340,18 @@ namespace PlutoPoint_Installer
                     if (string.IsNullOrEmpty(libreOfficeVersion))
                     {
                         MessageBox.Show("Could not determine the latest LibreOffice version.");
+                        TrackResult("LibreOffice", "Failed");
+                        AppendInstallSummary();
                         return;
                     }
                     string libreOfficeDownloadUrl = $"https://download.documentfoundation.org/libreoffice/stable/{libreOfficeVersion}/win/x86_64/LibreOffice_{libreOfficeVersion}_Win_x86-64.msi";
                     Uri libreOfficeURL = new Uri(libreOfficeDownloadUrl);
-                    using (WebClient wc = new WebClient())
-                    {
-                        wc.DownloadFileCompleted += wc_progressBarStep;
-                        await wc.DownloadFileTaskAsync(libreOfficeURL, libreOfficeFilename);
-                    }
+                    await DownloadWithRetryAsync(libreOfficeURL, libreOfficeFilename);
                     if (!File.Exists(libreOfficeFilename))
                     {
                         AppendLine("❌ LibreOffice download failed; falling back to known installer.");
                         libreOfficeURL = new Uri("https://cloud.howardgb.com/public.php/dav/files/EFyAqCm3tEQ6W25/libreOffice.msi");
-                        using (WebClient wc = new WebClient())
-                        {
-                            wc.DownloadFileCompleted += wc_progressBarStep;
-                            await wc.DownloadFileTaskAsync(libreOfficeURL, libreOfficeFilename);
-                        }
+                        await DownloadWithRetryAsync(libreOfficeURL, libreOfficeFilename);
                     }
                     AppendLine("📦 Installing LibreOffice...");
                     await Task.Run(() =>
@@ -1498,6 +1383,7 @@ namespace PlutoPoint_Installer
                         }
                     });
                     AppendLine("✅ Completed installation of LibreOffice.");
+                    TrackResult("LibreOffice", "Installed");
                     progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
                 }
             }
@@ -1526,6 +1412,8 @@ namespace PlutoPoint_Installer
                         else
                         {
                             AppendLine("⚠️ Could not find Nvidia App download link.");
+                            TrackResult("Nvidia App", "Failed");
+                            AppendInstallSummary();
                             return;
                         }
                     }
@@ -1533,6 +1421,8 @@ namespace PlutoPoint_Installer
                 catch (Exception ex)
                 {
                     AppendLine($"⚠️ Error downloading Nvidia App: {ex.Message}");
+                    TrackResult("Nvidia App", "Failed");
+                    AppendInstallSummary();
                     return;
                 }
                 progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
@@ -1563,6 +1453,7 @@ namespace PlutoPoint_Installer
                     }
                 });
                 AppendLine("✅ Completed installation of Nvidia App.");
+                TrackResult("Nvidia App", "Installed");
                 progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
             }
             if (mozillaFirefoxCheck.Checked)
@@ -1571,16 +1462,13 @@ namespace PlutoPoint_Installer
                 if (File.Exists(mozillaFirefoxExePath))
                 {
                     AppendLine("✅ Mozilla Firefox is already installed, skipping installation.");
+                    TrackResult("Mozilla Firefox", "Already Installed");
                     progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
                 }
                 else
                 {
                     AppendLine("🔄 Downloading Mozilla Firefox...");
-                    using (WebClient wc = new WebClient())
-                    {
-                        wc.DownloadFileCompleted += wc_progressBarStep;
-                        await wc.DownloadFileTaskAsync(mozillaFirefoxURL, mozillaFirefoxFilename);
-                    }
+                    await DownloadWithRetryAsync(mozillaFirefoxURL, mozillaFirefoxFilename);
                     AppendLine("📦 Installing Mozilla Firefox...");
                     await Task.Run(() =>
                     {
@@ -1609,6 +1497,7 @@ namespace PlutoPoint_Installer
                         }
                     });
                     AppendLine("✅ Completed installation of Mozilla Firefox.");
+                    TrackResult("Mozilla Firefox", "Installed");
                     progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
                 }
             }
@@ -1619,17 +1508,14 @@ namespace PlutoPoint_Installer
                 if (File.Exists(mozillaThunderbirdExePath))
                 {
                     AppendLine("✅ Mozilla Thunderbird is already installed, skipping installation.");
+                    TrackResult("Mozilla Thunderbird", "Already Installed");
                     progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
                 }
                 else
                 {
                     // Download Thunderbird
                     AppendLine("🔄 Downloading Mozilla Thunderbird...");
-                    using (WebClient wc = new WebClient())
-                    {
-                        wc.DownloadFileCompleted += wc_progressBarStep;
-                        await wc.DownloadFileTaskAsync(mozillaThunderbirdURL, mozillaThunderbirdFilename);
-                    }
+                    await DownloadWithRetryAsync(mozillaThunderbirdURL, mozillaThunderbirdFilename);
                     // Install Thunderbird
                     AppendLine("📦 Installing Mozilla Thunderbird...");
                     await Task.Run(() =>
@@ -1659,6 +1545,7 @@ namespace PlutoPoint_Installer
                         }
                     });
                     AppendLine("✅ Completed installation of Mozilla Thunderbird.");
+                    TrackResult("Mozilla Thunderbird", "Installed");
                     progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
                 }
             }
@@ -1668,16 +1555,13 @@ namespace PlutoPoint_Installer
                 if (System.IO.File.Exists(@"C:\Program Files (x86)\Steam\Steam.exe"))
                 {
                     AppendLine("✅ Steam is already installed, skipping installation.");
+                    TrackResult("Steam", "Already Installed");
                     progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
                 }
                 else
                 {
                     AppendLine("🔄 Downloading Steam...");
-                    using (WebClient wc = new WebClient())
-                    {
-                        wc.DownloadFileCompleted += wc_progressBarStep;
-                        await wc.DownloadFileTaskAsync(steamURL, steamFilename);
-                    }
+                    await DownloadWithRetryAsync(steamURL, steamFilename);
                     AppendLine("📦 Installing Steam...");
                     await Task.Run(() =>
                     {
@@ -1710,6 +1594,7 @@ namespace PlutoPoint_Installer
                         }
                     });
                     AppendLine("✅ Completed installation of Steam.");
+                    TrackResult("Steam", "Installed");
                     progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
                 }
             }
@@ -1719,16 +1604,13 @@ namespace PlutoPoint_Installer
                 if (System.IO.File.Exists(@"C:\Program Files\VideoLAN\VLC\vlc.exe"))
                 {
                     AppendLine("✅ VLC Media Player is already installed, skipping installation.");
+                    TrackResult("VLC Media Player", "Already Installed");
                     progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
                 }
                 else
                 {
                     AppendLine("🔄 Downloading VLC Media Player...");
-                    using (WebClient wc = new WebClient())
-                    {
-                        wc.DownloadFileCompleted += wc_progressBarStep;
-                        await wc.DownloadFileTaskAsync(vlcMediaPlayerURL, vlcMediaPlayerFilename);
-                    }
+                    await DownloadWithRetryAsync(vlcMediaPlayerURL, vlcMediaPlayerFilename);
                     AppendLine("📦 Installing VLC Media Player...");
                     await Task.Run(() =>
                     {
@@ -1759,6 +1641,7 @@ namespace PlutoPoint_Installer
                         }
                     });
                     AppendLine("✅ Completed installation of VLC Media Player.");
+                    TrackResult("VLC Media Player", "Installed");
                     progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
                 }
             }
@@ -1769,10 +1652,12 @@ namespace PlutoPoint_Installer
                 try
                 {
                     ApplyTaskbarPinLayout();
+                    TrackResult("Pin Apps to Taskbar", "Applied");
                 }
                 catch (Exception ex)
                 {
                     AppendLine("❌ Failed to set taskbar layout: " + ex.Message);
+                    TrackResult("Pin Apps to Taskbar", "Failed");
                 }
                 progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
             }
@@ -1960,10 +1845,12 @@ namespace PlutoPoint_Installer
                 {
                     SHEmptyRecycleBin(IntPtr.Zero, null, SHERB_NOCONFIRMATION | SHERB_NOPROGRESSUI | SHERB_NOSOUND);
                     AppendLine("✅ Recycle Bin emptied successfully.");
+                    TrackResult("Empty Recycle Bin", "Applied");
                 }
                 catch (Exception ex)
                 {
                     AppendLine($"⚠️ Failed to empty Recycle Bin: {ex.Message}");
+                    TrackResult("Empty Recycle Bin", "Failed");
                 }
             }
             var currentEvent = _themeManager.GetCurrentEvent();
@@ -1987,6 +1874,7 @@ namespace PlutoPoint_Installer
             }
             progressBar.Value = Math.Min(progressBar.Maximum, progressBar.Value);
             progressBar.Value = progressBar.Maximum;
+            AppendInstallSummary();
             AppendLine("✅ The installation has completed.");
         }
         private void wc_progressBarStep(object sender, AsyncCompletedEventArgs e)
@@ -2051,47 +1939,43 @@ namespace PlutoPoint_Installer
                 return builder.ToString();
             }
         }
+        private string _logFilePath;
+        private void EnsureLogFile()
+        {
+            if (_logFilePath != null)
+                return;
+
+            try
+            {
+                string logDir = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                    "ComputerRepairCentre", "Logs");
+                Directory.CreateDirectory(logDir);
+                _logFilePath = Path.Combine(logDir, $"install-log-{DateTime.Now:yyyyMMdd-HHmmss}.txt");
+            }
+            catch
+            {
+                _logFilePath = string.Empty;
+            }
+        }
+
         private void AppendLine(string text = "")
         {
             installerTextBox.Text += text + Environment.NewLine;
             installerLogPanel.PerformLayout();
             installerLogPanel.AutoScrollPosition = new Point(0, installerTextBox.Bottom);
-        }
-        private class PasswordForm : Form
-        {
-            public string EnteredPassword { get; private set; }
-            private TextBox txtPassword;
-            private Button btnOK;
-            private Label passwordText;
-            public PasswordForm()
+
+            EnsureLogFile();
+            if (!string.IsNullOrEmpty(_logFilePath))
             {
-                this.Text = "Password Required.";
-                this.Width = 300;
-                this.Height = 160;
-                this.FormBorderStyle = FormBorderStyle.FixedDialog;
-                this.StartPosition = FormStartPosition.CenterParent;
-                this.MaximizeBox = false;
-                this.MinimizeBox = false;
-                this.Icon = global::PlutoPoint_Installer.Properties.Resources.computerRepairCentreIcon;
-                passwordText = new Label()
+                try
                 {
-                    Text = "The installer is not being run from a known location, please enter password to continue.",
-                    Left = 10,
-                    Top = 10,
-                    Width = 260,
-                    Height = 40,
-                    ForeColor = Color.Red,
-                    TextAlign = ContentAlignment.MiddleLeft
-                };
-                Label lbl = new Label() { Text = "Password:", Left = 10, Top = 55, Width = 70 };
-                txtPassword = new TextBox() { Left = 85, Top = 52, Width = 180, PasswordChar = '*' };
-                btnOK = new Button() { Text = "OK", Left = 185, Width = 80, Top = 85, DialogResult = DialogResult.OK };
-                btnOK.Click += (s, e) => { EnteredPassword = txtPassword.Text; };
-                this.Controls.Add(passwordText);
-                this.Controls.Add(lbl);
-                this.Controls.Add(txtPassword);
-                this.Controls.Add(btnOK);
-                this.AcceptButton = btnOK;
+                    File.AppendAllText(_logFilePath, $"[{DateTime.Now:HH:mm:ss}] {text}{Environment.NewLine}");
+                }
+                catch
+                {
+                    // Logging to disk is best-effort; never let it break the install.
+                }
             }
         }
     }
