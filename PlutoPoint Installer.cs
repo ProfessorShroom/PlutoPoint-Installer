@@ -829,6 +829,7 @@ namespace PlutoPoint_Installer
         {
             if (_wingetAvailable.HasValue)
                 return _wingetAvailable.Value;
+
             try
             {
                 using (Process process = new Process())
@@ -841,16 +842,65 @@ namespace PlutoPoint_Installer
                     process.StartInfo.CreateNoWindow = true;
                     process.Start();
                     bool exited = process.WaitForExit(5000);
-                    _wingetAvailable = exited && process.ExitCode == 0;
+                    if (!exited)
+                    {
+                        KillProcessSafely(process);
+                        _wingetAvailable = false;
+                    }
+                    else
+                    {
+                        _wingetAvailable = process.ExitCode == 0;
+                    }
                 }
             }
             catch
             {
                 _wingetAvailable = false;
             }
-            if (!_wingetAvailable.Value)
-                AppendLine("⚠️ winget is not available on this machine (or not accessible); using direct downloads for everything.");
+            if (_wingetAvailable == true)
+            {
+                try
+                {
+                    using (Process warmup = new Process())
+                    {
+                        warmup.StartInfo.FileName = "winget";
+                        warmup.StartInfo.Arguments = "list --accept-source-agreements --accept-package-agreements";
+                        warmup.StartInfo.UseShellExecute = false;
+                        warmup.StartInfo.RedirectStandardOutput = true;
+                        warmup.StartInfo.RedirectStandardError = true;
+                        warmup.StartInfo.CreateNoWindow = true;
+                        warmup.Start();
+                        bool exited = warmup.WaitForExit(60000);
+                        if (!exited)
+                        {
+                            KillProcessSafely(warmup);
+                            AppendLine("⚠️ winget did not finish accepting source agreements (first-run initialisation), using direct downloads for everything.");
+                            _wingetAvailable = false;
+                        }
+                    }
+                }
+                catch
+                {
+                    _wingetAvailable = false;
+                }
+            }
+            if (_wingetAvailable != true)
+            {
+                _wingetAvailable = false;
+                AppendLine("⚠️ winget is not available on this machine (or not accessible from this context); using direct downloads for everything.");
+            }
             return _wingetAvailable.Value;
+        }
+        private void KillProcessSafely(Process process)
+        {
+            try
+            {
+                if (!process.HasExited)
+                    process.Kill();
+            }
+            catch
+            {
+            }
         }
         private bool IsInstalledViaWinget(string packageId)
         {
@@ -862,11 +912,16 @@ namespace PlutoPoint_Installer
                     process.StartInfo.Arguments = $"list -e --id \"{packageId}\" --accept-source-agreements";
                     process.StartInfo.UseShellExecute = false;
                     process.StartInfo.RedirectStandardOutput = true;
-                    process.StartInfo.RedirectStandardError = true;
+                    process.StartInfo.RedirectStandardError = false;
                     process.StartInfo.CreateNoWindow = true;
                     process.Start();
                     string output = process.StandardOutput.ReadToEnd();
-                    process.WaitForExit(15000);
+                    bool exited = process.WaitForExit(15000);
+                    if (!exited)
+                    {
+                        KillProcessSafely(process);
+                        return false;
+                    }
                     return output.IndexOf(packageId, StringComparison.OrdinalIgnoreCase) >= 0;
                 }
             }
@@ -880,6 +935,7 @@ namespace PlutoPoint_Installer
             if (!IsWingetAvailable())
                 return false;
             AppendLine($"🔄 Attempting winget install of {label}...");
+            bool timedOut = false;
             try
             {
                 await Task.Run(() =>
@@ -891,17 +947,27 @@ namespace PlutoPoint_Installer
                             $"install -e --id \"{packageId}\" --silent --disable-interactivity " +
                             "--accept-package-agreements --accept-source-agreements";
                         process.StartInfo.UseShellExecute = false;
-                        process.StartInfo.RedirectStandardOutput = true;
-                        process.StartInfo.RedirectStandardError = true;
+                        process.StartInfo.RedirectStandardOutput = false;
+                        process.StartInfo.RedirectStandardError = false;
                         process.StartInfo.CreateNoWindow = true;
                         process.Start();
-                        process.WaitForExit(180000); // 3 minutes
+                        bool exited = process.WaitForExit(180000); // 3 minutes
+                        if (!exited)
+                        {
+                            timedOut = true;
+                            KillProcessSafely(process);
+                        }
                     }
                 });
             }
             catch (Exception ex)
             {
                 AppendLine($"⚠️ winget install of {label} threw an error ({ex.Message}), falling back to direct download.");
+                return false;
+            }
+            if (timedOut)
+            {
+                AppendLine($"⚠️ winget install of {label} timed out after 3 minutes and was terminated, falling back to direct download.");
                 return false;
             }
             bool confirmed = IsInstalledViaWinget(packageId);
