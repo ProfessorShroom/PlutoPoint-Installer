@@ -39,6 +39,7 @@ namespace PlutoPoint_Installer
         private Color _gradientBottom = Color.FromArgb(140, 0, 255);
         private Task _initialiseUrlsTask;
         private Task _checkIpTask;
+        private bool? _wingetAvailable;
         [DllImport("Shell32.dll", CharSet = CharSet.Unicode)]
         private static extern uint SHEmptyRecycleBin(IntPtr hwnd, string pszRootPath, uint dwFlags);
         private const uint SHERB_NOCONFIRMATION = 0x00000001;
@@ -92,7 +93,13 @@ namespace PlutoPoint_Installer
             AppendLine(locationLine);
             _ = PrintDayAsync();
             Version version = Assembly.GetExecutingAssembly().GetName().Version;
-            versionLabel.Text = $"Version {version}";
+            string versionStr = version?.ToString() ?? "";
+            string versionText = $"Version {versionStr}";
+            if (versionStr.Replace(".", "").Contains("69"))
+            {
+                versionText += " - Nice";
+            }
+            versionLabel.Text = versionText;
         }
         private UI.ThemeManager _themeManager = new UI.ThemeManager();
         private void ApplyFonts()
@@ -110,7 +117,6 @@ namespace PlutoPoint_Installer
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-
             _themeManager.ApplyThemeAndMessages(
                 (top, bottom, log) => {
                     this.ApplyGradientTheme(top, bottom);
@@ -119,7 +125,6 @@ namespace PlutoPoint_Installer
                 },
                 (msg) => this.AppendLine(msg)
             );
-
             _themeManager.UpdateGUIEvent(this);
             this.Invalidate();
         }
@@ -149,7 +154,6 @@ namespace PlutoPoint_Installer
                 UseShellExecute = false,
                 WindowStyle = ProcessWindowStyle.Hidden
             };
-
             using (Process process = Process.Start(startInfo))
             {
                 process.WaitForExit();
@@ -249,6 +253,12 @@ namespace PlutoPoint_Installer
         private void PrintVersion()
         {
             Version version = Assembly.GetExecutingAssembly().GetName().Version;
+            string versionStr = version?.ToString() ?? "";
+            string versionText = $"Version {versionStr}";
+            if (versionStr.Replace(".", "").Contains("69"))
+            {
+                versionText += " - Nice";
+            }
             Func<int, string> WithDaySuffix = day =>
             {
                 if (day >= 11 && day <= 13) return day + "th";
@@ -282,7 +292,7 @@ namespace PlutoPoint_Installer
                 WithDaySuffix(dateToUse.Day),
                 dateToUse.ToString("MMMM"),
                 dateToUse.Year);
-            AppendLine($"🛠️ Version {version}");
+            AppendLine($"🛠️ {versionText}");
             AppendLine("📅 Last updated on " + formatted + ".");
         }
         private async Task PrintDayAsync()
@@ -651,15 +661,12 @@ namespace PlutoPoint_Installer
                 using (var client = new HttpClient())
                 {
                     client.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0");
-
                     string html = client.GetStringAsync(url).Result;
-
                     var match = Regex.Match(
                         html,
                         @"(\d+\.\d+(?:\.\d+)?)[^0-9]{0,100}Windows \(x86-64\)",
                         RegexOptions.IgnoreCase
                     );
-
                     if (match.Success)
                     {
                         return match.Groups[1].Value;
@@ -670,7 +677,6 @@ namespace PlutoPoint_Installer
             {
                 Console.WriteLine("Error: " + ex.Message);
             }
-
             return null;
         }
         private string ResolveShortcutPath(string shortcutFileName)
@@ -680,7 +686,6 @@ namespace PlutoPoint_Installer
                 Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonStartMenu), "Programs"),
                 Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.StartMenu), "Programs")
             };
-
             foreach (var dir in searchDirs)
             {
                 try
@@ -715,34 +720,27 @@ namespace PlutoPoint_Installer
         {
             if (!wasChecked)
                 return false;
-
             string lnkPath = ResolveShortcutPath(shortcutFileName);
             if (lnkPath == null)
             {
                 AppendLine($"⚠️ Could not find {label} shortcut to pin, skipping.");
                 return false;
             }
-
             sb.AppendLine($"        <taskbar:DesktopApp DesktopApplicationLinkPath=\"{lnkPath}\" />");
-
             if (alsoAddToDesktop)
                 CopyShortcutToDesktop(lnkPath, label);
-
             return true;
         }
         private void ScheduleLayoutFileCleanup(string layoutPath)
         {
             string vbsPath = Path.Combine(Path.GetTempPath(), "PlutoPointTaskbarCleanup.vbs");
-
             string vbsContent =
                 "Set objShell = CreateObject(\"WScript.Shell\")\r\n" +
                 $"objShell.Run \"cmd.exe /c ping -n 16 127.0.0.1 >nul & del \"\"{layoutPath}\"\"\", 0, True\r\n" +
                 "Set objFSO = CreateObject(\"Scripting.FileSystemObject\")\r\n" +
                 "On Error Resume Next\r\n" +
                 "objFSO.DeleteFile WScript.ScriptFullName, True\r\n";
-
             File.WriteAllText(vbsPath, vbsContent);
-
             string cmd = $"wscript.exe //B //Nologo \"{vbsPath}\"";
             using (RegistryKey key = Registry.CurrentUser.OpenSubKey(
                 @"Software\Microsoft\Windows\CurrentVersion\RunOnce", writable: true))
@@ -754,7 +752,6 @@ namespace PlutoPoint_Installer
         {
             var pins = new StringBuilder();
             int pinnedCount = 0;
-
             if (AddPinEntry(pins, googleChromeCheck.Checked, "Google Chrome.lnk", "Google Chrome")) pinnedCount++;
             if (AddPinEntry(pins, mozillaFirefoxCheck.Checked, "Firefox.lnk", "Mozilla Firefox")) pinnedCount++;
             if (AddPinEntry(pins, mozillaThunderbirdCheck.Checked, "Thunderbird.lnk", "Mozilla Thunderbird")) pinnedCount++;
@@ -779,7 +776,6 @@ namespace PlutoPoint_Installer
     </defaultlayout:TaskbarLayout>
   </CustomTaskbarLayoutCollection>
 </LayoutModificationTemplate>";
-
             string shellDir = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                 @"Microsoft\Windows\Shell");
@@ -799,7 +795,6 @@ namespace PlutoPoint_Installer
             const string oemRegPath = @"SOFTWARE\Microsoft\Windows\CurrentVersion\OEMInformation";
             const string logoRegData = @"C:\ProgramData\Computer Repair Centre\OEM\computerRepairCentreOEM.bmp";
             const string manufacturerRegData = "Computer Repair Centre";
-
             using (RegistryKey registryKey = Registry.LocalMachine.CreateSubKey(oemRegPath, writable: true))
             {
                 registryKey.SetValue("Logo", logoRegData, RegistryValueKind.String);
@@ -830,23 +825,109 @@ namespace PlutoPoint_Installer
                 }
             }
         }
+        private bool IsWingetAvailable()
+        {
+            if (_wingetAvailable.HasValue)
+                return _wingetAvailable.Value;
+            try
+            {
+                using (Process process = new Process())
+                {
+                    process.StartInfo.FileName = "winget";
+                    process.StartInfo.Arguments = "--version";
+                    process.StartInfo.UseShellExecute = false;
+                    process.StartInfo.RedirectStandardOutput = true;
+                    process.StartInfo.RedirectStandardError = true;
+                    process.StartInfo.CreateNoWindow = true;
+                    process.Start();
+                    bool exited = process.WaitForExit(5000);
+                    _wingetAvailable = exited && process.ExitCode == 0;
+                }
+            }
+            catch
+            {
+                _wingetAvailable = false;
+            }
+            if (!_wingetAvailable.Value)
+                AppendLine("⚠️ winget is not available on this machine (or not accessible); using direct downloads for everything.");
+            return _wingetAvailable.Value;
+        }
+        private bool IsInstalledViaWinget(string packageId)
+        {
+            try
+            {
+                using (Process process = new Process())
+                {
+                    process.StartInfo.FileName = "winget";
+                    process.StartInfo.Arguments = $"list -e --id \"{packageId}\" --accept-source-agreements";
+                    process.StartInfo.UseShellExecute = false;
+                    process.StartInfo.RedirectStandardOutput = true;
+                    process.StartInfo.RedirectStandardError = true;
+                    process.StartInfo.CreateNoWindow = true;
+                    process.Start();
+                    string output = process.StandardOutput.ReadToEnd();
+                    process.WaitForExit(15000);
+                    return output.IndexOf(packageId, StringComparison.OrdinalIgnoreCase) >= 0;
+                }
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        private async Task<bool> TryWingetInstallAsync(string packageId, string label)
+        {
+            if (!IsWingetAvailable())
+                return false;
+            AppendLine($"🔄 Attempting winget install of {label}...");
+            try
+            {
+                await Task.Run(() =>
+                {
+                    using (Process process = new Process())
+                    {
+                        process.StartInfo.FileName = "winget";
+                        process.StartInfo.Arguments =
+                            $"install -e --id \"{packageId}\" --silent --disable-interactivity " +
+                            "--accept-package-agreements --accept-source-agreements";
+                        process.StartInfo.UseShellExecute = false;
+                        process.StartInfo.RedirectStandardOutput = true;
+                        process.StartInfo.RedirectStandardError = true;
+                        process.StartInfo.CreateNoWindow = true;
+                        process.Start();
+                        process.WaitForExit(180000); // 3 minutes
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                AppendLine($"⚠️ winget install of {label} threw an error ({ex.Message}), falling back to direct download.");
+                return false;
+            }
+            bool confirmed = IsInstalledViaWinget(packageId);
+            if (confirmed)
+            {
+                AppendLine($"✅ {label} installed via winget.");
+            }
+            else
+            {
+                AppendLine($"⚠️ winget install of {label} could not be verified, falling back to direct download.");
+            }
+            return confirmed;
+        }
         private List<(string Name, string Status)> installResults;
-
         private void TrackResult(string name, string status)
         {
             installResults?.Add((name, status));
         }
-
         private void AppendInstallSummary()
         {
             if (installResults == null || installResults.Count == 0)
                 return;
-
             int total = installResults.Count;
             int succeeded = installResults.Count(r => r.Status == "Installed" || r.Status == "Already Installed" || r.Status == "Applied");
             int skipped = installResults.Count(r => r.Status == "Skipped");
             int failed = installResults.Count(r => r.Status == "Failed");
-
             AppendLine("");
             AppendLine("📋 Summary:");
             AppendLine($"✅ {succeeded}/{total} succeeded");
@@ -858,7 +939,6 @@ namespace PlutoPoint_Installer
                     AppendLine($"   • {r.Name}");
             }
         }
-
         private async void install_Click(object sender, EventArgs e)
         {
             installResults = new List<(string, string)>();
@@ -1099,40 +1179,49 @@ namespace PlutoPoint_Installer
                 }
                 else
                 {
-                    AppendLine("🔄 Downloading AnyDesk...");
-                    await DownloadWithRetryAsync(anyDeskURL, anyDeskFilename);
-                    AppendLine("📦 Installing AnyDesk...");
-                    await Task.Run(() =>
+                    bool wingetOk = await TryWingetInstallAsync("AnyDeskSoftwareGmbH.AnyDesk", "AnyDesk");
+                    if (wingetOk)
                     {
-                        using (Process process = new Process())
+                        TrackResult("AnyDesk", "Installed");
+                        progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
+                    }
+                    else
+                    {
+                        AppendLine("🔄 Downloading AnyDesk...");
+                        await DownloadWithRetryAsync(anyDeskURL, anyDeskFilename);
+                        AppendLine("📦 Installing AnyDesk...");
+                        await Task.Run(() =>
                         {
-                            process.StartInfo.FileName = "msiexec";
-                            process.StartInfo.Arguments = $"/package \"{anyDeskFilename}\" /passive";
-                            process.StartInfo.UseShellExecute = false;
-                            process.StartInfo.RedirectStandardOutput = true;
-                            process.StartInfo.RedirectStandardError = true;
-                            process.StartInfo.CreateNoWindow = true;
-                            try
+                            using (Process process = new Process())
                             {
-                                process.Start();
-                                string output = process.StandardOutput.ReadToEnd();
-                                string error = process.StandardError.ReadToEnd();
-                                process.WaitForExit();
-                                Console.WriteLine("Output: " + output);
-                                if (!string.IsNullOrEmpty(error))
+                                process.StartInfo.FileName = "msiexec";
+                                process.StartInfo.Arguments = $"/package \"{anyDeskFilename}\" /passive";
+                                process.StartInfo.UseShellExecute = false;
+                                process.StartInfo.RedirectStandardOutput = true;
+                                process.StartInfo.RedirectStandardError = true;
+                                process.StartInfo.CreateNoWindow = true;
+                                try
                                 {
-                                    Console.WriteLine("Error: " + error);
+                                    process.Start();
+                                    string output = process.StandardOutput.ReadToEnd();
+                                    string error = process.StandardError.ReadToEnd();
+                                    process.WaitForExit();
+                                    Console.WriteLine("Output: " + output);
+                                    if (!string.IsNullOrEmpty(error))
+                                    {
+                                        Console.WriteLine("Error: " + error);
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    Console.WriteLine("An error occurred: " + ex.Message);
                                 }
                             }
-                            catch (Exception ex)
-                            {
-                                Console.WriteLine("An error occurred: " + ex.Message);
-                            }
-                        }
-                    });
-                    AppendLine("✅ Completed installation of AnyDesk.");
-                    TrackResult("AnyDesk", "Installed");
-                    progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
+                        });
+                        AppendLine("✅ Completed installation of AnyDesk.");
+                        TrackResult("AnyDesk", "Installed");
+                        progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
+                    }
                 }
             }
             if (bingWallpapersCheck.Checked)
@@ -1146,40 +1235,49 @@ namespace PlutoPoint_Installer
                 }
                 else
                 {
-                    AppendLine("🔄 Downloading Bing Wallpapers...");
-                    await DownloadWithRetryAsync(bingWallpapersURL, bingWallpapersFilename);
-                    AppendLine("📦 Installing Bing Wallpapers...");
-                    await Task.Run(() =>
+                    bool wingetOk = await TryWingetInstallAsync("Microsoft.BingWallpaper", "Bing Wallpapers");
+                    if (wingetOk)
                     {
-                        using (Process process = new Process())
+                        TrackResult("Bing Wallpapers", "Installed");
+                        progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
+                    }
+                    else
+                    {
+                        AppendLine("🔄 Downloading Bing Wallpapers...");
+                        await DownloadWithRetryAsync(bingWallpapersURL, bingWallpapersFilename);
+                        AppendLine("📦 Installing Bing Wallpapers...");
+                        await Task.Run(() =>
                         {
-                            process.StartInfo.FileName = "msiexec";
-                            process.StartInfo.Arguments = $"/package \"{bingWallpapersFilename}\" /passive";
-                            process.StartInfo.UseShellExecute = false;
-                            process.StartInfo.RedirectStandardOutput = true;
-                            process.StartInfo.RedirectStandardError = true;
-                            process.StartInfo.CreateNoWindow = true;
-                            try
+                            using (Process process = new Process())
                             {
-                                process.Start();
-                                string output = process.StandardOutput.ReadToEnd();
-                                string error = process.StandardError.ReadToEnd();
-                                process.WaitForExit();
-                                Console.WriteLine("Output: " + output);
-                                if (!string.IsNullOrEmpty(error))
+                                process.StartInfo.FileName = "msiexec";
+                                process.StartInfo.Arguments = $"/package \"{bingWallpapersFilename}\" /passive";
+                                process.StartInfo.UseShellExecute = false;
+                                process.StartInfo.RedirectStandardOutput = true;
+                                process.StartInfo.RedirectStandardError = true;
+                                process.StartInfo.CreateNoWindow = true;
+                                try
                                 {
-                                    Console.WriteLine("Error: " + error);
+                                    process.Start();
+                                    string output = process.StandardOutput.ReadToEnd();
+                                    string error = process.StandardError.ReadToEnd();
+                                    process.WaitForExit();
+                                    Console.WriteLine("Output: " + output);
+                                    if (!string.IsNullOrEmpty(error))
+                                    {
+                                        Console.WriteLine("Error: " + error);
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    Console.WriteLine("An error occurred: " + ex.Message);
                                 }
                             }
-                            catch (Exception ex)
-                            {
-                                Console.WriteLine("An error occurred: " + ex.Message);
-                            }
-                        }
-                    });
-                    AppendLine("✅ Completed installation of Bing Wallpapers.");
-                    TrackResult("Bing Wallpapers", "Installed");
-                    progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
+                        });
+                        AppendLine("✅ Completed installation of Bing Wallpapers.");
+                        TrackResult("Bing Wallpapers", "Installed");
+                        progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
+                    }
                 }
             }
             if (bitDefenderCheck.Checked)
@@ -1242,42 +1340,51 @@ namespace PlutoPoint_Installer
                 }
                 else
                 {
-                    AppendLine("🔄 Downloading Discord...");
-                    await DownloadWithRetryAsync(discordURL, discordFilename);
-                    AppendLine("📦 Installing Discord...");
-                    await Task.Run(() =>
+                    bool wingetOk = await TryWingetInstallAsync("Discord.Discord", "Discord");
+                    if (wingetOk)
                     {
-                        ProcessStartInfo startInfo = new ProcessStartInfo
+                        TrackResult("Discord", "Installed");
+                        progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
+                    }
+                    else
+                    {
+                        AppendLine("🔄 Downloading Discord...");
+                        await DownloadWithRetryAsync(discordURL, discordFilename);
+                        AppendLine("📦 Installing Discord...");
+                        await Task.Run(() =>
                         {
-                            FileName = discordFilename,
-                            Arguments = "-s",
-                            UseShellExecute = true,
-                            Verb = "runas"
-                        };
-                        try
-                        {
-                            using (Process process = Process.Start(startInfo))
+                            ProcessStartInfo startInfo = new ProcessStartInfo
                             {
-                                process.WaitForExit();
-                                int exitCode = process.ExitCode;
-                                if (exitCode == 0)
+                                FileName = discordFilename,
+                                Arguments = "-s",
+                                UseShellExecute = true,
+                                Verb = "runas"
+                            };
+                            try
+                            {
+                                using (Process process = Process.Start(startInfo))
                                 {
-                                    Console.WriteLine("Installation successful.");
-                                }
-                                else
-                                {
-                                    Console.WriteLine($"Installation exited with code: {exitCode}");
+                                    process.WaitForExit();
+                                    int exitCode = process.ExitCode;
+                                    if (exitCode == 0)
+                                    {
+                                        Console.WriteLine("Installation successful.");
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine($"Installation exited with code: {exitCode}");
+                                    }
                                 }
                             }
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine($"An error occurred: {ex.Message}");
-                        }
-                    });
-                    AppendLine("✅ Completed installation of Discord.");
-                    TrackResult("Discord", "Installed");
-                    progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine($"An error occurred: {ex.Message}");
+                            }
+                        });
+                        AppendLine("✅ Completed installation of Discord.");
+                        TrackResult("Discord", "Installed");
+                        progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
+                    }
                 }
             }
             if (googleChromeCheck.Checked)
@@ -1285,37 +1392,46 @@ namespace PlutoPoint_Installer
                 AppendLine("📌 Google Chrome is selected.");
                 if (!File.Exists(googleChromeExePath))
                 {
-                    AppendLine("🔄 Downloading Google Chrome...");
-                    try
+                    bool wingetOk = await TryWingetInstallAsync("Google.Chrome", "Google Chrome");
+                    if (wingetOk)
                     {
-                        await DownloadWithRetryAsync(googleChromeURL, googleChromeFilename);
-                        AppendLine("✅ Chrome download completed.");
-                    }
-                    catch (WebException ex)
-                    {
-                        AppendLine("❌ Failed to download Google Chrome: " + ex.Message);
-                        TrackResult("Google Chrome", "Failed");
-                    }
-                    AppendLine("📦 Installing Google Chrome...");
-                    try
-                    {
-                        using (Process process = new Process())
-                        {
-                            process.StartInfo.FileName = "msiexec";
-                            process.StartInfo.Arguments = $"/package \"{googleChromeFilename}\" /passive";
-                            process.StartInfo.UseShellExecute = true;
-                            process.Start();
-                            process.WaitForExit();
-                        }
-                        AppendLine("✅ Completed installation of Google Chrome.");
                         TrackResult("Google Chrome", "Installed");
+                        progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        AppendLine("❌ Chrome installation failed: " + ex.Message);
-                        TrackResult("Google Chrome", "Failed");
+                        AppendLine("🔄 Downloading Google Chrome...");
+                        try
+                        {
+                            await DownloadWithRetryAsync(googleChromeURL, googleChromeFilename);
+                            AppendLine("✅ Chrome download completed.");
+                        }
+                        catch (WebException ex)
+                        {
+                            AppendLine("❌ Failed to download Google Chrome: " + ex.Message);
+                            TrackResult("Google Chrome", "Failed");
+                        }
+                        AppendLine("📦 Installing Google Chrome...");
+                        try
+                        {
+                            using (Process process = new Process())
+                            {
+                                process.StartInfo.FileName = "msiexec";
+                                process.StartInfo.Arguments = $"/package \"{googleChromeFilename}\" /passive";
+                                process.StartInfo.UseShellExecute = true;
+                                process.Start();
+                                process.WaitForExit();
+                            }
+                            AppendLine("✅ Completed installation of Google Chrome.");
+                            TrackResult("Google Chrome", "Installed");
+                        }
+                        catch (Exception ex)
+                        {
+                            AppendLine("❌ Chrome installation failed: " + ex.Message);
+                            TrackResult("Google Chrome", "Failed");
+                        }
+                        progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
                     }
-                    progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
                 }
                 else
                 {
@@ -1335,56 +1451,65 @@ namespace PlutoPoint_Installer
                 }
                 else
                 {
-                    AppendLine("🔄 Downloading LibreOffice...");
-                    string libreOfficeVersion = GetLibreOfficeVersion();
-                    if (string.IsNullOrEmpty(libreOfficeVersion))
+                    bool wingetOk = await TryWingetInstallAsync("TheDocumentFoundation.LibreOffice", "LibreOffice");
+                    if (wingetOk)
                     {
-                        MessageBox.Show("Could not determine the latest LibreOffice version.");
-                        TrackResult("LibreOffice", "Failed");
-                        AppendInstallSummary();
-                        return;
+                        TrackResult("LibreOffice", "Installed");
+                        progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
                     }
-                    string libreOfficeDownloadUrl = $"https://download.documentfoundation.org/libreoffice/stable/{libreOfficeVersion}/win/x86_64/LibreOffice_{libreOfficeVersion}_Win_x86-64.msi";
-                    Uri libreOfficeURL = new Uri(libreOfficeDownloadUrl);
-                    await DownloadWithRetryAsync(libreOfficeURL, libreOfficeFilename);
-                    if (!File.Exists(libreOfficeFilename))
+                    else
                     {
-                        AppendLine("❌ LibreOffice download failed; falling back to known installer.");
-                        libreOfficeURL = new Uri("https://cloud.howardgb.com/public.php/dav/files/EFyAqCm3tEQ6W25/libreOffice.msi");
-                        await DownloadWithRetryAsync(libreOfficeURL, libreOfficeFilename);
-                    }
-                    AppendLine("📦 Installing LibreOffice...");
-                    await Task.Run(() =>
-                    {
-                        using (Process process = new Process())
+                        AppendLine("🔄 Downloading LibreOffice...");
+                        string libreOfficeVersion = GetLibreOfficeVersion();
+                        if (string.IsNullOrEmpty(libreOfficeVersion))
                         {
-                            process.StartInfo.FileName = "msiexec";
-                            process.StartInfo.Arguments = $"/package \"{libreOfficeFilename}\" /passive /norestart";
-                            process.StartInfo.UseShellExecute = false;
-                            process.StartInfo.RedirectStandardOutput = true;
-                            process.StartInfo.RedirectStandardError = true;
-                            process.StartInfo.CreateNoWindow = true;
-                            try
+                            MessageBox.Show("Could not determine the latest LibreOffice version.");
+                            TrackResult("LibreOffice", "Failed");
+                            AppendInstallSummary();
+                            return;
+                        }
+                        string libreOfficeDownloadUrl = $"https://download.documentfoundation.org/libreoffice/stable/{libreOfficeVersion}/win/x86_64/LibreOffice_{libreOfficeVersion}_Win_x86-64.msi";
+                        Uri libreOfficeURL = new Uri(libreOfficeDownloadUrl);
+                        await DownloadWithRetryAsync(libreOfficeURL, libreOfficeFilename);
+                        if (!File.Exists(libreOfficeFilename))
+                        {
+                            AppendLine("❌ LibreOffice download failed; falling back to known installer.");
+                            libreOfficeURL = new Uri("https://cloud.howardgb.com/public.php/dav/files/EFyAqCm3tEQ6W25/libreOffice.msi");
+                            await DownloadWithRetryAsync(libreOfficeURL, libreOfficeFilename);
+                        }
+                        AppendLine("📦 Installing LibreOffice...");
+                        await Task.Run(() =>
+                        {
+                            using (Process process = new Process())
                             {
-                                process.Start();
-                                string output = process.StandardOutput.ReadToEnd();
-                                string error = process.StandardError.ReadToEnd();
-                                process.WaitForExit();
-                                Console.WriteLine("Output: " + output);
-                                if (!string.IsNullOrEmpty(error))
+                                process.StartInfo.FileName = "msiexec";
+                                process.StartInfo.Arguments = $"/package \"{libreOfficeFilename}\" /passive /norestart";
+                                process.StartInfo.UseShellExecute = false;
+                                process.StartInfo.RedirectStandardOutput = true;
+                                process.StartInfo.RedirectStandardError = true;
+                                process.StartInfo.CreateNoWindow = true;
+                                try
                                 {
-                                    Console.WriteLine("Error: " + error);
+                                    process.Start();
+                                    string output = process.StandardOutput.ReadToEnd();
+                                    string error = process.StandardError.ReadToEnd();
+                                    process.WaitForExit();
+                                    Console.WriteLine("Output: " + output);
+                                    if (!string.IsNullOrEmpty(error))
+                                    {
+                                        Console.WriteLine("Error: " + error);
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    Console.WriteLine("An error occurred: " + ex.Message);
                                 }
                             }
-                            catch (Exception ex)
-                            {
-                                Console.WriteLine("An error occurred: " + ex.Message);
-                            }
-                        }
-                    });
-                    AppendLine("✅ Completed installation of LibreOffice.");
-                    TrackResult("LibreOffice", "Installed");
-                    progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
+                        });
+                        AppendLine("✅ Completed installation of LibreOffice.");
+                        TrackResult("LibreOffice", "Installed");
+                        progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
+                    }
                 }
             }
             if (nvidiaAppCheck.Checked)
@@ -1467,38 +1592,47 @@ namespace PlutoPoint_Installer
                 }
                 else
                 {
-                    AppendLine("🔄 Downloading Mozilla Firefox...");
-                    await DownloadWithRetryAsync(mozillaFirefoxURL, mozillaFirefoxFilename);
-                    AppendLine("📦 Installing Mozilla Firefox...");
-                    await Task.Run(() =>
+                    bool wingetOk = await TryWingetInstallAsync("Mozilla.Firefox", "Mozilla Firefox");
+                    if (wingetOk)
                     {
-                        using (Process process = new Process())
+                        TrackResult("Mozilla Firefox", "Installed");
+                        progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
+                    }
+                    else
+                    {
+                        AppendLine("🔄 Downloading Mozilla Firefox...");
+                        await DownloadWithRetryAsync(mozillaFirefoxURL, mozillaFirefoxFilename);
+                        AppendLine("📦 Installing Mozilla Firefox...");
+                        await Task.Run(() =>
                         {
-                            process.StartInfo.FileName = "msiexec";
-                            process.StartInfo.Arguments = $"/package \"{mozillaFirefoxFilename}\" /passive";
-                            process.StartInfo.UseShellExecute = false;
-                            process.StartInfo.RedirectStandardOutput = true;
-                            process.StartInfo.RedirectStandardError = true;
-                            process.StartInfo.CreateNoWindow = true;
-                            try
+                            using (Process process = new Process())
                             {
-                                process.Start();
-                                string output = process.StandardOutput.ReadToEnd();
-                                string error = process.StandardError.ReadToEnd();
-                                process.WaitForExit();
-                                Console.WriteLine("Output: " + output);
-                                if (!string.IsNullOrEmpty(error))
-                                    Console.WriteLine("Error: " + error);
+                                process.StartInfo.FileName = "msiexec";
+                                process.StartInfo.Arguments = $"/package \"{mozillaFirefoxFilename}\" /passive";
+                                process.StartInfo.UseShellExecute = false;
+                                process.StartInfo.RedirectStandardOutput = true;
+                                process.StartInfo.RedirectStandardError = true;
+                                process.StartInfo.CreateNoWindow = true;
+                                try
+                                {
+                                    process.Start();
+                                    string output = process.StandardOutput.ReadToEnd();
+                                    string error = process.StandardError.ReadToEnd();
+                                    process.WaitForExit();
+                                    Console.WriteLine("Output: " + output);
+                                    if (!string.IsNullOrEmpty(error))
+                                        Console.WriteLine("Error: " + error);
+                                }
+                                catch (Exception ex)
+                                {
+                                    Console.WriteLine("An error occurred: " + ex.Message);
+                                }
                             }
-                            catch (Exception ex)
-                            {
-                                Console.WriteLine("An error occurred: " + ex.Message);
-                            }
-                        }
-                    });
-                    AppendLine("✅ Completed installation of Mozilla Firefox.");
-                    TrackResult("Mozilla Firefox", "Installed");
-                    progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
+                        });
+                        AppendLine("✅ Completed installation of Mozilla Firefox.");
+                        TrackResult("Mozilla Firefox", "Installed");
+                        progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
+                    }
                 }
             }
             if (mozillaThunderbirdCheck.Checked)
@@ -1513,40 +1647,49 @@ namespace PlutoPoint_Installer
                 }
                 else
                 {
-                    // Download Thunderbird
-                    AppendLine("🔄 Downloading Mozilla Thunderbird...");
-                    await DownloadWithRetryAsync(mozillaThunderbirdURL, mozillaThunderbirdFilename);
-                    // Install Thunderbird
-                    AppendLine("📦 Installing Mozilla Thunderbird...");
-                    await Task.Run(() =>
+                    bool wingetOk = await TryWingetInstallAsync("Mozilla.Thunderbird", "Mozilla Thunderbird");
+                    if (wingetOk)
                     {
-                        using (Process process = new Process())
+                        TrackResult("Mozilla Thunderbird", "Installed");
+                        progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
+                    }
+                    else
+                    {
+                        // Download Thunderbird
+                        AppendLine("🔄 Downloading Mozilla Thunderbird...");
+                        await DownloadWithRetryAsync(mozillaThunderbirdURL, mozillaThunderbirdFilename);
+                        // Install Thunderbird
+                        AppendLine("📦 Installing Mozilla Thunderbird...");
+                        await Task.Run(() =>
                         {
-                            process.StartInfo.FileName = "msiexec";
-                            process.StartInfo.Arguments = $"/package \"{mozillaThunderbirdFilename}\" /passive";
-                            process.StartInfo.UseShellExecute = false;
-                            process.StartInfo.RedirectStandardOutput = true;
-                            process.StartInfo.RedirectStandardError = true;
-                            process.StartInfo.CreateNoWindow = true;
-                            try
+                            using (Process process = new Process())
                             {
-                                process.Start();
-                                string output = process.StandardOutput.ReadToEnd();
-                                string error = process.StandardError.ReadToEnd();
-                                process.WaitForExit();
-                                Console.WriteLine("Output: " + output);
-                                if (!string.IsNullOrEmpty(error))
-                                    Console.WriteLine("Error: " + error);
+                                process.StartInfo.FileName = "msiexec";
+                                process.StartInfo.Arguments = $"/package \"{mozillaThunderbirdFilename}\" /passive";
+                                process.StartInfo.UseShellExecute = false;
+                                process.StartInfo.RedirectStandardOutput = true;
+                                process.StartInfo.RedirectStandardError = true;
+                                process.StartInfo.CreateNoWindow = true;
+                                try
+                                {
+                                    process.Start();
+                                    string output = process.StandardOutput.ReadToEnd();
+                                    string error = process.StandardError.ReadToEnd();
+                                    process.WaitForExit();
+                                    Console.WriteLine("Output: " + output);
+                                    if (!string.IsNullOrEmpty(error))
+                                        Console.WriteLine("Error: " + error);
+                                }
+                                catch (Exception ex)
+                                {
+                                    Console.WriteLine("An error occurred: " + ex.Message);
+                                }
                             }
-                            catch (Exception ex)
-                            {
-                                Console.WriteLine("An error occurred: " + ex.Message);
-                            }
-                        }
-                    });
-                    AppendLine("✅ Completed installation of Mozilla Thunderbird.");
-                    TrackResult("Mozilla Thunderbird", "Installed");
-                    progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
+                        });
+                        AppendLine("✅ Completed installation of Mozilla Thunderbird.");
+                        TrackResult("Mozilla Thunderbird", "Installed");
+                        progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
+                    }
                 }
             }
             if (steamCheck.Checked)
@@ -1560,42 +1703,51 @@ namespace PlutoPoint_Installer
                 }
                 else
                 {
-                    AppendLine("🔄 Downloading Steam...");
-                    await DownloadWithRetryAsync(steamURL, steamFilename);
-                    AppendLine("📦 Installing Steam...");
-                    await Task.Run(() =>
+                    bool wingetOk = await TryWingetInstallAsync("Valve.Steam", "Steam");
+                    if (wingetOk)
                     {
-                        ProcessStartInfo startInfo = new ProcessStartInfo
+                        TrackResult("Steam", "Installed");
+                        progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
+                    }
+                    else
+                    {
+                        AppendLine("🔄 Downloading Steam...");
+                        await DownloadWithRetryAsync(steamURL, steamFilename);
+                        AppendLine("📦 Installing Steam...");
+                        await Task.Run(() =>
                         {
-                            FileName = steamFilename,
-                            Arguments = "/S",
-                            UseShellExecute = true,
-                            Verb = "runas"
-                        };
-                        try
-                        {
-                            using (Process process = Process.Start(startInfo))
+                            ProcessStartInfo startInfo = new ProcessStartInfo
                             {
-                                process.WaitForExit();
-                                int exitCode = process.ExitCode;
-                                if (exitCode == 0)
+                                FileName = steamFilename,
+                                Arguments = "/S",
+                                UseShellExecute = true,
+                                Verb = "runas"
+                            };
+                            try
+                            {
+                                using (Process process = Process.Start(startInfo))
                                 {
-                                    Console.WriteLine("Installation successful.");
-                                }
-                                else
-                                {
-                                    Console.WriteLine($"Installation exited with code: {exitCode}");
+                                    process.WaitForExit();
+                                    int exitCode = process.ExitCode;
+                                    if (exitCode == 0)
+                                    {
+                                        Console.WriteLine("Installation successful.");
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine($"Installation exited with code: {exitCode}");
+                                    }
                                 }
                             }
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine($"An error occurred: {ex.Message}");
-                        }
-                    });
-                    AppendLine("✅ Completed installation of Steam.");
-                    TrackResult("Steam", "Installed");
-                    progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine($"An error occurred: {ex.Message}");
+                            }
+                        });
+                        AppendLine("✅ Completed installation of Steam.");
+                        TrackResult("Steam", "Installed");
+                        progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
+                    }
                 }
             }
             if (vlcMediaPlayerCheck.Checked)
@@ -1609,40 +1761,49 @@ namespace PlutoPoint_Installer
                 }
                 else
                 {
-                    AppendLine("🔄 Downloading VLC Media Player...");
-                    await DownloadWithRetryAsync(vlcMediaPlayerURL, vlcMediaPlayerFilename);
-                    AppendLine("📦 Installing VLC Media Player...");
-                    await Task.Run(() =>
+                    bool wingetOk = await TryWingetInstallAsync("VideoLAN.VLC", "VLC Media Player");
+                    if (wingetOk)
                     {
-                        using (Process process = new Process())
+                        TrackResult("VLC Media Player", "Installed");
+                        progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
+                    }
+                    else
+                    {
+                        AppendLine("🔄 Downloading VLC Media Player...");
+                        await DownloadWithRetryAsync(vlcMediaPlayerURL, vlcMediaPlayerFilename);
+                        AppendLine("📦 Installing VLC Media Player...");
+                        await Task.Run(() =>
                         {
-                            process.StartInfo.FileName = "msiexec";
-                            process.StartInfo.Arguments = $"/package \"{vlcMediaPlayerFilename}\" /passive";
-                            process.StartInfo.UseShellExecute = false;
-                            process.StartInfo.RedirectStandardOutput = true;
-                            process.StartInfo.RedirectStandardError = true;
-                            process.StartInfo.CreateNoWindow = true;
-                            try
+                            using (Process process = new Process())
                             {
-                                process.Start();
-                                string output = process.StandardOutput.ReadToEnd();
-                                string error = process.StandardError.ReadToEnd();
-                                process.WaitForExit();
-                                Console.WriteLine("Output: " + output);
-                                if (!string.IsNullOrEmpty(error))
+                                process.StartInfo.FileName = "msiexec";
+                                process.StartInfo.Arguments = $"/package \"{vlcMediaPlayerFilename}\" /passive";
+                                process.StartInfo.UseShellExecute = false;
+                                process.StartInfo.RedirectStandardOutput = true;
+                                process.StartInfo.RedirectStandardError = true;
+                                process.StartInfo.CreateNoWindow = true;
+                                try
                                 {
-                                    Console.WriteLine("Error: " + error);
+                                    process.Start();
+                                    string output = process.StandardOutput.ReadToEnd();
+                                    string error = process.StandardError.ReadToEnd();
+                                    process.WaitForExit();
+                                    Console.WriteLine("Output: " + output);
+                                    if (!string.IsNullOrEmpty(error))
+                                    {
+                                        Console.WriteLine("Error: " + error);
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    Console.WriteLine("An error occurred: " + ex.Message);
                                 }
                             }
-                            catch (Exception ex)
-                            {
-                                Console.WriteLine("An error occurred: " + ex.Message);
-                            }
-                        }
-                    });
-                    AppendLine("✅ Completed installation of VLC Media Player.");
-                    TrackResult("VLC Media Player", "Installed");
-                    progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
+                        });
+                        AppendLine("✅ Completed installation of VLC Media Player.");
+                        TrackResult("VLC Media Player", "Installed");
+                        progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
+                    }
                 }
             }
             if (pinAppsCheck.Checked)
@@ -1944,7 +2105,6 @@ namespace PlutoPoint_Installer
         {
             if (_logFilePath != null)
                 return;
-
             try
             {
                 string logDir = Path.Combine(
@@ -1958,13 +2118,11 @@ namespace PlutoPoint_Installer
                 _logFilePath = string.Empty;
             }
         }
-
         private void AppendLine(string text = "")
         {
             installerTextBox.Text += text + Environment.NewLine;
             installerLogPanel.PerformLayout();
             installerLogPanel.AutoScrollPosition = new Point(0, installerTextBox.Bottom);
-
             EnsureLogFile();
             if (!string.IsNullOrEmpty(_logFilePath))
             {
@@ -1974,7 +2132,6 @@ namespace PlutoPoint_Installer
                 }
                 catch
                 {
-                    // Logging to disk is best-effort; never let it break the install.
                 }
             }
         }

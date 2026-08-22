@@ -115,7 +115,7 @@ namespace PlutoPoint_Installer
             this.locationLabel.BackColor = System.Drawing.Color.Transparent;
             this.locationLabel.Font = new System.Drawing.Font("Segoe UI", 8.25F);
             this.locationLabel.ForeColor = System.Drawing.Color.White;
-            this.locationLabel.Location = new System.Drawing.Point(120, 425);
+            this.locationLabel.Location = new System.Drawing.Point(140, 425);
             this.locationLabel.Name = "locationLabel";
             this.locationLabel.Size = new System.Drawing.Size(0, 13);
             this.locationLabel.TabIndex = 9;
