@@ -1246,7 +1246,7 @@ namespace PlutoPoint_Installer
                 }
                 else
                 {
-                    bool wingetOk = await TryWingetInstallAsync("AnyDeskSoftwareGmbH.AnyDesk", "AnyDesk");
+                    bool wingetOk = await TryWingetInstallAsync("AnyDesk.AnyDesk", "AnyDesk");
                     if (wingetOk)
                     {
                         TrackResult("AnyDesk", "Installed");
@@ -1527,22 +1527,7 @@ namespace PlutoPoint_Installer
                     else
                     {
                         AppendLine("🔄 Downloading LibreOffice...");
-                        string libreOfficeVersion = GetLibreOfficeVersion();
-                        if (string.IsNullOrEmpty(libreOfficeVersion))
-                        {
-                            MessageBox.Show("Could not determine the latest LibreOffice version.");
-                            TrackResult("LibreOffice", "Failed");
-                            AppendInstallSummary();
-                            return;
-                        }
-                        string libreOfficeDownloadUrl = $"https://download.documentfoundation.org/libreoffice/stable/{libreOfficeVersion}/win/x86_64/LibreOffice_{libreOfficeVersion}_Win_x86-64.msi";
-                        Uri libreOfficeURL = new Uri(libreOfficeDownloadUrl);
-                        await DownloadWithRetryAsync(libreOfficeURL, libreOfficeFilename);
-                        if (!File.Exists(libreOfficeFilename))
-                        {
-                            AppendLine("❌ LibreOffice download failed; falling back to known installer.");
-                            await DownloadWithRetryAsync(libreOfficeFallbackURL, libreOfficeFilename);
-                        }
+                        await DownloadWithRetryAsync(libreOfficeFallbackURL, libreOfficeFilename);
                         AppendLine("📦 Installing LibreOffice...");
                         await Task.Run(() =>
                         {
