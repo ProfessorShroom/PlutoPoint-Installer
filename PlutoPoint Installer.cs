@@ -485,6 +485,7 @@ namespace PlutoPoint_Installer
         private Uri nanaZipURL => new Uri(urls.nanaZip);
         private Uri steamURL => new Uri(urls.steam);
         private Uri vlcMediaPlayerURL => new Uri(urls.vlcMediaPlayer);
+        private Uri libreOfficeFallbackURL => new Uri(urls.libreOfficeFallback);
         public bool IsClickPlaying { get; private set; }
         private void CheckWindowsVersion()
         {
@@ -1540,8 +1541,7 @@ namespace PlutoPoint_Installer
                         if (!File.Exists(libreOfficeFilename))
                         {
                             AppendLine("❌ LibreOffice download failed; falling back to known installer.");
-                            libreOfficeURL = new Uri("https://cloud.howardgb.com/public.php/dav/files/EFyAqCm3tEQ6W25/libreOffice.msi");
-                            await DownloadWithRetryAsync(libreOfficeURL, libreOfficeFilename);
+                            await DownloadWithRetryAsync(libreOfficeFallbackURL, libreOfficeFilename);
                         }
                         AppendLine("📦 Installing LibreOffice...");
                         await Task.Run(() =>

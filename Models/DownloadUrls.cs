@@ -15,5 +15,6 @@ namespace PlutoPoint_Installer.Models
         public string nanaZip { get; set; }
         public string steam { get; set; }
         public string vlcMediaPlayer { get; set; }
+        public string libreOfficeFallback { get; set; }
     }
 }
