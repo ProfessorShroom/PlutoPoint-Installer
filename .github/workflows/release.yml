@@ -6,6 +6,9 @@ on:
       - 'v*.*.*.*' # Matches v7.0.0.0
       - '*.*.*.*'  # Matches 7.0.0.0
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: windows-latest
