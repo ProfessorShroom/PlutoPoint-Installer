@@ -3,8 +3,8 @@ name: Build and Release Installer
 on:
   push:
     tags:
-      - 'v*.*.*.*' # Matches v7.0.0.0
-      - '*.*.*.*'  # Matches 7.0.0.0
+      - 'v*.*.*.*'
+      - '*.*.*.*'
 
 permissions:
   contents: write
@@ -15,10 +15,10 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.2.2
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v4.3.0
         with:
           dotnet-version: '8.0.x'
 
@@ -28,14 +28,11 @@ jobs:
       - name: Stage Executable
         shell: powershell
         run: |
-          # Search for the generated executable anywhere under the bin folder
           $exe = Get-ChildItem -Path "bin" -Filter "Computer Repair Centre Installer.exe" -Recurse | Select-Object -First 1
-
+          
           if ($exe) {
               Write-Host "Found executable at: $($exe.FullName)"
-              # Ensure output staging directory exists
               New-Item -ItemType Directory -Force -Path "staging"
-              # Copy and rename to match the update.xml format
               Copy-Item -Path $exe.FullName -Destination "staging\Computer-Repair-Centre-Installer.exe" -Force
           } else {
               Write-Error "Could not find 'Computer Repair Centre Installer.exe' in bin directory."
@@ -43,17 +40,18 @@ jobs:
           }
 
       - name: Create Versioned Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v2.1.0
         with:
+          name: "Computer Repair Centre Installer ${{ github.ref_name }}"
           files: staging/Computer-Repair-Centre-Installer.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Update Floating Latest Pointer
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v2.1.0
         with:
           tag_name: installer-latest
-          name: "Latest Installer Build"
+          name: "Computer Repair Centre Installer Latest"
           files: staging/Computer-Repair-Centre-Installer.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
