@@ -1,20 +1,17 @@
-﻿using AutoUpdaterDotNET;
-using PlutoPoint_Launcher;
 using System;
-using System.Windows.Forms;
-using System.IO;
+using Avalonia;
 
-namespace PlutoPoint_Installer
+namespace PlutoPoint_Launcher;
+
+internal static class Program
 {
-    internal static class Program
-    {
-        [STAThread]
-        static void Main()
-        {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            AutoUpdater.HttpUserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64)";
-            Application.Run(new installerForm());
-        }
-    }
+    [STAThread]
+    public static void Main(string[] args) =>
+        BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
+
+    public static AppBuilder BuildAvaloniaApp() =>
+        AppBuilder.Configure<App>()
+            .UsePlatformDetect()
+            .WithInterFont()
+            .LogToTrace();
 }

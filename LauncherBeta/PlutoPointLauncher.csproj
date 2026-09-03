@@ -1,0 +1,49 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net8.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<AssemblyName>PlutoPoint Launcher Beta</AssemblyName>
+		<RootNamespace>PlutoPoint_Launcher_Beta</RootNamespace>
+		<ApplicationIcon>Assets\computerRepairCentreIconBeta.ico</ApplicationIcon>
+		<ApplicationManifest>app.manifest</ApplicationManifest>
+		<AssemblyVersion>2026.09.03.0</AssemblyVersion>
+		<FileVersion>2026.09.03.0</FileVersion>
+		<Version>2026.09.03.0</Version>
+		<Product>Computer Repair Centre Installer Launcher Beta</Product>
+		<Company></Company>
+		<Copyright>Copyright © Charlie Howard 2026</Copyright>
+		<AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+
+		<PlatformTarget>x64</PlatformTarget>
+		<Platforms>x64</Platforms>
+		<BaseOutputPath>bin\</BaseOutputPath>
+		<PublishDir>bin\$(Platform)\$(Configuration)\</PublishDir>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)'=='Release'">
+		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
+		<SelfContained>true</SelfContained>
+		<PublishSingleFile>true</PublishSingleFile>
+		<IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Avalonia" Version="11.3.15" />
+		<PackageReference Include="Avalonia.Desktop" Version="11.3.15" />
+		<PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.15" />
+		<PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.15" />
+		<PackageReference Include="Avalonia.Diagnostics" Version="11.3.15" Condition="'$(Configuration)' == 'Debug'" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<AvaloniaResource Include="Assets\**" />
+	</ItemGroup>
+
+	<Target Name="AutoPublishSingleFile" AfterTargets="Build" Condition="'$(Configuration)'=='Release'">
+		<CallTarget Targets="Publish" />
+	</Target>
+
+</Project>
