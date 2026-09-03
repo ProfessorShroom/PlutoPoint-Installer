@@ -1,479 +1,66 @@
-﻿using Microsoft.Win32;
-using Shell32;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Drawing.Drawing2D;
 using System.IO;
-using System.Media;
+using System.Linq;
+using System.Management;
 using System.Net;
 using System.Net.Http;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
+using System.Text;
+using System.Text.Json;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Web.Script.Serialization;
-using PlutoPoint_Installer.Utilities;
-using PlutoPoint_Installer.Attributes;
-using PlutoPoint_Installer.UI;
+using Avalonia.Controls;
+using Avalonia.Input;
+using Avalonia.Media;
+using Avalonia.Threading;
+using Microsoft.Win32;
 using PlutoPoint_Installer.Models;
+using PlutoPoint_Installer.Utilities;
 
 // Copyright © Charlie Howard 2026 All rights reserved.
 
-namespace PlutoPoint_Installer
+namespace PlutoPoint_Installer.Views
 {
-    using System.Drawing;
-    using System.Globalization;
-    using System.Linq;
-    using System.Management;
-    using System.Reflection;
-    using System.Text;
-    using System.Text.RegularExpressions;
-    using System.Windows.Forms;
-    using File = System.IO.File;
-    public partial class installerForm : Form
+    public partial class MainWindow : Window
     {
-        DateTime buildDate = File.GetLastWriteTime(Assembly.GetExecutingAssembly().Location);
-        private Color _gradientTop = Color.FromArgb(30, 200, 255);
-        private Color _gradientBottom = Color.FromArgb(140, 0, 255);
-        private Task _initialiseUrlsTask;
-        private Task _checkIpTask;
-        private bool? _wingetAvailable;
         [DllImport("Shell32.dll", CharSet = CharSet.Unicode)]
         private static extern uint SHEmptyRecycleBin(IntPtr hwnd, string pszRootPath, uint dwFlags);
         private const uint SHERB_NOCONFIRMATION = 0x00000001;
         private const uint SHERB_NOPROGRESSUI = 0x00000002;
         private const uint SHERB_NOSOUND = 0x00000004;
-        private string locationLine = "📍 Detecting location...";
-        string rootDir;
-        string programDataDir;
-        private Image _overlayImage;
-        private Icon _overlayIcon;
-        private float _overlayRotationDegrees;
-        public Image OverlayImage { get { return _overlayImage; } set { _overlayImage = value; } }
-        public float OverlayRotationDegrees { get { return _overlayRotationDegrees; } set { _overlayRotationDegrees = value; } }
-        public installerForm()
-        {
-            InitializeComponent();
-            this.Resize += (s, e) => {
-                AdjustInstallerTextBoxSizeForOverlay();
-                this.Invalidate();
-            };
-            ApplyFonts();
-            this.AutoScaleMode = AutoScaleMode.Dpi;
-            // Shutdown/restart checks
-            shutdownCheck.CheckedChanged += ShutdownCheck_CheckedChanged;
-            restartCheck.CheckedChanged += RestartCheck_CheckedChanged;
-            // Gradient/transparency
-            this.SetStyle(ControlStyles.AllPaintingInWmPaint |
-                          ControlStyles.UserPaint |
-                          ControlStyles.OptimizedDoubleBuffer, true);
-            this.DoubleBuffered = true;
-            // Hover
-            install.MouseEnter += (s, e) => AudioEffects.PlayHoverPop();
-            restart.MouseEnter += (s, e) => AudioEffects.PlayHoverPop();
-            close.MouseEnter += (s, e) => AudioEffects.PlayHoverPop();
-            test.MouseEnter += (s, e) => AudioEffects.PlayHoverPop();
-            // Click
-            install.Click += (s, e) => AudioEffects.PlayClickChime();
-            restart.Click += (s, e) => AudioEffects.PlayClickChime();
-            close.Click += (s, e) => AudioEffects.PlayClickChime();
-            test.Click += (s, e) => AudioEffects.PlayClickChime();
-            OverrideRoundedBoxColours();
-            // Background tasks only
-            _initialiseUrlsTask = InitialiseUrlsAsync();
-            _checkIpTask = CheckIPAsync();
-            // Info checks
-            PrintVersion();
-            CheckWindowsVersion();
-            CheckForIntelHardware();
-            CheckforAMDHardware();
-            CheckForNvidiaGPU();
-            AppendLine(locationLine);
-            _ = PrintDayAsync();
-            Version version = Assembly.GetExecutingAssembly().GetName().Version;
-            string versionStr = version?.ToString() ?? "";
-            string versionText = $"Version {versionStr}";
-            if (versionStr.Replace(".", "").Contains("69"))
-            {
-                versionText += " - Nice";
-            }
-            versionLabel.Text = versionText;
-        }
-        private UI.ThemeManager _themeManager = new UI.ThemeManager();
-        private void ApplyFonts()
-        {
-            installerTextBox.Font = Program.Ubuntu(12f, FontStyle.Regular);
-            close.Font = Program.Ubuntu(9F, FontStyle.Regular);
-            restart.Font = Program.Ubuntu(9F, FontStyle.Regular);
-            softwareBox.Font = Program.Ubuntu(8F, FontStyle.Regular);
-            versionLabel.Font = Program.Ubuntu(8.25f, FontStyle.Regular);
-            locationLabel.Font = Program.Ubuntu(8.25f, FontStyle.Regular);
-            test.Font = Program.Ubuntu(8F, FontStyle.Regular);
-            install.Font = Program.Ubuntu(12, FontStyle.Regular);
-            utilitiesBox.Font = Program.Ubuntu(8.25f, FontStyle.Regular);
-        }
-        protected override void OnLoad(EventArgs e)
-        {
-            base.OnLoad(e);
-            _themeManager.ApplyThemeAndMessages(
-                (top, bottom, log) => {
-                    this.ApplyGradientTheme(top, bottom);
-                    this.ApplyLogTheme(log);
-                    this.Invalidate();
-                },
-                (msg) => this.AppendLine(msg)
-            );
-            _themeManager.UpdateGUIEvent(this);
-            this.Invalidate();
-        }
-        protected override void OnPaint(PaintEventArgs e)
-        {
-            base.OnPaint(e);
-            if (this.OverlayImage == null) return;
-            e.Graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-            Rectangle dest = PlutoPoint_Installer.UI.ThemeManager.GetScaledRect(this.OverlayImage, 670, 320, 100, 100);
-            using (Matrix m = new Matrix())
-            {
-                float centerX = dest.Left + dest.Width / 2f;
-                float centerY = dest.Top + dest.Height / 2f;
-                m.RotateAt(this.OverlayRotationDegrees, new PointF(centerX, centerY));
-                e.Graphics.Transform = m;
-                e.Graphics.DrawImage(this.OverlayImage, dest);
-            }
-        }
-        public void RunSilentCommand(string fileName, string arguments)
-        {
-            ProcessStartInfo startInfo = new ProcessStartInfo
-            {
-                FileName = fileName,
-                Arguments = arguments,
-                CreateNoWindow = true,
-                UseShellExecute = false,
-                WindowStyle = ProcessWindowStyle.Hidden
-            };
-            using (Process process = Process.Start(startInfo))
-            {
-                process.WaitForExit();
-            }
-        }
-        public void AdjustInstallerTextBoxSizeForOverlay()
-        {
-            bool hasOverlayImage = (_overlayImage != null);
-            this.installerLogPanel.Size = hasOverlayImage
-                ? new System.Drawing.Size(517, 258)
-                : new System.Drawing.Size(517, 355);
-            installerTextBox.MaximumSize = new Size(installerLogPanel.ClientSize.Width - 10, 0);
-        }
-        private async Task CheckIPAsync()
-        {
-            string publicIP = await GetPublicIPAddressAsync();
-            if (string.IsNullOrWhiteSpace(publicIP))
-                return;
-            string publicIPHash = HashIP(publicIP);
-            LocationHashes hashes = await GetLocationHashesAsync();
-            if (hashes == null)
-                return;
-            safeLocation = "0";
-            romsey = "0";
-            chandlersFord = "0";
-            highcliffe = "0";
-            charlieHome = "0";
-            if (publicIPHash == hashes.romsey)
-            {
-                romsey = "1";
-                safeLocation = "1";
-            }
-            else if (publicIPHash == hashes.chandlersFord)
-            {
-                chandlersFord = "1";
-                safeLocation = "1";
-            }
-            else if (publicIPHash == hashes.highcliffe)
-            {
-                highcliffe = "1";
-                safeLocation = "1";
-            }
-            else if (publicIPHash == hashes.charlieHome)
-            {
-                charlieHome = "1";
-                safeLocation = "1";
-            }
-            AppendLocation();
-            UpdateLocation();
-        }
-        private async Task<string> GetPublicIPAddressAsync()
-        {
-            try
-            {
-                using (var client = new HttpClient())
-                {
-                    string ip = await client.GetStringAsync("https://api.ipify.org");
-                    return ip?.Trim();
-                }
-            }
-            catch
-            {
-                return null;
-            }
-        }
+
+        private bool? _wingetAvailable;
+
+        private static readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+
         // Set strings
-        string safeLocation = null;
-        string location = null;
-        string romsey = null;
-        string chandlersFord = null;
-        string highcliffe = null;
-        string charlieHome = null;
-        string windows7 = null;
-        string windows8 = null;
-        string windows81 = null;
-        string windows10 = null;
-        string windows11 = null;
-        string amd = null;
-        string nvidia = null;
-        string intel = null;
-        protected override void OnPaintBackground(PaintEventArgs e)
-        {
-            base.OnPaintBackground(e);
-            if (this.ClientSize.Width <= 0 || this.ClientSize.Height <= 0)
-                return;
-            e.Graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-            using (LinearGradientBrush brush = new LinearGradientBrush(
-                new Point(0, 0),
-                new Point(this.ClientSize.Width, this.ClientSize.Height),
-                _gradientTop,
-                _gradientBottom))
-            {
-                e.Graphics.FillRectangle(brush, this.ClientRectangle);
-            }
-        }
-        private void PrintVersion()
-        {
-            Version version = Assembly.GetExecutingAssembly().GetName().Version;
-            string versionStr = version?.ToString() ?? "";
-            string versionText = $"Version {versionStr}";
-            if (versionStr.Replace(".", "").Contains("69"))
-            {
-                versionText += " - Nice";
-            }
-            Func<int, string> WithDaySuffix = day =>
-            {
-                if (day >= 11 && day <= 13) return day + "th";
-                switch (day % 10)
-                {
-                    case 1: return day + "st";
-                    case 2: return day + "nd";
-                    case 3: return day + "rd";
-                    default: return day + "th";
-                }
-            };
-            var assembly = Assembly.GetExecutingAssembly();
-            var updateAttr = assembly
-                .GetCustomAttributes(typeof(AssemblyUpdateDateAttribute), false)
-                .Cast<AssemblyUpdateDateAttribute>()
-                .FirstOrDefault();
-            DateTime dateToUse;
-            if (updateAttr != null &&
-                DateTime.TryParseExact(updateAttr.Date, "dd/MM/yyyy",
-                                       System.Globalization.CultureInfo.InvariantCulture,
-                                       System.Globalization.DateTimeStyles.None,
-                                       out DateTime parsedDate))
-            {
-                dateToUse = parsedDate;
-            }
-            else
-            {
-                dateToUse = DateTime.Today;
-            }
-            string formatted = string.Format("{0} of {1} {2}",
-                WithDaySuffix(dateToUse.Day),
-                dateToUse.ToString("MMMM"),
-                dateToUse.Year);
-            AppendLine($"🛠️ {versionText}");
-            AppendLine("📅 Last updated on " + formatted + ".");
-        }
-        private async Task PrintDayAsync()
-        {
-            if (_checkIpTask != null)
-                await _checkIpTask;
-        }
-        private void ApplyButtonTheme(Color backColor, Color foreColor)
-        {
-            install.BackColor = backColor;
-            install.ForeColor = foreColor;
-            restart.BackColor = backColor;
-            restart.ForeColor = foreColor;
-            close.BackColor = backColor;
-            close.ForeColor = foreColor;
-        }
-        private void ApplyGradientTheme(Color topColor, Color bottomColor)
-        {
-            _gradientTop = topColor;
-            _gradientBottom = bottomColor;
-        }
-        private void ApplyLogTheme(Color foreColor)
-        {
-            installerTextBox.ForeColor = foreColor;
-        }
-        private void SyncLabelsWithInstall()
-        {
-            versionLabel.ForeColor = install.BackColor;
-            locationLabel.ForeColor = install.BackColor;
-            if (versionLabel is LinkLabel linkLabel)
-            {
-                linkLabel.LinkColor = install.BackColor;
-                linkLabel.ActiveLinkColor = install.BackColor;
-                linkLabel.VisitedLinkColor = install.BackColor;
-            }
-        }
-        protected void OverrideRoundedBoxColours()
-        {
-            softwareBox.BorderColorOverride = versionLabel.LinkColor;
-            softwareBox.TextColorOverride = versionLabel.LinkColor;
-            utilitiesBox.BorderColorOverride = versionLabel.LinkColor;
-            utilitiesBox.TextColorOverride = versionLabel.LinkColor;
-        }
-        private string HashIP(string ip)
-        {
-            using (var sha256 = SHA256.Create())
-            {
-                byte[] bytes = Encoding.UTF8.GetBytes(ip.Trim());
-                byte[] hash = sha256.ComputeHash(bytes);
-                return BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
-            }
-        }
-        private async Task<PasswordHashes> GetPasswordHashesAsync()
-        {
-            try
-            {
-                string url = "https://raw.githubusercontent.com/ProfessorShroom/PlutoPoint-Installer/refs/heads/main/Data/Passwords.json";
-                using (var client = new HttpClient())
-                {
-                    string json = await client.GetStringAsync(url);
-                    var serializer = new JavaScriptSerializer();
-                    return serializer.Deserialize<PasswordHashes>(json);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Failed to load hashes: {ex.Message}");
-                return null;
-            }
-        }
-        private async Task<LocationHashes> GetLocationHashesAsync()
-        {
-            try
-            {
-                string url = "https://raw.githubusercontent.com/ProfessorShroom/PlutoPoint-Installer/refs/heads/main/Data/IPs.json";
-                using (var client = new HttpClient())
-                {
-                    string json = await client.GetStringAsync(url);
-                    var serializer = new JavaScriptSerializer();
-                    return serializer.Deserialize<LocationHashes>(json);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Failed to load hashes: {ex.Message}");
-                return null;
-            }
-        }
-        private void AppendLocation()
-        {
-            if (romsey == "1")
-                locationLine = "📍 The installer is being run from the Romsey shop.";
-            else if (chandlersFord == "1")
-                locationLine = "📍 The installer is being run from the Chandlers Ford shop.";
-            else if (highcliffe == "1")
-                locationLine = "📍 The installer is being run from the Highcliffe shop.";
-            else if (charlieHome == "1")
-                locationLine = "📍 The installer is being run from Charlie's house.";
-            else
-                locationLine = "📍 Location unknown.";
-            // rebuild text safely
-            var lines = installerTextBox.Text.Split(new[] { Environment.NewLine }, StringSplitOptions.None).ToList();
-            for (int i = 0; i < lines.Count; i++)
-            {
-                if (lines[i].StartsWith("📍"))
-                {
-                    lines[i] = locationLine;
-                    break;
-                }
-            }
-            installerTextBox.Text = string.Join(Environment.NewLine, lines);
-            installerLogPanel.PerformLayout();
-            installerLogPanel.AutoScrollPosition = new Point(0, installerTextBox.Bottom);
-        }
-        private string GetPublicIPAddress()
-        {
-            try
-            {
-                string url = "https://api.ipify.org";
-                using (var webClient = new WebClient())
-                {
-                    string ip = webClient.DownloadString(url).Trim();
-                    return ip;
-                }
-            }
-            catch
-            {
-                return null;
-            }
-        }
-        private void UpdateLocation()
-        {
-            if (romsey == "1")
-            {
-                location = "Romsey";
-            }
-            else if (chandlersFord == "1")
-            {
-                location = "Chandler's Ford";
-            }
-            else if (highcliffe == "1")
-            {
-                location = "Highcliffe";
-            }
-            else if (charlieHome == "1")
-            {
-                location = "Charlie's House";
-            }
-            else
-            {
-                location = "Unknown";
-            }
-            locationLabel.Text = "Current location: " + location;
-        }
+        private string safeLocation = null;
+        private string location = null;
+        private string romsey = null;
+        private string chandlersFord = null;
+        private string highcliffe = null;
+        private string charlieHome = null;
+        private string locationLine = null;
+        private string windows10 = null;
+        private string windows11 = null;
+        private string nvidia = null;
+        private string intel = null;
+        private string amd = null;
+        private string rootDir;
+        private string programDataDir;
         private DownloadUrls urls;
-        private async Task InitialiseUrlsAsync()
-        {
-            urls = await GetDownloadUrlsAsync();
-            if (urls == null)
-            {
-                MessageBox.Show("Failed to load download URLs.");
-            }
-        }
-        private async Task<DownloadUrls> GetDownloadUrlsAsync()
-        {
-            try
-            {
-                string url = "https://raw.githubusercontent.com/professorshroom/PlutoPoint-Installer/main/Data/Downloads.json";
-                using (var client = new HttpClient())
-                {
-                    string json = await client.GetStringAsync(url);
-                    var serializer = new JavaScriptSerializer();
-                    return serializer.Deserialize<DownloadUrls>(json);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Failed to load URLs: {ex.Message}");
-                return null;
-            }
-        }
+        private Task _initialiseUrlsTask;
+        private Task _checkIpTask;
+        private List<(string Name, string Status)> installResults;
+        private string _logFilePath;
+        private readonly PlutoPoint_Installer.UI.ThemeManager _themeManager = new PlutoPoint_Installer.UI.ThemeManager();
+        DateTime buildDate = File.GetLastWriteTime(Environment.ProcessPath ?? Assembly.GetExecutingAssembly().Location);
+
         private Uri crcOEMURL => new Uri(urls.crcOEM);
         private Uri anyDeskURL => new Uri(urls.anyDesk);
         private Uri bingWallpapersURL => new Uri(urls.bingWallpapers);
@@ -485,13 +72,242 @@ namespace PlutoPoint_Installer
         private Uri nanaZipURL => new Uri(urls.nanaZip);
         private Uri steamURL => new Uri(urls.steam);
         private Uri vlcMediaPlayerURL => new Uri(urls.vlcMediaPlayer);
-        private Uri libreOfficeFallbackURL => new Uri(urls.libreOfficeFallback);
-        public bool IsClickPlaying { get; private set; }
+
+        public MainWindow()
+        {
+            InitializeComponent();
+            // Shutdown/restart checks
+            WireCheckboxMutualExclusion();
+            // Hover
+            InstallButton.PointerEntered += (s, e) => AudioEffects.PlayHoverPop();
+            RestartButton.PointerEntered += (s, e) => AudioEffects.PlayHoverPop();
+            CloseButton.PointerEntered += (s, e) => AudioEffects.PlayHoverPop();
+            // Click
+            InstallButton.Click += (s, e) => AudioEffects.PlayClickChime();
+            RestartButton.Click += (s, e) => AudioEffects.PlayClickChime();
+            CloseButton.Click += (s, e) => AudioEffects.PlayClickChime();
+            // Background tasks only
+            _initialiseUrlsTask = InitialiseUrlsAsync();
+            _checkIpTask = CheckIPAsync();
+            // Info checks
+            PrintVersion();
+            CheckWindowsVersion();
+            CheckForIntelHardware();
+            CheckforAMDHardware();
+            CheckForNvidiaGPU();
+            AppendLine(locationLine);
+        }
+
+        protected override void OnOpened(EventArgs e)
+        {
+            base.OnOpened(e);
+            _themeManager.ApplyThemeAndMessages(
+                (top, bottom, log) =>
+                {
+                    if (Background is LinearGradientBrush gradientBrush && gradientBrush.GradientStops.Count >= 2)
+                    {
+                        gradientBrush.GradientStops[0].Color = top;
+                        gradientBrush.GradientStops[1].Color = bottom;
+                    }
+                    InstallerTextBox.Foreground = new SolidColorBrush(log);
+                },
+                (msg) => AppendLine(msg)
+            );
+            _themeManager.ApplyButtonTheme(
+                (backColor, foreColor) =>
+                {
+                    var backBrush = new SolidColorBrush(backColor);
+                    var foreBrush = new SolidColorBrush(foreColor);
+                    InstallButton.Background = backBrush;
+                    InstallButton.Foreground = foreBrush;
+                    RestartButton.Background = backBrush;
+                    RestartButton.Foreground = foreBrush;
+                    CloseButton.Background = backBrush;
+                    CloseButton.Foreground = foreBrush;
+                }
+            );
+            _themeManager.UpdateGUIEvent(this, SeasonalOverlayImage);
+        }
+
+        public void RunSilentCommand(string fileName, string arguments)
+        {
+            var startInfo = new ProcessStartInfo
+            {
+                FileName = fileName,
+                Arguments = arguments,
+                CreateNoWindow = true,
+                UseShellExecute = false,
+                WindowStyle = ProcessWindowStyle.Hidden
+            };
+            using (var process = Process.Start(startInfo))
+            {
+                process.WaitForExit();
+            }
+        }
+
+        private void EnsureLogFile()
+        {
+            if (_logFilePath != null)
+                return;
+            try
+            {
+                string logDir = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                    "ComputerRepairCentre", "Logs");
+                Directory.CreateDirectory(logDir);
+                _logFilePath = Path.Combine(logDir, $"install-log-{DateTime.Now:yyyyMMdd-HHmmss}.txt");
+            }
+            catch
+            {
+                _logFilePath = string.Empty;
+            }
+        }
+
+        private void AppendLine(string text = "")
+        {
+            void Write()
+            {
+                InstallerTextBox.Text += text + Environment.NewLine;
+                LogScrollViewer.ScrollToEnd();
+            }
+
+            if (Dispatcher.UIThread.CheckAccess())
+                Write();
+            else
+                Dispatcher.UIThread.Post(Write);
+
+            EnsureLogFile();
+            if (!string.IsNullOrEmpty(_logFilePath))
+            {
+                try
+                {
+                    File.AppendAllText(_logFilePath, $"[{DateTime.Now:HH:mm:ss}] {text}{Environment.NewLine}");
+                }
+                catch
+                {
+                }
+            }
+        }
+
+        private void TrackResult(string name, string status)
+        {
+            installResults?.Add((name, status));
+        }
+
+        private void AppendInstallSummary()
+        {
+            if (installResults == null || installResults.Count == 0)
+                return;
+            int total = installResults.Count;
+            int succeeded = installResults.Count(r => r.Status == "Installed" || r.Status == "Already Installed" || r.Status == "Applied");
+            int skipped = installResults.Count(r => r.Status == "Skipped");
+            int failed = installResults.Count(r => r.Status == "Failed");
+            AppendLine("");
+            AppendLine("📋 Summary:");
+            AppendLine($"✅ {succeeded}/{total} succeeded");
+            if (skipped > 0) AppendLine($"⏭️ {skipped} skipped");
+            if (failed > 0)
+            {
+                AppendLine($"❌ {failed} failed:");
+                foreach (var r in installResults.Where(r => r.Status == "Failed"))
+                    AppendLine($"   • {r.Name}");
+            }
+        }
+
+        private static string ComputeSHA256(string input)
+        {
+            using (SHA256 sha = SHA256.Create())
+            {
+                byte[] bytes = sha.ComputeHash(Encoding.UTF8.GetBytes(input));
+                var builder = new StringBuilder();
+                foreach (byte b in bytes)
+                    builder.Append(b.ToString("x2"));
+                return builder.ToString();
+            }
+        }
+
+        private void PrintVersion()
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+            string versionStr = assembly
+                .GetCustomAttribute<System.Reflection.AssemblyInformationalVersionAttribute>()
+                ?.InformationalVersion;
+            if (string.IsNullOrWhiteSpace(versionStr))
+                versionStr = assembly.GetName().Version?.ToString() ?? "";
+            string versionText = $"Version {versionStr}";
+            if (versionStr.Replace(".", "").Contains("69"))
+            {
+                versionText += " - Nice";
+            }
+
+            string WithDaySuffix(int day)
+            {
+                if (day >= 11 && day <= 13) return day + "th";
+                switch (day % 10)
+                {
+                    case 1: return day + "st";
+                    case 2: return day + "nd";
+                    case 3: return day + "rd";
+                    default: return day + "th";
+                }
+            }
+
+            string formatted = string.Format("{0} of {1} {2}",
+                WithDaySuffix(buildDate.Day),
+                buildDate.ToString("MMMM"),
+                buildDate.Year);
+
+            VersionLabel.Text = versionText;
+            AppendLine($"🛠️ {versionText}");
+            AppendLine("📅 Last updated on " + formatted + ".");
+        }
+
+        private void WireCheckboxMutualExclusion()
+        {
+            ShutdownCheck.IsCheckedChanged += (_, _) =>
+            {
+                if (ShutdownCheck.IsChecked == true)
+                    RestartCheck.IsChecked = false;
+            };
+            RestartCheck.IsCheckedChanged += (_, _) =>
+            {
+                if (RestartCheck.IsChecked == true)
+                    ShutdownCheck.IsChecked = false;
+            };
+        }
+
+        private async void CloseButton_Click(object sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            await System.Threading.Tasks.Task.Delay(325);
+            Process.Start("shutdown", "/a");
+            Close();
+        }
+
+        private async void RestartButton_Click(object sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            await System.Threading.Tasks.Task.Delay(325);
+            Process.Start("shutdown", "/r /t 1");
+        }
+
+        private void TestButton_Click(object sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            AppendLine("❌ No current tests. You nosey bastard.");
+        }
+
+        private void VersionLabel_PointerPressed(object sender, PointerPressedEventArgs e)
+        {
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = "https://professorshroom.com/projects/PlutoPoint_Installer/#changelog",
+                UseShellExecute = true
+            });
+        }
+
         private void CheckWindowsVersion()
         {
             try
             {
-                using (var key = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(@"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion"))
+                using (var key = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion"))
                 {
                     if (key != null)
                     {
@@ -499,36 +315,30 @@ namespace PlutoPoint_Installer
                         if (int.TryParse(buildNumber, out int build))
                         {
                             string versionText;
+                            string osLabelText;
                             if (build >= 22000)
                             {
                                 versionText = "🪟 Windows 11 detected.";
+                                osLabelText = "🪟 Windows 11";
                                 windows11 = "1";
                             }
                             else if (build >= 10240)
                             {
                                 versionText = "🪟 Windows 10 detected. Time to move on grandad.";
+                                osLabelText = "🪟 Windows 10";
                                 windows10 = "1";
-                            }
-                            else if (build >= 9600)
-                            {
-                                versionText = "🪟 Windows 8.1 detected. Why?";
-                                windows81 = "1";
-                            }
-                            else if (build >= 9200)
-                            {
-                                versionText = "🪟 Windows 8 detected. No really, why?";
-                                windows8 = "1";
-                            }
-                            else if (build >= 7600)
-                            {
-                                versionText = "🪟 Windows 7 detected. No it really is time to move on grandad.";
-                                windows7 = "1";
                             }
                             else
                             {
                                 versionText = "🪟 Older or unknown Windows version detected.";
+                                osLabelText = "🪟 Unknown OS";
                             }
                             AppendLine(versionText);
+                            void Write() => OsLabel.Text = osLabelText;
+                            if (Dispatcher.UIThread.CheckAccess())
+                                Write();
+                            else
+                                Dispatcher.UIThread.Post(Write);
                             return;
                         }
                     }
@@ -540,6 +350,7 @@ namespace PlutoPoint_Installer
                 AppendLine("❌ Error checking Windows version: " + ex.Message);
             }
         }
+
         private void CheckForIntelHardware()
         {
             bool hasIntelGpu = false;
@@ -586,10 +397,8 @@ namespace PlutoPoint_Installer
                 else
                     AppendLine("🧠 Intel CPU detected.");
             }
-            else
-            {
-            }
         }
+
         private void CheckForNvidiaGPU()
         {
             var searcher = new ManagementObjectSearcher("SELECT * FROM Win32_VideoController");
@@ -599,15 +408,16 @@ namespace PlutoPoint_Installer
                 {
                     if (caption.IndexOf("NVIDIA", StringComparison.OrdinalIgnoreCase) >= 0)
                     {
-                        nvidiaAppCheck.Checked = true;
+                        NvidiaAppCheck.IsChecked = true;
                         nvidia = "1";
                         AppendLine("🎮 Nvidia GPU detected.");
                         return;
                     }
                 }
             }
-            nvidiaAppCheck.Checked = false;
+            NvidiaAppCheck.IsChecked = false;
         }
+
         private void CheckforAMDHardware()
         {
             bool hasAmdGpu = false;
@@ -650,36 +460,214 @@ namespace PlutoPoint_Installer
                 else
                     AppendLine("🧠 AMD CPU detected.");
             }
-            else
-            {
-            }
         }
-        private string GetLibreOfficeVersion()
+
+        private async Task CheckIPAsync()
         {
-            string url = "https://www.libreoffice.org/download/";
+            string publicIP = await GetPublicIPAddressAsync();
+            if (string.IsNullOrWhiteSpace(publicIP))
+                return;
+            string publicIPHash = HashIP(publicIP);
+            LocationHashes hashes = await GetLocationHashesAsync();
+            if (hashes == null)
+                return;
+            safeLocation = "0";
+            romsey = "0";
+            chandlersFord = "0";
+            highcliffe = "0";
+            charlieHome = "0";
+            if (publicIPHash == hashes.romsey)
+            {
+                romsey = "1";
+                safeLocation = "1";
+            }
+            else if (publicIPHash == hashes.chandlersFord)
+            {
+                chandlersFord = "1";
+                safeLocation = "1";
+            }
+            else if (publicIPHash == hashes.highcliffe)
+            {
+                highcliffe = "1";
+                safeLocation = "1";
+            }
+            else if (publicIPHash == hashes.charlieHome)
+            {
+                charlieHome = "1";
+                safeLocation = "1";
+            }
+            AppendLocation();
+            UpdateLocation();
+        }
+
+        private async Task<string> GetPublicIPAddressAsync()
+        {
             try
             {
                 using (var client = new HttpClient())
                 {
-                    client.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0");
-                    string html = client.GetStringAsync(url).Result;
-                    var match = Regex.Match(
-                        html,
-                        @"(\d+\.\d+(?:\.\d+)?)[^0-9]{0,100}Windows \(x86-64\)",
-                        RegexOptions.IgnoreCase
-                    );
-                    if (match.Success)
-                    {
-                        return match.Groups[1].Value;
-                    }
+                    string ip = await client.GetStringAsync("https://api.ipify.org");
+                    return ip?.Trim();
+                }
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        private static string HashIP(string ip)
+        {
+            using (var sha256 = SHA256.Create())
+            {
+                byte[] bytes = Encoding.UTF8.GetBytes(ip.Trim());
+                byte[] hash = sha256.ComputeHash(bytes);
+                return BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
+            }
+        }
+
+        private async Task<PasswordHashes> GetPasswordHashesAsync()
+        {
+            try
+            {
+                string url = "https://raw.githubusercontent.com/ProfessorShroom/PlutoPoint-Installer/refs/heads/main/Data/Passwords.json";
+                using (var client = new HttpClient())
+                {
+                    string json = await client.GetStringAsync(url);
+                    return JsonSerializer.Deserialize<PasswordHashes>(json, _jsonOptions);
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error: " + ex.Message);
+                AppendLine($"❌ Failed to load hashes: {ex.Message}");
+                return null;
             }
-            return null;
         }
+
+        private async Task<LocationHashes> GetLocationHashesAsync()
+        {
+            try
+            {
+                string url = "https://raw.githubusercontent.com/ProfessorShroom/PlutoPoint-Installer/refs/heads/main/Data/IPs.json";
+                using (var client = new HttpClient())
+                {
+                    string json = await client.GetStringAsync(url);
+                    return JsonSerializer.Deserialize<LocationHashes>(json, _jsonOptions);
+                }
+            }
+            catch (Exception ex)
+            {
+                AppendLine($"❌ Failed to load hashes: {ex.Message}");
+                return null;
+            }
+        }
+
+        private void AppendLocation()
+        {
+            if (romsey == "1")
+                locationLine = "📍 The installer is being run from the Romsey shop.";
+            else if (chandlersFord == "1")
+                locationLine = "📍 The installer is being run from the Chandlers Ford shop.";
+            else if (highcliffe == "1")
+                locationLine = "📍 The installer is being run from the Highcliffe shop.";
+            else if (charlieHome == "1")
+                locationLine = "📍 The installer is being run from Charlie's house.";
+            else
+                locationLine = "📍 Location unknown.";
+        }
+
+        private void UpdateLocation()
+        {
+            if (romsey == "1")
+                location = "Romsey";
+            else if (chandlersFord == "1")
+                location = "Chandler's Ford";
+            else if (highcliffe == "1")
+                location = "Highcliffe";
+            else if (charlieHome == "1")
+                location = "Charlie's House";
+            else
+                location = "Unknown";
+
+            void Write()
+            {
+                LocationLabel.Text = "Current location: " + location;
+                foreach (var item in LocationOverrideComboBox.Items)
+                {
+                    if (item is ComboBoxItem cbi && (cbi.Content?.ToString() == location))
+                    {
+                        LocationOverrideComboBox.SelectedItem = item;
+                        break;
+                    }
+                }
+            }
+            if (Dispatcher.UIThread.CheckAccess())
+                Write();
+            else
+                Dispatcher.UIThread.Post(Write);
+        }
+
+        private string SelectedOemLocation =>
+            (LocationOverrideComboBox.SelectedItem as ComboBoxItem)?.Content?.ToString();
+
+        private async Task InitialiseUrlsAsync()
+        {
+            urls = await GetDownloadUrlsAsync();
+            if (urls == null)
+            {
+                AppendLine("❌ Failed to load download URLs.");
+            }
+        }
+
+        private async Task<DownloadUrls> GetDownloadUrlsAsync()
+        {
+            try
+            {
+                string url = "https://raw.githubusercontent.com/professorshroom/PlutoPoint-Installer/main/Data/Downloads.json";
+                using (var client = new HttpClient())
+                {
+                    string json = await client.GetStringAsync(url);
+                    return JsonSerializer.Deserialize<DownloadUrls>(json, _jsonOptions);
+                }
+            }
+            catch (Exception ex)
+            {
+                AppendLine($"❌ Failed to load URLs: {ex.Message}");
+                return null;
+            }
+        }
+
+        private async Task<bool> PassesPasswordGateAsync()
+        {
+            if (safeLocation != "0")
+                return true;
+
+            var hashes = await GetPasswordHashesAsync();
+            if (hashes?.allowedHashes == null || hashes.allowedHashes.Count == 0)
+            {
+                AppendLine("❌ Unable to load password hashes.");
+                return false;
+            }
+
+            var dialog = new PasswordDialog();
+            bool? result = await dialog.ShowDialog<bool?>(this);
+            if (result == true)
+            {
+                string enteredHash = ComputeSHA256(dialog.EnteredPassword);
+                if (!hashes.allowedHashes.Contains(enteredHash))
+                {
+                    AppendLine("❌ Incorrect password. Exiting.");
+                    Close();
+                    return false;
+                }
+                return true;
+            }
+
+            AppendLine("❌ Password required. Exiting installer.");
+            Environment.Exit(0);
+            return false;
+        }
+
         private string ResolveShortcutPath(string shortcutFileName)
         {
             string[] searchDirs =
@@ -703,6 +691,7 @@ namespace PlutoPoint_Installer
             }
             return null;
         }
+
         private void CopyShortcutToDesktop(string sourceLnkPath, string label)
         {
             try
@@ -717,6 +706,7 @@ namespace PlutoPoint_Installer
                 AppendLine($"⚠️ Failed to add {label} shortcut to Desktop: {ex.Message}");
             }
         }
+
         private bool AddPinEntry(StringBuilder sb, bool wasChecked, string shortcutFileName, string label, bool alsoAddToDesktop = false)
         {
             if (!wasChecked)
@@ -732,6 +722,7 @@ namespace PlutoPoint_Installer
                 CopyShortcutToDesktop(lnkPath, label);
             return true;
         }
+
         private void ScheduleLayoutFileCleanup(string layoutPath)
         {
             string vbsPath = Path.Combine(Path.GetTempPath(), "PlutoPointTaskbarCleanup.vbs");
@@ -749,15 +740,16 @@ namespace PlutoPoint_Installer
                 key?.SetValue("PlutoPointTaskbarLayoutCleanup", cmd, RegistryValueKind.String);
             }
         }
+
         private void ApplyTaskbarPinLayout()
         {
             var pins = new StringBuilder();
             int pinnedCount = 0;
-            if (AddPinEntry(pins, googleChromeCheck.Checked, "Google Chrome.lnk", "Google Chrome")) pinnedCount++;
-            if (AddPinEntry(pins, mozillaFirefoxCheck.Checked, "Firefox.lnk", "Mozilla Firefox")) pinnedCount++;
-            if (AddPinEntry(pins, mozillaThunderbirdCheck.Checked, "Thunderbird.lnk", "Mozilla Thunderbird")) pinnedCount++;
-            if (AddPinEntry(pins, libreOfficeCheck.Checked, "LibreOffice Writer.lnk", "LibreOffice Writer", alsoAddToDesktop: true)) pinnedCount++;
-            if (AddPinEntry(pins, libreOfficeCheck.Checked, "LibreOffice Calc.lnk", "LibreOffice Calc", alsoAddToDesktop: true)) pinnedCount++;
+            if (AddPinEntry(pins, GoogleChromeCheck.IsChecked == true, "Google Chrome.lnk", "Google Chrome")) pinnedCount++;
+            if (AddPinEntry(pins, MozillaFirefoxCheck.IsChecked == true, "Firefox.lnk", "Mozilla Firefox")) pinnedCount++;
+            if (AddPinEntry(pins, MozillaThunderbirdCheck.IsChecked == true, "Thunderbird.lnk", "Mozilla Thunderbird")) pinnedCount++;
+            if (AddPinEntry(pins, LibreOfficeCheck.IsChecked == true, "LibreOffice Writer.lnk", "LibreOffice Writer", alsoAddToDesktop: true)) pinnedCount++;
+            if (AddPinEntry(pins, LibreOfficeCheck.IsChecked == true, "LibreOffice Calc.lnk", "LibreOffice Calc", alsoAddToDesktop: true)) pinnedCount++;
             if (AddPinEntry(pins, true, "File Explorer.lnk", "File Explorer")) pinnedCount++;
             if (pinnedCount == 0)
             {
@@ -791,6 +783,7 @@ namespace PlutoPoint_Installer
             ScheduleLayoutFileCleanup(layoutPath);
             AppendLine($"✅ Taskbar layout built with {pinnedCount} app(s), will apply after next reboot or sign-in.");
         }
+
         private void SetOemInfo(string hours, string phone, string url)
         {
             const string oemRegPath = @"SOFTWARE\Microsoft\Windows\CurrentVersion\OEMInformation";
@@ -806,17 +799,29 @@ namespace PlutoPoint_Installer
                 Console.WriteLine($"Set OEM info in '{oemRegPath}': hours='{hours}', phone='{phone}', url='{url}'.");
             }
         }
+
+        private void ProgressBarStep(object sender, AsyncCompletedEventArgs e)
+        {
+            void Step() => InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
+            if (Dispatcher.UIThread.CheckAccess())
+                Step();
+            else
+                Dispatcher.UIThread.Post(Step);
+        }
+
         private async Task DownloadWithRetryAsync(Uri url, string destinationPath, int maxAttempts = 3)
         {
             for (int attempt = 1; attempt <= maxAttempts; attempt++)
             {
                 try
                 {
+#pragma warning disable SYSLIB0014 // WebClient is obsolete; kept for behavioral parity with the original
                     using (WebClient wc = new WebClient())
                     {
-                        wc.DownloadFileCompleted += wc_progressBarStep;
+                        wc.DownloadFileCompleted += ProgressBarStep;
                         await wc.DownloadFileTaskAsync(url, destinationPath);
                     }
+#pragma warning restore SYSLIB0014
                     return;
                 }
                 catch (Exception ex) when (attempt < maxAttempts)
@@ -826,6 +831,19 @@ namespace PlutoPoint_Installer
                 }
             }
         }
+
+        private void KillProcessSafely(Process process)
+        {
+            try
+            {
+                if (!process.HasExited)
+                    process.Kill();
+            }
+            catch
+            {
+            }
+        }
+
         private bool IsWingetAvailable()
         {
             if (_wingetAvailable.HasValue)
@@ -892,17 +910,7 @@ namespace PlutoPoint_Installer
             }
             return _wingetAvailable.Value;
         }
-        private void KillProcessSafely(Process process)
-        {
-            try
-            {
-                if (!process.HasExited)
-                    process.Kill();
-            }
-            catch
-            {
-            }
-        }
+
         private bool IsInstalledViaWinget(string packageId)
         {
             try
@@ -931,6 +939,7 @@ namespace PlutoPoint_Installer
                 return false;
             }
         }
+
         private async Task<bool> TryWingetInstallAsync(string packageId, string label)
         {
             if (!IsWingetAvailable())
@@ -982,136 +991,112 @@ namespace PlutoPoint_Installer
             }
             return confirmed;
         }
-        private List<(string Name, string Status)> installResults;
-        private void TrackResult(string name, string status)
+
+        private string GetLibreOfficeVersion()
         {
-            installResults?.Add((name, status));
-        }
-        private void AppendInstallSummary()
-        {
-            if (installResults == null || installResults.Count == 0)
-                return;
-            int total = installResults.Count;
-            int succeeded = installResults.Count(r => r.Status == "Installed" || r.Status == "Already Installed" || r.Status == "Applied");
-            int skipped = installResults.Count(r => r.Status == "Skipped");
-            int failed = installResults.Count(r => r.Status == "Failed");
-            AppendLine("");
-            AppendLine("📋 Summary:");
-            AppendLine($"✅ {succeeded}/{total} succeeded");
-            if (skipped > 0) AppendLine($"⏭️ {skipped} skipped");
-            if (failed > 0)
+            string url = "https://www.libreoffice.org/download/";
+            try
             {
-                AppendLine($"❌ {failed} failed:");
-                foreach (var r in installResults.Where(r => r.Status == "Failed"))
-                    AppendLine($"   • {r.Name}");
+                using (var client = new HttpClient())
+                {
+                    client.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0");
+                    string html = client.GetStringAsync(url).Result;
+                    var match = Regex.Match(
+                        html,
+                        @"(\d+\.\d+(?:\.\d+)?)[^0-9]{0,100}Windows \(x86-64\)",
+                        RegexOptions.IgnoreCase
+                    );
+                    if (match.Success)
+                    {
+                        return match.Groups[1].Value;
+                    }
+                }
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+            }
+            return null;
         }
-        private async void install_Click(object sender, EventArgs e)
+
+        private async void InstallButton_Click(object sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
             installResults = new List<(string, string)>();
-            if (safeLocation == "0")
-            {
-                var hashes = await GetPasswordHashesAsync();
-                if (hashes?.allowedHashes == null || hashes.allowedHashes.Count == 0)
-                {
-                    MessageBox.Show("Unable to load password hashes.");
-                    return;
-                }
-                using (PasswordForm pf = new PasswordForm())
-                {
-                    if (pf.ShowDialog() == DialogResult.OK)
-                    {
-                        string enteredHash = ComputeSHA256(pf.EnteredPassword);
-                        if (!hashes.allowedHashes.Contains(enteredHash))
-                        {
-                            MessageBox.Show("Incorrect password. Exiting.");
-                            this.Close();
-                            return;
-                        }
-                    }
-                    else
-                    {
-                        MessageBox.Show("Password required. Exiting installer.");
-                        Environment.Exit(0);
-                        return;
-                    }
-                }
-            }
-            progressBar.Maximum = 0;
+            if (!await PassesPasswordGateAsync())
+                return;
+
+            InstallProgressBar.Maximum = 0;
+
             // Paths
             rootDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ComputerRepairCentre");
             programDataDir = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
-            string oemDir = System.IO.Path.Combine(programDataDir, "Computer Repair Centre\\OEM\\");
-            string appsDir = System.IO.Path.Combine(rootDir, "apps");
+            string oemDir = Path.Combine(programDataDir, "Computer Repair Centre\\OEM\\");
+            string appsDir = Path.Combine(rootDir, "apps");
             string windowsAppsPath = @"C:\Program Files\WindowsApps";
+
             // Installed apps
             string googleChromeExePath = @"C:\Program Files\Google\Chrome\Application\chrome.exe";
             string mozillaFirefoxExePath = @"C:\Program Files\Mozilla Firefox\firefox.exe";
             string mozillaThunderbirdExePath = @"C:\Program Files\Mozilla Thunderbird\thunderbird.exe";
             string nanaZipExe = "NanaZip.Modern.FileManager.exe";
             string nanaZipPath = null;
+
             // Downloaded installers
-            string crcOEMFilename = System.IO.Path.Combine(oemDir, "computerRepairCentreOEM.bmp");
-            string googleChromeFilename = System.IO.Path.Combine(appsDir, "googleChrome.msi");
-            string mozillaFirefoxFilename = System.IO.Path.Combine(appsDir, "mozillaFirefox.msi");
-            string anyDeskFilename = System.IO.Path.Combine(appsDir, "anyDesk.msi");
-            string bingWallpapersFilename = System.IO.Path.Combine(appsDir, "bingWallpapers.msi");
-            string bitDefenderFilename = System.IO.Path.Combine(appsDir, "bitDefender.exe");
-            string discordFilename = System.IO.Path.Combine(appsDir, "discord.exe");
-            string libreOfficeFilename = System.IO.Path.Combine(appsDir, "libreOffice.msi");
-            string mozillaThunderbirdFilename = System.IO.Path.Combine(appsDir, "mozillaThunderbird.msi");
-            string nanaZipFilename = System.IO.Path.Combine(appsDir, "nanaZip.msixbundle");
-            string steamFilename = System.IO.Path.Combine(appsDir, "steam.exe");
-            string vlcMediaPlayerFilename = System.IO.Path.Combine(appsDir, "vlcMediaPlayer.msi");
-            string nvidiaAppFilename = System.IO.Path.Combine(appsDir, "nvidiaApp.exe");
+            string crcOEMFilename = Path.Combine(oemDir, "computerRepairCentreOEM.bmp");
+            string googleChromeFilename = Path.Combine(appsDir, "googleChrome.msi");
+            string mozillaFirefoxFilename = Path.Combine(appsDir, "mozillaFirefox.msi");
+            string anyDeskFilename = Path.Combine(appsDir, "anyDesk.msi");
+            string bingWallpapersFilename = Path.Combine(appsDir, "bingWallpapers.msi");
+            string bitDefenderFilename = Path.Combine(appsDir, "bitDefender.exe");
+            string discordFilename = Path.Combine(appsDir, "discord.exe");
+            string libreOfficeFilename = Path.Combine(appsDir, "libreOffice.msi");
+            string mozillaThunderbirdFilename = Path.Combine(appsDir, "mozillaThunderbird.msi");
+            string nanaZipFilename = Path.Combine(appsDir, "nanaZip.msixbundle");
+            string steamFilename = Path.Combine(appsDir, "steam.exe");
+            string vlcMediaPlayerFilename = Path.Combine(appsDir, "vlcMediaPlayer.msi");
+            string nvidiaAppFilename = Path.Combine(appsDir, "nvidiaApp.exe");
+
             // Other apps
-            string bingWallpaperAppPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"Microsoft\BingWallpaperApp\BingWallpaperApp.exe");
-            string discordAppPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"Discord\Update.exe");
+            string bingWallpaperAppPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"Microsoft\BingWallpaperApp\BingWallpaperApp.exe");
+            string discordAppPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"Discord\Update.exe");
+
             // Desktop
             string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-            string launcherPath = System.IO.Path.Combine(desktopPath, @"Computer Repair Centre Installer.exe");
-            if (!Directory.Exists(rootDir))
-            {
-                Directory.CreateDirectory(rootDir);
-            }
-            if (!Directory.Exists(oemDir))
-            {
-                Directory.CreateDirectory(oemDir);
-            }
-            if (!Directory.Exists(appsDir))
-            {
-                Directory.CreateDirectory(appsDir);
-            }
+            string launcherPath = Path.Combine(desktopPath, @"Computer Repair Centre Installer.exe");
+
+            if (!Directory.Exists(rootDir)) Directory.CreateDirectory(rootDir);
+            if (!Directory.Exists(oemDir)) Directory.CreateDirectory(oemDir);
+            if (!Directory.Exists(appsDir)) Directory.CreateDirectory(appsDir);
+
             if (windows10 == "1")
             {
-                if (romsey == "1") { progressBar.Maximum += 1; }
-                ;
-                if (highcliffe == "1") { progressBar.Maximum += 1; }
-                ;
+                if (romsey == "1") { InstallProgressBar.Maximum += 1; }
+                if (highcliffe == "1") { InstallProgressBar.Maximum += 1; }
             }
-            if (windows11 == "1") { progressBar.Maximum += 7; }
-            if (powerCheck.Checked) { progressBar.Maximum += 1; }
-            else { progressBar.Maximum += 2; }
-            if (crcCheck.Checked) { progressBar.Maximum += 1; }
-            if (anyDeskCheck.Checked) { progressBar.Maximum += 2; }
-            if (nanaZipCheck.Checked) { progressBar.Maximum += 2; }
-            if (bitDefenderCheck.Checked) { progressBar.Maximum += 2; }
-            if (bingWallpapersCheck.Checked) { progressBar.Maximum += 2; }
-            if (discordCheck.Checked) { progressBar.Maximum += 2; }
-            if (googleChromeCheck.Checked) { progressBar.Maximum += 2; }
-            if (libreOfficeCheck.Checked) { progressBar.Maximum += 2; }
-            if (nvidiaAppCheck.Checked) { progressBar.Maximum += 2; }
-            if (mozillaFirefoxCheck.Checked) { progressBar.Maximum += 2; }
-            if (mozillaThunderbirdCheck.Checked) { progressBar.Maximum += 2; }
-            if (steamCheck.Checked) { progressBar.Maximum += 2; }
-            if (taskbarCheck.Checked) { progressBar.Maximum += 1; }
-            if (pinAppsCheck.Checked) { progressBar.Maximum += 1; }
-            if (nvidiaAppCheck.Checked & nvidia == "1")
+            if (windows11 == "1") { InstallProgressBar.Maximum += 6; }
+            if (PowerCheck.IsChecked == true) { InstallProgressBar.Maximum += 1; } else { InstallProgressBar.Maximum += 2; }
+            if (CrcCheck.IsChecked == true) { InstallProgressBar.Maximum += 1; }
+            if (AnyDeskCheck.IsChecked == true) { InstallProgressBar.Maximum += 2; }
+            if (NanaZipCheck.IsChecked == true) { InstallProgressBar.Maximum += 2; }
+            if (BitDefenderCheck.IsChecked == true) { InstallProgressBar.Maximum += 2; }
+            if (BingWallpapersCheck.IsChecked == true) { InstallProgressBar.Maximum += 2; }
+            if (DiscordCheck.IsChecked == true) { InstallProgressBar.Maximum += 2; }
+            if (GoogleChromeCheck.IsChecked == true) { InstallProgressBar.Maximum += 2; }
+            if (LibreOfficeCheck.IsChecked == true) { InstallProgressBar.Maximum += 2; }
+            if (NvidiaAppCheck.IsChecked == true) { InstallProgressBar.Maximum += 2; }
+            if (MozillaFirefoxCheck.IsChecked == true) { InstallProgressBar.Maximum += 2; }
+            if (MozillaThunderbirdCheck.IsChecked == true) { InstallProgressBar.Maximum += 2; }
+            if (SteamCheck.IsChecked == true) { InstallProgressBar.Maximum += 2; }
+            if (TaskbarCheck.IsChecked == true) { InstallProgressBar.Maximum += 1; }
+            if (PinAppsCheck.IsChecked == true) { InstallProgressBar.Maximum += 1; }
+
+            if (NvidiaAppCheck.IsChecked == true && nvidia == "1")
             {
                 AppendLine("🎮 Nvidia GPU has been detected and selected, Nvidia App will be installed.");
                 AppendLine("✅ You can uncheck this if you want.");
             }
-            if (powerCheck.Checked)
+
+            if (PowerCheck.IsChecked == true)
             {
                 AppendLine("📌 Disable sleep on AC power is selected.");
                 AppendLine("🔄 Disabling sleep and screen timeout while on AC power...");
@@ -1119,53 +1104,47 @@ namespace PlutoPoint_Installer
                 RunSilentCommand("powercfg", "/change monitor-timeout-ac 0");
                 AppendLine("🔄 Changing power button behavior to shutdown...");
                 RunSilentCommand("powercfg", "/setacvalueindex SCHEME_CURRENT 4f971e89-eebd-4455-a8de-9e59040e7347 7648efa3-dd9c-4e3e-b566-50f929386280 3");
-                progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
+                InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
             }
             else
             {
                 AppendLine("🔄 Disabling sleep and screen timeout while on AC power temporarily during install...");
-                progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
+                InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
             }
-            if (crcCheck.Checked)
+
+            if (CrcCheck.IsChecked == true)
             {
                 AppendLine("📌 Computer Repair Centre OEM information is selected.");
-                if (romsey == "1")
+                string oemLocation = SelectedOemLocation;
+                if (oemLocation == "Romsey")
                 {
                     AppendLine("📦 Installing Romsey Computer Repair Centre OEM information...");
                     await DownloadWithRetryAsync(crcOEMURL, crcOEMFilename);
-                    SetOemInfo(
-                        hours: "Mon-Fri 9:15am-5:00pm - Sat 9:15am-4:00pm",
-                        phone: "01794 517142",
-                        url: "https://www.thecomputerrepaircentre.co.uk/romsey");
+                    SetOemInfo(hours: "Mon-Fri 9:15am-5:00pm - Sat 9:15am-4:00pm", phone: "01794 517142", url: "https://www.thecomputerrepaircentre.co.uk/romsey");
                     TrackResult("Computer Repair Centre OEM Info", "Installed");
                 }
-                else if (chandlersFord == "1")
+                else if (oemLocation == "Chandler's Ford")
                 {
                     AppendLine("📦 Installing Chandlers Ford Computer Repair Centre OEM information...");
                     await DownloadWithRetryAsync(crcOEMURL, crcOEMFilename);
-                    SetOemInfo(
-                        hours: "Mon-Fri 9:00am-5:30pm - Sat 9:00am-2:00pm",
-                        phone: "02380 270271",
-                        url: "https://www.thecomputerrepaircentre.co.uk/chandlers-ford");
+                    SetOemInfo(hours: "Mon-Fri 9:00am-5:30pm - Sat 9:00am-2:00pm", phone: "02380 270271", url: "https://www.thecomputerrepaircentre.co.uk/chandlers-ford");
                     TrackResult("Computer Repair Centre OEM Info", "Installed");
                 }
-                else if (highcliffe == "1")
+                else if (oemLocation == "Highcliffe")
                 {
                     AppendLine("📦 Installing Highcliffe Computer Repair Centre OEM information...");
                     await DownloadWithRetryAsync(crcOEMURL, crcOEMFilename);
-                    SetOemInfo(
-                        hours: "Mon-Fri 9:15am-5:00pm - Sat 9:15am-2:00pm",
-                        phone: "01425 278579",
-                        url: "https://www.thecomputerrepaircentre.co.uk/highcliffe");
+                    SetOemInfo(hours: "Mon-Fri 9:15am-5:00pm - Sat 9:15am-2:00pm", phone: "01425 278579", url: "https://www.thecomputerrepaircentre.co.uk/highcliffe");
                     TrackResult("Computer Repair Centre OEM Info", "Installed");
                 }
                 else
                 {
-                    AppendLine("⚠️ No known shop location detected, skipping OEM info.");
+                    AppendLine("⚠️ No known shop location selected, skipping OEM info.");
                     TrackResult("Computer Repair Centre OEM Info", "Skipped");
                 }
             }
-            if (nanaZipCheck.Checked)
+
+            if (NanaZipCheck.IsChecked == true)
             {
                 AppendLine("📌 NanaZip is selected.");
                 AppendLine("🔄 Checking if NanaZip is installed...");
@@ -1175,9 +1154,9 @@ namespace PlutoPoint_Installer
                     if (files.Length > 0)
                     {
                         nanaZipPath = files[0];
-                        AppendLine($"✅ NanaZip is already installed.");
+                        AppendLine("✅ NanaZip is already installed.");
                         TrackResult("NanaZip", "Already Installed");
-                        progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
+                        InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 2, InstallProgressBar.Maximum);
                     }
                     else
                     {
@@ -1200,7 +1179,7 @@ namespace PlutoPoint_Installer
                         }
                         AppendLine("✅ Completed installation of NanaZip.");
                         TrackResult("NanaZip", "Installed");
-                        progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
+                        InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
                     }
                 }
                 catch (UnauthorizedAccessException)
@@ -1213,7 +1192,8 @@ namespace PlutoPoint_Installer
                     AppendLine("❌ Error: " + ex.Message);
                 }
             }
-            if (taskbarCheck.Checked)
+
+            if (TaskbarCheck.IsChecked == true)
             {
                 AppendLine("📌 Move taskbar is selected.");
                 AppendLine("✅ Aligning the taskbar to the left...");
@@ -1227,30 +1207,31 @@ namespace PlutoPoint_Installer
                 }
                 AppendLine("✅ Moved taskbar to the left.");
                 TrackResult("Taskbar Alignment", "Applied");
-                progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
+                InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
             }
-            if (anyDeskCheck.Checked)
+
+            if (AnyDeskCheck.IsChecked == true)
             {
                 AppendLine("📌 AnyDesk is selected.");
-                if (System.IO.File.Exists(@"C:\Program Files (x86)\AnyDeskMSI\AnyDeskMSI.exe"))
+                if (File.Exists(@"C:\Program Files (x86)\AnyDeskMSI\AnyDeskMSI.exe"))
                 {
                     AppendLine("✅ AnyDesk is already installed, skipping installation.");
                     TrackResult("AnyDesk", "Already Installed");
-                    progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
+                    InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 2, InstallProgressBar.Maximum);
                 }
-                else if (System.IO.File.Exists(@"C:\Program Files (x86)\AnyDesk\AnyDesk.exe"))
+                else if (File.Exists(@"C:\Program Files (x86)\AnyDesk\AnyDesk.exe"))
                 {
                     AppendLine("✅ AnyDesk is already installed, skipping installation.");
                     TrackResult("AnyDesk", "Already Installed");
-                    progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
+                    InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 2, InstallProgressBar.Maximum);
                 }
                 else
                 {
-                    bool wingetOk = await TryWingetInstallAsync("AnyDesk.AnyDesk", "AnyDesk");
+                    bool wingetOk = await TryWingetInstallAsync("AnyDeskSoftwareGmbH.AnyDesk", "AnyDesk");
                     if (wingetOk)
                     {
                         TrackResult("AnyDesk", "Installed");
-                        progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
+                        InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 2, InstallProgressBar.Maximum);
                     }
                     else
                     {
@@ -1274,10 +1255,7 @@ namespace PlutoPoint_Installer
                                     string error = process.StandardError.ReadToEnd();
                                     process.WaitForExit();
                                     Console.WriteLine("Output: " + output);
-                                    if (!string.IsNullOrEmpty(error))
-                                    {
-                                        Console.WriteLine("Error: " + error);
-                                    }
+                                    if (!string.IsNullOrEmpty(error)) Console.WriteLine("Error: " + error);
                                 }
                                 catch (Exception ex)
                                 {
@@ -1287,18 +1265,19 @@ namespace PlutoPoint_Installer
                         });
                         AppendLine("✅ Completed installation of AnyDesk.");
                         TrackResult("AnyDesk", "Installed");
-                        progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
+                        InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
                     }
                 }
             }
-            if (bingWallpapersCheck.Checked)
+
+            if (BingWallpapersCheck.IsChecked == true)
             {
                 AppendLine("📌 Bing Wallpapers is selected.");
-                if (System.IO.File.Exists(bingWallpaperAppPath))
+                if (File.Exists(bingWallpaperAppPath))
                 {
                     AppendLine("✅ Bing Wallpapers is already installed, skipping installation.");
                     TrackResult("Bing Wallpapers", "Already Installed");
-                    progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
+                    InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 2, InstallProgressBar.Maximum);
                 }
                 else
                 {
@@ -1306,7 +1285,7 @@ namespace PlutoPoint_Installer
                     if (wingetOk)
                     {
                         TrackResult("Bing Wallpapers", "Installed");
-                        progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
+                        InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 2, InstallProgressBar.Maximum);
                     }
                     else
                     {
@@ -1330,10 +1309,7 @@ namespace PlutoPoint_Installer
                                     string error = process.StandardError.ReadToEnd();
                                     process.WaitForExit();
                                     Console.WriteLine("Output: " + output);
-                                    if (!string.IsNullOrEmpty(error))
-                                    {
-                                        Console.WriteLine("Error: " + error);
-                                    }
+                                    if (!string.IsNullOrEmpty(error)) Console.WriteLine("Error: " + error);
                                 }
                                 catch (Exception ex)
                                 {
@@ -1343,18 +1319,19 @@ namespace PlutoPoint_Installer
                         });
                         AppendLine("✅ Completed installation of Bing Wallpapers.");
                         TrackResult("Bing Wallpapers", "Installed");
-                        progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
+                        InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
                     }
                 }
             }
-            if (bitDefenderCheck.Checked)
+
+            if (BitDefenderCheck.IsChecked == true)
             {
                 AppendLine("📌 BitDefender is selected.");
-                if (System.IO.File.Exists(@"C:\Program Files\Bitdefender\Bitdefender Security App\seccenter.exe"))
+                if (File.Exists(@"C:\Program Files\Bitdefender\Bitdefender Security App\seccenter.exe"))
                 {
                     AppendLine("✅ BitDefender is already installed, skipping installation.");
                     TrackResult("BitDefender", "Already Installed");
-                    progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
+                    InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 2, InstallProgressBar.Maximum);
                 }
                 else
                 {
@@ -1376,14 +1353,7 @@ namespace PlutoPoint_Installer
                             {
                                 process.WaitForExit();
                                 int exitCode = process.ExitCode;
-                                if (exitCode == 0)
-                                {
-                                    Console.WriteLine("Installation successful.");
-                                }
-                                else
-                                {
-                                    Console.WriteLine($"Installation exited with code: {exitCode}");
-                                }
+                                Console.WriteLine(exitCode == 0 ? "Installation successful." : $"Installation exited with code: {exitCode}");
                             }
                         }
                         catch (Exception ex)
@@ -1393,17 +1363,18 @@ namespace PlutoPoint_Installer
                     });
                     AppendLine("✅ Completed installation of BitDefender.");
                     TrackResult("BitDefender", "Installed");
-                    progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
+                    InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
                 }
             }
-            if (discordCheck.Checked)
+
+            if (DiscordCheck.IsChecked == true)
             {
                 AppendLine("📌 Discord is selected.");
-                if (System.IO.File.Exists(discordAppPath))
+                if (File.Exists(discordAppPath))
                 {
                     AppendLine("✅ Discord is already installed, skipping installation.");
                     TrackResult("Discord", "Already Installed");
-                    progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
+                    InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 2, InstallProgressBar.Maximum);
                 }
                 else
                 {
@@ -1411,7 +1382,7 @@ namespace PlutoPoint_Installer
                     if (wingetOk)
                     {
                         TrackResult("Discord", "Installed");
-                        progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
+                        InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 2, InstallProgressBar.Maximum);
                     }
                     else
                     {
@@ -1433,14 +1404,7 @@ namespace PlutoPoint_Installer
                                 {
                                     process.WaitForExit();
                                     int exitCode = process.ExitCode;
-                                    if (exitCode == 0)
-                                    {
-                                        Console.WriteLine("Installation successful.");
-                                    }
-                                    else
-                                    {
-                                        Console.WriteLine($"Installation exited with code: {exitCode}");
-                                    }
+                                    Console.WriteLine(exitCode == 0 ? "Installation successful." : $"Installation exited with code: {exitCode}");
                                 }
                             }
                             catch (Exception ex)
@@ -1450,11 +1414,12 @@ namespace PlutoPoint_Installer
                         });
                         AppendLine("✅ Completed installation of Discord.");
                         TrackResult("Discord", "Installed");
-                        progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
+                        InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
                     }
                 }
             }
-            if (googleChromeCheck.Checked)
+
+            if (GoogleChromeCheck.IsChecked == true)
             {
                 AppendLine("📌 Google Chrome is selected.");
                 if (!File.Exists(googleChromeExePath))
@@ -1463,7 +1428,7 @@ namespace PlutoPoint_Installer
                     if (wingetOk)
                     {
                         TrackResult("Google Chrome", "Installed");
-                        progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
+                        InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 2, InstallProgressBar.Maximum);
                     }
                     else
                     {
@@ -1497,24 +1462,25 @@ namespace PlutoPoint_Installer
                             AppendLine("❌ Chrome installation failed: " + ex.Message);
                             TrackResult("Google Chrome", "Failed");
                         }
-                        progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
+                        InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
                     }
                 }
                 else
                 {
                     AppendLine("✅ Google Chrome is already installed, skipping installation.");
                     TrackResult("Google Chrome", "Already Installed");
-                    progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
+                    InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 2, InstallProgressBar.Maximum);
                 }
             }
-            if (libreOfficeCheck.Checked)
+
+            if (LibreOfficeCheck.IsChecked == true)
             {
                 AppendLine("📌 LibreOffice is selected.");
-                if (System.IO.File.Exists(@"C:\Program Files\LibreOffice\program\soffice.exe"))
+                if (File.Exists(@"C:\Program Files\LibreOffice\program\soffice.exe"))
                 {
                     AppendLine("✅ LibreOffice is already installed, skipping installation.");
                     TrackResult("LibreOffice", "Already Installed");
-                    progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
+                    InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 2, InstallProgressBar.Maximum);
                 }
                 else
                 {
@@ -1522,12 +1488,28 @@ namespace PlutoPoint_Installer
                     if (wingetOk)
                     {
                         TrackResult("LibreOffice", "Installed");
-                        progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
+                        InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 2, InstallProgressBar.Maximum);
                     }
                     else
                     {
                         AppendLine("🔄 Downloading LibreOffice...");
-                        await DownloadWithRetryAsync(libreOfficeFallbackURL, libreOfficeFilename);
+                        string libreOfficeVersion = GetLibreOfficeVersion();
+                        if (string.IsNullOrEmpty(libreOfficeVersion))
+                        {
+                            AppendLine("❌ Could not determine the latest LibreOffice version.");
+                            TrackResult("LibreOffice", "Failed");
+                            AppendInstallSummary();
+                            return;
+                        }
+                        string libreOfficeDownloadUrl = $"https://download.documentfoundation.org/libreoffice/stable/{libreOfficeVersion}/win/x86_64/LibreOffice_{libreOfficeVersion}_Win_x86-64.msi";
+                        Uri libreOfficeURL = new Uri(libreOfficeDownloadUrl);
+                        await DownloadWithRetryAsync(libreOfficeURL, libreOfficeFilename);
+                        if (!File.Exists(libreOfficeFilename))
+                        {
+                            AppendLine("❌ LibreOffice download failed; falling back to known installer.");
+                            libreOfficeURL = new Uri("https://cloud.howardgb.com/public.php/dav/files/EFyAqCm3tEQ6W25/libreOffice.msi");
+                            await DownloadWithRetryAsync(libreOfficeURL, libreOfficeFilename);
+                        }
                         AppendLine("📦 Installing LibreOffice...");
                         await Task.Run(() =>
                         {
@@ -1546,10 +1528,7 @@ namespace PlutoPoint_Installer
                                     string error = process.StandardError.ReadToEnd();
                                     process.WaitForExit();
                                     Console.WriteLine("Output: " + output);
-                                    if (!string.IsNullOrEmpty(error))
-                                    {
-                                        Console.WriteLine("Error: " + error);
-                                    }
+                                    if (!string.IsNullOrEmpty(error)) Console.WriteLine("Error: " + error);
                                 }
                                 catch (Exception ex)
                                 {
@@ -1559,11 +1538,12 @@ namespace PlutoPoint_Installer
                         });
                         AppendLine("✅ Completed installation of LibreOffice.");
                         TrackResult("LibreOffice", "Installed");
-                        progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
+                        InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
                     }
                 }
             }
-            if (nvidiaAppCheck.Checked)
+
+            if (NvidiaAppCheck.IsChecked == true)
             {
                 AppendLine("📌 Nvidia App is selected.");
                 AppendLine("🔄 Searching for latest Nvidia App installer...");
@@ -1571,10 +1551,7 @@ namespace PlutoPoint_Installer
                 {
                     using (HttpClient client = new HttpClient())
                     {
-                        string edition = "Public";
-                        string baseUrl = edition.Equals("Enterprise", StringComparison.OrdinalIgnoreCase)
-                            ? "https://www.nvidia.com/en-us/software/nvidia-app-enterprise/"
-                            : "https://www.nvidia.com/en-us/software/nvidia-app/";
+                        string baseUrl = "https://www.nvidia.com/en-us/software/nvidia-app/";
                         string htmlContent = await client.GetStringAsync(baseUrl);
                         string pattern = @"https:\/\/us\.download\.nvidia\.com\/nvapp\/client\/[\d\.]+\/NVIDIA_app_v[\d\.]+\.exe";
                         Match match = Regex.Match(htmlContent, pattern, RegexOptions.IgnoreCase);
@@ -1601,7 +1578,7 @@ namespace PlutoPoint_Installer
                     AppendInstallSummary();
                     return;
                 }
-                progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
+                InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
                 AppendLine("📦 Installing Nvidia App silently...");
                 await Task.Run(() =>
                 {
@@ -1618,9 +1595,7 @@ namespace PlutoPoint_Installer
                         {
                             process.WaitForExit();
                             int exitCode = process.ExitCode;
-                            AppendLine(exitCode == 0
-                                ? "✅ Installation successful."
-                                : $"⚠️ Installation exited with code: {exitCode}");
+                            AppendLine(exitCode == 0 ? "✅ Installation successful." : $"⚠️ Installation exited with code: {exitCode}");
                         }
                     }
                     catch (Exception ex)
@@ -1630,16 +1605,17 @@ namespace PlutoPoint_Installer
                 });
                 AppendLine("✅ Completed installation of Nvidia App.");
                 TrackResult("Nvidia App", "Installed");
-                progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
+                InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
             }
-            if (mozillaFirefoxCheck.Checked)
+
+            if (MozillaFirefoxCheck.IsChecked == true)
             {
                 AppendLine("📌 Mozilla Firefox is selected.");
                 if (File.Exists(mozillaFirefoxExePath))
                 {
                     AppendLine("✅ Mozilla Firefox is already installed, skipping installation.");
                     TrackResult("Mozilla Firefox", "Already Installed");
-                    progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
+                    InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 2, InstallProgressBar.Maximum);
                 }
                 else
                 {
@@ -1647,7 +1623,7 @@ namespace PlutoPoint_Installer
                     if (wingetOk)
                     {
                         TrackResult("Mozilla Firefox", "Installed");
-                        progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
+                        InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 2, InstallProgressBar.Maximum);
                     }
                     else
                     {
@@ -1671,8 +1647,7 @@ namespace PlutoPoint_Installer
                                     string error = process.StandardError.ReadToEnd();
                                     process.WaitForExit();
                                     Console.WriteLine("Output: " + output);
-                                    if (!string.IsNullOrEmpty(error))
-                                        Console.WriteLine("Error: " + error);
+                                    if (!string.IsNullOrEmpty(error)) Console.WriteLine("Error: " + error);
                                 }
                                 catch (Exception ex)
                                 {
@@ -1682,11 +1657,12 @@ namespace PlutoPoint_Installer
                         });
                         AppendLine("✅ Completed installation of Mozilla Firefox.");
                         TrackResult("Mozilla Firefox", "Installed");
-                        progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
+                        InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
                     }
                 }
             }
-            if (mozillaThunderbirdCheck.Checked)
+
+            if (MozillaThunderbirdCheck.IsChecked == true)
             {
                 AppendLine("📌 Mozilla Thunderbird is selected.");
                 // Check if Thunderbird is already installed
@@ -1694,7 +1670,7 @@ namespace PlutoPoint_Installer
                 {
                     AppendLine("✅ Mozilla Thunderbird is already installed, skipping installation.");
                     TrackResult("Mozilla Thunderbird", "Already Installed");
-                    progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
+                    InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 2, InstallProgressBar.Maximum);
                 }
                 else
                 {
@@ -1702,7 +1678,7 @@ namespace PlutoPoint_Installer
                     if (wingetOk)
                     {
                         TrackResult("Mozilla Thunderbird", "Installed");
-                        progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
+                        InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 2, InstallProgressBar.Maximum);
                     }
                     else
                     {
@@ -1728,8 +1704,7 @@ namespace PlutoPoint_Installer
                                     string error = process.StandardError.ReadToEnd();
                                     process.WaitForExit();
                                     Console.WriteLine("Output: " + output);
-                                    if (!string.IsNullOrEmpty(error))
-                                        Console.WriteLine("Error: " + error);
+                                    if (!string.IsNullOrEmpty(error)) Console.WriteLine("Error: " + error);
                                 }
                                 catch (Exception ex)
                                 {
@@ -1739,18 +1714,19 @@ namespace PlutoPoint_Installer
                         });
                         AppendLine("✅ Completed installation of Mozilla Thunderbird.");
                         TrackResult("Mozilla Thunderbird", "Installed");
-                        progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
+                        InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
                     }
                 }
             }
-            if (steamCheck.Checked)
+
+            if (SteamCheck.IsChecked == true)
             {
                 AppendLine("📌 Steam is selected.");
-                if (System.IO.File.Exists(@"C:\Program Files (x86)\Steam\Steam.exe"))
+                if (File.Exists(@"C:\Program Files (x86)\Steam\Steam.exe"))
                 {
                     AppendLine("✅ Steam is already installed, skipping installation.");
                     TrackResult("Steam", "Already Installed");
-                    progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
+                    InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 2, InstallProgressBar.Maximum);
                 }
                 else
                 {
@@ -1758,7 +1734,7 @@ namespace PlutoPoint_Installer
                     if (wingetOk)
                     {
                         TrackResult("Steam", "Installed");
-                        progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
+                        InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 2, InstallProgressBar.Maximum);
                     }
                     else
                     {
@@ -1780,14 +1756,7 @@ namespace PlutoPoint_Installer
                                 {
                                     process.WaitForExit();
                                     int exitCode = process.ExitCode;
-                                    if (exitCode == 0)
-                                    {
-                                        Console.WriteLine("Installation successful.");
-                                    }
-                                    else
-                                    {
-                                        Console.WriteLine($"Installation exited with code: {exitCode}");
-                                    }
+                                    Console.WriteLine(exitCode == 0 ? "Installation successful." : $"Installation exited with code: {exitCode}");
                                 }
                             }
                             catch (Exception ex)
@@ -1797,18 +1766,19 @@ namespace PlutoPoint_Installer
                         });
                         AppendLine("✅ Completed installation of Steam.");
                         TrackResult("Steam", "Installed");
-                        progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
+                        InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
                     }
                 }
             }
-            if (vlcMediaPlayerCheck.Checked)
+
+            if (VlcMediaPlayerCheck.IsChecked == true)
             {
                 AppendLine("📌 VLC Media Player is selected.");
-                if (System.IO.File.Exists(@"C:\Program Files\VideoLAN\VLC\vlc.exe"))
+                if (File.Exists(@"C:\Program Files\VideoLAN\VLC\vlc.exe"))
                 {
                     AppendLine("✅ VLC Media Player is already installed, skipping installation.");
                     TrackResult("VLC Media Player", "Already Installed");
-                    progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
+                    InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 2, InstallProgressBar.Maximum);
                 }
                 else
                 {
@@ -1816,7 +1786,7 @@ namespace PlutoPoint_Installer
                     if (wingetOk)
                     {
                         TrackResult("VLC Media Player", "Installed");
-                        progressBar.Value = Math.Min(progressBar.Value + 2, progressBar.Maximum);
+                        InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 2, InstallProgressBar.Maximum);
                     }
                     else
                     {
@@ -1840,10 +1810,7 @@ namespace PlutoPoint_Installer
                                     string error = process.StandardError.ReadToEnd();
                                     process.WaitForExit();
                                     Console.WriteLine("Output: " + output);
-                                    if (!string.IsNullOrEmpty(error))
-                                    {
-                                        Console.WriteLine("Error: " + error);
-                                    }
+                                    if (!string.IsNullOrEmpty(error)) Console.WriteLine("Error: " + error);
                                 }
                                 catch (Exception ex)
                                 {
@@ -1853,11 +1820,12 @@ namespace PlutoPoint_Installer
                         });
                         AppendLine("✅ Completed installation of VLC Media Player.");
                         TrackResult("VLC Media Player", "Installed");
-                        progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
+                        InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
                     }
                 }
             }
-            if (pinAppsCheck.Checked)
+
+            if (PinAppsCheck.IsChecked == true)
             {
                 AppendLine("📌 Pin apps to taskbar is selected.");
                 AppendLine("✅ Building taskbar layout from installed apps...");
@@ -1871,185 +1839,109 @@ namespace PlutoPoint_Installer
                     AppendLine("❌ Failed to set taskbar layout: " + ex.Message);
                     TrackResult("Pin Apps to Taskbar", "Failed");
                 }
-                progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
+                InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
             }
-            using (RegistryKey key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion"))
+
+            try
             {
-                if (key != null)
+                using (RegistryKey key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion"))
                 {
-                    string buildNumber = key.GetValue("CurrentBuild")?.ToString();
-                    if (int.TryParse(buildNumber, out int build))
+                    if (key != null)
                     {
-                        if (build >= 22000)
+                        string buildNumber = key.GetValue("CurrentBuild")?.ToString();
+                        if (int.TryParse(buildNumber, out int build))
                         {
-                            AppendLine("✅ Disabling device encryption...");
-                            const string bitLockerRegPath = @"SYSTEM\CurrentControlSet\Control\BitLocker";
-                            const string bitLockerReg = "PreventDeviceEncryption";
-                            const int bitLockerRegData = 1;
-                            using (RegistryKey registryKey = Registry.LocalMachine.OpenSubKey(bitLockerRegPath, writable: true))
+                            if (build >= 22000)
                             {
-                                registryKey.SetValue(bitLockerReg, bitLockerRegData, RegistryValueKind.DWord);
-                                Console.WriteLine($"Set '{bitLockerReg}' to {bitLockerRegData} in '{bitLockerRegPath}'.");
+                                AppendLine("✅ Disabling device encryption...");
+                                using (RegistryKey registryKey = Registry.LocalMachine.CreateSubKey(@"SYSTEM\CurrentControlSet\Control\BitLocker", writable: true))
+                                    registryKey.SetValue("PreventDeviceEncryption", 1, RegistryValueKind.DWord);
+                                InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
+
+                                AppendLine("✅ Disabling fastboot mode...");
+                                using (RegistryKey registryKey = Registry.LocalMachine.CreateSubKey(@"SYSTEM\CurrentControlSet\Control\Session Manager\Power", writable: true))
+                                    registryKey.SetValue("HiberbootEnabled", 0, RegistryValueKind.DWord);
+                                InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
+
+                                AppendLine("✅ Disabling location tracking...");
+                                using (RegistryKey registryKey = Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Sensor\Overrides\{BFA794E4-F964-4FDB-90F6-51056BFE4B44}", writable: true))
+                                    registryKey.SetValue("SensorPermissionState", 0, RegistryValueKind.DWord);
+                                InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
+                                using (RegistryKey registryKey = Registry.LocalMachine.CreateSubKey(@"SYSTEM\CurrentControlSet\Services\lfsvc\Service\Configuration", writable: true))
+                                    registryKey.SetValue("Status", 0, RegistryValueKind.DWord);
+                                InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
+
+                                AppendLine("✅ Hiding recently used files and folders in File Explorer...");
+                                using (RegistryKey registryKey = Registry.CurrentUser.CreateSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer", writable: true))
+                                    registryKey.SetValue("ShowRecent", 0, RegistryValueKind.DWord);
+                                InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
+                                using (RegistryKey registryKey = Registry.CurrentUser.CreateSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer", writable: true))
+                                    registryKey.SetValue("ShowFrequent", 0, RegistryValueKind.DWord);
+                                InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
                             }
-                            progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
-                            AppendLine("✅ Disabling fastboot mode...");
-                            const string hiberbootRegPath = @"SYSTEM\CurrentControlSet\Control\Session Manager\Power";
-                            const string hiberbootReg = "HiberbootEnabled";
-                            const int hiberbootRegData = 0;
-                            using (RegistryKey registryKey = Registry.LocalMachine.OpenSubKey(hiberbootRegPath, writable: true))
+                            else if (build >= 19041)
                             {
-                                registryKey.SetValue(hiberbootReg, hiberbootRegData, RegistryValueKind.DWord);
-                                Console.WriteLine($"Set '{hiberbootReg}' to {hiberbootRegData} in '{hiberbootRegPath}'.");
+                                AppendLine("✅ Setting explorer to open to This PC...");
+                                using (RegistryKey registryKey = Registry.CurrentUser.CreateSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced", writable: true))
+                                    registryKey.SetValue("LaunchTo", 1, RegistryValueKind.DWord);
+                                InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
+
+                                AppendLine("✅ Disabling fastboot mode...");
+                                using (RegistryKey registryKey = Registry.LocalMachine.CreateSubKey(@"SYSTEM\CurrentControlSet\Control\Session Manager\Power", writable: true))
+                                    registryKey.SetValue("HiberbootEnabled", 0, RegistryValueKind.DWord);
+                                InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
+
+                                AppendLine("✅ Disabling location tracking...");
+                                using (RegistryKey registryKey = Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Sensor\Overrides\{BFA794E4-F964-4FDB-90F6-51056BFE4B44}", writable: true))
+                                    registryKey.SetValue("SensorPermissionState", 0, RegistryValueKind.DWord);
+                                InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
+                                using (RegistryKey registryKey = Registry.LocalMachine.CreateSubKey(@"SYSTEM\CurrentControlSet\Services\lfsvc\Service\Configuration", writable: true))
+                                    registryKey.SetValue("Status", 0, RegistryValueKind.DWord);
+                                InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
+
+                                AppendLine("✅ Disabling People icon...");
+                                using (RegistryKey registryKey = Registry.CurrentUser.CreateSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People", writable: true)) { }
+                                InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
+                                using (RegistryKey registryKey = Registry.CurrentUser.CreateSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People", writable: true))
+                                    registryKey.SetValue("PeopleBand", 0, RegistryValueKind.DWord);
+                                InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
+
+                                AppendLine("✅ Hiding recently used files and folders in File Explorer...");
+                                using (RegistryKey registryKey = Registry.CurrentUser.CreateSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer", writable: true))
+                                    registryKey.SetValue("ShowRecent", 0, RegistryValueKind.DWord);
+                                InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
+                                using (RegistryKey registryKey = Registry.CurrentUser.CreateSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer", writable: true))
+                                    registryKey.SetValue("ShowFrequent", 0, RegistryValueKind.DWord);
+                                InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
                             }
-                            progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
-                            AppendLine("✅ Disabling location tracking...");
-                            const string locationRegPath1 = @"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Sensor\Overrides\{BFA794E4-F964-4FDB-90F6-51056BFE4B44}";
-                            const string locationReg1 = "SensorPermissionState";
-                            const int locationRegData1 = 0;
-                            const string locationRegPath2 = @"SYSTEM\CurrentControlSet\Services\lfsvc\Service\Configuration";
-                            const string locationReg2 = "Status";
-                            const int locationRegData2 = 0;
-                            using (RegistryKey registryKey = Registry.LocalMachine.OpenSubKey(locationRegPath1, writable: true))
+                            else
                             {
-                                registryKey.SetValue(locationReg1, locationRegData1, RegistryValueKind.DWord);
-                                Console.WriteLine($"Set '{locationReg1}' to {locationRegData1} in '{locationRegPath1}'.");
+                                AppendLine("⬆️ This computer is running an old version of Windows, please update it.");
                             }
-                            progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
-                            using (RegistryKey registryKey = Registry.LocalMachine.OpenSubKey(locationRegPath2, writable: true))
-                            {
-                                registryKey.SetValue(locationReg2, locationRegData2, RegistryValueKind.DWord);
-                                Console.WriteLine($"Set '{locationReg2}' to {locationRegData2} in '{locationRegPath2}'.");
-                            }
-                            progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
-                            AppendLine("✅ Disabling People icon...");
-                            const string peopleRegPath1 = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People";
-                            const string peopleRegPath2 = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People";
-                            const string peopleReg2 = "PeopleBand";
-                            const int peopleRegData2 = 0;
-                            using (RegistryKey registryKey = Registry.CurrentUser.CreateSubKey(peopleRegPath1, writable: true))
-                            {
-                            }
-                            progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
-                            using (RegistryKey registryKey = Registry.CurrentUser.OpenSubKey(peopleRegPath2, writable: true))
-                            {
-                                registryKey.SetValue(peopleReg2, peopleRegData2, RegistryValueKind.DWord);
-                                Console.WriteLine($"Set '{peopleReg2}' to {peopleRegData2} in '{peopleRegPath2}'.");
-                            }
-                            progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
-                            AppendLine("✅ Hiding recently used files and folders in File Explorer...");
-                            const string recentRegPath = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer";
-                            const string recentReg = "ShowRecent";
-                            const int recentRegData = 0;
-                            const string frequentReg = "ShowFrequent";
-                            const int frequentRegData = 0;
-                            using (RegistryKey registryKey = Registry.CurrentUser.OpenSubKey(recentRegPath, writable: true))
-                            {
-                                registryKey.SetValue(recentReg, recentRegData, RegistryValueKind.DWord);
-                                Console.WriteLine($"Set '{recentReg}' to {recentRegData} in '{recentRegPath}'.");
-                            }
-                            progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
-                            using (RegistryKey registryKey = Registry.CurrentUser.OpenSubKey(recentRegPath, writable: true))
-                            {
-                                registryKey.SetValue(frequentReg, frequentRegData, RegistryValueKind.DWord);
-                                Console.WriteLine($"Set '{frequentReg}' to {frequentRegData} in '{recentRegPath}'.");
-                            }
-                            progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
-                        }
-                        else if (build >= 19041)
-                        {
-                            AppendLine("✅ Setting explorer to open to This PC...");
-                            const string thisPCRegPath = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced";
-                            const string thisPCReg = "LaunchTo";
-                            const int thisPCRegData = 1;
-                            using (RegistryKey registryKey = Registry.CurrentUser.OpenSubKey(thisPCRegPath, writable: true))
-                            {
-                                registryKey.SetValue(thisPCReg, thisPCRegData, RegistryValueKind.DWord);
-                                Console.WriteLine($"Set '{thisPCReg}' to {thisPCRegData} in '{thisPCRegPath}'.");
-                            }
-                            progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
-                            AppendLine("✅ Disabling fastboot mode...");
-                            const string hiberbootRegPath = @"SYSTEM\CurrentControlSet\Control\Session Manager\Power";
-                            const string hiberbootReg = "HiberbootEnabled";
-                            const int hiberbootRegData = 0;
-                            using (RegistryKey registryKey = Registry.LocalMachine.OpenSubKey(hiberbootRegPath, writable: true))
-                            {
-                                registryKey.SetValue(hiberbootReg, hiberbootRegData, RegistryValueKind.DWord);
-                                Console.WriteLine($"Set '{hiberbootReg}' to {hiberbootRegData} in '{hiberbootRegPath}'.");
-                            }
-                            progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
-                            AppendLine("✅ Disabling location tracking...");
-                            const string locationRegPath1 = @"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Sensor\Overrides\{BFA794E4-F964-4FDB-90F6-51056BFE4B44}";
-                            const string locationReg1 = "SensorPermissionState";
-                            const int locationRegData1 = 0;
-                            const string locationRegPath2 = @"SYSTEM\CurrentControlSet\Services\lfsvc\Service\Configuration";
-                            const string locationReg2 = "Status";
-                            const int locationRegData2 = 0;
-                            using (RegistryKey registryKey = Registry.LocalMachine.OpenSubKey(locationRegPath1, writable: true))
-                            {
-                                registryKey.SetValue(locationReg1, locationRegData1, RegistryValueKind.DWord);
-                                Console.WriteLine($"Set '{locationReg1}' to {locationRegData1} in '{locationRegPath1}'.");
-                            }
-                            progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
-                            using (RegistryKey registryKey = Registry.LocalMachine.OpenSubKey(locationRegPath2, writable: true))
-                            {
-                                registryKey.SetValue(locationReg2, locationRegData2, RegistryValueKind.DWord);
-                                Console.WriteLine($"Set '{locationReg2}' to {locationRegData2} in '{locationRegPath2}'.");
-                            }
-                            progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
-                            AppendLine("✅ Disabling People icon...");
-                            const string peopleRegPath1 = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People";
-                            const string peopleRegPath2 = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People";
-                            const string peopleReg2 = "PeopleBand";
-                            const int peopleRegData2 = 0;
-                            using (RegistryKey registryKey = Registry.CurrentUser.CreateSubKey(peopleRegPath1, writable: true))
-                            {
-                            }
-                            progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
-                            using (RegistryKey registryKey = Registry.CurrentUser.OpenSubKey(peopleRegPath2, writable: true))
-                            {
-                                registryKey.SetValue(peopleReg2, peopleRegData2, RegistryValueKind.DWord);
-                                Console.WriteLine($"Set '{peopleReg2}' to {peopleRegData2} in '{peopleRegPath2}'.");
-                            }
-                            progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
-                            AppendLine("✅ Hiding recently used files and folders in File Explorer...");
-                            const string recentRegPath = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer";
-                            const string recentReg = "ShowRecent";
-                            const int recentRegData = 0;
-                            const string frequentReg = "ShowFrequent";
-                            const int frequentRegData = 0;
-                            using (RegistryKey registryKey = Registry.CurrentUser.OpenSubKey(recentRegPath, writable: true))
-                            {
-                                registryKey.SetValue(recentReg, recentRegData, RegistryValueKind.DWord);
-                                Console.WriteLine($"Set '{recentReg}' to {recentRegData} in '{recentRegPath}'.");
-                            }
-                            progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
-                            using (RegistryKey registryKey = Registry.CurrentUser.OpenSubKey(recentRegPath, writable: true))
-                            {
-                                registryKey.SetValue(frequentReg, frequentRegData, RegistryValueKind.DWord);
-                                Console.WriteLine($"Set '{frequentReg}' to {frequentRegData} in '{recentRegPath}'.");
-                            }
-                            progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
-                        }
-                        else
-                        {
-                            AppendLine("⬆️ This computer is running an old version of Windows, please update it.");
                         }
                     }
                 }
             }
-            if (powerCheck.Checked) { }
+            catch (Exception ex)
+            {
+                AppendLine($"⚠️ Some Windows tweaks could not be applied: {ex.Message}");
+            }
+
+            if (PowerCheck.IsChecked == true) { }
             else
             {
                 AppendLine("✅ Re-enabling sleep and screen timeout on AC power...");
                 RunSilentCommand("powercfg", "/change monitor-timeout-ac 10");
                 RunSilentCommand("powercfg", "/change standby-timeout-ac 20");
-                progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
+                InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
             }
+
             AppendLine("✅ Cleaning up installation files...");
             var deletionHelper = new FileDeletionHelper();
             await deletionHelper.DeleteFilesAndDirectoryAsync(appsDir, launcherPath);
-            progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
-            if (recycleBinCheck.Checked)
+            InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
+
+            if (RecycleBinCheck.IsChecked == true)
             {
                 AppendLine("✅ Empty Recycle Bin is checked.");
                 AppendLine("🗑️ Emptying Recycle Bin...");
@@ -2065,126 +1957,23 @@ namespace PlutoPoint_Installer
                     TrackResult("Empty Recycle Bin", "Failed");
                 }
             }
-            var currentEvent = _themeManager.GetCurrentEvent();
-            if (currentEvent != null && currentEvent.PlaySound != null)
-            {
-                currentEvent.PlaySound();
-            }
-            else
-            {
-                AudioEffects.PlayCompleteChime();
-            }
-            if (restartCheck.Checked)
+
+            _themeManager.PlayEventSound();
+
+            if (RestartCheck.IsChecked == true)
             {
                 Process.Start("shutdown", "/r /t 60");
                 AppendLine("🔄 System will restart in 60 seconds. If you need to cancel this press the close button.");
             }
-            if (shutdownCheck.Checked)
+            if (ShutdownCheck.IsChecked == true)
             {
                 Process.Start("shutdown", "/s /t 60");
                 AppendLine("⏻ System will shutdown in 60 seconds. If you need to cancel this press the close button.");
             }
-            progressBar.Value = Math.Min(progressBar.Maximum, progressBar.Value);
-            progressBar.Value = progressBar.Maximum;
+
+            InstallProgressBar.Value = InstallProgressBar.Maximum;
             AppendInstallSummary();
             AppendLine("✅ The installation has completed.");
-        }
-        private void wc_progressBarStep(object sender, AsyncCompletedEventArgs e)
-        {
-            if (progressBar.InvokeRequired)
-            {
-                progressBar.Invoke((MethodInvoker)delegate { progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum); });
-            }
-            else
-            {
-                progressBar.Value = Math.Min(progressBar.Value + 1, progressBar.Maximum);
-            }
-        }
-        private void ShutdownCheck_CheckedChanged(object sender, EventArgs e)
-        {
-            if (shutdownCheck.Checked)
-                restartCheck.Checked = false;
-        }
-        private void RestartCheck_CheckedChanged(object sender, EventArgs e)
-        {
-            if (restartCheck.Checked)
-                shutdownCheck.Checked = false;
-        }
-        private async void close_Click(object sender, EventArgs e)
-        {
-            await Task.Delay(325);
-            Process.Start("shutdown", "/a");
-            this.Close();
-        }
-        private async void restart_Click(object sender, EventArgs e)
-        {
-            await Task.Delay(325);
-            Process.Start("shutdown", "/r /t 1");
-        }
-        private async void shutdown_Click(object sender, EventArgs e)
-        {
-            await Task.Delay(325);
-            Process.Start("shutdown", "/s /t 1");
-        }
-        private async void test_Click(object sender, EventArgs e)
-        {
-            AppendLine("❌ No current tests. You nosey bastard.");
-        }
-        private void versionLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            System.Diagnostics.Process.Start(
-                new System.Diagnostics.ProcessStartInfo
-                {
-                    FileName = "https://professorshroom.com/projects/PlutoPoint_Installer/#changelog",
-                    UseShellExecute = true
-                }
-            );
-        }
-        private static string ComputeSHA256(string input)
-        {
-            using (SHA256 sha = SHA256.Create())
-            {
-                byte[] bytes = sha.ComputeHash(System.Text.Encoding.UTF8.GetBytes(input));
-                StringBuilder builder = new StringBuilder();
-                foreach (byte b in bytes)
-                    builder.Append(b.ToString("x2"));
-                return builder.ToString();
-            }
-        }
-        private string _logFilePath;
-        private void EnsureLogFile()
-        {
-            if (_logFilePath != null)
-                return;
-            try
-            {
-                string logDir = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                    "ComputerRepairCentre", "Logs");
-                Directory.CreateDirectory(logDir);
-                _logFilePath = Path.Combine(logDir, $"install-log-{DateTime.Now:yyyyMMdd-HHmmss}.txt");
-            }
-            catch
-            {
-                _logFilePath = string.Empty;
-            }
-        }
-        private void AppendLine(string text = "")
-        {
-            installerTextBox.Text += text + Environment.NewLine;
-            installerLogPanel.PerformLayout();
-            installerLogPanel.AutoScrollPosition = new Point(0, installerTextBox.Bottom);
-            EnsureLogFile();
-            if (!string.IsNullOrEmpty(_logFilePath))
-            {
-                try
-                {
-                    File.AppendAllText(_logFilePath, $"[{DateTime.Now:HH:mm:ss}] {text}{Environment.NewLine}");
-                }
-                catch
-                {
-                }
-            }
         }
     }
 }

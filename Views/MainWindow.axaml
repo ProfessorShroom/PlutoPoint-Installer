@@ -1,0 +1,177 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="PlutoPoint_Installer.Views.MainWindow"
+        Title="Computer Repair Centre Installer"
+        Icon="avares://Computer Repair Centre Installer/Resources/icons/computerRepairCentreIcon.ico"
+        Width="950" Height="600"
+        CanResize="False">
+
+  <Window.Background>
+    <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+      <GradientStop Offset="0" Color="#1EC8FF" />
+      <GradientStop Offset="1" Color="#8C00FF" />
+    </LinearGradientBrush>
+  </Window.Background>
+
+  <Panel>
+
+    <Grid Margin="24" RowDefinitions="Auto,*,Auto,Auto" ColumnDefinitions="180,190,*">
+
+      <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3"
+                 Text="Computer Repair Centre Installer"
+                 FontSize="22" FontWeight="Bold"
+                 Foreground="White"
+                 Margin="0,0,0,16" />
+
+      <StackPanel Grid.Row="0" Grid.Column="2" HorizontalAlignment="Right" Spacing="4" Margin="0,0,0,16">
+        <TextBlock Text="OEM Information Override" Foreground="White" Opacity="0.7" FontSize="12" HorizontalAlignment="Right" />
+        <ComboBox x:Name="LocationOverrideComboBox" Width="160" HorizontalAlignment="Right">
+          <ComboBoxItem Content="Romsey" />
+          <ComboBoxItem Content="Chandler's Ford" />
+          <ComboBoxItem Content="Highcliffe" />
+        </ComboBox>
+      </StackPanel>
+
+      <HeaderedContentControl Grid.Row="1" Grid.Column="0"
+                               Header="Software"
+                               Theme="{StaticResource RoundedGroupBoxTheme}"
+                               Foreground="White"
+                               VerticalAlignment="Top"
+                               Margin="0,0,8,12">
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+          <WrapPanel x:Name="SoftwarePanel">
+            <CheckBox x:Name="AnyDeskCheck" Theme="{StaticResource IconToggleCheckBoxTheme}" IsChecked="True" ToolTip.Tip="AnyDesk Remote Support Software">
+              <Image Source="avares://Computer Repair Centre Installer/Resources/icons/anyDesk.png" Width="32" Height="32" />
+            </CheckBox>
+            <CheckBox x:Name="BitDefenderCheck" Theme="{StaticResource IconToggleCheckBoxTheme}" ToolTip.Tip="BitDefender Anti-Virus">
+              <Image Source="avares://Computer Repair Centre Installer/Resources/icons/bitDefender.png" Width="32" Height="32" />
+            </CheckBox>
+            <CheckBox x:Name="DiscordCheck" Theme="{StaticResource IconToggleCheckBoxTheme}" ToolTip.Tip="Discord">
+              <Image Source="avares://Computer Repair Centre Installer/Resources/icons/discord.png" Width="32" Height="32" />
+            </CheckBox>
+            <CheckBox x:Name="GoogleChromeCheck" Theme="{StaticResource IconToggleCheckBoxTheme}" IsChecked="True" ToolTip.Tip="Google Chrome">
+              <Image Source="avares://Computer Repair Centre Installer/Resources/icons/googleChrome.png" Width="32" Height="32" />
+            </CheckBox>
+            <CheckBox x:Name="LibreOfficeCheck" Theme="{StaticResource IconToggleCheckBoxTheme}" IsChecked="True" ToolTip.Tip="LibreOffice (Free Microsoft Office alternative)">
+              <Image Source="avares://Computer Repair Centre Installer/Resources/icons/libreOffice.png" Width="32" Height="32" />
+            </CheckBox>
+            <CheckBox x:Name="NvidiaAppCheck" Theme="{StaticResource IconToggleCheckBoxTheme}" ToolTip.Tip="Nvidia Graphics App">
+              <Image Source="avares://Computer Repair Centre Installer/Resources/icons/nvidiaApp.png" Width="32" Height="32" />
+            </CheckBox>
+            <CheckBox x:Name="MozillaFirefoxCheck" Theme="{StaticResource IconToggleCheckBoxTheme}" IsChecked="True" ToolTip.Tip="Mozilla Firefox">
+              <Image Source="avares://Computer Repair Centre Installer/Resources/icons/mozillaFirefox.png" Width="32" Height="32" />
+            </CheckBox>
+            <CheckBox x:Name="MozillaThunderbirdCheck" Theme="{StaticResource IconToggleCheckBoxTheme}" ToolTip.Tip="Mozilla Thunderbird">
+              <Image Source="avares://Computer Repair Centre Installer/Resources/icons/mozillaThunderbird.png" Width="32" Height="32" />
+            </CheckBox>
+            <CheckBox x:Name="NanaZipCheck" Theme="{StaticResource IconToggleCheckBoxTheme}" IsChecked="True" ToolTip.Tip="NanaZip Extraction Software">
+              <Image Source="avares://Computer Repair Centre Installer/Resources/icons/nanaZip.png" Width="32" Height="32" />
+            </CheckBox>
+            <CheckBox x:Name="SteamCheck" Theme="{StaticResource IconToggleCheckBoxTheme}" ToolTip.Tip="Steam">
+              <Image Source="avares://Computer Repair Centre Installer/Resources/icons/steam.png" Width="32" Height="32" />
+            </CheckBox>
+            <CheckBox x:Name="VlcMediaPlayerCheck" Theme="{StaticResource IconToggleCheckBoxTheme}" ToolTip.Tip="VLC Media Player">
+              <Image Source="avares://Computer Repair Centre Installer/Resources/icons/vlcMediaPlayer.png" Width="32" Height="32" />
+            </CheckBox>
+            <CheckBox x:Name="BingWallpapersCheck" Theme="{StaticResource IconToggleCheckBoxTheme}" IsChecked="True" ToolTip.Tip="Bing Wallpapers (New wallpaper everyday)">
+              <Image Source="avares://Computer Repair Centre Installer/Resources/icons/bingWallpaper.png" Width="32" Height="32" />
+            </CheckBox>
+          </WrapPanel>
+        </ScrollViewer>
+      </HeaderedContentControl>
+
+      <HeaderedContentControl Grid.Row="1" Grid.Column="1"
+                               Header="Utilities"
+                               Theme="{StaticResource RoundedGroupBoxTheme}"
+                               Foreground="White"
+                               VerticalAlignment="Top"
+                               Margin="0,0,8,12">
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+          <WrapPanel>
+            <CheckBox x:Name="ShutdownCheck" Theme="{StaticResource IconToggleCheckBoxTheme}" ToolTip.Tip="Shutdown Computer on Install Completion">
+              <Image Source="avares://Computer Repair Centre Installer/Resources/icons/shutdown.png" Width="32" Height="32" />
+            </CheckBox>
+            <CheckBox x:Name="RestartCheck" Theme="{StaticResource IconToggleCheckBoxTheme}" ToolTip.Tip="Restart Computer on Install Completion">
+              <Image Source="avares://Computer Repair Centre Installer/Resources/icons/restart.png" Width="32" Height="32" />
+            </CheckBox>
+            <CheckBox x:Name="PowerCheck" Theme="{StaticResource IconToggleCheckBoxTheme}" ToolTip.Tip="Disable Sleep on AC Power">
+              <Image Source="avares://Computer Repair Centre Installer/Resources/icons/power.png" Width="32" Height="32" />
+            </CheckBox>
+            <CheckBox x:Name="RecycleBinCheck" Theme="{StaticResource IconToggleCheckBoxTheme}" ToolTip.Tip="Empty Recycle Bin">
+              <Image Source="avares://Computer Repair Centre Installer/Resources/icons/recycleBin.png" Width="32" Height="32" />
+            </CheckBox>
+            <CheckBox x:Name="CrcCheck" Theme="{StaticResource IconToggleCheckBoxTheme}" IsChecked="True" ToolTip.Tip="Computer Repair Centre OEM Information">
+              <Image Source="avares://Computer Repair Centre Installer/Resources/icons/crc.png" Width="32" Height="32" />
+            </CheckBox>
+            <CheckBox x:Name="TaskbarCheck" Theme="{StaticResource IconToggleCheckBoxTheme}" IsChecked="True" ToolTip.Tip="Move Windows taskbar to the left like Windows 10">
+              <Image Source="avares://Computer Repair Centre Installer/Resources/icons/taskbar.png" Width="32" Height="32" />
+            </CheckBox>
+            <CheckBox x:Name="PinAppsCheck" Theme="{StaticResource IconToggleCheckBoxTheme}" IsChecked="True" ToolTip.Tip="Pin apps to taskbar and remove default pins">
+              <Image Source="avares://Computer Repair Centre Installer/Resources/icons/taskbarPin.png" Width="32" Height="32" />
+            </CheckBox>
+          </WrapPanel>
+        </ScrollViewer>
+      </HeaderedContentControl>
+
+      <Border Grid.Row="1" Grid.Column="2"
+              Background="#19000000"
+              CornerRadius="6"
+              Padding="12"
+              Margin="0,0,0,12"
+              ClipToBounds="True">
+        <Panel>
+          <ScrollViewer x:Name="LogScrollViewer" VerticalScrollBarVisibility="Auto">
+            <TextBlock x:Name="InstallerTextBox"
+                       Foreground="White"
+                       FontFamily="Consolas,monospace"
+                       FontSize="14"
+                       TextWrapping="Wrap" />
+          </ScrollViewer>
+          <Image x:Name="SeasonalOverlayImage"
+                 Width="100" Height="100"
+                 Stretch="Uniform"
+                 HorizontalAlignment="Right"
+                 VerticalAlignment="Bottom"
+                 Margin="0,0,12,12"
+                 IsHitTestVisible="False"
+                 IsVisible="False"
+                 RenderTransformOrigin="50%,50%">
+            <Image.RenderTransform>
+              <RotateTransform Angle="0" />
+            </Image.RenderTransform>
+          </Image>
+        </Panel>
+      </Border>
+
+      <ProgressBar Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3"
+                   x:Name="InstallProgressBar"
+                   Theme="{StaticResource RoundedGradientProgressBarTheme}"
+                   Minimum="0" Maximum="1" Value="0"
+                   Margin="0,0,0,12" />
+
+      <Grid Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" ColumnDefinitions="Auto,Auto,*,Auto,Auto">
+        <Button x:Name="InstallButton" Grid.Column="0" Content="Install" Width="140" Height="40"
+                Theme="{StaticResource RoundedAccentButtonTheme}" Click="InstallButton_Click" />
+        <Button x:Name="RestartButton" Grid.Column="1" Content="Restart"
+                Theme="{StaticResource RoundedAccentButtonTheme}" Click="RestartButton_Click"
+                Margin="8,0,0,0" />
+
+        <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="16" Margin="0,0,16,0">
+          <TextBlock x:Name="OsLabel" Text="🪟 Detecting OS..." Foreground="White" VerticalAlignment="Center" />
+          <TextBlock x:Name="LocationLabel" Text="📍 Detecting location..." Foreground="White" VerticalAlignment="Center" />
+        </StackPanel>
+
+        <Button x:Name="CloseButton" Grid.Column="3" Content="Close"
+                Theme="{StaticResource RoundedAccentButtonTheme}" Click="CloseButton_Click"
+                Margin="0,0,16,0" />
+
+        <TextBlock x:Name="VersionLabel" Grid.Column="4" Text="Version"
+                   Foreground="White" VerticalAlignment="Center"
+                   Cursor="Hand" PointerPressed="VersionLabel_PointerPressed" TextDecorations="Underline" />
+      </Grid>
+
+    </Grid>
+
+  </Panel>
+
+</Window>

@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using PlutoPoint_Installer;
-
-using System.Drawing;
+using Avalonia.Controls;
+using Avalonia.Media;
+using Avalonia.Media.Imaging;
 
 namespace PlutoPoint_Installer.Models
 {
@@ -15,8 +15,8 @@ namespace PlutoPoint_Installer.Models
         public Color LogColor { get; set; }
         public List<string> Messages { get; set; }
         public Action PlaySound { get; set; }
-        public Image OverlayImage { get; set; }
-        public Icon OverlayIcon { get; set; }
+        public Bitmap OverlayImage { get; set; }
+        public WindowIcon OverlayIcon { get; set; }
         public float RotationDegrees { get; set; }
     }
 }

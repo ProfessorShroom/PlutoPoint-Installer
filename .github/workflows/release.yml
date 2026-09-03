@@ -1,0 +1,45 @@
+name: Build and Release Installer
+
+on:
+  push:
+    tags:
+      - 'v*.*.*.*' # Matches v7.0.0.0
+      - '*.*.*.*'  # Matches 7.0.0.0
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Build Installer
+        run: dotnet build PlutoPoint-Installer.csproj --configuration Release
+
+      - name: Stage Executable
+        run: |
+          Copy-Item "bin/x64/Release/Computer Repair Centre Installer.exe" "bin/x64/Release/Computer-Repair-Centre-Installer.exe"
+
+      # 1. Permanent Release for the specific version (e.g., v7.0.0.0)
+      - name: Create Versioned Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: bin/x64/Release/Computer-Repair-Centre-Installer.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # 2. Moving Pointer Release (Overwrites 'installer-latest' every run)
+      - name: Update Floating Latest Pointer
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: installer-latest
+          name: "Latest Installer Build"
+          files: bin/x64/Release/Computer-Repair-Centre-Installer.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

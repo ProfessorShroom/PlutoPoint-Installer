@@ -1,15 +1,14 @@
 {
-  "crcOEM": "https://raw.githubusercontent.com/professorshroom/PlutoPoint-Installer/main/Resources/computerRepairCentre/computerRepairCentreOEM.bmp",
-  "anyDesk": "https://cloud.howardgb.com/public.php/dav/files/EFyAqCm3tEQ6W25/anyDesk.msi",
-  "bingWallpapers": "https://cloud.howardgb.com/public.php/dav/files/EFyAqCm3tEQ6W25/bingWallpapers.msi",
-  "bitDefender": "https://cloud.howardgb.com/public.php/dav/files/EFyAqCm3tEQ6W25/bitDefender.exe",
+  "crcOEM": "https://crcoem.professorshroom.com",
+  "anyDesk": "https://anydesk.professorshroom.com",
+  "bingWallpapers": "https://bingwallpapers.professorshroom.com",
+  "bitDefender": "https://bitdefender.professorshroom.com",
   "discord": "https://discord.com/api/download?platform=win",
   "googleChrome": "https://dl.google.com/tag/s/appguid%3D%7B8A69D345-D564-463c-AFF1-A69D9E530F96%7D&iid=&lang=en&browser=4&usagestats=0&appname=Google%2520Chrome%2520Enterprise&needsadmin=false/edgedl/chrome/install/GoogleChromeStandaloneEnterprise64.msi",
-  "microsoftOffice2007": "https://cloud.howardgb.com/public.php/dav/files/EFyAqCm3tEQ6W25/office2007.zip",
   "mozillaFirefox": "https://download.mozilla.org/?product=firefox-msi-latest-ssl&os=win64&lang=en-GB",
   "mozillaThunderbird": "https://download.mozilla.org/?product=thunderbird-msi-latest-ssl&os=win64&lang=en-GB",
-  "nanaZip": "https://cloud.howardgb.com/public.php/dav/files/EFyAqCm3tEQ6W25/nanaZip.msixbundle",
-  "steam": "https://cloud.howardgb.com/public.php/dav/files/EFyAqCm3tEQ6W25/steam.exe",
-  "vlcMediaPlayer": "https://cloud.howardgb.com/public.php/dav/files/EFyAqCm3tEQ6W25/vlcMediaPlayer.msi",
-  "libreOfficeFallback": "https://cloud.howardgb.com/public.php/dav/files/EFyAqCm3tEQ6W25/libreOffice.msi"
+  "nanaZip": "https://nanazip.professorshroom.com",
+  "steam": "https://steam.professorshroom.com",
+  "vlcMediaPlayer": "https://vlc.professorshroom.com",
+  "libreOfficeFallback": "https://libreoffice.professorshroom.com"
 }
