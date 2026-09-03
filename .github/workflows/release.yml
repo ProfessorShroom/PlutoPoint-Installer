@@ -27,7 +27,7 @@ jobs:
         run: |
           # Search for the generated executable anywhere under the bin folder
           $exe = Get-ChildItem -Path "bin" -Filter "Computer Repair Centre Installer.exe" -Recurse | Select-Object -First 1
-          
+
           if ($exe) {
               Write-Host "Found executable at: $($exe.FullName)"
               # Ensure output staging directory exists
@@ -39,20 +39,18 @@ jobs:
               exit 1
           }
 
-      # 1. Permanent Release for the specific version (e.g., v7.0.0.0)
       - name: Create Versioned Release
         uses: softprops/action-gh-release@v2
         with:
-          files: bin/x64/Release/Computer-Repair-Centre-Installer.exe
+          files: staging/Computer-Repair-Centre-Installer.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # 2. Moving Pointer Release (Overwrites 'installer-latest' every run)
       - name: Update Floating Latest Pointer
         uses: softprops/action-gh-release@v2
         with:
           tag_name: installer-latest
           name: "Latest Installer Build"
-          files: bin/x64/Release/Computer-Repair-Centre-Installer.exe
+          files: staging/Computer-Repair-Centre-Installer.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

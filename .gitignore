@@ -31,6 +31,7 @@ bld/
 [Ll]ogs/
 bin/
 obj/
+*.exe
 
 #Build results /Launcher
 
