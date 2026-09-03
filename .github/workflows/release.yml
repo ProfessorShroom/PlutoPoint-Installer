@@ -23,8 +23,21 @@ jobs:
         run: dotnet build "PlutoPoint Installer.csproj" --configuration Release
 
       - name: Stage Executable
+        shell: powershell
         run: |
-          Copy-Item "bin/x64/Release/Computer Repair Centre Installer.exe" "bin/x64/Release/Computer-Repair-Centre-Installer.exe"
+          # Search for the generated executable anywhere under the bin folder
+          $exe = Get-ChildItem -Path "bin" -Filter "Computer Repair Centre Installer.exe" -Recurse | Select-Object -First 1
+          
+          if ($exe) {
+              Write-Host "Found executable at: $($exe.FullName)"
+              # Ensure output staging directory exists
+              New-Item -ItemType Directory -Force -Path "staging"
+              # Copy and rename to match the update.xml format
+              Copy-Item -Path $exe.FullName -Destination "staging\Computer-Repair-Centre-Installer.exe" -Force
+          } else {
+              Write-Error "Could not find 'Computer Repair Centre Installer.exe' in bin directory."
+              exit 1
+          }
 
       # 1. Permanent Release for the specific version (e.g., v7.0.0.0)
       - name: Create Versioned Release
