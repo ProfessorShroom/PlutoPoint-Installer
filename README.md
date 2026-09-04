@@ -1,4 +1,13 @@
- ![Arch](https://img.shields.io/badge/Arch-AMD64-blue) ![OS](https://img.shields.io/badge/OS-Windows%2010%20|%20Windows%2011-green)
+<p align="center">
+  <img src="Resources/computerRepairCentre/computerRepairCentreLogo.png" alt="Computer Repair Centre Installer" height="300"/>
+</p>
+
+<p align="center"> 
+  <a href="https://github.com/ProfessorShroom/PlutoPoint-Installer/releases"><img alt="Release" src="https://img.shields.io/github/v/release/ProfessorShroom/PlutoPoint-Installer?style=for-the-badge&label=release&color=8A2BE2"></a> 
+  <img alt=".NET 8" src="https://img.shields.io/badge/.NET-8.0-512BD4?style=for-the-badge"> 
+  <img alt="Platform" src="https://img.shields.io/badge/platform-Windows%2010%2F11%20x64-0078D4?style=for-the-badge&logo=windows&logoColor=white"> 
+  <a href="https://github.com/ProfessorShroom/PlutoPoint-Installer/blob/main/LICENSE"><img alt="License" src="https://img.shields.io/badge/license-Proprietary-red?style=for-the-badge"></a> 
+</p>
 
 ## PlutoPoint Installer Version 7.0.0.0
 #### Copyright © Charlie Howard 2026 All rights reserved.
