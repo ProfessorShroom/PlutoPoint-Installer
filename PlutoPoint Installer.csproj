@@ -35,17 +35,22 @@
     <PackageReference Include="TaskScheduler" Version="2.12.2" />
   </ItemGroup>
 
+  <!--
+    Launcher and LauncherBeta are separate, related apps that live inside this
+    repo but must never be compiled into this project. Plain evaluation-time
+    Remove is used here (not a <Target>): evaluation always finishes in full
+    before any target - including Avalonia's own GenerateAvaloniaResources -
+    starts executing, so there is no ordering race to worry about here.
+    AvaloniaXaml is included because Avalonia merges it into AvaloniaResource
+    right before packing (see AvaloniaBuildTasks.targets: GenerateAvaloniaResources).
+  -->
   <ItemGroup>
-	<Compile Remove="Launcher\**" />
-	<Compile Remove="LauncherBeta\**" />
-	<EmbeddedResource Remove="Launcher\**" />
-	<EmbeddedResource Remove="LauncherBeta\**" />
-	<None Remove="Launcher\**" />
-	<None Remove="LauncherBeta\**" />
-	<AvaloniaResource Remove="Launcher\**" />
-	<AvaloniaResource Remove="LauncherBeta\**" />
-	<AdditionalFiles Remove="Launcher\**" />
-	<AdditionalFiles Remove="LauncherBeta\**" />
+    <Compile Remove="Launcher\**;LauncherBeta\**" />
+    <EmbeddedResource Remove="Launcher\**;LauncherBeta\**" />
+    <None Remove="Launcher\**;LauncherBeta\**" />
+    <AvaloniaResource Remove="Launcher\**;LauncherBeta\**" />
+    <AvaloniaXaml Remove="Launcher\**;LauncherBeta\**" />
+    <AdditionalFiles Remove="Launcher\**;LauncherBeta\**" />
   </ItemGroup>
 
   <ItemGroup>

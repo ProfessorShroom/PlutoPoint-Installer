@@ -17,6 +17,7 @@ using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Media;
+using Avalonia.Platform;
 using Avalonia.Threading;
 using Microsoft.Win32;
 using PlutoPoint_Installer.Models;
@@ -76,6 +77,7 @@ namespace PlutoPoint_Installer.Views
         public MainWindow()
         {
             InitializeComponent();
+            ApplyBetaBranding();
             // Shutdown/restart checks
             WireCheckboxMutualExclusion();
             // Hover
@@ -223,6 +225,26 @@ namespace PlutoPoint_Installer.Views
                 foreach (byte b in bytes)
                     builder.Append(b.ToString("x2"));
                 return builder.ToString();
+            }
+        }
+
+        private void ApplyBetaBranding()
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+            string versionStr = assembly
+                .GetCustomAttribute<System.Reflection.AssemblyInformationalVersionAttribute>()
+                ?.InformationalVersion;
+            if (string.IsNullOrWhiteSpace(versionStr) || !versionStr.Contains("b"))
+                return;
+
+            Title += " Beta";
+            TitleTextBlock.Text += " Beta";
+            try
+            {
+                Icon = new WindowIcon(AssetLoader.Open(new Uri("avares://Computer Repair Centre Installer/Resources/icons/computerRepairCentreIconBeta.ico")));
+            }
+            catch
+            {
             }
         }
 
@@ -844,6 +866,37 @@ namespace PlutoPoint_Installer.Views
             }
         }
 
+        // Firefox has its own "Open Firefox automatically when your computer starts up" feature
+        // (Settings > General), which registers itself under the current user's Run key. This
+        // isn't a winget or installer-method quirk -- it's the same regardless of how Firefox was
+        // installed. Scan by command-line content rather than a hardcoded value name, since Mozilla
+        // doesn't guarantee that name and Task Manager's display name isn't always the raw one.
+        private void RemoveFirefoxAutoLaunchEntry()
+        {
+            try
+            {
+                using (RegistryKey runKey = Registry.CurrentUser.OpenSubKey(
+                    @"Software\Microsoft\Windows\CurrentVersion\Run", writable: true))
+                {
+                    if (runKey == null) return;
+                    foreach (string valueName in runKey.GetValueNames())
+                    {
+                        string data = runKey.GetValue(valueName) as string;
+                        if (!string.IsNullOrEmpty(data) &&
+                            data.IndexOf("firefox.exe", StringComparison.OrdinalIgnoreCase) >= 0)
+                        {
+                            runKey.DeleteValue(valueName, throwOnMissingValue: false);
+                            AppendLine($"✅ Removed Firefox's \"open automatically at startup\" entry ({valueName}).");
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                AppendLine($"⚠️ Could not check for a Firefox startup entry: {ex.Message}");
+            }
+        }
+
         private bool IsWingetAvailable()
         {
             if (_wingetAvailable.HasValue)
@@ -1073,7 +1126,7 @@ namespace PlutoPoint_Installer.Views
                 if (romsey == "1") { InstallProgressBar.Maximum += 1; }
                 if (highcliffe == "1") { InstallProgressBar.Maximum += 1; }
             }
-            if (windows11 == "1") { InstallProgressBar.Maximum += 6; }
+            if (windows11 == "1") { InstallProgressBar.Maximum += 7; }
             if (PowerCheck.IsChecked == true) { InstallProgressBar.Maximum += 1; } else { InstallProgressBar.Maximum += 2; }
             if (CrcCheck.IsChecked == true) { InstallProgressBar.Maximum += 1; }
             if (AnyDeskCheck.IsChecked == true) { InstallProgressBar.Maximum += 2; }
@@ -1660,6 +1713,7 @@ namespace PlutoPoint_Installer.Views
                         InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
                     }
                 }
+                RemoveFirefoxAutoLaunchEntry();
             }
 
             if (MozillaThunderbirdCheck.IsChecked == true)
@@ -1869,6 +1923,13 @@ namespace PlutoPoint_Installer.Views
                                 InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
                                 using (RegistryKey registryKey = Registry.LocalMachine.CreateSubKey(@"SYSTEM\CurrentControlSet\Services\lfsvc\Service\Configuration", writable: true))
                                     registryKey.SetValue("Status", 0, RegistryValueKind.DWord);
+                                InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
+
+                                AppendLine("✅ Disabling People icon...");
+                                using (RegistryKey registryKey = Registry.CurrentUser.CreateSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People", writable: true)) { }
+                                InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
+                                using (RegistryKey registryKey = Registry.CurrentUser.CreateSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People", writable: true))
+                                    registryKey.SetValue("PeopleBand", 0, RegistryValueKind.DWord);
                                 InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
 
                                 AppendLine("✅ Hiding recently used files and folders in File Explorer...");

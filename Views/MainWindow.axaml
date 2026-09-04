@@ -17,7 +17,7 @@
 
     <Grid Margin="24" RowDefinitions="Auto,*,Auto,Auto" ColumnDefinitions="180,190,*">
 
-      <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3"
+      <TextBlock x:Name="TitleTextBlock" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3"
                  Text="Computer Repair Centre Installer"
                  FontSize="22" FontWeight="Bold"
                  Foreground="White"

@@ -9,7 +9,7 @@
   <a href="https://github.com/ProfessorShroom/PlutoPoint-Installer/blob/main/LICENSE.md"><img alt="License" src="https://img.shields.io/badge/license-Proprietary-red?style=for-the-badge"></a> 
 </p>
 
-## PlutoPoint Installer Version 7.0.0.0
+## PlutoPoint Installer Version 7.0.1.0
 #### Copyright © Charlie Howard 2026 All rights reserved.
 
 A C# based GUI installer for Windows 10/11. As of version 7.0.0.0, the installer runs on .NET 8 — Windows 7, 8, and 8.1 are no longer supported at all, since .NET 8 itself doesn't run on them.
@@ -26,6 +26,14 @@ Disables sleep and screen timeout if plugged into AC power during the install an
 
 #### Latest Update
 
+**Update 7.0.1.0**
+
+- Added a seperate Beta launcher with auto update just like the release launcher for easier maintenance.
+- Added Beta branding to all beta builds to make them easier to identify.
+- Removed Firefox's new auto-start with Windows feature as that's just annoying.
+
+#### Older Updates
+
 **Update 7.0.0.0 - The .NET 8 / Avalonia Update**
 
 - Migrated the whole installer from .NET Framework 4.8 to .NET 8.
@@ -34,8 +42,6 @@ Disables sleep and screen timeout if plugged into AC power during the install an
 - Added a dropdown to manually override which shop's OEM info gets installed, separate from the automatic IP-based location check — the automatic check still decides whether the password prompt is needed, the dropdown only affects which shop's info gets written.
 - Added a label next to Location that tells you the OS the installer is being run on.
 - The build date will now automatically be set whenever the installer is built.
-
-#### Older Updates
 
 **Update 6.9.0.1**
 
