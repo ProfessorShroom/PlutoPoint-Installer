@@ -2,9 +2,9 @@ name: Build
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   build:
@@ -17,13 +17,13 @@ jobs:
       - name: Setup .NET 8
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '8.0.x'
+          dotnet-version: "8.0.x"
 
       - name: Restore
-        run: dotnet restore "PlutoPoint Installer.csproj"
+        run: dotnet restore "PlutoPoint Installer.csproj" -r win-x64
 
       - name: Build (Debug)
-        run: dotnet build "PlutoPoint Installer.csproj" --configuration Debug --no-restore
+        run: dotnet build "PlutoPoint Installer.csproj" --configuration Debug --no-restore -r win-x64
 
       - name: Build (Release)
-        run: dotnet build "PlutoPoint Installer.csproj" --configuration Release --no-restore
+        run: dotnet build "PlutoPoint Installer.csproj" --configuration Release --no-restore -r win-x64
