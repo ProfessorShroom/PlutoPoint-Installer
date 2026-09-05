@@ -1121,12 +1121,8 @@ namespace PlutoPoint_Installer.Views
             if (!Directory.Exists(oemDir)) Directory.CreateDirectory(oemDir);
             if (!Directory.Exists(appsDir)) Directory.CreateDirectory(appsDir);
 
-            if (windows10 == "1")
-            {
-                if (romsey == "1") { InstallProgressBar.Maximum += 1; }
-                if (highcliffe == "1") { InstallProgressBar.Maximum += 1; }
-            }
-            if (windows11 == "1") { InstallProgressBar.Maximum += 7; }
+            if (windows10 == "1") { InstallProgressBar.Maximum += 8; }
+            if (windows11 == "1") { InstallProgressBar.Maximum += 9; }
             if (PowerCheck.IsChecked == true) { InstallProgressBar.Maximum += 1; } else { InstallProgressBar.Maximum += 2; }
             if (CrcCheck.IsChecked == true) { InstallProgressBar.Maximum += 1; }
             if (AnyDeskCheck.IsChecked == true) { InstallProgressBar.Maximum += 2; }
@@ -1905,43 +1901,16 @@ namespace PlutoPoint_Installer.Views
                         string buildNumber = key.GetValue("CurrentBuild")?.ToString();
                         if (int.TryParse(buildNumber, out int build))
                         {
-                            if (build >= 22000)
+                            if (build >= 19041)
                             {
-                                AppendLine("✅ Disabling device encryption...");
-                                using (RegistryKey registryKey = Registry.LocalMachine.CreateSubKey(@"SYSTEM\CurrentControlSet\Control\BitLocker", writable: true))
-                                    registryKey.SetValue("PreventDeviceEncryption", 1, RegistryValueKind.DWord);
-                                InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
+                                if (build >= 22000)
+                                {
+                                    AppendLine("✅ Disabling device encryption...");
+                                    using (RegistryKey registryKey = Registry.LocalMachine.CreateSubKey(@"SYSTEM\CurrentControlSet\Control\BitLocker", writable: true))
+                                        registryKey.SetValue("PreventDeviceEncryption", 1, RegistryValueKind.DWord);
+                                    InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
+                                }
 
-                                AppendLine("✅ Disabling fastboot mode...");
-                                using (RegistryKey registryKey = Registry.LocalMachine.CreateSubKey(@"SYSTEM\CurrentControlSet\Control\Session Manager\Power", writable: true))
-                                    registryKey.SetValue("HiberbootEnabled", 0, RegistryValueKind.DWord);
-                                InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
-
-                                AppendLine("✅ Disabling location tracking...");
-                                using (RegistryKey registryKey = Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Sensor\Overrides\{BFA794E4-F964-4FDB-90F6-51056BFE4B44}", writable: true))
-                                    registryKey.SetValue("SensorPermissionState", 0, RegistryValueKind.DWord);
-                                InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
-                                using (RegistryKey registryKey = Registry.LocalMachine.CreateSubKey(@"SYSTEM\CurrentControlSet\Services\lfsvc\Service\Configuration", writable: true))
-                                    registryKey.SetValue("Status", 0, RegistryValueKind.DWord);
-                                InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
-
-                                AppendLine("✅ Disabling People icon...");
-                                using (RegistryKey registryKey = Registry.CurrentUser.CreateSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People", writable: true)) { }
-                                InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
-                                using (RegistryKey registryKey = Registry.CurrentUser.CreateSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People", writable: true))
-                                    registryKey.SetValue("PeopleBand", 0, RegistryValueKind.DWord);
-                                InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
-
-                                AppendLine("✅ Hiding recently used files and folders in File Explorer...");
-                                using (RegistryKey registryKey = Registry.CurrentUser.CreateSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer", writable: true))
-                                    registryKey.SetValue("ShowRecent", 0, RegistryValueKind.DWord);
-                                InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
-                                using (RegistryKey registryKey = Registry.CurrentUser.CreateSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer", writable: true))
-                                    registryKey.SetValue("ShowFrequent", 0, RegistryValueKind.DWord);
-                                InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
-                            }
-                            else if (build >= 19041)
-                            {
                                 AppendLine("✅ Setting explorer to open to This PC...");
                                 using (RegistryKey registryKey = Registry.CurrentUser.CreateSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced", writable: true))
                                     registryKey.SetValue("LaunchTo", 1, RegistryValueKind.DWord);
