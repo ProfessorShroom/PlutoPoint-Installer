@@ -28,14 +28,14 @@ jobs:
       - name: Stage Executable
         shell: powershell
         run: |
-          $exe = Get-ChildItem -Path "bin" -Filter "Computer Repair Centre Installer.exe" -Recurse | Select-Object -First 1
-          
-          if ($exe) {
-              Write-Host "Found executable at: $($exe.FullName)"
+          $exePath = "bin\x64\Release\Computer Repair Centre Installer.exe"
+
+          if (Test-Path $exePath) {
+              Write-Host "Found executable at: $exePath"
               New-Item -ItemType Directory -Force -Path "staging"
-              Copy-Item -Path $exe.FullName -Destination "staging\Computer-Repair-Centre-Installer.exe" -Force
+              Copy-Item -Path $exePath -Destination "staging\Computer-Repair-Centre-Installer.exe" -Force
           } else {
-              Write-Error "Could not find 'Computer Repair Centre Installer.exe' in bin directory."
+              Write-Error "Could not find the published exe at '$exePath'. Check PublishDir in the csproj hasn't changed."
               exit 1
           }
 
