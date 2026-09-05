@@ -4,6 +4,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
+// Copyright © Charlie Howard 2026 All rights reserved.
+
 namespace PlutoPoint_Launcher.Services;
 
 public sealed record UpdateInfo(

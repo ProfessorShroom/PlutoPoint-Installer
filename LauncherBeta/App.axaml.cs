@@ -2,6 +2,8 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 
+// Copyright © Charlie Howard 2026 All rights reserved.
+
 namespace PlutoPoint_Launcher;
 
 public partial class App : Application

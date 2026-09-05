@@ -8,6 +8,8 @@ using Avalonia.Platform;
 using PlutoPoint_Installer.Models;
 using PlutoPoint_Installer.Utilities;
 
+// Copyright © Charlie Howard 2026 All rights reserved.
+
 namespace PlutoPoint_Installer.UI
 {
     public class ThemeManager

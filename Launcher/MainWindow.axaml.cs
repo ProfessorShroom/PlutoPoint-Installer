@@ -11,6 +11,8 @@ using Avalonia.Media;
 using Avalonia.Threading;
 using PlutoPoint_Launcher.Services;
 
+// Copyright © Charlie Howard 2026 All rights reserved.
+
 namespace PlutoPoint_Launcher;
 
 public partial class MainWindow : Window

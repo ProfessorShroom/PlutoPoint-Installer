@@ -1,6 +1,8 @@
 using Avalonia;
 using System;
 
+// Copyright © Charlie Howard 2026 All rights reserved.
+
 namespace PlutoPoint_Installer
 {
     internal class Program

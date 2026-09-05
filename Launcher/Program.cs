@@ -1,6 +1,8 @@
 using System;
 using Avalonia;
 
+// Copyright © Charlie Howard 2026 All rights reserved.
+
 namespace PlutoPoint_Launcher;
 
 internal static class Program

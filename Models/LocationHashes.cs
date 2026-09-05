@@ -4,9 +4,9 @@ namespace PlutoPoint_Installer.Models
 {
     public class LocationHashes
     {
-        public string romsey { get; set; }
-        public string chandlersFord { get; set; }
-        public string highcliffe { get; set; }
-        public string charlieHome { get; set; }
+        public string romsey { get; set; } = null!;
+        public string chandlersFord { get; set; } = null!;
+        public string highcliffe { get; set; } = null!;
+        public string charlieHome { get; set; } = null!;
     }
 }

@@ -6,6 +6,6 @@ namespace PlutoPoint_Installer.Models
 {
     public class PasswordHashes
     {
-        public List<string> allowedHashes { get; set; }
+        public List<string> allowedHashes { get; set; } = [];
     }
 }

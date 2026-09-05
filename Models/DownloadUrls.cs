@@ -4,16 +4,16 @@ namespace PlutoPoint_Installer.Models
 {
     public class DownloadUrls
     {
-        public string crcOEM { get; set; }
-        public string anyDesk { get; set; }
-        public string bingWallpapers { get; set; }
-        public string bitDefender { get; set; }
-        public string discord { get; set; }
-        public string googleChrome { get; set; }
-        public string mozillaFirefox { get; set; }
-        public string mozillaThunderbird { get; set; }
-        public string nanaZip { get; set; }
-        public string steam { get; set; }
-        public string vlcMediaPlayer { get; set; }
+        public string crcOEM { get; set; } = null!;
+        public string anyDesk { get; set; } = null!;
+        public string bingWallpapers { get; set; } = null!;
+        public string bitDefender { get; set; } = null!;
+        public string discord { get; set; } = null!;
+        public string googleChrome { get; set; } = null!;
+        public string mozillaFirefox { get; set; } = null!;
+        public string mozillaThunderbird { get; set; } = null!;
+        public string nanaZip { get; set; } = null!;
+        public string steam { get; set; } = null!;
+        public string vlcMediaPlayer { get; set; } = null!;
     }
 }
