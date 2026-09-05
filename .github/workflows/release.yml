@@ -3,8 +3,8 @@ name: Build and Release Installer
 on:
   push:
     tags:
-      - "v*.*.*.*"
-      - "*.*.*.*"
+      - 'v*.*.*.*'
+      - '*.*.*.*'
 
 permissions:
   contents: write
@@ -14,18 +14,30 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v5
+      - name: Checkout Repository
+        uses: actions/checkout@v4.2.2
 
-      - name: Setup .NET 8
-        uses: actions/setup-dotnet@v5
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4.3.0
         with:
-          dotnet-version: "8.0.x"
+          dotnet-version: '8.0.x'
 
-      - name: Publish Installer
+      - name: Build Installer
+        run: dotnet build "PlutoPoint Installer.csproj" --configuration Release
+
+      - name: Stage Executable
+        shell: powershell
         run: |
-          dotnet publish "PlutoPoint Installer.csproj" --configuration Release --output staging
-          Rename-Item -Path "staging\Computer Repair Centre Installer.exe" -NewName "Computer-Repair-Centre-Installer.exe"
+          $exe = Get-ChildItem -Path "bin" -Filter "Computer Repair Centre Installer.exe" -Recurse | Select-Object -First 1
+          
+          if ($exe) {
+              Write-Host "Found executable at: $($exe.FullName)"
+              New-Item -ItemType Directory -Force -Path "staging"
+              Copy-Item -Path $exe.FullName -Destination "staging\Computer-Repair-Centre-Installer.exe" -Force
+          } else {
+              Write-Error "Could not find 'Computer Repair Centre Installer.exe' in bin directory."
+              exit 1
+          }
 
       - name: Create Versioned Release
         uses: softprops/action-gh-release@v2.1.0
