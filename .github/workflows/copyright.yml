@@ -1,0 +1,34 @@
+name: Update Copyright Year
+
+on:
+  schedule:
+    - cron: '0 2 1 1 *'
+  workflow_dispatch:
+
+jobs:
+  update-copyright:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+
+      - name: Update copyright year in README.md and C# files
+        run: |
+          CURRENT_YEAR=$(date +%Y)
+
+          # 1. Update README.md (updates year range and strips any trailing period)
+          sed -i -E "s/Copyright © Charlie Howard 2016-[0-9]{4}\.?/Copyright © Charlie Howard 2016-$CURRENT_YEAR/g" README.md
+
+          # 2. Update all .cs files: converts single year/old ranges to 2016-YYYY and removes the trailing period
+          find . -type f -name "*.cs" -exec sed -i -E "s/\/\/\s*Copyright © Charlie Howard (2016-[0-9]{4}|[0-9]{4}) All rights reserved\./\/\/ Copyright © Charlie Howard 2016-$CURRENT_YEAR All rights reserved/g" {} +
+
+      - name: Commit and push changes
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git add README.md '*.cs'
+          # Only commit if changes were actually made
+          git diff --staged --quiet || (git commit -m "chore: update copyright year range to 2016-$(date +%Y)" && git push)
