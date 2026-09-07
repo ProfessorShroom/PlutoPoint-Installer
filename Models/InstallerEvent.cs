@@ -4,7 +4,7 @@ using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 
-// Copyright © Charlie Howard 2026 All rights reserved.
+// Copyright © Charlie Howard 2016-2026 All rights reserved
 
 namespace PlutoPoint_Installer.Models
 {

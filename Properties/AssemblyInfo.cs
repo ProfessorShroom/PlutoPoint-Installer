@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-// Copyright © Charlie Howard 2026 All rights reserved.
+// Copyright © Charlie Howard 2016-2026 All rights reserved
 
 [assembly: AssemblyTitle("Computer Repair Centre Installer")]
 [assembly: AssemblyDescription("C# Automatic Software Installer")]

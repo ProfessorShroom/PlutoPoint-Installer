@@ -1,7 +1,7 @@
 using Avalonia;
 using System;
 
-// Copyright © Charlie Howard 2026 All rights reserved.
+// Copyright © Charlie Howard 2016-2026 All rights reserved
 
 namespace PlutoPoint_Installer
 {
