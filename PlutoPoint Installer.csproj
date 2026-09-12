@@ -70,10 +70,10 @@
       <BuildInfoFile>$(IntermediateOutputPath)AssemblyUpdateDate.g.cs</BuildInfoFile>
     </PropertyGroup>
 
-    <ItemGroup>
-      <BuildInfoLines Include="using PlutoPoint_Installer.Attributes;" />
-      <BuildInfoLines Include="[assembly: AssemblyUpdateDate(&quot;$(BuildDateUtc)&quot;)]" />
-    </ItemGroup>
+  <ItemGroup>
+    <BuildInfoLines Include="using PlutoPoint_Installer.Attributes%3B" />
+    <BuildInfoLines Include="[assembly: AssemblyUpdateDate(&quot;$(BuildDateUtc)&quot;)]" />
+  </ItemGroup>
 
     <WriteLinesToFile File="$(BuildInfoFile)" Lines="@(BuildInfoLines)" Overwrite="true" />
 
