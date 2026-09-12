@@ -64,4 +64,22 @@
     <CallTarget Targets="Publish" />
   </Target>
 
+  <Target Name="WriteBuildInfo" BeforeTargets="CoreCompile">
+    <PropertyGroup>
+      <BuildDateUtc>$([System.DateTime]::UtcNow.ToString("o"))</BuildDateUtc>
+      <BuildInfoFile>$(IntermediateOutputPath)AssemblyUpdateDate.g.cs</BuildInfoFile>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <BuildInfoLines Include="using PlutoPoint_Installer.Attributes;" />
+      <BuildInfoLines Include="[assembly: AssemblyUpdateDate(&quot;$(BuildDateUtc)&quot;)]" />
+    </ItemGroup>
+
+    <WriteLinesToFile File="$(BuildInfoFile)" Lines="@(BuildInfoLines)" Overwrite="true" />
+
+    <ItemGroup>
+      <Compile Include="$(BuildInfoFile)" />
+    </ItemGroup>
+  </Target>
+
 </Project>

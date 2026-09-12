@@ -60,7 +60,12 @@ namespace PlutoPoint_Installer.Views
         private List<(string Name, string Status)> installResults;
         private string _logFilePath;
         private readonly PlutoPoint_Installer.UI.ThemeManager _themeManager = new PlutoPoint_Installer.UI.ThemeManager();
-        DateTime buildDate = File.GetLastWriteTime(Environment.ProcessPath ?? Assembly.GetExecutingAssembly().Location);
+        DateTime buildDate = DateTime.Parse(
+    Assembly.GetExecutingAssembly()
+        .GetCustomAttribute<PlutoPoint_Installer.Attributes.AssemblyUpdateDateAttribute>()
+        ?.Date ?? "1970-01-01T00:00:00Z",
+    System.Globalization.CultureInfo.InvariantCulture,
+    System.Globalization.DateTimeStyles.RoundtripKind).ToLocalTime();
 
         private Uri crcOEMURL => new Uri(urls.crcOEM);
         private Uri anyDeskURL => new Uri(urls.anyDesk);

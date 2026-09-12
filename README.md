@@ -29,8 +29,9 @@ Disables sleep and screen timeout while on AC power during the install, then res
 
 #### Latest Update
 
-**Version 7.0.1.3 / 7.0.1.2 / 7.0.1.1 / 7.0.1.0**
+**Version 7.0.1.4 / 7.0.1.3 / 7.0.1.2 / 7.0.1.1 / 7.0.1.0**
 
+- **_7.0.1.4_** Fixed "Last updated on" showing today's date instead of the actual build date — it was reading the exe's filesystem timestamp, which resets whenever the file is downloaded. Now the build date is baked at compile time via AssemblyUpdateDateAttribute.
 - **_7.0.1.3_** File Explorer will now open to "This PC" by default on Windows 11 too, not just Windows 10.
 - **_7.0.1.2_** Made values nullable.
 - **_7.0.1.1_** Version number correction.
