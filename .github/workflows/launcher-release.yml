@@ -1,0 +1,75 @@
+name: Build and Release Launcher
+
+on:
+  push:
+    tags:
+      - 'launcher-v*.*.*.*'
+      - 'launcher-*.*.*.*'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4.2.2
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4.3.0
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Build Stable Launcher
+        run: dotnet build "Launcher/PlutoPointLauncher.csproj" --configuration Release
+
+      - name: Build Beta Launcher
+        run: dotnet build "LauncherBeta/PlutoPointLauncher.csproj" --configuration Release
+
+      - name: Stage Executables
+        shell: powershell
+        run: |
+          New-Item -ItemType Directory -Force -Path "staging"
+
+          # Find and stage Stable Launcher
+          $exeStable = Get-ChildItem -Path "Launcher/bin" -Filter "PlutoPointLauncher.exe" -Recurse | Select-Object -First 1
+          if ($exeStable) {
+              Write-Host "Found stable launcher at: $($exeStable.FullName)"
+              Copy-Item -Path $exeStable.FullName -Destination "staging\Computer.Repair.Centre.Launcher.exe" -Force
+          } else {
+              Write-Error "Could not find 'PlutoPointLauncher.exe' in Launcher/bin directory."
+              exit 1
+          }
+
+          # Find and stage Beta Launcher
+          $exeBeta = Get-ChildItem -Path "LauncherBeta/bin" -Filter "PlutoPointLauncher.exe" -Recurse | Select-Object -First 1
+          if ($exeBeta) {
+              Write-Host "Found beta launcher at: $($exeBeta.FullName)"
+              Copy-Item -Path $exeBeta.FullName -Destination "staging\Computer.Repair.Centre.Launcher.Beta.exe" -Force
+          } else {
+              Write-Error "Could not find 'PlutoPointLauncher.exe' in LauncherBeta/bin directory."
+              exit 1
+          }
+
+      - name: Create Versioned Release
+        uses: softprops/action-gh-release@v2.1.0
+        with:
+          name: "PlutoPoint Launcher ${{ github.ref_name }}"
+          files: |
+            staging/Computer.Repair.Centre.Launcher.exe
+            staging/Computer.Repair.Centre.Launcher.Beta.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update Floating Latest Pointer
+        uses: softprops/action-gh-release@v2.1.0
+        with:
+          tag_name: launcher-latest
+          name: "PlutoPoint Launcher Latest"
+          files: |
+            staging/Computer.Repair.Centre.Launcher.exe
+            staging/Computer.Repair.Centre.Launcher.Beta.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
