@@ -41,7 +41,7 @@ jobs:
               Write-Host "Found stable launcher at: $($exeStable.FullName)"
               Copy-Item -Path $exeStable.FullName -Destination "staging\Computer.Repair.Centre.Launcher.exe" -Force
           } else {
-              Write-Error "Could not find 'PlutoPointLaucher.exe' in Launcher/bin directory."
+              Write-Error "Could not find 'PlutoPointLauncher.exe' in Launcher/bin directory."
               exit 1
           }
 
