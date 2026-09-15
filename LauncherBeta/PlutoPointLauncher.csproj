@@ -5,7 +5,7 @@
 		<TargetFramework>net8.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
-		<AssemblyName>PlutoPoint Launcher Beta</AssemblyName>
+		<AssemblyName>PlutoPointLauncherBeta</AssemblyName>
 		<RootNamespace>PlutoPoint_Launcher_Beta</RootNamespace>
 		<ApplicationIcon>Assets\computerRepairCentreIconBeta.ico</ApplicationIcon>
 		<ApplicationManifest>app.manifest</ApplicationManifest>
