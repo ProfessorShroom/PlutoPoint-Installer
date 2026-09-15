@@ -35,7 +35,7 @@ jobs:
 
           # Find and stage Stable Launcher
           $exeStable = Get-ChildItem -Path "Launcher/bin" -Filter "PlutoPointLauncher.exe" -Recurse |
-              Where-Object { $_.FullName -like "*\publish\*" } |
+              Sort-Object LastWriteTime -Descending |
               Select-Object -First 1
           if ($exeStable) {
               Write-Host "Found stable launcher at: $($exeStable.FullName)"
@@ -47,7 +47,7 @@ jobs:
 
           # Find and stage Beta Launcher
           $exeBeta = Get-ChildItem -Path "LauncherBeta/bin" -Filter "PlutoPointLauncherBeta.exe" -Recurse |
-              Where-Object { $_.FullName -like "*\publish\*" } |
+              Sort-Object LastWriteTime -Descending |
               Select-Object -First 1
           if ($exeBeta) {
               Write-Host "Found beta launcher at: $($exeBeta.FullName)"
