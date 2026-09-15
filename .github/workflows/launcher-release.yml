@@ -34,22 +34,26 @@ jobs:
           New-Item -ItemType Directory -Force -Path "staging"
 
           # Find and stage Stable Launcher
-          $exeStable = Get-ChildItem -Path "Launcher/bin" -Filter "PlutoPointLauncher.exe" -Recurse | Select-Object -First 1
+          $exeStable = Get-ChildItem -Path "Launcher/bin" -Filter "PlutoPointLaucher.exe" -Recurse |
+              Where-Object { $_.FullName -like "*\publish\*" } |
+              Select-Object -First 1
           if ($exeStable) {
               Write-Host "Found stable launcher at: $($exeStable.FullName)"
               Copy-Item -Path $exeStable.FullName -Destination "staging\Computer.Repair.Centre.Launcher.exe" -Force
           } else {
-              Write-Error "Could not find 'PlutoPointLauncher.exe' in Launcher/bin directory."
+              Write-Error "Could not find 'PlutoPointLaucher.exe' in Launcher/bin directory."
               exit 1
           }
 
           # Find and stage Beta Launcher
-          $exeBeta = Get-ChildItem -Path "LauncherBeta/bin" -Filter "PlutoPointLauncher.exe" -Recurse | Select-Object -First 1
+          $exeBeta = Get-ChildItem -Path "LauncherBeta/bin" -Filter "PlutoPointLauncherBeta.exe" -Recurse |
+              Where-Object { $_.FullName -like "*\publish\*" } |
+              Select-Object -First 1
           if ($exeBeta) {
               Write-Host "Found beta launcher at: $($exeBeta.FullName)"
               Copy-Item -Path $exeBeta.FullName -Destination "staging\Computer.Repair.Centre.Launcher.Beta.exe" -Force
           } else {
-              Write-Error "Could not find 'PlutoPointLauncher.exe' in LauncherBeta/bin directory."
+              Write-Error "Could not find 'PlutoPointLauncherBeta.exe' in LauncherBeta/bin directory."
               exit 1
           }
 
