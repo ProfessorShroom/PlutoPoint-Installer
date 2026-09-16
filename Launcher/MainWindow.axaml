@@ -5,8 +5,14 @@
         Width="390" Height="329"
         CanResize="False"
         WindowStartupLocation="CenterScreen"
-        Icon="/Assets/computerRepairCentreIcon.ico"
-        Background="#292929">
+        Icon="/Assets/computerRepairCentreIcon.ico">
+
+  <Window.Background>
+    <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+      <GradientStop Offset="0" Color="#1EC8FF" />
+      <GradientStop Offset="1" Color="#8C00FF" />
+    </LinearGradientBrush>
+  </Window.Background>
 
   <Window.Styles>
     <Style Selector="Ellipse.spinner">
@@ -25,12 +31,12 @@
 
   <Grid RowDefinitions="*,Auto" Margin="24">
     <Grid Grid.Row="0" Width="72" Height="72" HorizontalAlignment="Center" VerticalAlignment="Center">
-      <Ellipse Width="64" Height="64" StrokeThickness="6" Stroke="#3A3A3A" />
+      <Ellipse Width="64" Height="64" StrokeThickness="6" Stroke="#33FFFFFF" />
       <Ellipse x:Name="ProgressRing"
                Classes="spinner"
                Width="64" Height="64"
                StrokeThickness="6"
-               Stroke="#4C9AFF"
+               Stroke="White"
                StrokeLineCap="Round">
         <Ellipse.RenderTransform>
           <RotateTransform Angle="-90" />

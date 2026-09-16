@@ -9,9 +9,9 @@
 		<RootNamespace>PlutoPoint_Launcher_Beta</RootNamespace>
 		<ApplicationIcon>Assets\computerRepairCentreIconBeta.ico</ApplicationIcon>
 		<ApplicationManifest>app.manifest</ApplicationManifest>
-		<AssemblyVersion>2026.09.16.0</AssemblyVersion>
-		<FileVersion>2026.09.16.0</FileVersion>
-		<Version>2026.09.16.0</Version>
+		<AssemblyVersion>2026.09.16.1</AssemblyVersion>
+		<FileVersion>2026.09.16.1</FileVersion>
+		<Version>2026.09.16.1</Version>
 		<Product>Computer Repair Centre Installer Launcher Beta</Product>
 		<Company></Company>
 		<Copyright>Copyright © Charlie Howard 2026</Copyright>

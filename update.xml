@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <item>
-    <version>2026.09.16.0</version>
+    <version>2026.09.16.1</version>
     <url>https://github.com/ProfessorShroom/PlutoPoint-Installer/releases/download/launcher-latest/Computer.Repair.Centre.Launcher.exe</url>
     <changelog>https://github.com/ProfessorShroom/PlutoPoint-Installer/blob/main/README.md#changelog</changelog>
     <mandatory>true</mandatory>
