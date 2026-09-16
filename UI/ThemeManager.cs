@@ -33,95 +33,119 @@ namespace PlutoPoint_Installer.UI
                 GradientBottom = Color.FromArgb(255, 205, 145, 95),
                 LogColor = Color.FromArgb(255, 95, 55, 25),
                 Messages = new List<string> { "", "🥞 It's Pancake Day!", "Don't forget to have some pancakes you fat bastard!", "" },
-                OverlayImage = LoadImage("pancake")
+                OverlayImage = LoadImage("pancake"),
+                TitleSuffix = "Pancake Day!",
+                TextColor = Color.FromArgb(255, 95, 55, 25)
             });
 
             var fixedEvents = new[]
             {
                 new {
                     Name = "New Year",
+                    Title = "Happy New Year!",
                     M = 12, D = 31, M2 = 1, D2 = 5,
                     Top = Color.FromArgb(255, 255, 210, 90), Bot = Color.FromArgb(255, 198, 140, 35), Log = Color.FromArgb(255, 90, 65, 15),
+                    Text = Color.FromArgb(255, 90, 65, 15),
                     Sound = (Action)AudioEffects.PlayCompleteNewYearsChime,
                     Msg = new List<string> { "", "🎉 Happy New Year!", "" },
                     Img = "newyear", Icon = (string)null, Rot = 0f
                 },
                 new {
                     Name = "Christmas",
+                    Title = "Merry Christmas!",
                     M = 12, D = 1, M2 = 12, D2 = 31,
                     Top = Color.FromArgb(255, 18, 110, 58), Bot = Color.FromArgb(255, 120, 18, 32), Log = Colors.White,
+                    Text = Colors.White,
                     Sound = (Action)AudioEffects.PlayCompleteChristmasChime,
                     Msg = new List<string> { "", "🎄 Merry Christmas!", "" },
                     Img = "christmas", Icon = "computerRepairCentreIconChristmas", Rot = 0f
                 },
                 new {
                     Name = "Halloween",
+                    Title = "Happy Halloween!",
                     M = 10, D = 25, M2 = 10, D2 = 31,
                     Top = Color.FromArgb(255, 35, 35, 35), Bot = Color.FromArgb(255, 120, 45, 0), Log = Colors.White,
+                    Text = Colors.White,
                     Sound = (Action)AudioEffects.PlayCompleteHalloweenChime,
                     Msg = new List<string> { "", "🎃 Boo! Happy Halloween!", "" },
                     Img = "pumpkin", Icon = "computerRepairCentreIconHalloween", Rot = 0f
                 },
                 new {
                     Name = "Valentines",
+                    Title = "Happy Valentine's Day!",
                     M = 2, D = 14, M2 = 2, D2 = 14,
                     Top = Color.FromArgb(255, 245, 215, 225), Bot = Color.FromArgb(255, 214, 150, 175), Log = Color.FromArgb(255, 135, 20, 50),
+                    Text = Color.FromArgb(255, 135, 20, 50),
                     Sound = (Action)AudioEffects.PlayCompleteValentinesChime,
                     Msg = new List<string> { "", "❤️ Happy Valentines Day!", "" },
                     Img = "heart", Icon = "computerRepairCentreIconValentines", Rot = 30f
                 },
                 new {
                     Name = "Puffin Day",
+                    Title = "World P̶e̶l̶i̶c̶a̶n̶ Puffin Day!",
                     M = 4, D = 14, M2 = 4, D2 = 14,
                     Top = Color.FromArgb(255, 35, 45, 70), Bot = Color.FromArgb(255, 90, 125, 160), Log = Colors.White,
+                    Text = Colors.White,
                     Sound = (Action)null,
                     Msg = new List<string> { "", "🐧 Today is World Puffin day!", "" },
                     Img = "puffin", Icon = "computerRepairCentreIconPuffin", Rot = 0f
                 },
                 new {
                     Name = "Duck Day",
+                    Title = "National Duck Day!",
                     M = 4, D = 4, M2 = 4, D2 = 4,
                     Top = Color.FromArgb(255, 215, 185, 125), Bot = Color.FromArgb(255, 150, 120, 78), Log = Color.FromArgb(255, 76, 94, 64),
+                    Text = Color.FromArgb(255, 76, 94, 64),
                     Sound = (Action)null,
                     Msg = new List<string> { "", "🦆 Today is National Duck day!", "Did someone say duck?", "" },
                     Img = "duck", Icon = (string)null, Rot = 0f
                 },
                 new {
                     Name = "Dachshund Day",
+                    Title = "National Dachshund Day!",
                     M = 6, D = 21, M2 = 6, D2 = 21,
                     Top = Color.FromArgb(255, 245, 228, 212), Bot = Color.FromArgb(255, 205, 170, 138), Log = Color.FromArgb(255, 110, 72, 45),
+                    Text = Color.FromArgb(255, 110, 72, 45),
                     Sound = (Action)null,
                     Msg = new List<string> { "", "🌭 Today is National Dachshund day!", "" },
                     Img = "pluto", Icon = "plutoLogo", Rot = 0f
                 },
                 new {
                     Name = "Pluto Day",
+                    Title = (string)null,
                     M = 3, D = 12, M2 = 3, D2 = 12,
                     Top = Color.FromArgb(255, 242, 225, 210), Bot = Color.FromArgb(255, 182, 132, 92), Log = Color.FromArgb(255, 108, 72, 48),
+                    Text = Color.FromArgb(255, 108, 72, 48),
                     Sound = (Action)null,
                     Msg = new List<string> { "", "🪐🌭🎂 Today is Pluto's Birthday!", "" },
                     Img = "pluto", Icon = "plutoLogo", Rot = 0f
                 },
                 new {
                     Name = "Hippo Day",
+                    Title = "World Hippo Day!",
                     M = 2, D = 15, M2 = 2, D2 = 15,
                     Top = Color.FromArgb(255, 98, 98, 105), Bot = Color.FromArgb(255, 58, 58, 64), Log = Colors.White,
+                    Text = Colors.White,
                     Sound = (Action)null,
                     Msg = new List<string> { "", "🦛 Today is World Hippo day!", "Don't get too excited Steve", "" },
                     Img = "hippo", Icon = (string)null, Rot = 0f
                 },
                 new {
                     Name = "Rhino Day",
+                    Title = "World Rhino Day!",
                     M = 9, D = 22, M2 = 9, D2 = 22,
                     Top = Color.FromArgb(255, 110, 110, 115), Bot = Color.FromArgb(255, 62, 62, 68), Log = Colors.White,
+                    Text = Colors.White,
                     Sound = (Action)null,
                     Msg = new List<string> { "", "🦏 Today is World Rhino day!", "Don't get too excited Steve", "" },
                     Img = "rhino", Icon = (string)null, Rot = 0f
                 },
                 new {
                     Name = "Star Wars Day",
+                    Title = "May the 4th Be With You!",
                     M = 5, D = 4, M2 = 5, D2 = 4,
                     Top = Color.FromArgb(255, 34, 34, 34), Bot = Color.FromArgb(255, 40, 40, 40), Log = Colors.White,
+                    Text = Colors.White,
                     Sound = (Action)null,
                     Msg = new List<string> { "", "🌌 Today is Star Wars day!", "May the 4th be with you!", "" },
                     Img = "starwars", Icon = (string)null, Rot = 0f
@@ -146,7 +170,9 @@ namespace PlutoPoint_Installer.UI
                     Messages = e.Msg,
                     OverlayImage = LoadImage(e.Img),
                     OverlayIcon = e.Icon != null ? LoadIcon(e.Icon) : null,
-                    RotationDegrees = e.Rot
+                    RotationDegrees = e.Rot,
+                    TitleSuffix = e.Title,
+                    TextColor = e.Text
                 });
             }
 
@@ -171,7 +197,9 @@ namespace PlutoPoint_Installer.UI
                 Messages = new List<string> { "", $"🎂 It is {name}'s birthday today!", $"🎉 Happy birthday {name}!", "" },
                 OverlayImage = LoadImage("present"),
                 OverlayIcon = LoadIcon("computerRepairCentreIconBirthday"),
-                RotationDegrees = 0f
+                RotationDegrees = 0f,
+                TitleSuffix = $"{name}'s Birthday!",
+                TextColor = Color.FromArgb(255, 80, 60, 75)
             });
         }
 
@@ -212,12 +240,30 @@ namespace PlutoPoint_Installer.UI
             }
         }
 
+        public void ApplyTitle(Action<string> applyTitleSuffix)
+        {
+            var currentEvent = GetCurrentEvent();
+            if (currentEvent != null && !string.IsNullOrWhiteSpace(currentEvent.TitleSuffix))
+            {
+                applyTitleSuffix(currentEvent.TitleSuffix);
+            }
+        }
+
         public void ApplyButtonTheme(Action<Color, Color> applyButtonColors)
         {
             var currentEvent = GetCurrentEvent();
             if (currentEvent != null)
             {
-                applyButtonColors(currentEvent.GradientTop, Colors.White);
+                applyButtonColors(currentEvent.GradientTop, currentEvent.TextColor);
+            }
+        }
+
+        public void ApplyTextColor(Action<Color> applyTextColor)
+        {
+            var currentEvent = GetCurrentEvent();
+            if (currentEvent != null)
+            {
+                applyTextColor(currentEvent.TextColor);
             }
         }
 

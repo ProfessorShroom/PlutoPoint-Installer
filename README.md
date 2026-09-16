@@ -29,6 +29,18 @@ Disables sleep and screen timeout while on AC power during the install, then res
 
 #### Latest Update
 
+**Version 7.0.2.0**
+
+- Gave Beta builds their own orange colour scheme (background gradient, buttons, and title) matched to the Beta logo, instead of the default blue/purple.
+- Beta builds now skip seasonal/holiday theming entirely, so Beta branding and holiday colours never clash.
+- Seasonal events can now update the window title too (e.g. "Merry Christmas!"), not just the install log.
+- Added a per-event text colour so button and title text stays readable against lighter holiday themes — fixes washed-out white text on Pluto's Birthday, Valentine's Day, Duck Day, Dachshund Day, Pancake Day, and birthdays.
+
+#### Older Updates
+
+<details markdown="1">
+<summary><strong>Version 7.x - The .NET 8 / Avalonia Update</strong></summary>
+
 **Version 7.0.1.4 / 7.0.1.3 / 7.0.1.2 / 7.0.1.1 / 7.0.1.0**
 
 - **_7.0.1.4_** Fixed "Last updated on" showing today's date instead of the actual build date — it was reading the exe's filesystem timestamp, which resets whenever the file is downloaded. Now the build date is baked at compile time via AssemblyUpdateDateAttribute.
@@ -38,11 +50,6 @@ Disables sleep and screen timeout while on AC power during the install, then res
 - **_7.0.1.0_** Added a seperate Beta launcher with auto update just like the release launcher for easier maintenance.
 - **_7.0.1.0_** Added Beta branding to all beta builds to make them easier to identify.
 - **_7.0.1.0_** Removed Firefox's new auto-start with Windows feature as that's just annoying.
-
-#### Older Updates
-
-<details markdown="1">
-<summary><strong>Version 7.x - The .NET 8 / Avalonia Update</strong></summary>
 
 **Version 7.0.0.0 - The .NET 8 / Avalonia Update**
 

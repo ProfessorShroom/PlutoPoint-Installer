@@ -60,6 +60,7 @@ namespace PlutoPoint_Installer.Views
         private List<(string Name, string Status)> installResults;
         private string _logFilePath;
         private readonly PlutoPoint_Installer.UI.ThemeManager _themeManager = new PlutoPoint_Installer.UI.ThemeManager();
+        private bool _isBetaBuild = false;
         DateTime buildDate = DateTime.Parse(
     Assembly.GetExecutingAssembly()
         .GetCustomAttribute<PlutoPoint_Installer.Attributes.AssemblyUpdateDateAttribute>()
@@ -108,6 +109,17 @@ namespace PlutoPoint_Installer.Views
         protected override void OnOpened(EventArgs e)
         {
             base.OnOpened(e);
+            if (_isBetaBuild)
+            {
+                var betaBrush = new SolidColorBrush(Color.Parse("#ED8D28"));
+                InstallButton.Background = betaBrush;
+                InstallButton.Foreground = new SolidColorBrush(Colors.White);
+                RestartButton.Background = betaBrush;
+                RestartButton.Foreground = new SolidColorBrush(Colors.White);
+                CloseButton.Background = betaBrush;
+                CloseButton.Foreground = new SolidColorBrush(Colors.White);
+                return;
+            }
             _themeManager.ApplyThemeAndMessages(
                 (top, bottom, log) =>
                 {
@@ -131,6 +143,19 @@ namespace PlutoPoint_Installer.Views
                     RestartButton.Foreground = foreBrush;
                     CloseButton.Background = backBrush;
                     CloseButton.Foreground = foreBrush;
+                }
+            );
+            _themeManager.ApplyTitle(
+                (titleSuffix) =>
+                {
+                    Title += $" - {titleSuffix}";
+                    TitleTextBlock.Text += $" - {titleSuffix}";
+                }
+            );
+            _themeManager.ApplyTextColor(
+                (textColor) =>
+                {
+                    TitleTextBlock.Foreground = new SolidColorBrush(textColor);
                 }
             );
             _themeManager.UpdateGUIEvent(this, SeasonalOverlayImage);
@@ -242,6 +267,8 @@ namespace PlutoPoint_Installer.Views
             if (string.IsNullOrWhiteSpace(versionStr) || !versionStr.Contains("b"))
                 return;
 
+            _isBetaBuild = true;
+
             Title += " Beta";
             TitleTextBlock.Text += " Beta";
             try
@@ -250,6 +277,12 @@ namespace PlutoPoint_Installer.Views
             }
             catch
             {
+            }
+
+            if (Background is LinearGradientBrush gradientBrush && gradientBrush.GradientStops.Count >= 2)
+            {
+                gradientBrush.GradientStops[0].Color = Color.Parse("#ED8D28");
+                gradientBrush.GradientStops[1].Color = Color.Parse("#E25E04");
             }
         }
 
@@ -1993,7 +2026,14 @@ namespace PlutoPoint_Installer.Views
                 }
             }
 
-            _themeManager.PlayEventSound();
+            if (_isBetaBuild)
+            {
+                AudioEffects.PlayCompleteChime();
+            }
+            else
+            {
+                _themeManager.PlayEventSound();
+            }
 
             if (RestartCheck.IsChecked == true)
             {

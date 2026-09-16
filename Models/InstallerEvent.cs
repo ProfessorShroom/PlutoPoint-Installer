@@ -20,5 +20,7 @@ namespace PlutoPoint_Installer.Models
         public Bitmap? OverlayImage { get; set; }
         public WindowIcon? OverlayIcon { get; set; }
         public float RotationDegrees { get; set; }
+        public string? TitleSuffix { get; set; }
+        public Color TextColor { get; set; } = Colors.White;
     }
 }
