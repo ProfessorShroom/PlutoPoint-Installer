@@ -1207,7 +1207,7 @@ namespace PlutoPoint_Installer.Views
                 {
                     AppendLine("📦 Installing Romsey Computer Repair Centre OEM information...");
                     await DownloadWithRetryAsync(crcOEMURL, crcOEMFilename);
-                    SetOemInfo(hours: "Mon-Fri 9:15am-5:00pm - Sat 9:15am-4:00pm", phone: "01794 517142", url: "https://www.thecomputerrepaircentre.co.uk/romsey");
+                    SetOemInfo(hours: "Mon-Fri 9:15am-5:00pm - Sat 9:15am-2:00pm", phone: "01794 517142", url: "https://www.thecomputerrepaircentre.co.uk/romsey");
                     TrackResult("Computer Repair Centre OEM Info", "Installed");
                 }
                 else if (oemLocation == "Chandler's Ford")

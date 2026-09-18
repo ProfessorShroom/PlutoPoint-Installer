@@ -29,12 +29,13 @@ Disables sleep and screen timeout while on AC power during the install, then res
 
 #### Latest Update
 
-**Version 7.0.2.0**
+**Version 7.0.2.1 / 7.0.2.0**
 
-- Gave Beta builds their own orange colour scheme (background gradient, buttons, and title) matched to the Beta logo, instead of the default blue/purple.
-- Beta builds now skip seasonal/holiday theming entirely, so Beta branding and holiday colours never clash.
+- **_7.0.2.1_** Changed Romsey opening hours on Saturdays to prepare for upcoming change.
+- **_7.0.2.0_** Gave Beta builds their own orange colour scheme (background gradient, buttons, and title) matched to the Beta logo, instead of the default blue/purple.
+- **_7.0.2.0_** Beta builds now skip seasonal/holiday theming entirely, so Beta branding and holiday colours never clash.
 - Seasonal events can now update the window title too (e.g. "Merry Christmas!"), not just the install log.
-- Added a per-event text colour so button and title text stays readable against lighter holiday themes — fixes washed-out white text on Pluto's Birthday, Valentine's Day, Duck Day, Dachshund Day, Pancake Day, and birthdays.
+- **_7.0.2.0_** Added a per-event text colour so button and title text stays readable against lighter holiday themes — fixes washed-out white text on Pluto's Birthday, Valentine's Day, Duck Day, Dachshund Day, Pancake Day, and birthdays.
 
 #### Older Updates
 
