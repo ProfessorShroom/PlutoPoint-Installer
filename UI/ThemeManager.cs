@@ -178,9 +178,9 @@ namespace PlutoPoint_Installer.UI
 
             AddBirthday("Charlie", 4, 6);
             AddBirthday("Dean", 4, 21);
-            AddBirthday("Steve", 6, 24);
             AddBirthday("Howard", 5, 16);
             AddBirthday("Adam", 6, 9);
+            AddBirthday("Steve", 6, 24);
             AddBirthday("Geeth", 7, 25);
         }
 

@@ -1159,8 +1159,8 @@ namespace PlutoPoint_Installer.Views
             if (!Directory.Exists(oemDir)) Directory.CreateDirectory(oemDir);
             if (!Directory.Exists(appsDir)) Directory.CreateDirectory(appsDir);
 
-            if (windows10 == "1") { InstallProgressBar.Maximum += 8; }
-            if (windows11 == "1") { InstallProgressBar.Maximum += 9; }
+            if (windows10 == "1") { InstallProgressBar.Maximum += 9; }
+            if (windows11 == "1") { InstallProgressBar.Maximum += 10; }
             if (PowerCheck.IsChecked == true) { InstallProgressBar.Maximum += 1; } else { InstallProgressBar.Maximum += 2; }
             if (CrcCheck.IsChecked == true) { InstallProgressBar.Maximum += 1; }
             if (AnyDeskCheck.IsChecked == true) { InstallProgressBar.Maximum += 2; }
@@ -1980,6 +1980,11 @@ namespace PlutoPoint_Installer.Views
                                 InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
                                 using (RegistryKey registryKey = Registry.CurrentUser.CreateSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer", writable: true))
                                     registryKey.SetValue("ShowFrequent", 0, RegistryValueKind.DWord);
+                                InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
+
+                                AppendLine("✅ Resetting cursor size to default (1)...");
+                                using (RegistryKey registryKey = Registry.CurrentUser.CreateSubKey(@"Software\Microsoft\Accessibility", writable: true))
+                                    registryKey.SetValue("CursorSize", 1, RegistryValueKind.DWord);
                                 InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
                             }
                             else
