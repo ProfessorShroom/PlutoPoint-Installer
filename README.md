@@ -29,9 +29,10 @@ Disables sleep and screen timeout while on AC power during the install, then res
 
 #### Latest Update
 
-**Version 7.0.3.0**
+**Version 7.0.3.0 / 7.0.3.1**
 
-- Now resets the cursor size to the default 1, as someone keeps making cursors massive. A cursor size that Steve would like.
+- **_7.0.3.1_** Corrected registry key used to change cursor size.
+- **_7.0.3.0_** Now resets the cursor size to the default 20, as someone keeps making cursors massive. A cursor size that Steve would like.
 
 #### Older Updates
 

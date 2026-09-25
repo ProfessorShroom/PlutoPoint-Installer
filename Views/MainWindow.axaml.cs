@@ -1982,9 +1982,9 @@ namespace PlutoPoint_Installer.Views
                                     registryKey.SetValue("ShowFrequent", 0, RegistryValueKind.DWord);
                                 InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
 
-                                AppendLine("✅ Resetting cursor size to default (1)...");
-                                using (RegistryKey registryKey = Registry.CurrentUser.CreateSubKey(@"Software\Microsoft\Accessibility", writable: true))
-                                    registryKey.SetValue("CursorSize", 1, RegistryValueKind.DWord);
+                                AppendLine("✅ Resetting cursor size to default (20)...");
+                                using (RegistryKey registryKey = Registry.CurrentUser.CreateSubKey(@"Control Panel\Cursors", writable: true))
+                                    registryKey.SetValue("CursorBaseSize", 20, RegistryValueKind.DWord);
                                 InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
                             }
                             else
