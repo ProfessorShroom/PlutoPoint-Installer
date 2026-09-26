@@ -2004,8 +2004,8 @@ namespace PlutoPoint_Installer.Views
             else
             {
                 AppendLine("✅ Re-enabling sleep and screen timeout on AC power...");
-                RunSilentCommand("powercfg", "/change monitor-timeout-ac 10");
-                RunSilentCommand("powercfg", "/change standby-timeout-ac 20");
+                RunSilentCommand("powercfg", "/change monitor-timeout-ac 5");
+                RunSilentCommand("powercfg", "/change standby-timeout-ac 5");
                 InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
             }
 

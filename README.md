@@ -29,15 +29,20 @@ Disables sleep and screen timeout while on AC power during the install, then res
 
 #### Latest Update
 
-**Version 7.0.3.0 / 7.0.3.1**
+**Version 7.0.4.0**
 
-- **_7.0.3.1_** Corrected registry key used to change cursor size.
-- **_7.0.3.0_** Now resets the cursor size to the default 20, as someone keeps making cursors massive. A cursor size that Steve would like.
+- If the power box is not checked the installer will now set the screen and sleep timeout back to Windows 11 defaults rather 10 and 20 minutes respectively.
 
 #### Older Updates
 
 <details markdown="1">
 <summary><strong>Version 7.x - The .NET 8 / Avalonia Update</strong></summary>
+
+**Version 7.0.3.0 / 7.0.3.1**
+
+- **_7.0.3.1_** Corrected registry key used to change cursor size.
+- **_7.0.3.0_** Now resets the cursor size to the default 20, as someone keeps making cursors massive.
+
 
 **Version 7.0.2.1 / 7.0.2.0**
 
