@@ -1984,7 +1984,7 @@ namespace PlutoPoint_Installer.Views
 
                                 AppendLine("✅ Resetting cursor size to default (20)...");
                                 using (RegistryKey registryKey = Registry.CurrentUser.CreateSubKey(@"Control Panel\Cursors", writable: true))
-                                    registryKey.SetValue("CursorBaseSize", 20, RegistryValueKind.DWord);
+                                    registryKey.SetValue("CursorBaseSize", 32, RegistryValueKind.DWord);
                                 InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
                             }
                             else
