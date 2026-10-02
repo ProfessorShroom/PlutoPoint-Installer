@@ -1214,7 +1214,7 @@ namespace PlutoPoint_Installer.Views
                 {
                     AppendLine("📦 Installing Chandlers Ford Computer Repair Centre OEM information...");
                     await DownloadWithRetryAsync(crcOEMURL, crcOEMFilename);
-                    SetOemInfo(hours: "Mon-Fri 9:00am-5:30pm - Sat 9:00am-2:00pm", phone: "02380 270271", url: "https://www.thecomputerrepaircentre.co.uk/chandlers-ford");
+                    SetOemInfo(hours: "Mon-Fri 9:00am-5:00pm - Sat 9:00am-3:00pm", phone: "02380 270271", url: "https://www.thecomputerrepaircentre.co.uk/chandlers-ford");
                     TrackResult("Computer Repair Centre OEM Info", "Installed");
                 }
                 else if (oemLocation == "Highcliffe")
