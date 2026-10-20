@@ -10,5 +10,11 @@
   "nanaZip": "https://nanazip.professorshroom.com",
   "steam": "https://steam.professorshroom.com",
   "vlcMediaPlayer": "https://vlc.professorshroom.com",
-  "libreOfficeFallback": "https://libreoffice.professorshroom.com"
+  "libreOfficeFallback": "https://libreoffice.professorshroom.com",
+  "arm64": {
+    "googleChrome": "https://dl.google.com/dl/chrome/install/googlechromestandaloneenterprise_arm64.msi",
+    "mozillaFirefox": "https://download.mozilla.org/?product=firefox-latest-ssl&os=win64-aarch64&lang=en-GB",
+    "vlcMediaPlayer": "https://vlcarm.professorshroom.com",
+    "libreOfficeFallback": "https://libreofficearm.professorshroom.com"
+  }
 }

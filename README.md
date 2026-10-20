@@ -15,7 +15,7 @@
 
 **_Copyright © Charlie Howard 2016-2026 All rights reserved_**
 
-A C#-based GUI installer for Windows 10/11, built on .NET 8 with an Avalonia UI.
+A C#-based GUI installer for Windows 10/11, built on .NET 8 with an Avalonia UI. It also runs on Windows 11 on ARM (x64 build under emulation) and installs native ARM64 versions of apps where they exist.
 
 Gives you the option to install the Computer Repair Centre OEM (location based) information, Bing Wallpapers, AnyDesk, BitDefender, Discord, Google Chrome, LibreOffice, Mozilla Firefox, Mozilla Thunderbird, NanaZip, Nvidia App, Steam, and VLC.
 
@@ -29,16 +29,21 @@ Disables sleep and screen timeout while on AC power during the install, then res
 
 #### Latest Update
 
-**Version 7.0.4.2 / 7.0.4.1 / 7.0.4.0**
+**Version 7.0.5.0**
 
-- **_7.0.4.2_** Changed Chandler's Ford's hours.
-- **_7.0.4.1_** Corrected cursor size from 20 to 32 as it's being set in decimal not hex.
-- **_7.0.4.0_** If the power box is not checked the installer will now set the screen and sleep timeout back to Windows 11 defaults rather 10 and 20 minutes respectively.
+- Added ARM64 support. Apps that now have a native ARM64 version will install that rather than the x64 version. Not all currently do, so they will still install the x64 version which runs under emulation on Windows 11 anyway.
+- Removed Bing Wallpapers fom winget as it wasn't setting the wallpaper by default which defeats the purpose.
 
 #### Older Updates
 
 <details markdown="1">
 <summary><strong>Version 7.x - The .NET 8 / Avalonia Update</strong></summary>
+
+**Version 7.0.4.2 / 7.0.4.1 / 7.0.4.0**
+
+- **_7.0.4.2_** Changed Chandler's Ford's hours.
+- **_7.0.4.1_** Corrected cursor size from 20 to 32 as it's being set in decimal not hex.
+- **_7.0.4.0_** If the power box is not checked the installer will now set the screen and sleep timeout back to Windows 11 defaults rather 10 and 20 minutes respectively.
 
 **Version 7.0.3.0 / 7.0.3.1**
 

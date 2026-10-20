@@ -1,5 +1,7 @@
 // Copyright © Charlie Howard 2016-2026 All rights reserved
 
+using System.Collections.Generic;
+
 namespace PlutoPoint_Installer.Models
 {
     public class DownloadUrls
@@ -15,5 +17,6 @@ namespace PlutoPoint_Installer.Models
         public string nanaZip { get; set; } = null!;
         public string steam { get; set; } = null!;
         public string vlcMediaPlayer { get; set; } = null!;
+        public Dictionary<string, string>? arm64 { get; set; }
     }
 }

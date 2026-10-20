@@ -37,6 +37,8 @@ namespace PlutoPoint_Installer.Views
 
         private bool? _wingetAvailable;
 
+        private static readonly bool IsArm64 = RuntimeInformation.OSArchitecture == Architecture.Arm64;
+
         private static readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
 
         // Set strings
@@ -68,17 +70,24 @@ namespace PlutoPoint_Installer.Views
     System.Globalization.CultureInfo.InvariantCulture,
     System.Globalization.DateTimeStyles.RoundtripKind).ToLocalTime();
 
-        private Uri crcOEMURL => new Uri(urls.crcOEM);
-        private Uri anyDeskURL => new Uri(urls.anyDesk);
-        private Uri bingWallpapersURL => new Uri(urls.bingWallpapers);
-        private Uri bitDefenderURL => new Uri(urls.bitDefender);
-        private Uri discordURL => new Uri(urls.discord);
-        private Uri googleChromeURL => new Uri(urls.googleChrome);
-        private Uri mozillaFirefoxURL => new Uri(urls.mozillaFirefox);
-        private Uri mozillaThunderbirdURL => new Uri(urls.mozillaThunderbird);
-        private Uri nanaZipURL => new Uri(urls.nanaZip);
-        private Uri steamURL => new Uri(urls.steam);
-        private Uri vlcMediaPlayerURL => new Uri(urls.vlcMediaPlayer);
+        private string? ArmOverride(string key) =>
+            IsArm64 && urls.arm64 != null && urls.arm64.TryGetValue(key, out var armUrl) && !string.IsNullOrWhiteSpace(armUrl)
+                ? armUrl
+                : null;
+
+        private string ResolveUrl(string key, string defaultUrl) => ArmOverride(key) ?? defaultUrl;
+
+        private Uri crcOEMURL => new Uri(ResolveUrl("crcOEM", urls.crcOEM));
+        private Uri anyDeskURL => new Uri(ResolveUrl("anyDesk", urls.anyDesk));
+        private Uri bingWallpapersURL => new Uri(ResolveUrl("bingWallpapers", urls.bingWallpapers));
+        private Uri bitDefenderURL => new Uri(ResolveUrl("bitDefender", urls.bitDefender));
+        private Uri discordURL => new Uri(ResolveUrl("discord", urls.discord));
+        private Uri googleChromeURL => new Uri(ResolveUrl("googleChrome", urls.googleChrome));
+        private Uri mozillaFirefoxURL => new Uri(ResolveUrl("mozillaFirefox", urls.mozillaFirefox));
+        private Uri mozillaThunderbirdURL => new Uri(ResolveUrl("mozillaThunderbird", urls.mozillaThunderbird));
+        private Uri nanaZipURL => new Uri(ResolveUrl("nanaZip", urls.nanaZip));
+        private Uri steamURL => new Uri(ResolveUrl("steam", urls.steam));
+        private Uri vlcMediaPlayerURL => new Uri(ResolveUrl("vlcMediaPlayer", urls.vlcMediaPlayer));
 
         public MainWindow()
         {
@@ -394,6 +403,11 @@ namespace PlutoPoint_Installer.Views
                                 osLabelText = "🪟 Unknown OS";
                             }
                             AppendLine(versionText);
+                            if (IsArm64)
+                            {
+                                osLabelText += " (ARM64)";
+                                AppendLine("💪 ARM64 processor detected.");
+                            }
                             void Write() => OsLabel.Text = osLabelText;
                             if (Dispatcher.UIThread.CheckAccess())
                                 Write();
@@ -904,11 +918,6 @@ namespace PlutoPoint_Installer.Views
             }
         }
 
-        // Firefox has its own "Open Firefox automatically when your computer starts up" feature
-        // (Settings > General), which registers itself under the current user's Run key. This
-        // isn't a winget or installer-method quirk -- it's the same regardless of how Firefox was
-        // installed. Scan by command-line content rather than a hardcoded value name, since Mozilla
-        // doesn't guarantee that name and Task Manager's display name isn't always the raw one.
         private void RemoveFirefoxAutoLaunchEntry()
         {
             try
@@ -1135,7 +1144,9 @@ namespace PlutoPoint_Installer.Views
             // Downloaded installers
             string crcOEMFilename = Path.Combine(oemDir, "computerRepairCentreOEM.bmp");
             string googleChromeFilename = Path.Combine(appsDir, "googleChrome.msi");
-            string mozillaFirefoxFilename = Path.Combine(appsDir, "mozillaFirefox.msi");
+            // Firefox only ships its ARM64 build as an EXE (no MSI), so an ARM override means "run the EXE silently".
+            bool firefoxIsExe = ArmOverride("mozillaFirefox") != null;
+            string mozillaFirefoxFilename = Path.Combine(appsDir, firefoxIsExe ? "mozillaFirefox.exe" : "mozillaFirefox.msi");
             string anyDeskFilename = Path.Combine(appsDir, "anyDesk.msi");
             string bingWallpapersFilename = Path.Combine(appsDir, "bingWallpapers.msi");
             string bitDefenderFilename = Path.Combine(appsDir, "bitDefender.exe");
@@ -1314,7 +1325,7 @@ namespace PlutoPoint_Installer.Views
                 }
                 else
                 {
-                    bool wingetOk = await TryWingetInstallAsync("AnyDeskSoftwareGmbH.AnyDesk", "AnyDesk");
+                    bool wingetOk = await TryWingetInstallAsync("AnyDesk.AnyDesk", "AnyDesk");
                     if (wingetOk)
                     {
                         TrackResult("AnyDesk", "Installed");
@@ -1368,46 +1379,38 @@ namespace PlutoPoint_Installer.Views
                 }
                 else
                 {
-                    bool wingetOk = await TryWingetInstallAsync("Microsoft.BingWallpaper", "Bing Wallpapers");
-                    if (wingetOk)
+                    // Installed from our MSI rather than winget: the winget package is an MSIX build that doesn't behave the same.
+                    AppendLine("🔄 Downloading Bing Wallpapers...");
+                    await DownloadWithRetryAsync(bingWallpapersURL, bingWallpapersFilename);
+                    AppendLine("📦 Installing Bing Wallpapers...");
+                    await Task.Run(() =>
                     {
-                        TrackResult("Bing Wallpapers", "Installed");
-                        InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 2, InstallProgressBar.Maximum);
-                    }
-                    else
-                    {
-                        AppendLine("🔄 Downloading Bing Wallpapers...");
-                        await DownloadWithRetryAsync(bingWallpapersURL, bingWallpapersFilename);
-                        AppendLine("📦 Installing Bing Wallpapers...");
-                        await Task.Run(() =>
+                        using (Process process = new Process())
                         {
-                            using (Process process = new Process())
+                            process.StartInfo.FileName = "msiexec";
+                            process.StartInfo.Arguments = $"/package \"{bingWallpapersFilename}\" /passive";
+                            process.StartInfo.UseShellExecute = false;
+                            process.StartInfo.RedirectStandardOutput = true;
+                            process.StartInfo.RedirectStandardError = true;
+                            process.StartInfo.CreateNoWindow = true;
+                            try
                             {
-                                process.StartInfo.FileName = "msiexec";
-                                process.StartInfo.Arguments = $"/package \"{bingWallpapersFilename}\" /passive";
-                                process.StartInfo.UseShellExecute = false;
-                                process.StartInfo.RedirectStandardOutput = true;
-                                process.StartInfo.RedirectStandardError = true;
-                                process.StartInfo.CreateNoWindow = true;
-                                try
-                                {
-                                    process.Start();
-                                    string output = process.StandardOutput.ReadToEnd();
-                                    string error = process.StandardError.ReadToEnd();
-                                    process.WaitForExit();
-                                    Console.WriteLine("Output: " + output);
-                                    if (!string.IsNullOrEmpty(error)) Console.WriteLine("Error: " + error);
-                                }
-                                catch (Exception ex)
-                                {
-                                    Console.WriteLine("An error occurred: " + ex.Message);
-                                }
+                                process.Start();
+                                string output = process.StandardOutput.ReadToEnd();
+                                string error = process.StandardError.ReadToEnd();
+                                process.WaitForExit();
+                                Console.WriteLine("Output: " + output);
+                                if (!string.IsNullOrEmpty(error)) Console.WriteLine("Error: " + error);
                             }
-                        });
-                        AppendLine("✅ Completed installation of Bing Wallpapers.");
-                        TrackResult("Bing Wallpapers", "Installed");
-                        InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
-                    }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine("An error occurred: " + ex.Message);
+                            }
+                        }
+                    });
+                    AppendLine("✅ Completed installation of Bing Wallpapers.");
+                    TrackResult("Bing Wallpapers", "Installed");
+                    InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
                 }
             }
 
@@ -1588,13 +1591,25 @@ namespace PlutoPoint_Installer.Views
                             AppendInstallSummary();
                             return;
                         }
-                        string libreOfficeDownloadUrl = $"https://download.documentfoundation.org/libreoffice/stable/{libreOfficeVersion}/win/x86_64/LibreOffice_{libreOfficeVersion}_Win_x86-64.msi";
+                        string libreOfficeDownloadUrl = IsArm64
+                            ? $"https://download.documentfoundation.org/libreoffice/stable/{libreOfficeVersion}/win/aarch64/LibreOffice_{libreOfficeVersion}_Win_aarch64.msi"
+                            : $"https://download.documentfoundation.org/libreoffice/stable/{libreOfficeVersion}/win/x86_64/LibreOffice_{libreOfficeVersion}_Win_x86-64.msi";
                         Uri libreOfficeURL = new Uri(libreOfficeDownloadUrl);
-                        await DownloadWithRetryAsync(libreOfficeURL, libreOfficeFilename);
+                        try
+                        {
+                            await DownloadWithRetryAsync(libreOfficeURL, libreOfficeFilename);
+                        }
+                        catch (Exception ex)
+                        {
+                            // DownloadWithRetryAsync rethrows after its last attempt; clear any partial file
+                            // so the fallback below still runs instead of aborting the whole install.
+                            AppendLine($"⚠️ LibreOffice download failed: {ex.Message}");
+                            try { File.Delete(libreOfficeFilename); } catch { }
+                        }
                         if (!File.Exists(libreOfficeFilename))
                         {
                             AppendLine("❌ LibreOffice download failed; falling back to known installer.");
-                            libreOfficeURL = new Uri("https://cloud.howardgb.com/public.php/dav/files/EFyAqCm3tEQ6W25/libreOffice.msi");
+                            libreOfficeURL = new Uri(ResolveUrl("libreOfficeFallback", "https://cloud.howardgb.com/public.php/dav/files/EFyAqCm3tEQ6W25/libreOffice.msi"));
                             await DownloadWithRetryAsync(libreOfficeURL, libreOfficeFilename);
                         }
                         AppendLine("📦 Installing LibreOffice...");
@@ -1721,8 +1736,8 @@ namespace PlutoPoint_Installer.Views
                         {
                             using (Process process = new Process())
                             {
-                                process.StartInfo.FileName = "msiexec";
-                                process.StartInfo.Arguments = $"/package \"{mozillaFirefoxFilename}\" /passive";
+                                process.StartInfo.FileName = firefoxIsExe ? mozillaFirefoxFilename : "msiexec";
+                                process.StartInfo.Arguments = firefoxIsExe ? "/S" : $"/package \"{mozillaFirefoxFilename}\" /passive";
                                 process.StartInfo.UseShellExecute = false;
                                 process.StartInfo.RedirectStandardOutput = true;
                                 process.StartInfo.RedirectStandardError = true;
