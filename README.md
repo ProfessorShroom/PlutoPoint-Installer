@@ -6,7 +6,7 @@
   <a href="https://github.com/ProfessorShroom/PlutoPoint-Installer/actions/workflows/build.yml"><img alt="Build" src="https://img.shields.io/github/actions/workflow/status/ProfessorShroom/PlutoPoint-Installer/build.yml?style=for-the-badge&label=build"></a>
 <a href="https://github.com/ProfessorShroom/PlutoPoint-Installer/releases"><img alt="Release" src="https://img.shields.io/github/v/release/ProfessorShroom/PlutoPoint-Installer?style=for-the-badge&label=release&color=8A2BE2&filter=!*latest-launcher*"></a>
   <img alt=".NET 8" src="https://img.shields.io/badge/.NET-8.0-512BD4?style=for-the-badge"> 
-  <img alt="Arch" src="https://img.shields.io/badge/Arch-x64-blue?style=for-the-badge"> 
+  <img alt="Arch" src="https://img.shields.io/badge/Arch-x64%2FARM-blue?style=for-the-badge"> 
   <img alt="Platform" src="https://img.shields.io/badge/platform-Windows%2010%2F11-0078D4?style=for-the-badge&logo=windows&logoColor=white"> 
   <a href="https://github.com/ProfessorShroom/PlutoPoint-Installer/blob/main/LICENSE.md"><img alt="License" src="https://img.shields.io/badge/license-Proprietary-red?style=for-the-badge"></a> 
 </p>
