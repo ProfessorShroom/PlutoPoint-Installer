@@ -17,27 +17,33 @@
 
 A C#-based GUI installer for Windows 10/11, built on .NET 8 with an Avalonia UI. It also runs on Windows 11 on ARM (x64 build under emulation) and installs native ARM64 versions of apps where they exist.
 
-Gives you the option to install the Computer Repair Centre OEM (location based) information, Bing Wallpapers, AnyDesk, BitDefender, Discord, Google Chrome, LibreOffice, Mozilla Firefox, Mozilla Thunderbird, NanaZip, Nvidia App, Steam, and VLC.
+Gives you the option to install the Computer Repair Centre OEM (location based) information, Bing Wallpapers, AnyDesk, BitDefender, Discord, Google Chrome, LibreOffice, Microsoft Office 2024 (Requires Product Key), Mozilla Firefox, Mozilla Thunderbird, NanaZip, Nvidia App, Steam, and VLC.
 
 If run on Windows 10 or Windows 11 it disables Fast Startup and location tracking, sets File Explorer to open to "This PC" by default, hides the People icon, and hides recently used files and folders in File Explorer.
 
 If run on Windows 11 it will also disable automatic device encryption.
 
-Disables sleep and screen timeout while on AC power during the install, then restores the original setting once it's finished, so the computer can't fall asleep mid-install. The "Refurb" box lets you disable sleep on AC power permanently instead.
+Disables sleep and screen timeout while on AC power during the install, then restores the original setting once it's finished, so the computer can't fall asleep mid-install. The "power" box lets you disable sleep on AC power permanently instead.
 
 ### Changelog
 
 #### Latest Update
 
-**Version 7.0.5.0**
+**Version 7.0.6.0**
 
-- Added ARM64 support. Apps that now have a native ARM64 version will install that rather than the x64 version. Not all currently do, so they will still install the x64 version which runs under emulation on Windows 11 anyway.
-- Removed Bing Wallpapers fom winget as it wasn't setting the wallpaper by default which defeats the purpose.
+- Added Microsoft Office 2024 Pro Plus as an install option (requires product key).
+- If Microsoft Office 2024 is selected it skips LibreOffice (if ticked) and uninstalls LibreOffice if it's already installed.
+- If Microsoft Office 2024 is installed it will place desktop and taskbar icons.
 
 #### Older Updates
 
 <details markdown="1">
 <summary><strong>Version 7.x - The .NET 8 / Avalonia Update</strong></summary>
+
+**Version 7.0.5.0**
+
+- Added ARM64 support. Apps that now have a native ARM64 version will install that rather than the x64 version. Not all currently do, so they will still install the x64 version which runs under emulation on Windows 11 anyway.
+- Removed Bing Wallpapers fom winget as it wasn't setting the wallpaper by default which defeats the purpose.
 
 **Version 7.0.4.2 / 7.0.4.1 / 7.0.4.0**
 

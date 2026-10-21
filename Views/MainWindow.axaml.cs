@@ -37,6 +37,8 @@ namespace PlutoPoint_Installer.Views
 
         private bool? _wingetAvailable;
 
+        // True on any Windows on Arm machine. OSArchitecture reports the machine rather than this
+        // process, so it is also true when this x64 build is running under emulation.
         private static readonly bool IsArm64 = RuntimeInformation.OSArchitecture == Architecture.Arm64;
 
         private static readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
@@ -70,6 +72,7 @@ namespace PlutoPoint_Installer.Views
     System.Globalization.CultureInfo.InvariantCulture,
     System.Globalization.DateTimeStyles.RoundtripKind).ToLocalTime();
 
+        // On Windows on Arm, an app's "arm64" entry in Downloads.json (if it has one) replaces its default (x64) URL.
         private string? ArmOverride(string key) =>
             IsArm64 && urls.arm64 != null && urls.arm64.TryGetValue(key, out var armUrl) && !string.IsNullOrWhiteSpace(armUrl)
                 ? armUrl
@@ -88,6 +91,20 @@ namespace PlutoPoint_Installer.Views
         private Uri nanaZipURL => new Uri(ResolveUrl("nanaZip", urls.nanaZip));
         private Uri steamURL => new Uri(ResolveUrl("steam", urls.steam));
         private Uri vlcMediaPlayerURL => new Uri(ResolveUrl("vlcMediaPlayer", urls.vlcMediaPlayer));
+        private Uri office2024URL => new Uri(ResolveUrl("office2024", urls.office2024));
+
+        private static bool IsOfficeInstalled() =>
+            File.Exists(@"C:\Program Files\Microsoft Office\root\Office16\WINWORD.EXE")
+            || File.Exists(@"C:\Program Files (x86)\Microsoft Office\root\Office16\WINWORD.EXE");
+
+        private const string Office2024Config = @"<Configuration>
+  <Add OfficeClientEdition=""64"" Channel=""PerpetualVL2024"">
+    <Product ID=""ProPlus2024Volume"">
+      <Language ID=""en-us"" />
+    </Product>
+  </Add>
+</Configuration>
+";
 
         public MainWindow()
         {
@@ -240,7 +257,7 @@ namespace PlutoPoint_Installer.Views
             if (installResults == null || installResults.Count == 0)
                 return;
             int total = installResults.Count;
-            int succeeded = installResults.Count(r => r.Status == "Installed" || r.Status == "Already Installed" || r.Status == "Applied");
+            int succeeded = installResults.Count(r => r.Status == "Installed" || r.Status == "Already Installed" || r.Status == "Applied" || r.Status == "Removed");
             int skipped = installResults.Count(r => r.Status == "Skipped");
             int failed = installResults.Count(r => r.Status == "Failed");
             AppendLine("");
@@ -405,8 +422,12 @@ namespace PlutoPoint_Installer.Views
                             AppendLine(versionText);
                             if (IsArm64)
                             {
-                                osLabelText += " (ARM64)";
-                                AppendLine("💪 ARM64 processor detected.");
+                                osLabelText += " ARM";
+                                AppendLine("ARM processor detected.");
+                            }
+                            else
+                            {
+                                osLabelText += " x64";
                             }
                             void Write() => OsLabel.Text = osLabelText;
                             if (Dispatcher.UIThread.CheckAccess())
@@ -822,6 +843,9 @@ namespace PlutoPoint_Installer.Views
             if (AddPinEntry(pins, GoogleChromeCheck.IsChecked == true, "Google Chrome.lnk", "Google Chrome")) pinnedCount++;
             if (AddPinEntry(pins, MozillaFirefoxCheck.IsChecked == true, "Firefox.lnk", "Mozilla Firefox")) pinnedCount++;
             if (AddPinEntry(pins, MozillaThunderbirdCheck.IsChecked == true, "Thunderbird.lnk", "Mozilla Thunderbird")) pinnedCount++;
+            if (AddPinEntry(pins, Office2024Check.IsChecked == true, "Word.lnk", "Microsoft Word", alsoAddToDesktop: true)) pinnedCount++;
+            if (AddPinEntry(pins, Office2024Check.IsChecked == true, "Excel.lnk", "Microsoft Excel", alsoAddToDesktop: true)) pinnedCount++;
+            if (AddPinEntry(pins, Office2024Check.IsChecked == true, "Outlook.lnk", "Microsoft Outlook", alsoAddToDesktop: true)) pinnedCount++;
             if (AddPinEntry(pins, LibreOfficeCheck.IsChecked == true, "LibreOffice Writer.lnk", "LibreOffice Writer", alsoAddToDesktop: true)) pinnedCount++;
             if (AddPinEntry(pins, LibreOfficeCheck.IsChecked == true, "LibreOffice Calc.lnk", "LibreOffice Calc", alsoAddToDesktop: true)) pinnedCount++;
             if (AddPinEntry(pins, true, "File Explorer.lnk", "File Explorer")) pinnedCount++;
@@ -918,6 +942,11 @@ namespace PlutoPoint_Installer.Views
             }
         }
 
+        // Firefox has its own "Open Firefox automatically when your computer starts up" feature
+        // (Settings > General), which registers itself under the current user's Run key. This
+        // isn't a winget or installer-method quirk -- it's the same regardless of how Firefox was
+        // installed. Scan by command-line content rather than a hardcoded value name, since Mozilla
+        // doesn't guarantee that name and Task Manager's display name isn't always the raw one.
         private void RemoveFirefoxAutoLaunchEntry()
         {
             try
@@ -1040,6 +1069,84 @@ namespace PlutoPoint_Installer.Views
             }
         }
 
+        // Product codes of installed LibreOffice MSIs (the main product plus any help/language packs),
+        // read from the Uninstall registry keys so it works however LibreOffice was installed.
+        private static List<(string Name, string ProductCode)> FindLibreOfficeProducts()
+        {
+            var found = new List<(string Name, string ProductCode)>();
+            foreach (RegistryView view in new[] { RegistryView.Registry64, RegistryView.Registry32 })
+            {
+                using (RegistryKey baseKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, view))
+                using (RegistryKey? uninstall = baseKey.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall"))
+                {
+                    if (uninstall == null) continue;
+                    foreach (string keyName in uninstall.GetSubKeyNames())
+                    {
+                        if (!keyName.StartsWith("{")) continue; // MSI product codes only
+                        using (RegistryKey? app = uninstall.OpenSubKey(keyName))
+                        {
+                            string? name = app?.GetValue("DisplayName") as string;
+                            if (name != null
+                                && name.StartsWith("LibreOffice", StringComparison.OrdinalIgnoreCase)
+                                && !found.Any(f => f.ProductCode == keyName))
+                                found.Add((name, keyName));
+                        }
+                    }
+                }
+            }
+            // Help and language packs first, the main product last.
+            return found.OrderBy(f => f.Name.Contains("Pack", StringComparison.OrdinalIgnoreCase) ? 0 : 1).ToList();
+        }
+
+        // Silently uninstalls LibreOffice if it's on this PC. Only called once Office 2024 is confirmed installed.
+        private async Task RemoveLibreOfficeAsync()
+        {
+            var products = FindLibreOfficeProducts();
+            if (products.Count == 0)
+                return;
+
+            AppendLine("🧹 Microsoft Office 2024 is installed, removing LibreOffice...");
+            foreach (var (name, productCode) in products)
+            {
+                AppendLine($"🗑️ Uninstalling {name}...");
+                await Task.Run(() =>
+                {
+                    using (Process process = new Process())
+                    {
+                        process.StartInfo.FileName = "msiexec";
+                        process.StartInfo.Arguments = $"/x {productCode} /qn /norestart";
+                        process.StartInfo.UseShellExecute = false;
+                        process.StartInfo.CreateNoWindow = true;
+                        try
+                        {
+                            process.Start();
+                            process.WaitForExit();
+                            Console.WriteLine($"msiexec exit code for {name}: {process.ExitCode}");
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine("An error occurred: " + ex.Message);
+                        }
+                    }
+                });
+            }
+
+            if (FindLibreOfficeProducts().Count == 0)
+            {
+                // The Writer/Calc shortcuts this installer copies to the Desktop would now point at nothing.
+                foreach (string desktop in new[] { Environment.GetFolderPath(Environment.SpecialFolder.Desktop), Environment.GetFolderPath(Environment.SpecialFolder.CommonDesktopDirectory) })
+                    foreach (string shortcut in new[] { "LibreOffice Writer.lnk", "LibreOffice Calc.lnk" })
+                        try { File.Delete(Path.Combine(desktop, shortcut)); } catch { }
+                AppendLine("✅ LibreOffice has been removed.");
+                TrackResult("LibreOffice", "Removed");
+            }
+            else
+            {
+                AppendLine("❌ LibreOffice couldn't be fully removed.");
+                TrackResult("LibreOffice", "Failed");
+            }
+        }
+
         private async Task<bool> TryWingetInstallAsync(string packageId, string label)
         {
             if (!IsWingetAvailable())
@@ -1156,6 +1263,8 @@ namespace PlutoPoint_Installer.Views
             string nanaZipFilename = Path.Combine(appsDir, "nanaZip.msixbundle");
             string steamFilename = Path.Combine(appsDir, "steam.exe");
             string vlcMediaPlayerFilename = Path.Combine(appsDir, "vlcMediaPlayer.msi");
+            string office2024Filename = Path.Combine(appsDir, "officeSetup.exe");
+            string office2024ConfigFilename = Path.Combine(appsDir, "office2024.xml");
             string nvidiaAppFilename = Path.Combine(appsDir, "nvidiaApp.exe");
 
             // Other apps
@@ -1185,6 +1294,7 @@ namespace PlutoPoint_Installer.Views
             if (MozillaFirefoxCheck.IsChecked == true) { InstallProgressBar.Maximum += 2; }
             if (MozillaThunderbirdCheck.IsChecked == true) { InstallProgressBar.Maximum += 2; }
             if (SteamCheck.IsChecked == true) { InstallProgressBar.Maximum += 2; }
+            if (Office2024Check.IsChecked == true) { InstallProgressBar.Maximum += 2; }
             if (TaskbarCheck.IsChecked == true) { InstallProgressBar.Maximum += 1; }
             if (PinAppsCheck.IsChecked == true) { InstallProgressBar.Maximum += 1; }
 
@@ -1563,7 +1673,13 @@ namespace PlutoPoint_Installer.Views
                 }
             }
 
-            if (LibreOfficeCheck.IsChecked == true)
+            if (LibreOfficeCheck.IsChecked == true && Office2024Check.IsChecked == true)
+            {
+                AppendLine("⏭️ Microsoft Office 2024 is selected, so LibreOffice won't be installed.");
+                TrackResult("LibreOffice", "Skipped");
+                InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 2, InstallProgressBar.Maximum);
+            }
+            else if (LibreOfficeCheck.IsChecked == true)
             {
                 AppendLine("📌 LibreOffice is selected.");
                 if (File.Exists(@"C:\Program Files\LibreOffice\program\soffice.exe"))
@@ -1601,8 +1717,6 @@ namespace PlutoPoint_Installer.Views
                         }
                         catch (Exception ex)
                         {
-                            // DownloadWithRetryAsync rethrows after its last attempt; clear any partial file
-                            // so the fallback below still runs instead of aborting the whole install.
                             AppendLine($"⚠️ LibreOffice download failed: {ex.Message}");
                             try { File.Delete(libreOfficeFilename); } catch { }
                         }
@@ -1926,6 +2040,75 @@ namespace PlutoPoint_Installer.Views
                         InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
                     }
                 }
+            }
+
+            if (Office2024Check.IsChecked == true)
+            {
+                AppendLine("📌 Microsoft Office 2024 is selected.");
+                if (IsOfficeInstalled())
+                {
+                    AppendLine("✅ Microsoft Office is already installed, skipping installation.");
+                    TrackResult("Microsoft Office 2024", "Already Installed");
+                    InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 2, InstallProgressBar.Maximum);
+                }
+                else
+                {
+                    bool officeToolReady = false;
+                    AppendLine("🔄 Downloading the Office Deployment Tool...");
+                    try
+                    {
+                        await DownloadWithRetryAsync(office2024URL, office2024Filename);
+                        await File.WriteAllTextAsync(office2024ConfigFilename, Office2024Config);
+                        officeToolReady = File.Exists(office2024Filename);
+                    }
+                    catch (Exception ex)
+                    {
+                        AppendLine($"⚠️ Couldn't download the Office Deployment Tool: {ex.Message}");
+                    }
+
+                    if (officeToolReady)
+                    {
+                        AppendLine("📦 Installing Microsoft Office 2024, this can take a while...");
+                        await Task.Run(() =>
+                        {
+                            using (Process process = new Process())
+                            {
+                                process.StartInfo.FileName = office2024Filename;
+                                process.StartInfo.Arguments = $"/configure \"{office2024ConfigFilename}\"";
+                                process.StartInfo.WorkingDirectory = appsDir;
+                                process.StartInfo.UseShellExecute = false;
+                                process.StartInfo.CreateNoWindow = true;
+                                try
+                                {
+                                    process.Start();
+                                    process.WaitForExit();
+                                    Console.WriteLine("Office setup exit code: " + process.ExitCode);
+                                }
+                                catch (Exception ex)
+                                {
+                                    Console.WriteLine("An error occurred: " + ex.Message);
+                                }
+                            }
+                        });
+                    }
+
+                    if (IsOfficeInstalled())
+                    {
+                        AppendLine("✅ Completed installation of Microsoft Office 2024.");
+                        TrackResult("Microsoft Office 2024", "Installed");
+                    }
+                    else
+                    {
+                        AppendLine("❌ Microsoft Office 2024 doesn't appear to have installed.");
+                        TrackResult("Microsoft Office 2024", "Failed");
+                    }
+                    InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
+                }
+            }
+
+            if (Office2024Check.IsChecked == true && IsOfficeInstalled())
+            {
+                await RemoveLibreOfficeAsync();
             }
 
             if (PinAppsCheck.IsChecked == true)

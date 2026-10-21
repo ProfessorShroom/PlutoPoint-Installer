@@ -55,6 +55,9 @@
             <CheckBox x:Name="LibreOfficeCheck" Theme="{StaticResource IconToggleCheckBoxTheme}" IsChecked="True" ToolTip.Tip="LibreOffice (Free Microsoft Office alternative)">
               <Image Source="avares://Computer Repair Centre Installer/Resources/icons/libreOffice.png" Width="32" Height="32" />
             </CheckBox>
+            <CheckBox x:Name="Office2024Check" Theme="{StaticResource IconToggleCheckBoxTheme}" ToolTip.Tip="Microsoft Office 2024 - Replaces LibreOffice (skips install and an existing copy is removed)">
+              <Image Source="avares://Computer Repair Centre Installer/Resources/icons/office2024.png" Width="32" Height="32" />
+            </CheckBox>
             <CheckBox x:Name="NvidiaAppCheck" Theme="{StaticResource IconToggleCheckBoxTheme}" ToolTip.Tip="Nvidia Graphics App">
               <Image Source="avares://Computer Repair Centre Installer/Resources/icons/nvidiaApp.png" Width="32" Height="32" />
             </CheckBox>

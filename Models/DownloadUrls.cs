@@ -17,6 +17,7 @@ namespace PlutoPoint_Installer.Models
         public string nanaZip { get; set; } = null!;
         public string steam { get; set; } = null!;
         public string vlcMediaPlayer { get; set; } = null!;
+        public string office2024 { get; set; } = null!;
         public Dictionary<string, string>? arm64 { get; set; }
     }
 }
