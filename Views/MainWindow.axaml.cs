@@ -103,6 +103,7 @@ namespace PlutoPoint_Installer.Views
       <Language ID=""en-us"" />
     </Product>
   </Add>
+  <Display Level=""None"" AcceptEULA=""TRUE"" />
 </Configuration>
 ";
 
@@ -845,7 +846,7 @@ namespace PlutoPoint_Installer.Views
             if (AddPinEntry(pins, MozillaThunderbirdCheck.IsChecked == true, "Thunderbird.lnk", "Mozilla Thunderbird")) pinnedCount++;
             if (AddPinEntry(pins, Office2024Check.IsChecked == true, "Word.lnk", "Microsoft Word", alsoAddToDesktop: true)) pinnedCount++;
             if (AddPinEntry(pins, Office2024Check.IsChecked == true, "Excel.lnk", "Microsoft Excel", alsoAddToDesktop: true)) pinnedCount++;
-            if (AddPinEntry(pins, Office2024Check.IsChecked == true, "Outlook.lnk", "Microsoft Outlook", alsoAddToDesktop: true)) pinnedCount++;
+            if (AddPinEntry(pins, Office2024Check.IsChecked == true, "Outlook (classic).lnk", "Microsoft Outlook", alsoAddToDesktop: true)) pinnedCount++;
             if (AddPinEntry(pins, LibreOfficeCheck.IsChecked == true, "LibreOffice Writer.lnk", "LibreOffice Writer", alsoAddToDesktop: true)) pinnedCount++;
             if (AddPinEntry(pins, LibreOfficeCheck.IsChecked == true, "LibreOffice Calc.lnk", "LibreOffice Calc", alsoAddToDesktop: true)) pinnedCount++;
             if (AddPinEntry(pins, true, "File Explorer.lnk", "File Explorer")) pinnedCount++;
@@ -1069,8 +1070,6 @@ namespace PlutoPoint_Installer.Views
             }
         }
 
-        // Product codes of installed LibreOffice MSIs (the main product plus any help/language packs),
-        // read from the Uninstall registry keys so it works however LibreOffice was installed.
         private static List<(string Name, string ProductCode)> FindLibreOfficeProducts()
         {
             var found = new List<(string Name, string ProductCode)>();
@@ -2054,7 +2053,7 @@ namespace PlutoPoint_Installer.Views
                 else
                 {
                     bool officeToolReady = false;
-                    AppendLine("🔄 Downloading the Office Deployment Tool...");
+                    AppendLine("🔄 Downloading Microsoft Office 2024...");
                     try
                     {
                         await DownloadWithRetryAsync(office2024URL, office2024Filename);
@@ -2063,7 +2062,7 @@ namespace PlutoPoint_Installer.Views
                     }
                     catch (Exception ex)
                     {
-                        AppendLine($"⚠️ Couldn't download the Office Deployment Tool: {ex.Message}");
+                        AppendLine($"⚠️ Couldn't download Microsoft Office 2024: {ex.Message}");
                     }
 
                     if (officeToolReady)

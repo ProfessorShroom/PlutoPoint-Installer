@@ -29,11 +29,14 @@ Disables sleep and screen timeout while on AC power during the install, then res
 
 #### Latest Update
 
-**Version 7.0.6.0**
+**Version 7.0.6.1 / 7.0.6.0**
 
-- Added Microsoft Office 2024 Pro Plus as an install option (requires product key).
-- If Microsoft Office 2024 is selected it skips LibreOffice (if ticked) and uninstalls LibreOffice if it's already installed.
-- If Microsoft Office 2024 is installed it will place desktop and taskbar icons.
+- **_7.0.6.1_** Tweaked dialog during Microsoft Office 2024 install.
+- **_7.0.6.1_** Fixed Outlook not being placed on the desktop and taskbar due to it being called "Outlook (classic)".
+- **_7.0.6.1_** The Office installer is now silent.
+- **_7.0.6.0_** Added Microsoft Office 2024 Pro Plus as an install option (requires product key).
+- **_7.0.6.0_** If Microsoft Office 2024 is selected it skips LibreOffice (if ticked) and uninstalls LibreOffice if it's already installed.
+- **_7.0.6.0_** If Microsoft Office 2024 is installed it will place desktop and taskbar icons.
 
 #### Older Updates
 

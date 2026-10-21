@@ -63,7 +63,7 @@ namespace PlutoPoint_Installer.UI
                 new {
                     Name = "Halloween",
                     Title = "Happy Halloween!",
-                    M = 10, D = 25, M2 = 10, D2 = 31,
+                    M = 10, D = 24, M2 = 10, D2 = 31,
                     Top = Color.FromArgb(255, 35, 35, 35), Bot = Color.FromArgb(255, 120, 45, 0), Log = Colors.White,
                     Text = Colors.White,
                     Sound = (Action)AudioEffects.PlayCompleteHalloweenChime,
