@@ -15,20 +15,35 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v7
 
-      - name: Update copyright year in README.md and C# files
+      - name: Update copyright year in README.md, LICENSE.md, and C# files
         run: |
+          START_YEAR=2016
           CURRENT_YEAR=$(date +%Y)
 
-          # 1. Update README.md (updates year range and strips any trailing period)
-          sed -i -E "s/Copyright © Charlie Howard 2016-[0-9]{4}\.?/Copyright © Charlie Howard 2016-$CURRENT_YEAR/g" README.md
+          # Single year in the first year, a range after that
+          if [ "$CURRENT_YEAR" = "$START_YEAR" ]; then
+            RANGE="$START_YEAR"
+          else
+            RANGE="$START_YEAR-$CURRENT_YEAR"
+          fi
 
-          # 2. Update all .cs files: converts single year/old ranges to 2016-YYYY and removes the trailing period
-          find . -type f -name "*.cs" -exec sed -i -E "s/\/\/\s*Copyright © Charlie Howard (2016-[0-9]{4}|[0-9]{4}) All rights reserved\./\/\/ Copyright © Charlie Howard 2016-$CURRENT_YEAR All rights reserved/g" {} +
+          # 1. README.md: handles single year or ranges and strips any trailing period
+          sed -i -E "s/Copyright © Charlie Howard $START_YEAR(-[0-9]{4})?\.?/Copyright © Charlie Howard $RANGE/g" README.md
+
+          # 2. LICENSE.md: handles the copyright year format in your license file
+          if [ -f "LICENSE.md" ]; then
+            sed -i -E "s/Copyright © Charlie Howard $START_YEAR(-[0-9]{4})?\.?/Copyright © Charlie Howard $RANGE/g" LICENSE.md
+          fi
+
+          # 3. C# source files: updates // Copyright ... header comments
+          find . -type f -name "*.cs" \
+            -not -path "./.git/*" \
+            -exec sed -i -E "s#//\s*Copyright © Charlie Howard $START_YEAR(-[0-9]{4})? All rights reserved\.?#// Copyright © Charlie Howard $RANGE All rights reserved#g" {} +
 
       - name: Commit and push changes
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email 'github-actions[bot]@users.noreply.github.com'
-          git add README.md '*.cs'
+          git add -u
           # Only commit if changes were actually made
-          git diff --staged --quiet || (git commit -m "Update Copyright year range to 2016-$(date +%Y)" && git push)
+          git diff --staged --quiet || (git commit -m "Update copyright year range to $START_YEAR-$(date +%Y)" && git push)

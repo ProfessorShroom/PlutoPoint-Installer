@@ -37,8 +37,6 @@ namespace PlutoPoint_Installer.Views
 
         private bool? _wingetAvailable;
 
-        // True on any Windows on Arm machine. OSArchitecture reports the machine rather than this
-        // process, so it is also true when this x64 build is running under emulation.
         private static readonly bool IsArm64 = RuntimeInformation.OSArchitecture == Architecture.Arm64;
 
         private static readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
@@ -72,7 +70,6 @@ namespace PlutoPoint_Installer.Views
     System.Globalization.CultureInfo.InvariantCulture,
     System.Globalization.DateTimeStyles.RoundtripKind).ToLocalTime();
 
-        // On Windows on Arm, an app's "arm64" entry in Downloads.json (if it has one) replaces its default (x64) URL.
         private string? ArmOverride(string key) =>
             IsArm64 && urls.arm64 != null && urls.arm64.TryGetValue(key, out var armUrl) && !string.IsNullOrWhiteSpace(armUrl)
                 ? armUrl
@@ -844,6 +841,8 @@ namespace PlutoPoint_Installer.Views
             if (AddPinEntry(pins, GoogleChromeCheck.IsChecked == true, "Google Chrome.lnk", "Google Chrome")) pinnedCount++;
             if (AddPinEntry(pins, MozillaFirefoxCheck.IsChecked == true, "Firefox.lnk", "Mozilla Firefox")) pinnedCount++;
             if (AddPinEntry(pins, MozillaThunderbirdCheck.IsChecked == true, "Thunderbird.lnk", "Mozilla Thunderbird")) pinnedCount++;
+            if (AddPinEntry(pins, SteamCheck.IsChecked == true, "Steam.lnk", "Steam")) pinnedCount++;
+            if (AddPinEntry(pins, DiscordCheck.IsChecked == true, "Discord.lnk", "Discord")) pinnedCount++;
             if (AddPinEntry(pins, Office2024Check.IsChecked == true, "Word.lnk", "Microsoft Word", alsoAddToDesktop: true)) pinnedCount++;
             if (AddPinEntry(pins, Office2024Check.IsChecked == true, "Excel.lnk", "Microsoft Excel", alsoAddToDesktop: true)) pinnedCount++;
             if (AddPinEntry(pins, Office2024Check.IsChecked == true, "Outlook (classic).lnk", "Microsoft Outlook", alsoAddToDesktop: true)) pinnedCount++;
@@ -914,7 +913,7 @@ namespace PlutoPoint_Installer.Views
             {
                 try
                 {
-#pragma warning disable SYSLIB0014 // WebClient is obsolete; kept for behavioral parity with the original
+#pragma warning disable SYSLIB0014
                     using (WebClient wc = new WebClient())
                     {
                         wc.DownloadFileCompleted += ProgressBarStep;
@@ -943,11 +942,6 @@ namespace PlutoPoint_Installer.Views
             }
         }
 
-        // Firefox has its own "Open Firefox automatically when your computer starts up" feature
-        // (Settings > General), which registers itself under the current user's Run key. This
-        // isn't a winget or installer-method quirk -- it's the same regardless of how Firefox was
-        // installed. Scan by command-line content rather than a hardcoded value name, since Mozilla
-        // doesn't guarantee that name and Task Manager's display name isn't always the raw one.
         private void RemoveFirefoxAutoLaunchEntry()
         {
             try
@@ -1081,7 +1075,7 @@ namespace PlutoPoint_Installer.Views
                     if (uninstall == null) continue;
                     foreach (string keyName in uninstall.GetSubKeyNames())
                     {
-                        if (!keyName.StartsWith("{")) continue; // MSI product codes only
+                        if (!keyName.StartsWith("{")) continue;
                         using (RegistryKey? app = uninstall.OpenSubKey(keyName))
                         {
                             string? name = app?.GetValue("DisplayName") as string;
@@ -1093,11 +1087,9 @@ namespace PlutoPoint_Installer.Views
                     }
                 }
             }
-            // Help and language packs first, the main product last.
             return found.OrderBy(f => f.Name.Contains("Pack", StringComparison.OrdinalIgnoreCase) ? 0 : 1).ToList();
         }
 
-        // Silently uninstalls LibreOffice if it's on this PC. Only called once Office 2024 is confirmed installed.
         private async Task RemoveLibreOfficeAsync()
         {
             var products = FindLibreOfficeProducts();
@@ -1132,7 +1124,6 @@ namespace PlutoPoint_Installer.Views
 
             if (FindLibreOfficeProducts().Count == 0)
             {
-                // The Writer/Calc shortcuts this installer copies to the Desktop would now point at nothing.
                 foreach (string desktop in new[] { Environment.GetFolderPath(Environment.SpecialFolder.Desktop), Environment.GetFolderPath(Environment.SpecialFolder.CommonDesktopDirectory) })
                     foreach (string shortcut in new[] { "LibreOffice Writer.lnk", "LibreOffice Calc.lnk" })
                         try { File.Delete(Path.Combine(desktop, shortcut)); } catch { }
@@ -1250,7 +1241,6 @@ namespace PlutoPoint_Installer.Views
             // Downloaded installers
             string crcOEMFilename = Path.Combine(oemDir, "computerRepairCentreOEM.bmp");
             string googleChromeFilename = Path.Combine(appsDir, "googleChrome.msi");
-            // Firefox only ships its ARM64 build as an EXE (no MSI), so an ARM override means "run the EXE silently".
             bool firefoxIsExe = ArmOverride("mozillaFirefox") != null;
             string mozillaFirefoxFilename = Path.Combine(appsDir, firefoxIsExe ? "mozillaFirefox.exe" : "mozillaFirefox.msi");
             string anyDeskFilename = Path.Combine(appsDir, "anyDesk.msi");
@@ -1488,7 +1478,6 @@ namespace PlutoPoint_Installer.Views
                 }
                 else
                 {
-                    // Installed from our MSI rather than winget: the winget package is an MSIX build that doesn't behave the same.
                     AppendLine("🔄 Downloading Bing Wallpapers...");
                     await DownloadWithRetryAsync(bingWallpapersURL, bingWallpapersFilename);
                     AppendLine("📦 Installing Bing Wallpapers...");
@@ -1881,7 +1870,6 @@ namespace PlutoPoint_Installer.Views
             if (MozillaThunderbirdCheck.IsChecked == true)
             {
                 AppendLine("📌 Mozilla Thunderbird is selected.");
-                // Check if Thunderbird is already installed
                 if (File.Exists(mozillaThunderbirdExePath))
                 {
                     AppendLine("✅ Mozilla Thunderbird is already installed, skipping installation.");
@@ -1898,10 +1886,8 @@ namespace PlutoPoint_Installer.Views
                     }
                     else
                     {
-                        // Download Thunderbird
                         AppendLine("🔄 Downloading Mozilla Thunderbird...");
                         await DownloadWithRetryAsync(mozillaThunderbirdURL, mozillaThunderbirdFilename);
-                        // Install Thunderbird
                         AppendLine("📦 Installing Mozilla Thunderbird...");
                         await Task.Run(() =>
                         {
