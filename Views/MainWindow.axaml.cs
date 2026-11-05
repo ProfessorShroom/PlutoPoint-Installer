@@ -1263,6 +1263,9 @@ namespace PlutoPoint_Installer.Views
             // Desktop
             string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
             string launcherPath = Path.Combine(desktopPath, @"Computer Repair Centre Installer.exe");
+            string lock1 = Path.Combine(desktopPath, @"service.conf.lock");
+            string lock2 = Path.Combine(desktopPath, @"system.conf.lock");
+
 
             if (!Directory.Exists(rootDir)) Directory.CreateDirectory(rootDir);
             if (!Directory.Exists(oemDir)) Directory.CreateDirectory(oemDir);
@@ -2194,7 +2197,7 @@ namespace PlutoPoint_Installer.Views
 
             AppendLine("✅ Cleaning up installation files...");
             var deletionHelper = new FileDeletionHelper();
-            await deletionHelper.DeleteFilesAndDirectoryAsync(appsDir, launcherPath);
+            await deletionHelper.DeleteFilesAndDirectoryAsync(appsDir, launcherPath, lock1, lock2);
             InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
 
             if (RecycleBinCheck.IsChecked == true)
