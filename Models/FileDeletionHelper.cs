@@ -9,47 +9,69 @@ namespace PlutoPoint_Installer.Models
 {
     public class FileDeletionHelper
     {
-        public async Task DeleteFilesAndDirectoryAsync(string appsDir, string launcherPath)
+        public async Task DeleteFilesAndDirectoryAsync(string appsDir, string launcherPath, string lock1Path = null, string lock2Path = null)
         {
-            var deleteFileTasks = new List<Task>();
-            foreach (var file in Directory.EnumerateFiles(appsDir))
+            if (Directory.Exists(appsDir))
             {
-                deleteFileTasks.Add(Task.Run(() =>
+                var deleteFileTasks = new List<Task>();
+                foreach (var file in Directory.EnumerateFiles(appsDir))
                 {
-                    try
+                    deleteFileTasks.Add(Task.Run(() =>
                     {
-                        File.Delete(file);
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"Error deleting file {file}: {ex.Message}");
-                    }
-                }));
+                        try
+                        {
+                            File.Delete(file);
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"Error deleting file {file}: {ex.Message}");
+                        }
+                    }));
+                }
+                await Task.WhenAll(deleteFileTasks);
+
+                try
+                {
+                    await Task.Run(() => Directory.Delete(appsDir, true));
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error deleting directory {appsDir}: {ex.Message}");
+                }
             }
-            await Task.WhenAll(deleteFileTasks);
-            try
-            {
-                await Task.Run(() => Directory.Delete(appsDir, true));
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error deleting directory {appsDir}: {ex.Message}");
-            }
+
             if (File.Exists(launcherPath))
             {
                 try
                 {
                     await Task.Run(() => File.Delete(launcherPath));
-                    Console.WriteLine("File deleted successfully.");
+                    Console.WriteLine("Launcher file deleted successfully.");
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Error deleting file: {ex.Message}");
+                    Console.WriteLine($"Error deleting launcher file: {ex.Message}");
                 }
             }
             else
             {
-                Console.WriteLine("File does not exist.");
+                Console.WriteLine("Launcher file does not exist.");
+            }
+
+            var lockPaths = new[] { lock1Path, lock2Path };
+            foreach (var lockPath in lockPaths)
+            {
+                if (!string.IsNullOrEmpty(lockPath) && File.Exists(lockPath))
+                {
+                    try
+                    {
+                        await Task.Run(() => File.Delete(lockPath));
+                        Console.WriteLine($"Deleted lock file: {lockPath}");
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Error deleting lock file {lockPath}: {ex.Message}");
+                    }
+                }
             }
         }
     }
