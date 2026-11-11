@@ -444,41 +444,73 @@ namespace PlutoPoint_Installer.Views
             }
         }
 
-        private void CheckForIntelHardware()
+        private HashSet<string> _gpuVendorIds;
+
+        private HashSet<string> GpuVendorIds => _gpuVendorIds ??= GetGpuVendorIds();
+
+        private static HashSet<string> GetGpuVendorIds()
         {
-            bool hasIntelGpu = false;
-            bool hasIntelCpu = false;
-            var gpuSearcher = new ManagementObjectSearcher("SELECT * FROM Win32_VideoController");
-            foreach (ManagementObject queryObj in gpuSearcher.Get())
+            var vendors = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            try
             {
-                if (queryObj["Caption"] is string caption)
+                using var searcher = new ManagementObjectSearcher("SELECT PNPDeviceID, CompatibleID FROM Win32_PnPEntity WHERE PNPDeviceID LIKE 'PCI%'");
+                foreach (ManagementObject device in searcher.Get())
                 {
-                    if (caption.IndexOf("Intel", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                        caption.IndexOf("Iris", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                        caption.IndexOf("UHD", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                        caption.IndexOf("Xe", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                        caption.IndexOf("Arc", StringComparison.OrdinalIgnoreCase) >= 0)
+                    if (device["CompatibleID"] is not string[] compatibleIds) continue;
+                    if (!compatibleIds.Any(id => id != null && id.IndexOf("CC_03", StringComparison.OrdinalIgnoreCase) >= 0)) continue;
+                    if (device["PNPDeviceID"] is string pnpId)
                     {
-                        hasIntelGpu = true;
-                        break;
+                        Match vendor = Regex.Match(pnpId, @"VEN_([0-9A-F]{4})", RegexOptions.IgnoreCase);
+                        if (vendor.Success) vendors.Add(vendor.Groups[1].Value);
                     }
                 }
             }
-            var cpuSearcher = new ManagementObjectSearcher("SELECT * FROM Win32_Processor");
-            foreach (ManagementObject queryObj in cpuSearcher.Get())
+            catch
             {
-                if (queryObj["Name"] is string name)
+            }
+            try
+            {
+                using var searcher = new ManagementObjectSearcher("SELECT Caption, AdapterCompatibility, PNPDeviceID FROM Win32_VideoController");
+                foreach (ManagementObject controller in searcher.Get())
                 {
-                    if (name.IndexOf("Intel", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                        name.IndexOf("Core", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                        name.IndexOf("Xeon", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                        name.IndexOf("Pentium", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                        name.IndexOf("Celeron", StringComparison.OrdinalIgnoreCase) >= 0)
+                    if (controller["PNPDeviceID"] is string pnpId)
+                    {
+                        Match vendor = Regex.Match(pnpId, @"VEN_([0-9A-F]{4})", RegexOptions.IgnoreCase);
+                        if (vendor.Success) vendors.Add(vendor.Groups[1].Value);
+                    }
+                    string text = $"{controller["Caption"]} {controller["AdapterCompatibility"]}";
+                    if (text.IndexOf("NVIDIA", StringComparison.OrdinalIgnoreCase) >= 0) vendors.Add("10DE");
+                    if (text.IndexOf("Intel", StringComparison.OrdinalIgnoreCase) >= 0) vendors.Add("8086");
+                    if (text.IndexOf("AMD", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                        text.IndexOf("Radeon", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                        text.IndexOf("Advanced Micro Devices", StringComparison.OrdinalIgnoreCase) >= 0) vendors.Add("1002");
+                }
+            }
+            catch
+            {
+            }
+            return vendors;
+        }
+
+        private void CheckForIntelHardware()
+        {
+            bool hasIntelGpu = GpuVendorIds.Contains("8086");
+            bool hasIntelCpu = false;
+            try
+            {
+                using var cpuSearcher = new ManagementObjectSearcher("SELECT Name, Manufacturer FROM Win32_Processor");
+                foreach (ManagementObject queryObj in cpuSearcher.Get())
+                {
+                    string text = $"{queryObj["Name"]} {queryObj["Manufacturer"]}";
+                    if (text.IndexOf("Intel", StringComparison.OrdinalIgnoreCase) >= 0)
                     {
                         hasIntelCpu = true;
                         break;
                     }
                 }
+            }
+            catch
+            {
             }
             if (hasIntelGpu || hasIntelCpu)
             {
@@ -494,54 +526,37 @@ namespace PlutoPoint_Installer.Views
 
         private void CheckForNvidiaGPU()
         {
-            var searcher = new ManagementObjectSearcher("SELECT * FROM Win32_VideoController");
-            foreach (ManagementObject queryObj in searcher.Get())
+            if (GpuVendorIds.Contains("10DE"))
             {
-                if (queryObj["Caption"] is string caption)
-                {
-                    if (caption.IndexOf("NVIDIA", StringComparison.OrdinalIgnoreCase) >= 0)
-                    {
-                        NvidiaAppCheck.IsChecked = true;
-                        nvidia = "1";
-                        AppendLine("🎮 Nvidia GPU detected.");
-                        return;
-                    }
-                }
+                NvidiaAppCheck.IsChecked = true;
+                nvidia = "1";
+                AppendLine("🎮 Nvidia GPU detected.");
+                return;
             }
             NvidiaAppCheck.IsChecked = false;
         }
 
         private void CheckforAMDHardware()
         {
-            bool hasAmdGpu = false;
+            bool hasAmdGpu = GpuVendorIds.Contains("1002") || GpuVendorIds.Contains("1022");
             bool hasAmdCpu = false;
-            var gpuSearcher = new ManagementObjectSearcher("SELECT * FROM Win32_VideoController");
-            foreach (ManagementObject queryObj in gpuSearcher.Get())
+            try
             {
-                if (queryObj["Caption"] is string caption)
+                using var cpuSearcher = new ManagementObjectSearcher("SELECT Name, Manufacturer FROM Win32_Processor");
+                foreach (ManagementObject queryObj in cpuSearcher.Get())
                 {
-                    if (caption.IndexOf("AMD", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                        caption.IndexOf("Radeon", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                        caption.IndexOf("Advanced Micro Devices", StringComparison.OrdinalIgnoreCase) >= 0)
-                    {
-                        hasAmdGpu = true;
-                        break;
-                    }
-                }
-            }
-            var cpuSearcher = new ManagementObjectSearcher("SELECT * FROM Win32_Processor");
-            foreach (ManagementObject queryObj in cpuSearcher.Get())
-            {
-                if (queryObj["Name"] is string name)
-                {
-                    if (name.IndexOf("AMD", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                        name.IndexOf("Ryzen", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                        name.IndexOf("Threadripper", StringComparison.OrdinalIgnoreCase) >= 0)
+                    string text = $"{queryObj["Name"]} {queryObj["Manufacturer"]}";
+                    if (text.IndexOf("AMD", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                        text.IndexOf("Ryzen", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                        text.IndexOf("Threadripper", StringComparison.OrdinalIgnoreCase) >= 0)
                     {
                         hasAmdCpu = true;
                         break;
                     }
                 }
+            }
+            catch
+            {
             }
             if (hasAmdGpu || hasAmdCpu)
             {
@@ -553,6 +568,59 @@ namespace PlutoPoint_Installer.Views
                 else
                     AppendLine("🧠 AMD CPU detected.");
             }
+        }
+
+        private static readonly string[] NvidiaAppPages =
+        {
+            "https://www.nvidia.com/en-us/software/nvidia-app/",
+            "https://www.nvidia.com/en-gb/software/nvidia-app/",
+            "https://www.nvidia.com/en-us/software/nvidia-app.md",
+            "https://www.nvidia.com/en-zz/software/nvidia-app.md"
+        };
+
+        private static readonly Regex NvidiaAppLinkRegex = new Regex(
+            @"(?:https?:)?(?:\\?/){2}[a-z0-9.-]*download\.nvidia\.com(?:\\?/)nvapp(?:\\?/)client(?:\\?/)[\d.]+(?:\\?/)NVIDIA_app_(?:beta_)?v[\d.]+\.exe",
+            RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
+        private static HttpClient CreateBrowserClient()
+        {
+            var handler = new HttpClientHandler
+            {
+                AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate | DecompressionMethods.Brotli,
+                AllowAutoRedirect = true
+            };
+            var client = new HttpClient(handler) { Timeout = TimeSpan.FromMinutes(15) };
+            client.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36");
+            client.DefaultRequestHeaders.Accept.ParseAdd("text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
+            client.DefaultRequestHeaders.AcceptLanguage.ParseAdd("en-GB,en;q=0.9");
+            return client;
+        }
+
+        private async Task<string> FindNvidiaAppDownloadUrlAsync(HttpClient client)
+        {
+            foreach (string page in NvidiaAppPages)
+            {
+                try
+                {
+                    string content = await client.GetStringAsync(page);
+                    Match match = NvidiaAppLinkRegex.Match(content);
+                    if (!match.Success) continue;
+                    string link = match.Value.Replace("\\/", "/");
+                    if (link.StartsWith("//")) link = "https:" + link;
+                    if (link.StartsWith("http://", StringComparison.OrdinalIgnoreCase)) link = "https://" + link.Substring(7);
+                    return link;
+                }
+                catch (Exception ex)
+                {
+                    AppendLine($"⚠️ Nvidia page {page} failed: {ex.Message}");
+                }
+            }
+            if (!string.IsNullOrWhiteSpace(urls?.nvidiaAppFallback))
+            {
+                AppendLine("🔁 Using fallback Nvidia App link from Downloads.json.");
+                return urls.nvidiaAppFallback;
+            }
+            return null;
         }
 
         private async Task CheckIPAsync()
@@ -1754,65 +1822,76 @@ namespace PlutoPoint_Installer.Views
             {
                 AppendLine("📌 Nvidia App is selected.");
                 AppendLine("🔄 Searching for latest Nvidia App installer...");
+                bool nvidiaDownloaded = false;
                 try
                 {
-                    using (HttpClient client = new HttpClient())
+                    using HttpClient client = CreateBrowserClient();
+                    string downloadUrl = await FindNvidiaAppDownloadUrlAsync(client);
+                    if (downloadUrl != null)
                     {
-                        string baseUrl = "https://www.nvidia.com/en-us/software/nvidia-app/";
-                        string htmlContent = await client.GetStringAsync(baseUrl);
-                        string pattern = @"https:\/\/us\.download\.nvidia\.com\/nvapp\/client\/[\d\.]+\/NVIDIA_app_v[\d\.]+\.exe";
-                        Match match = Regex.Match(htmlContent, pattern, RegexOptions.IgnoreCase);
-                        if (match.Success)
+                        AppendLine($"🔗 Found latest Nvidia installer: {downloadUrl}");
+                        using (HttpResponseMessage response = await client.GetAsync(downloadUrl, HttpCompletionOption.ResponseHeadersRead))
                         {
-                            string downloadUrl = match.Value;
-                            AppendLine($"🔗 Found latest Nvidia installer: {downloadUrl}");
-                            byte[] fileBytes = await client.GetByteArrayAsync(downloadUrl);
-                            File.WriteAllBytes(nvidiaAppFilename, fileBytes);
+                            response.EnsureSuccessStatusCode();
+                            await using Stream source = await response.Content.ReadAsStreamAsync();
+                            await using FileStream target = new FileStream(nvidiaAppFilename, FileMode.Create, FileAccess.Write, FileShare.None);
+                            await source.CopyToAsync(target);
                         }
-                        else
-                        {
-                            AppendLine("⚠️ Could not find Nvidia App download link.");
-                            TrackResult("Nvidia App", "Failed");
-                            AppendInstallSummary();
-                            return;
-                        }
+                        nvidiaDownloaded = true;
+                    }
+                    else
+                    {
+                        AppendLine("⚠️ Could not find Nvidia App download link.");
                     }
                 }
                 catch (Exception ex)
                 {
                     AppendLine($"⚠️ Error downloading Nvidia App: {ex.Message}");
-                    TrackResult("Nvidia App", "Failed");
-                    AppendInstallSummary();
-                    return;
                 }
                 InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
-                AppendLine("📦 Installing Nvidia App silently...");
-                await Task.Run(() =>
+                if (!nvidiaDownloaded)
                 {
-                    ProcessStartInfo startInfo = new ProcessStartInfo
+                    TrackResult("Nvidia App", "Failed");
+                    InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
+                }
+                else
+                {
+                    AppendLine("📦 Installing Nvidia App silently...");
+                    int nvidiaExitCode = -1;
+                    await Task.Run(() =>
                     {
-                        FileName = nvidiaAppFilename,
-                        Arguments = "/s",
-                        UseShellExecute = true,
-                        Verb = "runas"
-                    };
-                    try
-                    {
-                        using (Process process = Process.Start(startInfo))
+                        ProcessStartInfo startInfo = new ProcessStartInfo
                         {
-                            process.WaitForExit();
-                            int exitCode = process.ExitCode;
-                            AppendLine(exitCode == 0 ? "✅ Installation successful." : $"⚠️ Installation exited with code: {exitCode}");
+                            FileName = nvidiaAppFilename,
+                            Arguments = "/s",
+                            UseShellExecute = true,
+                            Verb = "runas"
+                        };
+                        try
+                        {
+                            using (Process process = Process.Start(startInfo))
+                            {
+                                process.WaitForExit();
+                                nvidiaExitCode = process.ExitCode;
+                            }
                         }
-                    }
-                    catch (Exception ex)
+                        catch (Exception ex)
+                        {
+                            AppendLine($"⚠️ Installation failed: {ex.Message}");
+                        }
+                    });
+                    if (nvidiaExitCode == 0 || nvidiaExitCode == 3010)
                     {
-                        AppendLine($"⚠️ Installation failed: {ex.Message}");
+                        AppendLine("✅ Completed installation of Nvidia App.");
+                        TrackResult("Nvidia App", "Installed");
                     }
-                });
-                AppendLine("✅ Completed installation of Nvidia App.");
-                TrackResult("Nvidia App", "Installed");
-                InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
+                    else
+                    {
+                        AppendLine($"⚠️ Nvidia App installer exited with code: {nvidiaExitCode}");
+                        TrackResult("Nvidia App", "Failed");
+                    }
+                    InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
+                }
             }
 
             if (MozillaFirefoxCheck.IsChecked == true)

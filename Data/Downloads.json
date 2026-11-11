@@ -12,6 +12,7 @@
   "vlcMediaPlayer": "https://vlc.professorshroom.com",
   "office2024": "https://office.professorshroom.com",
   "libreOfficeFallback": "https://libreoffice.professorshroom.com",
+  "nvidiaAppFallback": "https://nvidiaapp.professorshroom.com",
   "arm64": {
     "googleChrome": "https://dl.google.com/dl/chrome/install/googlechromestandaloneenterprise_arm64.msi",
     "mozillaFirefox": "https://download.mozilla.org/?product=firefox-latest-ssl&os=win64-aarch64&lang=en-GB",
