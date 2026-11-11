@@ -29,6 +29,22 @@ Disables sleep and screen timeout while on AC power during the install, then res
 
 #### Latest Update
 
+**Version 7.0.8.0**
+
+- **_7.0.8.0_** Added AMD Chipset Drivers as an install option, ticked automatically when an AMD CPU is detected.
+- **_7.0.8.0_** AMD Chipset Drivers download the latest version from AMD, with backup links if it can't be found, and install silently.
+- **_7.0.8.0_** Added AMD Software: Adrenalin Edition as an install option, ticked automatically when an AMD GPU is detected (including Radeon graphics built into Ryzen CPUs).
+- **_7.0.8.0_** AMD Software: Adrenalin Edition uses AMD's auto-detect installer, so it picks the right driver for the graphics card. It's skipped if the download link can't be found.
+- **_7.0.8.0_** AMD downloads now send the right headers so AMD's site allows them, and anything that isn't a real installer is rejected.
+- **_7.0.8.0_** AMD options are skipped on ARM devices.
+- **_7.0.8.0_** AMD GPU detection now only matches AMD graphics hardware, not AMD chipset devices.
+
+
+#### Older Updates
+
+<details markdown="1">
+<summary><strong>Version 7.x - The .NET 8 / Avalonia Update</strong></summary>
+
 **Version 7.0.7.0**
 
 - **_7.0.7.0_** Fixed Nvidia GPUs not being detected on laptops and fresh installs without an Nvidia driver. Detection now uses PCI vendor IDs instead of adapter names.
@@ -38,11 +54,6 @@ Disables sleep and screen timeout while on AC power during the install, then res
 - **_7.0.7.0_** The Nvidia App installer now downloads straight to disk instead of into memory.
 - **_7.0.7.0_** A failed Nvidia App download no longer stops the rest of the install. It's marked as failed and the other apps carry on.
 - **_7.0.7.0_** Nvidia App is only marked as installed if the installer finishes successfully.
-
-#### Older Updates
-
-<details markdown="1">
-<summary><strong>Version 7.x - The .NET 8 / Avalonia Update</strong></summary>
 
 **Version 7.0.6.3 / 7.0.6.2 / 7.0.6.1 / 7.0.6.0**
 

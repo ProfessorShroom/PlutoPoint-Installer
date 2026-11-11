@@ -54,6 +54,8 @@ namespace PlutoPoint_Installer.Views
         private string nvidia = null;
         private string intel = null;
         private string amd = null;
+        private string amdCpu = null;
+        private string amdGpu = null;
         private string rootDir;
         private string programDataDir;
         private DownloadUrls urls;
@@ -538,7 +540,7 @@ namespace PlutoPoint_Installer.Views
 
         private void CheckforAMDHardware()
         {
-            bool hasAmdGpu = GpuVendorIds.Contains("1002") || GpuVendorIds.Contains("1022");
+            bool hasAmdGpu = GpuVendorIds.Contains("1002");
             bool hasAmdCpu = false;
             try
             {
@@ -557,6 +559,24 @@ namespace PlutoPoint_Installer.Views
             }
             catch
             {
+            }
+            if (hasAmdGpu && !IsArm64)
+            {
+                amdGpu = "1";
+                AmdAdrenalinCheck.IsChecked = true;
+            }
+            else
+            {
+                AmdAdrenalinCheck.IsChecked = false;
+            }
+            if (hasAmdCpu && !IsArm64)
+            {
+                amdCpu = "1";
+                AmdChipsetCheck.IsChecked = true;
+            }
+            else
+            {
+                AmdChipsetCheck.IsChecked = false;
             }
             if (hasAmdGpu || hasAmdCpu)
             {
@@ -594,6 +614,128 @@ namespace PlutoPoint_Installer.Views
             client.DefaultRequestHeaders.Accept.ParseAdd("text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
             client.DefaultRequestHeaders.AcceptLanguage.ParseAdd("en-GB,en;q=0.9");
             return client;
+        }
+
+        private const string AmdReferer = "https://www.amd.com/en/support/download/drivers.html";
+
+        private const string AmdChipsetStableUrl = "https://drivers.amd.com/drivers/installer/chipset/AMD_Chipset_Software.exe";
+
+        private static readonly string[] AmdChipsetPages =
+        {
+            "https://www.amd.com/en/support/downloads/drivers.html/chipsets/laptop-chipsets/amd-ryzen-and-athlon-mobile-chipset.html",
+            "https://www.amd.com/en/support/downloads/drivers.html/chipsets/am5/x870e.html",
+            "https://www.amd.com/en/support/downloads/drivers.html/chipsets/am4/x570.html"
+        };
+
+        private static readonly Regex AmdChipsetLinkRegex = new Regex(
+            @"(?:https?:)?(?:\\?/){2}drivers\.amd\.com(?:\\?/)drivers(?:\\?/)amd_chipset_software_([\d.]+)\.exe",
+            RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
+        private async Task<List<string>> FindAmdChipsetDownloadUrlsAsync(HttpClient client)
+        {
+            var candidates = new List<string>();
+            foreach (string page in AmdChipsetPages)
+            {
+                try
+                {
+                    string content = await client.GetStringAsync(page);
+                    string best = null;
+                    Version bestVersion = null;
+                    foreach (Match match in AmdChipsetLinkRegex.Matches(content))
+                    {
+                        if (!Version.TryParse(match.Groups[1].Value, out Version version)) continue;
+                        if (bestVersion != null && version <= bestVersion) continue;
+                        bestVersion = version;
+                        best = match.Value;
+                    }
+                    if (best == null) continue;
+                    best = best.Replace("\\/", "/");
+                    if (best.StartsWith("//")) best = "https:" + best;
+                    if (best.StartsWith("http://", StringComparison.OrdinalIgnoreCase)) best = "https://" + best.Substring(7);
+                    candidates.Add(best);
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    AppendLine($"⚠️ AMD page {page} failed: {ex.Message}");
+                }
+            }
+            candidates.Add(AmdChipsetStableUrl);
+            if (!string.IsNullOrWhiteSpace(urls?.amdChipsetFallback)) candidates.Add(urls.amdChipsetFallback);
+            return candidates;
+        }
+
+        private static readonly string[] AmdAdrenalinPages =
+        {
+            "https://www.amd.com/en/support/download/drivers.html",
+            "https://www.amd.com/en/support/downloads/drivers.html/graphics/radeon-rx/radeon-rx-9000-series/amd-radeon-rx-9070-xt.html"
+        };
+
+        private static readonly Regex AmdAdrenalinLinkRegex = new Regex(
+            @"(?:https?:)?(?:\\?/){2}drivers\.amd\.com(?:\\?/)drivers(?:\\?/)installer(?:\\?/)[\w.\\/-]*?amd-software-adrenalin-edition-([\d.]+)-minimalsetup-\d+_web\.exe",
+            RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
+        private async Task<List<string>> FindAmdAdrenalinDownloadUrlsAsync(HttpClient client)
+        {
+            var candidates = new List<string>();
+            foreach (string page in AmdAdrenalinPages)
+            {
+                try
+                {
+                    string content = await client.GetStringAsync(page);
+                    string best = null;
+                    Version bestVersion = null;
+                    foreach (Match match in AmdAdrenalinLinkRegex.Matches(content))
+                    {
+                        if (!Version.TryParse(match.Groups[1].Value, out Version version)) continue;
+                        if (bestVersion != null && version <= bestVersion) continue;
+                        bestVersion = version;
+                        best = match.Value;
+                    }
+                    if (best == null) continue;
+                    best = best.Replace("\\/", "/");
+                    if (best.StartsWith("//")) best = "https:" + best;
+                    if (best.StartsWith("http://", StringComparison.OrdinalIgnoreCase)) best = "https://" + best.Substring(7);
+                    candidates.Add(best);
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    AppendLine($"⚠️ AMD page {page} failed: {ex.Message}");
+                }
+            }
+            return candidates;
+        }
+
+        private async Task<bool> DownloadInstallerAsync(HttpClient client, string url, string path, string referer)
+        {
+            using var request = new HttpRequestMessage(HttpMethod.Get, url);
+            if (referer != null) request.Headers.Referrer = new Uri(referer);
+            request.Headers.Accept.Clear();
+            request.Headers.Accept.ParseAdd("*/*");
+            using HttpResponseMessage response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+            if (!response.IsSuccessStatusCode)
+            {
+                AppendLine($"⚠️ {url} returned {(int)response.StatusCode}.");
+                return false;
+            }
+            string mediaType = response.Content.Headers.ContentType?.MediaType ?? "";
+            if (mediaType.StartsWith("text/", StringComparison.OrdinalIgnoreCase))
+            {
+                AppendLine($"⚠️ {url} returned a web page instead of an installer.");
+                return false;
+            }
+            await using (Stream source = await response.Content.ReadAsStreamAsync())
+            await using (FileStream target = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None))
+            {
+                await source.CopyToAsync(target);
+            }
+            if (new FileInfo(path).Length < 1024 * 1024)
+            {
+                AppendLine($"⚠️ {url} downloaded a file that is too small to be the installer.");
+                return false;
+            }
+            return true;
         }
 
         private async Task<string> FindNvidiaAppDownloadUrlAsync(HttpClient client)
@@ -1323,6 +1465,8 @@ namespace PlutoPoint_Installer.Views
             string office2024Filename = Path.Combine(appsDir, "officeSetup.exe");
             string office2024ConfigFilename = Path.Combine(appsDir, "office2024.xml");
             string nvidiaAppFilename = Path.Combine(appsDir, "nvidiaApp.exe");
+            string amdChipsetFilename = Path.Combine(appsDir, "amdChipset.exe");
+            string amdAdrenalinFilename = Path.Combine(appsDir, "amdAdrenalin.exe");
 
             // Other apps
             string bingWallpaperAppPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"Microsoft\BingWallpaperApp\BingWallpaperApp.exe");
@@ -1350,6 +1494,8 @@ namespace PlutoPoint_Installer.Views
             if (DiscordCheck.IsChecked == true) { InstallProgressBar.Maximum += 2; }
             if (GoogleChromeCheck.IsChecked == true) { InstallProgressBar.Maximum += 2; }
             if (LibreOfficeCheck.IsChecked == true) { InstallProgressBar.Maximum += 2; }
+            if (AmdChipsetCheck.IsChecked == true) { InstallProgressBar.Maximum += 2; }
+            if (AmdAdrenalinCheck.IsChecked == true) { InstallProgressBar.Maximum += 2; }
             if (NvidiaAppCheck.IsChecked == true) { InstallProgressBar.Maximum += 2; }
             if (MozillaFirefoxCheck.IsChecked == true) { InstallProgressBar.Maximum += 2; }
             if (MozillaThunderbirdCheck.IsChecked == true) { InstallProgressBar.Maximum += 2; }
@@ -1357,6 +1503,18 @@ namespace PlutoPoint_Installer.Views
             if (Office2024Check.IsChecked == true) { InstallProgressBar.Maximum += 2; }
             if (TaskbarCheck.IsChecked == true) { InstallProgressBar.Maximum += 1; }
             if (PinAppsCheck.IsChecked == true) { InstallProgressBar.Maximum += 1; }
+
+            if (AmdChipsetCheck.IsChecked == true && amdCpu == "1")
+            {
+                AppendLine("🧠 AMD CPU has been detected and selected, AMD Chipset Drivers will be installed.");
+                AppendLine("✅ You can uncheck this if you want.");
+            }
+
+            if (AmdAdrenalinCheck.IsChecked == true && amdGpu == "1")
+            {
+                AppendLine("🎮 AMD GPU has been detected and selected, AMD Software: Adrenalin Edition will be installed.");
+                AppendLine("✅ You can uncheck this if you want.");
+            }
 
             if (NvidiaAppCheck.IsChecked == true && nvidia == "1")
             {
@@ -1815,6 +1973,176 @@ namespace PlutoPoint_Installer.Views
                         TrackResult("LibreOffice", "Installed");
                         InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
                     }
+                }
+            }
+
+            if (AmdChipsetCheck.IsChecked == true)
+            {
+                AppendLine("📌 AMD Chipset Drivers are selected.");
+                bool amdChipsetDownloaded = false;
+                if (IsArm64)
+                {
+                    AppendLine("⚠️ AMD Chipset Drivers are not available for ARM64, skipping.");
+                }
+                else
+                {
+                    AppendLine("🔄 Searching for latest AMD Chipset Drivers...");
+                    try
+                    {
+                        using HttpClient client = CreateBrowserClient();
+                        foreach (string candidate in await FindAmdChipsetDownloadUrlsAsync(client))
+                        {
+                            AppendLine($"🔗 Trying AMD Chipset Drivers from: {candidate}");
+                            try
+                            {
+                                if (await DownloadInstallerAsync(client, candidate, amdChipsetFilename, AmdReferer))
+                                {
+                                    amdChipsetDownloaded = true;
+                                    break;
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                AppendLine($"⚠️ Download failed: {ex.Message}");
+                            }
+                        }
+                        if (!amdChipsetDownloaded) AppendLine("⚠️ Could not download AMD Chipset Drivers.");
+                    }
+                    catch (Exception ex)
+                    {
+                        AppendLine($"⚠️ Error downloading AMD Chipset Drivers: {ex.Message}");
+                    }
+                }
+                InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
+                if (!amdChipsetDownloaded)
+                {
+                    TrackResult("AMD Chipset Drivers", "Failed");
+                    InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
+                }
+                else
+                {
+                    AppendLine("📦 Installing AMD Chipset Drivers silently...");
+                    int amdChipsetExitCode = -1;
+                    await Task.Run(() =>
+                    {
+                        ProcessStartInfo startInfo = new ProcessStartInfo
+                        {
+                            FileName = amdChipsetFilename,
+                            Arguments = "/S",
+                            UseShellExecute = true,
+                            Verb = "runas"
+                        };
+                        try
+                        {
+                            using (Process process = Process.Start(startInfo))
+                            {
+                                process.WaitForExit();
+                                amdChipsetExitCode = process.ExitCode;
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            AppendLine($"⚠️ Installation failed: {ex.Message}");
+                        }
+                    });
+                    if (amdChipsetExitCode == 0 || amdChipsetExitCode == 3010)
+                    {
+                        AppendLine("✅ Completed installation of AMD Chipset Drivers.");
+                        TrackResult("AMD Chipset Drivers", "Installed");
+                    }
+                    else
+                    {
+                        AppendLine($"⚠️ AMD Chipset Drivers installer exited with code: {amdChipsetExitCode}");
+                        TrackResult("AMD Chipset Drivers", "Failed");
+                    }
+                    InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
+                }
+            }
+
+            if (AmdAdrenalinCheck.IsChecked == true)
+            {
+                AppendLine("📌 AMD Software: Adrenalin Edition is selected.");
+                bool amdAdrenalinDownloaded = false;
+                bool amdAdrenalinFound = false;
+                if (IsArm64)
+                {
+                    AppendLine("⚠️ AMD Software: Adrenalin Edition is not available for ARM64, skipping.");
+                }
+                else
+                {
+                    AppendLine("🔄 Searching for latest AMD Software: Adrenalin Edition...");
+                    try
+                    {
+                        using HttpClient client = CreateBrowserClient();
+                        List<string> adrenalinCandidates = await FindAmdAdrenalinDownloadUrlsAsync(client);
+                        amdAdrenalinFound = adrenalinCandidates.Count > 0;
+                        if (!amdAdrenalinFound) AppendLine("⏭️ Could not find AMD Software: Adrenalin Edition download link, skipping.");
+                        foreach (string candidate in adrenalinCandidates)
+                        {
+                            AppendLine($"🔗 Trying AMD Software: Adrenalin Edition from: {candidate}");
+                            try
+                            {
+                                if (await DownloadInstallerAsync(client, candidate, amdAdrenalinFilename, AmdReferer))
+                                {
+                                    amdAdrenalinDownloaded = true;
+                                    break;
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                AppendLine($"⚠️ Download failed: {ex.Message}");
+                            }
+                        }
+                        if (!amdAdrenalinDownloaded && adrenalinCandidates.Count > 0) AppendLine("⚠️ Could not download AMD Software: Adrenalin Edition.");
+                    }
+                    catch (Exception ex)
+                    {
+                        AppendLine($"⚠️ Error downloading AMD Software: Adrenalin Edition: {ex.Message}");
+                    }
+                }
+                InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
+                if (!amdAdrenalinDownloaded)
+                {
+                    TrackResult("AMD Adrenalin", amdAdrenalinFound ? "Failed" : "Skipped");
+                    InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
+                }
+                else
+                {
+                    AppendLine("📦 Installing AMD Software: Adrenalin Edition, this downloads the driver so it can take a while...");
+                    int amdAdrenalinExitCode = -1;
+                    await Task.Run(() =>
+                    {
+                        ProcessStartInfo startInfo = new ProcessStartInfo
+                        {
+                            FileName = amdAdrenalinFilename,
+                            Arguments = "-install",
+                            UseShellExecute = true,
+                            Verb = "runas"
+                        };
+                        try
+                        {
+                            using (Process process = Process.Start(startInfo))
+                            {
+                                process.WaitForExit();
+                                amdAdrenalinExitCode = process.ExitCode;
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            AppendLine($"⚠️ Installation failed: {ex.Message}");
+                        }
+                    });
+                    if (amdAdrenalinExitCode == 0 || amdAdrenalinExitCode == 3010)
+                    {
+                        AppendLine("✅ Completed installation of AMD Software: Adrenalin Edition.");
+                        TrackResult("AMD Adrenalin", "Installed");
+                    }
+                    else
+                    {
+                        AppendLine($"⚠️ AMD Software: Adrenalin Edition installer exited with code: {amdAdrenalinExitCode}");
+                        TrackResult("AMD Adrenalin", "Failed");
+                    }
+                    InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
                 }
             }
 

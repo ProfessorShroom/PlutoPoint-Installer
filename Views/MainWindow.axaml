@@ -40,6 +40,12 @@
                                Margin="0,0,8,12">
         <ScrollViewer VerticalScrollBarVisibility="Auto">
           <WrapPanel x:Name="SoftwarePanel">
+            <CheckBox x:Name="AmdChipsetCheck" Theme="{StaticResource IconToggleCheckBoxTheme}" ToolTip.Tip="AMD Chipset Drivers">
+              <Image Source="avares://Computer Repair Centre Installer/Resources/icons/amdChipset.png" Width="32" Height="32" />
+            </CheckBox>
+            <CheckBox x:Name="AmdAdrenalinCheck" Theme="{StaticResource IconToggleCheckBoxTheme}" ToolTip.Tip="AMD Software: Adrenalin Edition (Radeon graphics drivers)">
+              <Image Source="avares://Computer Repair Centre Installer/Resources/icons/amdAdrenalin.png" Width="32" Height="32" />
+            </CheckBox>
             <CheckBox x:Name="AnyDeskCheck" Theme="{StaticResource IconToggleCheckBoxTheme}" IsChecked="True" ToolTip.Tip="AnyDesk Remote Support Software">
               <Image Source="avares://Computer Repair Centre Installer/Resources/icons/anyDesk.png" Width="32" Height="32" />
             </CheckBox>
