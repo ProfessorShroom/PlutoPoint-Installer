@@ -20,7 +20,7 @@ public sealed class ReleaseService
     private const string AssetName = "Computer-Repair-Centre-Installer.exe";
 
     private static readonly Regex TagRegex = new(
-        @"^v?(\d+\.\d+\.\d+\.\d+)(?:b(\d+))?$",
+        @"^v(\d+\.\d+\.\d+\.\d+)(?:b(\d+))?$",
         RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
 
     private readonly HttpClient _http;
