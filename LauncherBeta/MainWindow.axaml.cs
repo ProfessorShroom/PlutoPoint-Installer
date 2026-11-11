@@ -27,10 +27,11 @@ public partial class MainWindow : Window
     private const double RingCircumferenceInDashUnits = RingCircumference / RingStrokeThickness;
 
     private readonly UpdateService _updateService;
+    private readonly ReleaseService _releaseService;
     private readonly string _rootDir;
     private readonly string _productInstallerPath;
 
-    private static readonly Uri ProductInstallerUrl = new("http://crcinstallerbeta.professorshroom.com");
+    private static readonly Uri StableInstallerUrl = new("http://crcinstaller.professorshroom.com");
 
     public MainWindow()
     {
@@ -38,6 +39,7 @@ public partial class MainWindow : Window
 
         Http.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64)");
         _updateService = new UpdateService(Http);
+        _releaseService = new ReleaseService(Http);
 
         _rootDir = System.IO.Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
@@ -63,7 +65,25 @@ public partial class MainWindow : Window
                 return;
             }
 
-            await DownloadAndRun(ProductInstallerUrl, _productInstallerPath, "Downloading latest installer…");
+            BeginIndeterminate("Finding newest installer…");
+
+            InstallerRelease? newest = null;
+            try
+            {
+                newest = await _releaseService.GetNewestAsync();
+            }
+            catch
+            {
+            }
+
+            if (newest is null)
+            {
+                await DownloadAndRun(StableInstallerUrl, _productInstallerPath, "Downloading latest installer…");
+                return;
+            }
+
+            var label = newest.IsBeta ? $"Downloading beta {newest.Tag}…" : $"Downloading {newest.Tag}…";
+            await DownloadAndRun(newest.DownloadUrl, _productInstallerPath, label);
         }
         catch (Exception ex)
         {

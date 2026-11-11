@@ -4,7 +4,7 @@
 
 <p align="center"> 
   <a href="https://github.com/ProfessorShroom/PlutoPoint-Installer/actions/workflows/build.yml"><img alt="Build" src="https://img.shields.io/github/actions/workflow/status/ProfessorShroom/PlutoPoint-Installer/build.yml?style=for-the-badge&label=build"></a>
-<a href="https://github.com/ProfessorShroom/PlutoPoint-Installer/releases"><img alt="Release" src="https://img.shields.io/github/v/release/ProfessorShroom/PlutoPoint-Installer?style=for-the-badge&label=release&color=8A2BE2&filter=!*latest-launcher*"></a>
+<a href="https://github.com/ProfessorShroom/PlutoPoint-Installer/releases"><img alt="Release" src="https://img.shields.io/github/v/release/ProfessorShroom/PlutoPoint-Installer?style=for-the-badge&label=release&color=8A2BE2&filter=v*"></a>
   <img alt=".NET 8" src="https://img.shields.io/badge/.NET-8.0-512BD4?style=for-the-badge"> 
   <img alt="Arch" src="https://img.shields.io/badge/Arch-x64%2FARM-blue?style=for-the-badge"> 
   <img alt="Platform" src="https://img.shields.io/badge/platform-Windows%2010%2F11-0078D4?style=for-the-badge&logo=windows&logoColor=white"> 
@@ -29,6 +29,23 @@ Disables sleep and screen timeout while on AC power during the install, then res
 
 #### Latest Update
 
+**Version 7.1.0.0**
+
+- **_7.1.0.0_** Beta launcher now picks the newest installer from GitHub, whether that's a beta or a full release.
+- **_7.1.0.0_** If a full release has the same or a higher version than the latest beta, the beta launcher downloads the release instead, so it can be used as a main launcher.
+- **_7.1.0.0_** Beta launcher shows which version it's downloading.
+- **_7.1.0.0_** If GitHub can't be reached, the beta launcher falls back to the latest release instead of failing.
+- **_7.1.0.0_** Beta launcher no longer uses the crcinstallerbeta.professorshroom.com link.
+- **_7.1.0.0_** Betas are now tagged like v7.1.0.0b1 and published as GitHub pre-releases, so the standard launcher never downloads them.
+- **_7.1.0.0_** Launcher releases and the installer-latest release no longer take GitHub's "Latest" label from the current installer release.
+- **_7.1.0.0_** Fixed the release badge in the README picking up launcher releases.
+
+
+#### Older Updates
+
+<details markdown="1">
+<summary><strong>Version 7.x - The .NET 8 / Avalonia Update</strong></summary>
+
 **Version 7.0.8.3 / 7.0.8.2 / 7.0.8.1 / 7.0.8.0**
 
 - **_7.0.8.3_** Expanded the Window as now there's two extra icons it needs more space.
@@ -41,12 +58,6 @@ Disables sleep and screen timeout while on AC power during the install, then res
 - **_7.0.8.0_** AMD downloads now send the right headers so AMD's site allows them, and anything that isn't a real installer is rejected.
 - **_7.0.8.0_** AMD options are skipped on ARM devices.
 - **_7.0.8.0_** AMD GPU detection now only matches AMD graphics hardware, not AMD chipset devices.
-
-
-#### Older Updates
-
-<details markdown="1">
-<summary><strong>Version 7.x - The .NET 8 / Avalonia Update</strong></summary>
 
 **Version 7.0.7.0**
 

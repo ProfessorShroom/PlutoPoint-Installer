@@ -23,6 +23,16 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
+      - name: Detect Channel
+        id: channel
+        shell: bash
+        run: |
+          if [[ "${GITHUB_REF_NAME}" =~ b[0-9]+$ ]]; then
+            echo "beta=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "beta=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Build Installer
         run: dotnet build "PlutoPoint Installer.csproj" --configuration Release
 
@@ -42,16 +52,20 @@ jobs:
       - name: Create Versioned Release
         uses: softprops/action-gh-release@v2.1.0
         with:
-          name: "Computer Repair Centre Installer ${{ github.ref_name }}"
+          name: "Computer Repair Centre Installer ${{ github.ref_name }}${{ steps.channel.outputs.beta == 'true' && ' Beta' || '' }}"
           files: staging/Computer-Repair-Centre-Installer.exe
+          prerelease: ${{ steps.channel.outputs.beta == 'true' }}
+          make_latest: ${{ steps.channel.outputs.beta == 'true' && 'false' || 'true' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Update Floating Latest Pointer
+        if: ${{ steps.channel.outputs.beta != 'true' }}
         uses: softprops/action-gh-release@v2.1.0
         with:
           tag_name: installer-latest
           name: "Computer Repair Centre Installer Latest"
           files: staging/Computer-Repair-Centre-Installer.exe
+          make_latest: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

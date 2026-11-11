@@ -64,6 +64,7 @@ jobs:
           files: |
             staging/Computer.Repair.Centre.Launcher.exe
             staging/Computer.Repair.Centre.Launcher.Beta.exe
+          make_latest: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -75,5 +76,6 @@ jobs:
           files: |
             staging/Computer.Repair.Centre.Launcher.exe
             staging/Computer.Repair.Centre.Launcher.Beta.exe
+          make_latest: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
