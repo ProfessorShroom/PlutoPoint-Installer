@@ -24,8 +24,13 @@ public sealed class ReleaseService
         RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
 
     private readonly HttpClient _http;
+    private readonly bool _includeBetas;
 
-    public ReleaseService(HttpClient http) => _http = http;
+    public ReleaseService(HttpClient http, bool includeBetas = true)
+    {
+        _http = http;
+        _includeBetas = includeBetas;
+    }
 
     public async Task<InstallerRelease?> GetNewestAsync(CancellationToken ct = default)
     {
@@ -46,7 +51,7 @@ public sealed class ReleaseService
                 continue;
 
             var candidate = Parse(release);
-            if (candidate is null)
+            if (candidate is null || (candidate.IsBeta && !_includeBetas))
                 continue;
 
             if (newest is null || IsNewer(candidate, newest))
