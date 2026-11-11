@@ -3,7 +3,7 @@
         x:Class="PlutoPoint_Installer.Views.MainWindow"
         Title="Computer Repair Centre Installer"
         Icon="avares://Computer Repair Centre Installer/Resources/icons/computerRepairCentreIcon.ico"
-        Width="950" Height="600"
+        Width="1026" Height="600"
         CanResize="False">
 
   <Window.Background>
@@ -15,7 +15,7 @@
 
   <Panel>
 
-    <Grid Margin="24" RowDefinitions="Auto,*,Auto,Auto" ColumnDefinitions="180,190,*">
+    <Grid Margin="24" RowDefinitions="Auto,*,Auto,Auto" ColumnDefinitions="256,190,*">
 
       <TextBlock x:Name="TitleTextBlock" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3"
                  Text="Computer Repair Centre Installer"

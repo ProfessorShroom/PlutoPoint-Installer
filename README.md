@@ -29,8 +29,9 @@ Disables sleep and screen timeout while on AC power during the install, then res
 
 #### Latest Update
 
-**Version 7.0.8.2 / 7.0.8.1 / 7.0.8.0**
+**Version 7.0.8.3 / 7.0.8.2 / 7.0.8.1 / 7.0.8.0**
 
+- **_7.0.8.3_** Expanded the Window as now there's two extra icons it needs more space.
 - **_7.0.8.2_** Fixed crash caused by .ico files instead of .png.
 - **_7.0.8.1_** Added a crash handler.
 - **_7.0.8.0_** Added AMD Chipset Drivers as an install option, ticked automatically when an AMD CPU is detected.
