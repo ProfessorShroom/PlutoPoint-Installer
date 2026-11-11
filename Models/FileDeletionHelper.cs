@@ -9,7 +9,7 @@ namespace PlutoPoint_Installer.Models
 {
     public class FileDeletionHelper
     {
-        public async Task DeleteFilesAndDirectoryAsync(string appsDir, string launcherPath, string lock1Path = null, string lock2Path = null)
+        public async Task DeleteFilesAndDirectoryAsync(string appsDir, IEnumerable<string> launcherPaths, string lock1Path = null, string lock2Path = null)
         {
             if (Directory.Exists(appsDir))
             {
@@ -40,21 +40,19 @@ namespace PlutoPoint_Installer.Models
                 }
             }
 
-            if (File.Exists(launcherPath))
+            foreach (var launcherPath in launcherPaths ?? Array.Empty<string>())
             {
+                if (!File.Exists(launcherPath))
+                    continue;
                 try
                 {
                     await Task.Run(() => File.Delete(launcherPath));
-                    Console.WriteLine("Launcher file deleted successfully.");
+                    Console.WriteLine($"Deleted launcher file: {launcherPath}");
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Error deleting launcher file: {ex.Message}");
+                    Console.WriteLine($"Error deleting launcher file {launcherPath}: {ex.Message}");
                 }
-            }
-            else
-            {
-                Console.WriteLine("Launcher file does not exist.");
             }
 
             var lockPaths = new[] { lock1Path, lock2Path };

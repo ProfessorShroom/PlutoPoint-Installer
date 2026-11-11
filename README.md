@@ -29,8 +29,9 @@ Disables sleep and screen timeout while on AC power during the install, then res
 
 #### Latest Update
 
-**Version 7.1.0.0**
+**Version 7.1.0.2 / 7.1.0.1 / 7.1.0.0**
 
+- **_7.1.0.2_** Now deletes the beta launcher too.
 - **_7.1.0.1_** Organised all software alphabetically.
 - **_7.1.0.0_** Beta launcher now picks the newest installer from GitHub, whether that's a beta or a full release.
 - **_7.1.0.0_** If a full release has the same or a higher version than the latest beta, the beta launcher downloads the release instead, so it can be used as a main launcher.
