@@ -22,6 +22,14 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
+      - name: Read Version
+        id: version
+        shell: bash
+        run: |
+          VERSION="${GITHUB_REF_NAME#launcher-}"
+          VERSION="${VERSION#v}"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
       - name: Build Stable Launcher
         run: dotnet build "Launcher/PlutoPointLauncher.csproj" --configuration Release
 
@@ -60,7 +68,7 @@ jobs:
       - name: Create Versioned Release
         uses: softprops/action-gh-release@v2.1.0
         with:
-          name: "PlutoPoint Launcher ${{ github.ref_name }}"
+          name: "Computer Repair Centre Launcher ${{ steps.version.outputs.version }}"
           files: |
             staging/Computer.Repair.Centre.Launcher.exe
             staging/Computer.Repair.Centre.Launcher.Beta.exe
@@ -72,7 +80,7 @@ jobs:
         uses: softprops/action-gh-release@v2.1.0
         with:
           tag_name: launcher-latest
-          name: "PlutoPoint Launcher Latest"
+          name: "Computer Repair Centre Launcher Latest"
           files: |
             staging/Computer.Repair.Centre.Launcher.exe
             staging/Computer.Repair.Centre.Launcher.Beta.exe
