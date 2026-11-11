@@ -29,6 +29,21 @@ Disables sleep and screen timeout while on AC power during the install, then res
 
 #### Latest Update
 
+**Version 7.0.7.0**
+
+- **_7.0.7.0_** Fixed Nvidia GPUs not being detected on laptops and fresh installs without an Nvidia driver. Detection now uses PCI vendor IDs instead of adapter names.
+- **_7.0.7.0_** Intel and AMD GPU detection now use the same vendor ID check, so they no longer give false matches on names like "Core" or "Xe".
+- **_7.0.7.0_** Fixed "Could not find Nvidia App download link". The installer now looks like a browser to Nvidia's site and checks several Nvidia pages for the link.
+- **_7.0.7.0_** Added a backup Nvidia App download link to Downloads.json, so it can be updated without a new release.
+- **_7.0.7.0_** The Nvidia App installer now downloads straight to disk instead of into memory.
+- **_7.0.7.0_** A failed Nvidia App download no longer stops the rest of the install. It's marked as failed and the other apps carry on.
+- **_7.0.7.0_** Nvidia App is only marked as installed if the installer finishes successfully.
+
+#### Older Updates
+
+<details markdown="1">
+<summary><strong>Version 7.x - The .NET 8 / Avalonia Update</strong></summary>
+
 **Version 7.0.6.3 / 7.0.6.2 / 7.0.6.1 / 7.0.6.0**
 
 - **_7.0.6.3_** Winget now puts two files on the Desktop, both .lock files, so the installer deletes them afterwards.
@@ -39,11 +54,6 @@ Disables sleep and screen timeout while on AC power during the install, then res
 - **_7.0.6.0_** Added Microsoft Office 2024 Pro Plus as an install option (requires product key).
 - **_7.0.6.0_** If Microsoft Office 2024 is selected it skips LibreOffice (if ticked) and uninstalls LibreOffice if it's already installed.
 - **_7.0.6.0_** If Microsoft Office 2024 is installed it will place desktop and taskbar icons.
-
-#### Older Updates
-
-<details markdown="1">
-<summary><strong>Version 7.x - The .NET 8 / Avalonia Update</strong></summary>
 
 **Version 7.0.5.0**
 
