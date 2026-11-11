@@ -29,8 +29,9 @@ Disables sleep and screen timeout while on AC power during the install, then res
 
 #### Latest Update
 
-**Version 7.0.8.0**
+**Version 7.0.8.1 / 7.0.8.0**
 
+- **_7.0.8.1_** Added a crash handler.
 - **_7.0.8.0_** Added AMD Chipset Drivers as an install option, ticked automatically when an AMD CPU is detected.
 - **_7.0.8.0_** AMD Chipset Drivers download the latest version from AMD, with backup links if it can't be found, and install silently.
 - **_7.0.8.0_** Added AMD Software: Adrenalin Edition as an install option, ticked automatically when an AMD GPU is detected (including Radeon graphics built into Ryzen CPUs).
