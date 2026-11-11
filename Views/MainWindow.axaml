@@ -49,6 +49,9 @@
             <CheckBox x:Name="AnyDeskCheck" Theme="{StaticResource IconToggleCheckBoxTheme}" IsChecked="True" ToolTip.Tip="AnyDesk Remote Support Software">
               <Image Source="avares://Computer Repair Centre Installer/Resources/icons/anyDesk.png" Width="32" Height="32" />
             </CheckBox>
+            <CheckBox x:Name="BingWallpapersCheck" Theme="{StaticResource IconToggleCheckBoxTheme}" IsChecked="True" ToolTip.Tip="Bing Wallpapers (New wallpaper everyday)">
+              <Image Source="avares://Computer Repair Centre Installer/Resources/icons/bingWallpaper.png" Width="32" Height="32" />
+            </CheckBox>
             <CheckBox x:Name="BitDefenderCheck" Theme="{StaticResource IconToggleCheckBoxTheme}" ToolTip.Tip="BitDefender Anti-Virus">
               <Image Source="avares://Computer Repair Centre Installer/Resources/icons/bitDefender.png" Width="32" Height="32" />
             </CheckBox>
@@ -64,9 +67,6 @@
             <CheckBox x:Name="Office2024Check" Theme="{StaticResource IconToggleCheckBoxTheme}" ToolTip.Tip="Microsoft Office 2024 - Replaces LibreOffice (skips install and an existing copy is removed)">
               <Image Source="avares://Computer Repair Centre Installer/Resources/icons/office2024.png" Width="32" Height="32" />
             </CheckBox>
-            <CheckBox x:Name="NvidiaAppCheck" Theme="{StaticResource IconToggleCheckBoxTheme}" ToolTip.Tip="Nvidia Graphics App">
-              <Image Source="avares://Computer Repair Centre Installer/Resources/icons/nvidiaApp.png" Width="32" Height="32" />
-            </CheckBox>
             <CheckBox x:Name="MozillaFirefoxCheck" Theme="{StaticResource IconToggleCheckBoxTheme}" IsChecked="True" ToolTip.Tip="Mozilla Firefox">
               <Image Source="avares://Computer Repair Centre Installer/Resources/icons/mozillaFirefox.png" Width="32" Height="32" />
             </CheckBox>
@@ -76,14 +76,14 @@
             <CheckBox x:Name="NanaZipCheck" Theme="{StaticResource IconToggleCheckBoxTheme}" IsChecked="True" ToolTip.Tip="NanaZip Extraction Software">
               <Image Source="avares://Computer Repair Centre Installer/Resources/icons/nanaZip.png" Width="32" Height="32" />
             </CheckBox>
+            <CheckBox x:Name="NvidiaAppCheck" Theme="{StaticResource IconToggleCheckBoxTheme}" ToolTip.Tip="Nvidia Graphics App">
+              <Image Source="avares://Computer Repair Centre Installer/Resources/icons/nvidiaApp.png" Width="32" Height="32" />
+            </CheckBox>
             <CheckBox x:Name="SteamCheck" Theme="{StaticResource IconToggleCheckBoxTheme}" ToolTip.Tip="Steam">
               <Image Source="avares://Computer Repair Centre Installer/Resources/icons/steam.png" Width="32" Height="32" />
             </CheckBox>
             <CheckBox x:Name="VlcMediaPlayerCheck" Theme="{StaticResource IconToggleCheckBoxTheme}" ToolTip.Tip="VLC Media Player">
               <Image Source="avares://Computer Repair Centre Installer/Resources/icons/vlcMediaPlayer.png" Width="32" Height="32" />
-            </CheckBox>
-            <CheckBox x:Name="BingWallpapersCheck" Theme="{StaticResource IconToggleCheckBoxTheme}" IsChecked="True" ToolTip.Tip="Bing Wallpapers (New wallpaper everyday)">
-              <Image Source="avares://Computer Repair Centre Installer/Resources/icons/bingWallpaper.png" Width="32" Height="32" />
             </CheckBox>
           </WrapPanel>
         </ScrollViewer>

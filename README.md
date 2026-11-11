@@ -31,9 +31,10 @@ Disables sleep and screen timeout while on AC power during the install, then res
 
 **Version 7.1.0.0**
 
+- **_7.1.0.1_** Organised all software alphabetically.
 - **_7.1.0.0_** Beta launcher now picks the newest installer from GitHub, whether that's a beta or a full release.
 - **_7.1.0.0_** If a full release has the same or a higher version than the latest beta, the beta launcher downloads the release instead, so it can be used as a main launcher.
-- **_7.1.0.0_** Beta launcher shows which version it's downloading.
+- **_7.1.0.0_** Both launchers shows which version they're downloading.
 - **_7.1.0.0_** If GitHub can't be reached, the beta launcher falls back to the latest release instead of failing.
 - **_7.1.0.0_** Beta launcher no longer uses the crcinstallerbeta.professorshroom.com link.
 - **_7.1.0.0_** Betas are now tagged like v7.1.0.0b1 and published as GitHub pre-releases, so the standard launcher never downloads them.
