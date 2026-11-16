@@ -13,6 +13,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Input;
@@ -91,6 +92,15 @@ namespace PlutoPoint_Installer.Views
         private Uri steamURL => new Uri(ResolveUrl("steam", urls.steam));
         private Uri vlcMediaPlayerURL => new Uri(ResolveUrl("vlcMediaPlayer", urls.vlcMediaPlayer));
         private Uri office2024URL => new Uri(ResolveUrl("office2024", urls.office2024));
+        private Uri libreOfficeFallbackURL => new Uri(ResolveUrl("libreOfficeFallback",
+            string.IsNullOrWhiteSpace(urls.libreOfficeFallback) ? "https://libreoffice.professorshroom.com" : urls.libreOfficeFallback));
+
+        private static readonly HttpClient Http = new HttpClient { Timeout = TimeSpan.FromMinutes(30) };
+        private static readonly HttpClient BrowserHttp = CreateBrowserClient();
+
+        private uint? _savedStandbyAcSeconds;
+        private uint? _savedMonitorAcSeconds;
+        private bool _sleepRestorePending;
 
         private static bool IsOfficeInstalled() =>
             File.Exists(@"C:\Program Files\Microsoft Office\root\Office16\WINWORD.EXE")
@@ -129,7 +139,6 @@ namespace PlutoPoint_Installer.Views
             CheckForIntelHardware();
             CheckforAMDHardware();
             CheckForNvidiaGPU();
-            AppendLine(locationLine);
         }
 
         protected override void OnOpened(EventArgs e)
@@ -259,11 +268,18 @@ namespace PlutoPoint_Installer.Views
             int total = installResults.Count;
             int succeeded = installResults.Count(r => r.Status == "Installed" || r.Status == "Already Installed" || r.Status == "Applied" || r.Status == "Removed");
             int skipped = installResults.Count(r => r.Status == "Skipped");
+            int unverified = installResults.Count(r => r.Status == "Unverified");
             int failed = installResults.Count(r => r.Status == "Failed");
             AppendLine("");
             AppendLine("📋 Summary:");
             AppendLine($"✅ {succeeded}/{total} succeeded");
             if (skipped > 0) AppendLine($"⏭️ {skipped} skipped");
+            if (unverified > 0)
+            {
+                AppendLine($"⚠️ {unverified} finished but couldn't be confirmed:");
+                foreach (var r in installResults.Where(r => r.Status == "Unverified"))
+                    AppendLine($"   • {r.Name}");
+            }
             if (failed > 0)
             {
                 AppendLine($"❌ {failed} failed:");
@@ -767,19 +783,19 @@ namespace PlutoPoint_Installer.Views
 
         private async Task CheckIPAsync()
         {
-            string publicIP = await GetPublicIPAddressAsync();
-            if (string.IsNullOrWhiteSpace(publicIP))
-                return;
-            string publicIPHash = HashIP(publicIP);
-            LocationHashes hashes = await GetLocationHashesAsync();
-            if (hashes == null)
-                return;
             safeLocation = "0";
             romsey = "0";
             chandlersFord = "0";
             highcliffe = "0";
             charlieHome = "0";
-            if (publicIPHash == hashes.romsey)
+            string publicIP = await GetPublicIPAddressAsync();
+            LocationHashes hashes = null;
+            if (string.IsNullOrWhiteSpace(publicIP))
+                AppendLine("⚠️ Couldn't get this computer's public IP address.");
+            else
+                hashes = await GetLocationHashesAsync();
+            string publicIPHash = hashes == null ? null : HashIP(publicIP);
+            if (publicIPHash != null && publicIPHash == hashes.romsey)
             {
                 romsey = "1";
                 safeLocation = "1";
@@ -800,6 +816,7 @@ namespace PlutoPoint_Installer.Views
                 safeLocation = "1";
             }
             AppendLocation();
+            AppendLine(locationLine);
             UpdateLocation();
         }
 
@@ -807,11 +824,9 @@ namespace PlutoPoint_Installer.Views
         {
             try
             {
-                using (var client = new HttpClient())
-                {
-                    string ip = await client.GetStringAsync("https://api.ipify.org");
-                    return ip?.Trim();
-                }
+                using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(15));
+                string ip = await Http.GetStringAsync("https://api.ipify.org", timeout.Token);
+                return ip?.Trim();
             }
             catch
             {
@@ -834,11 +849,9 @@ namespace PlutoPoint_Installer.Views
             try
             {
                 string url = "https://raw.githubusercontent.com/ProfessorShroom/PlutoPoint-Installer/refs/heads/main/Data/Passwords.json";
-                using (var client = new HttpClient())
-                {
-                    string json = await client.GetStringAsync(url);
-                    return JsonSerializer.Deserialize<PasswordHashes>(json, _jsonOptions);
-                }
+                using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+                string json = await Http.GetStringAsync(url, timeout.Token);
+                return JsonSerializer.Deserialize<PasswordHashes>(json, _jsonOptions);
             }
             catch (Exception ex)
             {
@@ -852,11 +865,9 @@ namespace PlutoPoint_Installer.Views
             try
             {
                 string url = "https://raw.githubusercontent.com/ProfessorShroom/PlutoPoint-Installer/refs/heads/main/Data/IPs.json";
-                using (var client = new HttpClient())
-                {
-                    string json = await client.GetStringAsync(url);
-                    return JsonSerializer.Deserialize<LocationHashes>(json, _jsonOptions);
-                }
+                using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+                string json = await Http.GetStringAsync(url, timeout.Token);
+                return JsonSerializer.Deserialize<LocationHashes>(json, _jsonOptions);
             }
             catch (Exception ex)
             {
@@ -927,11 +938,9 @@ namespace PlutoPoint_Installer.Views
             try
             {
                 string url = "https://raw.githubusercontent.com/professorshroom/PlutoPoint-Installer/main/Data/Downloads.json";
-                using (var client = new HttpClient())
-                {
-                    string json = await client.GetStringAsync(url);
-                    return JsonSerializer.Deserialize<DownloadUrls>(json, _jsonOptions);
-                }
+                using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+                string json = await Http.GetStringAsync(url, timeout.Token);
+                return JsonSerializer.Deserialize<DownloadUrls>(json, _jsonOptions);
             }
             catch (Exception ex)
             {
@@ -942,7 +951,17 @@ namespace PlutoPoint_Installer.Views
 
         private async Task<bool> PassesPasswordGateAsync()
         {
-            if (safeLocation != "0")
+            if (!_checkIpTask.IsCompleted)
+                AppendLine("⏳ Waiting for the location check to finish...");
+            try
+            {
+                await _checkIpTask;
+            }
+            catch (Exception ex)
+            {
+                AppendLine($"⚠️ Location check failed: {ex.Message}");
+            }
+            if (safeLocation == "1")
                 return true;
 
             var hashes = await GetPasswordHashesAsync();
@@ -1108,36 +1127,143 @@ namespace PlutoPoint_Installer.Views
             }
         }
 
-        private void ProgressBarStep(object sender, AsyncCompletedEventArgs e)
+        private void StepProgress(int steps = 1)
         {
-            void Step() => InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
+            void Step() => InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + steps, InstallProgressBar.Maximum);
             if (Dispatcher.UIThread.CheckAccess())
                 Step();
             else
                 Dispatcher.UIThread.Post(Step);
         }
 
-        private async Task DownloadWithRetryAsync(Uri url, string destinationPath, int maxAttempts = 3)
+        private async Task<bool> DownloadWithRetryAsync(Uri url, string destinationPath, string label, HttpClient client = null, int maxAttempts = 3)
         {
+            client ??= Http;
             for (int attempt = 1; attempt <= maxAttempts; attempt++)
             {
                 try
                 {
-#pragma warning disable SYSLIB0014
-                    using (WebClient wc = new WebClient())
+                    using (HttpResponseMessage response = await client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead))
                     {
-                        wc.DownloadFileCompleted += ProgressBarStep;
-                        await wc.DownloadFileTaskAsync(url, destinationPath);
+                        response.EnsureSuccessStatusCode();
+                        await using Stream source = await response.Content.ReadAsStreamAsync();
+                        await using FileStream target = new FileStream(destinationPath, FileMode.Create, FileAccess.Write, FileShare.None);
+                        await source.CopyToAsync(target);
                     }
-#pragma warning restore SYSLIB0014
-                    return;
+                    return true;
                 }
-                catch (Exception ex) when (attempt < maxAttempts)
+                catch (Exception ex)
                 {
-                    AppendLine($"⚠️ Download failed (attempt {attempt}/{maxAttempts}): {ex.Message}. Retrying...");
-                    await Task.Delay(1500 * attempt);
+                    try { File.Delete(destinationPath); } catch { }
+                    if (attempt < maxAttempts)
+                    {
+                        AppendLine($"⚠️ Download failed (attempt {attempt}/{maxAttempts}): {ex.Message}. Retrying...");
+                        await Task.Delay(1500 * attempt);
+                    }
+                    else
+                    {
+                        AppendLine($"❌ Failed to download {label}: {ex.Message}");
+                    }
                 }
             }
+            return false;
+        }
+
+        private Task<int> RunInstallerAsync(string fileName, string arguments, bool elevate = false, string workingDirectory = null)
+        {
+            return Task.Run(() =>
+            {
+                var startInfo = new ProcessStartInfo { FileName = fileName, Arguments = arguments };
+                if (elevate)
+                {
+                    startInfo.UseShellExecute = true;
+                    startInfo.Verb = "runas";
+                }
+                else
+                {
+                    startInfo.UseShellExecute = false;
+                    startInfo.CreateNoWindow = true;
+                }
+                if (workingDirectory != null)
+                    startInfo.WorkingDirectory = workingDirectory;
+                try
+                {
+                    using Process process = Process.Start(startInfo);
+                    if (process == null)
+                        return -1;
+                    process.WaitForExit();
+                    return process.ExitCode;
+                }
+                catch (Exception ex)
+                {
+                    AppendLine($"⚠️ Couldn't run {Path.GetFileName(fileName)}: {ex.Message}");
+                    return -1;
+                }
+            });
+        }
+
+        private static string RunAndCapture(string fileName, string arguments)
+        {
+            try
+            {
+                using var process = new Process
+                {
+                    StartInfo = new ProcessStartInfo
+                    {
+                        FileName = fileName,
+                        Arguments = arguments,
+                        UseShellExecute = false,
+                        RedirectStandardOutput = true,
+                        CreateNoWindow = true
+                    }
+                };
+                process.Start();
+                string output = process.StandardOutput.ReadToEnd();
+                process.WaitForExit();
+                return output;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        private static uint? ReadAcPowerSetting(string subgroup, string setting)
+        {
+            string output = RunAndCapture("powercfg", $"/q SCHEME_CURRENT {subgroup} {setting}");
+            if (string.IsNullOrEmpty(output))
+                return null;
+            MatchCollection matches = Regex.Matches(output, @"0x([0-9a-fA-F]{8})");
+            if (matches.Count < 2)
+                return null;
+            return Convert.ToUInt32(matches[matches.Count - 2].Groups[1].Value, 16);
+        }
+
+        private void DisableSleepTemporarily()
+        {
+            _savedStandbyAcSeconds = ReadAcPowerSetting("SUB_SLEEP", "STANDBYIDLE");
+            _savedMonitorAcSeconds = ReadAcPowerSetting("SUB_VIDEO", "VIDEOIDLE");
+            RunSilentCommand("powercfg", "/change standby-timeout-ac 0");
+            RunSilentCommand("powercfg", "/change monitor-timeout-ac 0");
+            _sleepRestorePending = true;
+        }
+
+        private void RestoreSleepSettings()
+        {
+            if (!_sleepRestorePending)
+                return;
+            _sleepRestorePending = false;
+            if (_savedStandbyAcSeconds.HasValue)
+                RunSilentCommand("powercfg", $"/setacvalueindex SCHEME_CURRENT SUB_SLEEP STANDBYIDLE {_savedStandbyAcSeconds.Value}");
+            else
+                RunSilentCommand("powercfg", "/change standby-timeout-ac 5");
+            if (_savedMonitorAcSeconds.HasValue)
+                RunSilentCommand("powercfg", $"/setacvalueindex SCHEME_CURRENT SUB_VIDEO VIDEOIDLE {_savedMonitorAcSeconds.Value}");
+            else
+                RunSilentCommand("powercfg", "/change monitor-timeout-ac 5");
+            RunSilentCommand("powercfg", "/setactive SCHEME_CURRENT");
+            if (!_savedStandbyAcSeconds.HasValue || !_savedMonitorAcSeconds.HasValue)
+                AppendLine("⚠️ Couldn't read the original sleep settings, so they were set to 5 minutes.");
         }
 
         private void KillProcessSafely(Process process)
@@ -1399,24 +1525,21 @@ namespace PlutoPoint_Installer.Views
             return confirmed;
         }
 
-        private string GetLibreOfficeVersion()
+        private async Task<string> GetLibreOfficeVersionAsync()
         {
             string url = "https://www.libreoffice.org/download/";
             try
             {
-                using (var client = new HttpClient())
+                using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+                string html = await BrowserHttp.GetStringAsync(url, timeout.Token);
+                var match = Regex.Match(
+                    html,
+                    @"(\d+\.\d+(?:\.\d+)?)[^0-9]{0,100}Windows \(x86-64\)",
+                    RegexOptions.IgnoreCase
+                );
+                if (match.Success)
                 {
-                    client.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0");
-                    string html = client.GetStringAsync(url).Result;
-                    var match = Regex.Match(
-                        html,
-                        @"(\d+\.\d+(?:\.\d+)?)[^0-9]{0,100}Windows \(x86-64\)",
-                        RegexOptions.IgnoreCase
-                    );
-                    if (match.Success)
-                    {
-                        return match.Groups[1].Value;
-                    }
+                    return match.Groups[1].Value;
                 }
             }
             catch (Exception ex)
@@ -1426,12 +1549,56 @@ namespace PlutoPoint_Installer.Views
             return null;
         }
 
+        private bool _installRunning;
+
         private async void InstallButton_Click(object sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            if (_installRunning)
+                return;
+            _installRunning = true;
+            InstallButton.IsEnabled = false;
+            try
+            {
+                await RunInstallAsync();
+            }
+            catch (Exception ex)
+            {
+                AppendLine($"❌ The installation stopped because of an error: {ex.Message}");
+                AppendInstallSummary();
+            }
+            finally
+            {
+                if (_sleepRestorePending)
+                {
+                    AppendLine("✅ Restoring the original sleep and screen timeout settings on AC power...");
+                    RestoreSleepSettings();
+                }
+                InstallButton.IsEnabled = true;
+                _installRunning = false;
+            }
+        }
+
+        private async Task RunInstallAsync()
         {
             installResults = new List<(string, string)>();
             if (!await PassesPasswordGateAsync())
                 return;
 
+            if (!_initialiseUrlsTask.IsCompleted)
+                AppendLine("⏳ Waiting for the download links to load...");
+            await _initialiseUrlsTask;
+            if (urls == null)
+            {
+                AppendLine("🔄 Trying to load the download links again...");
+                urls = await GetDownloadUrlsAsync();
+            }
+            if (urls == null)
+            {
+                AppendLine("❌ Couldn't load the download links, so nothing can be installed. Check the internet connection and try again.");
+                return;
+            }
+
+            InstallProgressBar.Value = 0;
             InstallProgressBar.Maximum = 0;
 
             // Paths
@@ -1439,38 +1606,7 @@ namespace PlutoPoint_Installer.Views
             programDataDir = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
             string oemDir = Path.Combine(programDataDir, "Computer Repair Centre\\OEM\\");
             string appsDir = Path.Combine(rootDir, "apps");
-            string windowsAppsPath = @"C:\Program Files\WindowsApps";
-
-            // Installed apps
-            string googleChromeExePath = @"C:\Program Files\Google\Chrome\Application\chrome.exe";
-            string mozillaFirefoxExePath = @"C:\Program Files\Mozilla Firefox\firefox.exe";
-            string mozillaThunderbirdExePath = @"C:\Program Files\Mozilla Thunderbird\thunderbird.exe";
-            string nanaZipExe = "NanaZip.Modern.FileManager.exe";
-            string nanaZipPath = null;
-
-            // Downloaded installers
             string crcOEMFilename = Path.Combine(oemDir, "computerRepairCentreOEM.bmp");
-            string googleChromeFilename = Path.Combine(appsDir, "googleChrome.msi");
-            bool firefoxIsExe = ArmOverride("mozillaFirefox") != null;
-            string mozillaFirefoxFilename = Path.Combine(appsDir, firefoxIsExe ? "mozillaFirefox.exe" : "mozillaFirefox.msi");
-            string anyDeskFilename = Path.Combine(appsDir, "anyDesk.msi");
-            string bingWallpapersFilename = Path.Combine(appsDir, "bingWallpapers.msi");
-            string bitDefenderFilename = Path.Combine(appsDir, "bitDefender.exe");
-            string discordFilename = Path.Combine(appsDir, "discord.exe");
-            string libreOfficeFilename = Path.Combine(appsDir, "libreOffice.msi");
-            string mozillaThunderbirdFilename = Path.Combine(appsDir, "mozillaThunderbird.msi");
-            string nanaZipFilename = Path.Combine(appsDir, "nanaZip.msixbundle");
-            string steamFilename = Path.Combine(appsDir, "steam.exe");
-            string vlcMediaPlayerFilename = Path.Combine(appsDir, "vlcMediaPlayer.msi");
-            string office2024Filename = Path.Combine(appsDir, "officeSetup.exe");
-            string office2024ConfigFilename = Path.Combine(appsDir, "office2024.xml");
-            string nvidiaAppFilename = Path.Combine(appsDir, "nvidiaApp.exe");
-            string amdChipsetFilename = Path.Combine(appsDir, "amdChipset.exe");
-            string amdAdrenalinFilename = Path.Combine(appsDir, "amdAdrenalin.exe");
-
-            // Other apps
-            string bingWallpaperAppPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"Microsoft\BingWallpaperApp\BingWallpaperApp.exe");
-            string discordAppPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"Discord\Update.exe");
 
             // Desktop
             string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
@@ -1488,26 +1624,15 @@ namespace PlutoPoint_Installer.Views
             if (!Directory.Exists(oemDir)) Directory.CreateDirectory(oemDir);
             if (!Directory.Exists(appsDir)) Directory.CreateDirectory(appsDir);
 
+            List<AppDefinition> selectedApps = BuildAppList(appsDir).Where(app => app.Check.IsChecked == true).ToList();
+
             if (windows10 == "1") { InstallProgressBar.Maximum += 9; }
             if (windows11 == "1") { InstallProgressBar.Maximum += 10; }
             if (PowerCheck.IsChecked == true) { InstallProgressBar.Maximum += 1; } else { InstallProgressBar.Maximum += 2; }
             if (CrcCheck.IsChecked == true) { InstallProgressBar.Maximum += 1; }
-            if (AnyDeskCheck.IsChecked == true) { InstallProgressBar.Maximum += 2; }
-            if (NanaZipCheck.IsChecked == true) { InstallProgressBar.Maximum += 2; }
-            if (BitDefenderCheck.IsChecked == true) { InstallProgressBar.Maximum += 2; }
-            if (BingWallpapersCheck.IsChecked == true) { InstallProgressBar.Maximum += 2; }
-            if (DiscordCheck.IsChecked == true) { InstallProgressBar.Maximum += 2; }
-            if (GoogleChromeCheck.IsChecked == true) { InstallProgressBar.Maximum += 2; }
-            if (LibreOfficeCheck.IsChecked == true) { InstallProgressBar.Maximum += 2; }
-            if (AmdChipsetCheck.IsChecked == true) { InstallProgressBar.Maximum += 2; }
-            if (AmdAdrenalinCheck.IsChecked == true) { InstallProgressBar.Maximum += 2; }
-            if (NvidiaAppCheck.IsChecked == true) { InstallProgressBar.Maximum += 2; }
-            if (MozillaFirefoxCheck.IsChecked == true) { InstallProgressBar.Maximum += 2; }
-            if (MozillaThunderbirdCheck.IsChecked == true) { InstallProgressBar.Maximum += 2; }
-            if (SteamCheck.IsChecked == true) { InstallProgressBar.Maximum += 2; }
-            if (Office2024Check.IsChecked == true) { InstallProgressBar.Maximum += 2; }
             if (TaskbarCheck.IsChecked == true) { InstallProgressBar.Maximum += 1; }
             if (PinAppsCheck.IsChecked == true) { InstallProgressBar.Maximum += 1; }
+            InstallProgressBar.Maximum += selectedApps.Count * 2;
 
             if (AmdChipsetCheck.IsChecked == true && amdCpu == "1")
             {
@@ -1535,93 +1660,55 @@ namespace PlutoPoint_Installer.Views
                 RunSilentCommand("powercfg", "/change monitor-timeout-ac 0");
                 AppendLine("🔄 Changing power button behavior to shutdown...");
                 RunSilentCommand("powercfg", "/setacvalueindex SCHEME_CURRENT 4f971e89-eebd-4455-a8de-9e59040e7347 7648efa3-dd9c-4e3e-b566-50f929386280 3");
-                InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
+                RunSilentCommand("powercfg", "/setactive SCHEME_CURRENT");
+                StepProgress();
             }
             else
             {
                 AppendLine("🔄 Disabling sleep and screen timeout while on AC power temporarily during install...");
-                InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
+                DisableSleepTemporarily();
+                StepProgress();
             }
 
             if (CrcCheck.IsChecked == true)
             {
                 AppendLine("📌 Computer Repair Centre OEM information is selected.");
-                string oemLocation = SelectedOemLocation;
-                if (oemLocation == "Romsey")
+                (string Name, string Hours, string Phone, string Url)? oem = SelectedOemLocation switch
                 {
-                    AppendLine("📦 Installing Romsey Computer Repair Centre OEM information...");
-                    await DownloadWithRetryAsync(crcOEMURL, crcOEMFilename);
-                    SetOemInfo(hours: "Mon-Fri 9:15am-5:00pm - Sat 9:15am-2:00pm", phone: "01794 517142", url: "https://www.thecomputerrepaircentre.co.uk/romsey");
-                    TrackResult("Computer Repair Centre OEM Info", "Installed");
-                }
-                else if (oemLocation == "Chandler's Ford")
-                {
-                    AppendLine("📦 Installing Chandlers Ford Computer Repair Centre OEM information...");
-                    await DownloadWithRetryAsync(crcOEMURL, crcOEMFilename);
-                    SetOemInfo(hours: "Mon-Fri 9:00am-5:00pm - Sat 9:00am-3:00pm", phone: "02380 270271", url: "https://www.thecomputerrepaircentre.co.uk/chandlers-ford");
-                    TrackResult("Computer Repair Centre OEM Info", "Installed");
-                }
-                else if (oemLocation == "Highcliffe")
-                {
-                    AppendLine("📦 Installing Highcliffe Computer Repair Centre OEM information...");
-                    await DownloadWithRetryAsync(crcOEMURL, crcOEMFilename);
-                    SetOemInfo(hours: "Mon-Fri 9:15am-5:00pm - Sat 9:15am-2:00pm", phone: "01425 278579", url: "https://www.thecomputerrepaircentre.co.uk/highcliffe");
-                    TrackResult("Computer Repair Centre OEM Info", "Installed");
-                }
-                else
+                    "Romsey" => ("Romsey", "Mon-Fri 9:15am-5:00pm - Sat 9:15am-2:00pm", "01794 517142", "https://www.thecomputerrepaircentre.co.uk/romsey"),
+                    "Chandler's Ford" => ("Chandlers Ford", "Mon-Fri 9:00am-5:00pm - Sat 9:00am-3:00pm", "02380 270271", "https://www.thecomputerrepaircentre.co.uk/chandlers-ford"),
+                    "Highcliffe" => ("Highcliffe", "Mon-Fri 9:15am-5:00pm - Sat 9:15am-2:00pm", "01425 278579", "https://www.thecomputerrepaircentre.co.uk/highcliffe"),
+                    _ => null
+                };
+                if (oem == null)
                 {
                     AppendLine("⚠️ No known shop location selected, skipping OEM info.");
                     TrackResult("Computer Repair Centre OEM Info", "Skipped");
                 }
-            }
-
-            if (NanaZipCheck.IsChecked == true)
-            {
-                AppendLine("📌 NanaZip is selected.");
-                AppendLine("🔄 Checking if NanaZip is installed...");
-                try
+                else
                 {
-                    var files = Directory.GetFiles(windowsAppsPath, nanaZipExe, SearchOption.AllDirectories);
-                    if (files.Length > 0)
+                    AppendLine($"📦 Installing {oem.Value.Name} Computer Repair Centre OEM information...");
+                    bool logoDownloaded = await DownloadWithRetryAsync(crcOEMURL, crcOEMFilename, "the OEM logo");
+                    try
                     {
-                        nanaZipPath = files[0];
-                        AppendLine("✅ NanaZip is already installed.");
-                        TrackResult("NanaZip", "Already Installed");
-                        InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 2, InstallProgressBar.Maximum);
-                    }
-                    else
-                    {
-                        AppendLine("❌ NanaZip not found, proceeding with installation.");
-                        AppendLine("🔄 Downloading NanaZip...");
-                        await DownloadWithRetryAsync(nanaZipURL, nanaZipFilename);
-                        AppendLine("📦 Installing NanaZip...");
-                        Process nanaZipInstallProcess = Process.Start(new ProcessStartInfo
+                        SetOemInfo(hours: oem.Value.Hours, phone: oem.Value.Phone, url: oem.Value.Url);
+                        if (logoDownloaded)
                         {
-                            FileName = "powershell",
-                            Arguments = $"-Command Add-AppxPackage -Path '{nanaZipFilename}'",
-                            UseShellExecute = false,
-                            RedirectStandardOutput = true,
-                            RedirectStandardError = true,
-                            CreateNoWindow = true
-                        });
-                        if (nanaZipInstallProcess != null)
-                        {
-                            await Task.Run(() => nanaZipInstallProcess.WaitForExit());
+                            TrackResult("Computer Repair Centre OEM Info", "Installed");
                         }
-                        AppendLine("✅ Completed installation of NanaZip.");
-                        TrackResult("NanaZip", "Installed");
-                        InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
+                        else
+                        {
+                            AppendLine("⚠️ OEM information was set, but the logo couldn't be downloaded.");
+                            TrackResult("Computer Repair Centre OEM Info", "Failed");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        AppendLine($"❌ Failed to set OEM information: {ex.Message}");
+                        TrackResult("Computer Repair Centre OEM Info", "Failed");
                     }
                 }
-                catch (UnauthorizedAccessException)
-                {
-                    AppendLine("⚠️ Access denied to WindowsApps. Try running as Administrator.");
-                    TrackResult("NanaZip", "Failed");
-                }
-                catch (Exception ex)
-                {
-                    AppendLine("❌ Error: " + ex.Message);
-                }
+                StepProgress();
             }
 
             if (TaskbarCheck.IsChecked == true)
@@ -1631,879 +1718,36 @@ namespace PlutoPoint_Installer.Views
                 const string taskbarRegPath = @"SOFTWARE\microsoft\windows\currentversion\explorer\advanced";
                 const string taskbarReg = "TaskbarAl";
                 const int taskbarRegData = 0;
-                using (RegistryKey registryKey = Registry.CurrentUser.OpenSubKey(taskbarRegPath, writable: true))
-                {
-                    registryKey.SetValue(taskbarReg, taskbarRegData, RegistryValueKind.DWord);
-                    Console.WriteLine($"Set '{taskbarReg}' to {taskbarRegData} in '{taskbarRegPath}'.");
-                }
-                AppendLine("✅ Moved taskbar to the left.");
-                TrackResult("Taskbar Alignment", "Applied");
-                InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
-            }
-
-            if (AnyDeskCheck.IsChecked == true)
-            {
-                AppendLine("📌 AnyDesk is selected.");
-                if (File.Exists(@"C:\Program Files (x86)\AnyDeskMSI\AnyDeskMSI.exe"))
-                {
-                    AppendLine("✅ AnyDesk is already installed, skipping installation.");
-                    TrackResult("AnyDesk", "Already Installed");
-                    InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 2, InstallProgressBar.Maximum);
-                }
-                else if (File.Exists(@"C:\Program Files (x86)\AnyDesk\AnyDesk.exe"))
-                {
-                    AppendLine("✅ AnyDesk is already installed, skipping installation.");
-                    TrackResult("AnyDesk", "Already Installed");
-                    InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 2, InstallProgressBar.Maximum);
-                }
-                else
-                {
-                    bool wingetOk = await TryWingetInstallAsync("AnyDesk.AnyDesk", "AnyDesk");
-                    if (wingetOk)
-                    {
-                        TrackResult("AnyDesk", "Installed");
-                        InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 2, InstallProgressBar.Maximum);
-                    }
-                    else
-                    {
-                        AppendLine("🔄 Downloading AnyDesk...");
-                        await DownloadWithRetryAsync(anyDeskURL, anyDeskFilename);
-                        AppendLine("📦 Installing AnyDesk...");
-                        await Task.Run(() =>
-                        {
-                            using (Process process = new Process())
-                            {
-                                process.StartInfo.FileName = "msiexec";
-                                process.StartInfo.Arguments = $"/package \"{anyDeskFilename}\" /passive";
-                                process.StartInfo.UseShellExecute = false;
-                                process.StartInfo.RedirectStandardOutput = true;
-                                process.StartInfo.RedirectStandardError = true;
-                                process.StartInfo.CreateNoWindow = true;
-                                try
-                                {
-                                    process.Start();
-                                    string output = process.StandardOutput.ReadToEnd();
-                                    string error = process.StandardError.ReadToEnd();
-                                    process.WaitForExit();
-                                    Console.WriteLine("Output: " + output);
-                                    if (!string.IsNullOrEmpty(error)) Console.WriteLine("Error: " + error);
-                                }
-                                catch (Exception ex)
-                                {
-                                    Console.WriteLine("An error occurred: " + ex.Message);
-                                }
-                            }
-                        });
-                        AppendLine("✅ Completed installation of AnyDesk.");
-                        TrackResult("AnyDesk", "Installed");
-                        InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
-                    }
-                }
-            }
-
-            if (BingWallpapersCheck.IsChecked == true)
-            {
-                AppendLine("📌 Bing Wallpapers is selected.");
-                if (File.Exists(bingWallpaperAppPath))
-                {
-                    AppendLine("✅ Bing Wallpapers is already installed, skipping installation.");
-                    TrackResult("Bing Wallpapers", "Already Installed");
-                    InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 2, InstallProgressBar.Maximum);
-                }
-                else
-                {
-                    AppendLine("🔄 Downloading Bing Wallpapers...");
-                    await DownloadWithRetryAsync(bingWallpapersURL, bingWallpapersFilename);
-                    AppendLine("📦 Installing Bing Wallpapers...");
-                    await Task.Run(() =>
-                    {
-                        using (Process process = new Process())
-                        {
-                            process.StartInfo.FileName = "msiexec";
-                            process.StartInfo.Arguments = $"/package \"{bingWallpapersFilename}\" /passive";
-                            process.StartInfo.UseShellExecute = false;
-                            process.StartInfo.RedirectStandardOutput = true;
-                            process.StartInfo.RedirectStandardError = true;
-                            process.StartInfo.CreateNoWindow = true;
-                            try
-                            {
-                                process.Start();
-                                string output = process.StandardOutput.ReadToEnd();
-                                string error = process.StandardError.ReadToEnd();
-                                process.WaitForExit();
-                                Console.WriteLine("Output: " + output);
-                                if (!string.IsNullOrEmpty(error)) Console.WriteLine("Error: " + error);
-                            }
-                            catch (Exception ex)
-                            {
-                                Console.WriteLine("An error occurred: " + ex.Message);
-                            }
-                        }
-                    });
-                    AppendLine("✅ Completed installation of Bing Wallpapers.");
-                    TrackResult("Bing Wallpapers", "Installed");
-                    InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
-                }
-            }
-
-            if (BitDefenderCheck.IsChecked == true)
-            {
-                AppendLine("📌 BitDefender is selected.");
-                if (File.Exists(@"C:\Program Files\Bitdefender\Bitdefender Security App\seccenter.exe"))
-                {
-                    AppendLine("✅ BitDefender is already installed, skipping installation.");
-                    TrackResult("BitDefender", "Already Installed");
-                    InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 2, InstallProgressBar.Maximum);
-                }
-                else
-                {
-                    AppendLine("🔄 Downloading BitDefender...");
-                    await DownloadWithRetryAsync(bitDefenderURL, bitDefenderFilename);
-                    AppendLine("📦 Installing BitDefender...");
-                    await Task.Run(() =>
-                    {
-                        ProcessStartInfo startInfo = new ProcessStartInfo
-                        {
-                            FileName = bitDefenderFilename,
-                            Arguments = "/bdparams /silent",
-                            UseShellExecute = true,
-                            Verb = "runas"
-                        };
-                        try
-                        {
-                            using (Process process = Process.Start(startInfo))
-                            {
-                                process.WaitForExit();
-                                int exitCode = process.ExitCode;
-                                Console.WriteLine(exitCode == 0 ? "Installation successful." : $"Installation exited with code: {exitCode}");
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine($"An error occurred: {ex.Message}");
-                        }
-                    });
-                    AppendLine("✅ Completed installation of BitDefender.");
-                    TrackResult("BitDefender", "Installed");
-                    InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
-                }
-            }
-
-            if (DiscordCheck.IsChecked == true)
-            {
-                AppendLine("📌 Discord is selected.");
-                if (File.Exists(discordAppPath))
-                {
-                    AppendLine("✅ Discord is already installed, skipping installation.");
-                    TrackResult("Discord", "Already Installed");
-                    InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 2, InstallProgressBar.Maximum);
-                }
-                else
-                {
-                    bool wingetOk = await TryWingetInstallAsync("Discord.Discord", "Discord");
-                    if (wingetOk)
-                    {
-                        TrackResult("Discord", "Installed");
-                        InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 2, InstallProgressBar.Maximum);
-                    }
-                    else
-                    {
-                        AppendLine("🔄 Downloading Discord...");
-                        await DownloadWithRetryAsync(discordURL, discordFilename);
-                        AppendLine("📦 Installing Discord...");
-                        await Task.Run(() =>
-                        {
-                            ProcessStartInfo startInfo = new ProcessStartInfo
-                            {
-                                FileName = discordFilename,
-                                Arguments = "-s",
-                                UseShellExecute = true,
-                                Verb = "runas"
-                            };
-                            try
-                            {
-                                using (Process process = Process.Start(startInfo))
-                                {
-                                    process.WaitForExit();
-                                    int exitCode = process.ExitCode;
-                                    Console.WriteLine(exitCode == 0 ? "Installation successful." : $"Installation exited with code: {exitCode}");
-                                }
-                            }
-                            catch (Exception ex)
-                            {
-                                Console.WriteLine($"An error occurred: {ex.Message}");
-                            }
-                        });
-                        AppendLine("✅ Completed installation of Discord.");
-                        TrackResult("Discord", "Installed");
-                        InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
-                    }
-                }
-            }
-
-            if (GoogleChromeCheck.IsChecked == true)
-            {
-                AppendLine("📌 Google Chrome is selected.");
-                if (!File.Exists(googleChromeExePath))
-                {
-                    bool wingetOk = await TryWingetInstallAsync("Google.Chrome", "Google Chrome");
-                    if (wingetOk)
-                    {
-                        TrackResult("Google Chrome", "Installed");
-                        InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 2, InstallProgressBar.Maximum);
-                    }
-                    else
-                    {
-                        AppendLine("🔄 Downloading Google Chrome...");
-                        try
-                        {
-                            await DownloadWithRetryAsync(googleChromeURL, googleChromeFilename);
-                            AppendLine("✅ Chrome download completed.");
-                        }
-                        catch (WebException ex)
-                        {
-                            AppendLine("❌ Failed to download Google Chrome: " + ex.Message);
-                            TrackResult("Google Chrome", "Failed");
-                        }
-                        AppendLine("📦 Installing Google Chrome...");
-                        try
-                        {
-                            using (Process process = new Process())
-                            {
-                                process.StartInfo.FileName = "msiexec";
-                                process.StartInfo.Arguments = $"/package \"{googleChromeFilename}\" /passive";
-                                process.StartInfo.UseShellExecute = true;
-                                process.Start();
-                                process.WaitForExit();
-                            }
-                            AppendLine("✅ Completed installation of Google Chrome.");
-                            TrackResult("Google Chrome", "Installed");
-                        }
-                        catch (Exception ex)
-                        {
-                            AppendLine("❌ Chrome installation failed: " + ex.Message);
-                            TrackResult("Google Chrome", "Failed");
-                        }
-                        InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
-                    }
-                }
-                else
-                {
-                    AppendLine("✅ Google Chrome is already installed, skipping installation.");
-                    TrackResult("Google Chrome", "Already Installed");
-                    InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 2, InstallProgressBar.Maximum);
-                }
-            }
-
-            if (LibreOfficeCheck.IsChecked == true && Office2024Check.IsChecked == true)
-            {
-                AppendLine("⏭️ Microsoft Office 2024 is selected, so LibreOffice won't be installed.");
-                TrackResult("LibreOffice", "Skipped");
-                InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 2, InstallProgressBar.Maximum);
-            }
-            else if (LibreOfficeCheck.IsChecked == true)
-            {
-                AppendLine("📌 LibreOffice is selected.");
-                if (File.Exists(@"C:\Program Files\LibreOffice\program\soffice.exe"))
-                {
-                    AppendLine("✅ LibreOffice is already installed, skipping installation.");
-                    TrackResult("LibreOffice", "Already Installed");
-                    InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 2, InstallProgressBar.Maximum);
-                }
-                else
-                {
-                    bool wingetOk = await TryWingetInstallAsync("TheDocumentFoundation.LibreOffice", "LibreOffice");
-                    if (wingetOk)
-                    {
-                        TrackResult("LibreOffice", "Installed");
-                        InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 2, InstallProgressBar.Maximum);
-                    }
-                    else
-                    {
-                        AppendLine("🔄 Downloading LibreOffice...");
-                        string libreOfficeVersion = GetLibreOfficeVersion();
-                        if (string.IsNullOrEmpty(libreOfficeVersion))
-                        {
-                            AppendLine("❌ Could not determine the latest LibreOffice version.");
-                            TrackResult("LibreOffice", "Failed");
-                            AppendInstallSummary();
-                            return;
-                        }
-                        string libreOfficeDownloadUrl = IsArm64
-                            ? $"https://download.documentfoundation.org/libreoffice/stable/{libreOfficeVersion}/win/aarch64/LibreOffice_{libreOfficeVersion}_Win_aarch64.msi"
-                            : $"https://download.documentfoundation.org/libreoffice/stable/{libreOfficeVersion}/win/x86_64/LibreOffice_{libreOfficeVersion}_Win_x86-64.msi";
-                        Uri libreOfficeURL = new Uri(libreOfficeDownloadUrl);
-                        try
-                        {
-                            await DownloadWithRetryAsync(libreOfficeURL, libreOfficeFilename);
-                        }
-                        catch (Exception ex)
-                        {
-                            AppendLine($"⚠️ LibreOffice download failed: {ex.Message}");
-                            try { File.Delete(libreOfficeFilename); } catch { }
-                        }
-                        if (!File.Exists(libreOfficeFilename))
-                        {
-                            AppendLine("❌ LibreOffice download failed; falling back to known installer.");
-                            libreOfficeURL = new Uri(ResolveUrl("libreOfficeFallback", "https://cloud.howardgb.com/public.php/dav/files/EFyAqCm3tEQ6W25/libreOffice.msi"));
-                            await DownloadWithRetryAsync(libreOfficeURL, libreOfficeFilename);
-                        }
-                        AppendLine("📦 Installing LibreOffice...");
-                        await Task.Run(() =>
-                        {
-                            using (Process process = new Process())
-                            {
-                                process.StartInfo.FileName = "msiexec";
-                                process.StartInfo.Arguments = $"/package \"{libreOfficeFilename}\" /passive /norestart";
-                                process.StartInfo.UseShellExecute = false;
-                                process.StartInfo.RedirectStandardOutput = true;
-                                process.StartInfo.RedirectStandardError = true;
-                                process.StartInfo.CreateNoWindow = true;
-                                try
-                                {
-                                    process.Start();
-                                    string output = process.StandardOutput.ReadToEnd();
-                                    string error = process.StandardError.ReadToEnd();
-                                    process.WaitForExit();
-                                    Console.WriteLine("Output: " + output);
-                                    if (!string.IsNullOrEmpty(error)) Console.WriteLine("Error: " + error);
-                                }
-                                catch (Exception ex)
-                                {
-                                    Console.WriteLine("An error occurred: " + ex.Message);
-                                }
-                            }
-                        });
-                        AppendLine("✅ Completed installation of LibreOffice.");
-                        TrackResult("LibreOffice", "Installed");
-                        InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
-                    }
-                }
-            }
-
-            if (AmdChipsetCheck.IsChecked == true)
-            {
-                AppendLine("📌 AMD Chipset Drivers are selected.");
-                bool amdChipsetDownloaded = false;
-                if (IsArm64)
-                {
-                    AppendLine("⚠️ AMD Chipset Drivers are not available for ARM64, skipping.");
-                }
-                else
-                {
-                    AppendLine("🔄 Searching for latest AMD Chipset Drivers...");
-                    try
-                    {
-                        using HttpClient client = CreateBrowserClient();
-                        foreach (string candidate in await FindAmdChipsetDownloadUrlsAsync(client))
-                        {
-                            AppendLine($"🔗 Trying AMD Chipset Drivers from: {candidate}");
-                            try
-                            {
-                                if (await DownloadInstallerAsync(client, candidate, amdChipsetFilename, AmdReferer))
-                                {
-                                    amdChipsetDownloaded = true;
-                                    break;
-                                }
-                            }
-                            catch (Exception ex)
-                            {
-                                AppendLine($"⚠️ Download failed: {ex.Message}");
-                            }
-                        }
-                        if (!amdChipsetDownloaded) AppendLine("⚠️ Could not download AMD Chipset Drivers.");
-                    }
-                    catch (Exception ex)
-                    {
-                        AppendLine($"⚠️ Error downloading AMD Chipset Drivers: {ex.Message}");
-                    }
-                }
-                InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
-                if (!amdChipsetDownloaded)
-                {
-                    TrackResult("AMD Chipset Drivers", "Failed");
-                    InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
-                }
-                else
-                {
-                    AppendLine("📦 Installing AMD Chipset Drivers silently...");
-                    int amdChipsetExitCode = -1;
-                    await Task.Run(() =>
-                    {
-                        ProcessStartInfo startInfo = new ProcessStartInfo
-                        {
-                            FileName = amdChipsetFilename,
-                            Arguments = "/S",
-                            UseShellExecute = true,
-                            Verb = "runas"
-                        };
-                        try
-                        {
-                            using (Process process = Process.Start(startInfo))
-                            {
-                                process.WaitForExit();
-                                amdChipsetExitCode = process.ExitCode;
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            AppendLine($"⚠️ Installation failed: {ex.Message}");
-                        }
-                    });
-                    if (amdChipsetExitCode == 0 || amdChipsetExitCode == 3010)
-                    {
-                        AppendLine("✅ Completed installation of AMD Chipset Drivers.");
-                        TrackResult("AMD Chipset Drivers", "Installed");
-                    }
-                    else
-                    {
-                        AppendLine($"⚠️ AMD Chipset Drivers installer exited with code: {amdChipsetExitCode}");
-                        TrackResult("AMD Chipset Drivers", "Failed");
-                    }
-                    InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
-                }
-            }
-
-            if (AmdAdrenalinCheck.IsChecked == true)
-            {
-                AppendLine("📌 AMD Software: Adrenalin Edition is selected.");
-                bool amdAdrenalinDownloaded = false;
-                bool amdAdrenalinFound = false;
-                if (IsArm64)
-                {
-                    AppendLine("⚠️ AMD Software: Adrenalin Edition is not available for ARM64, skipping.");
-                }
-                else
-                {
-                    AppendLine("🔄 Searching for latest AMD Software: Adrenalin Edition...");
-                    try
-                    {
-                        using HttpClient client = CreateBrowserClient();
-                        List<string> adrenalinCandidates = await FindAmdAdrenalinDownloadUrlsAsync(client);
-                        amdAdrenalinFound = adrenalinCandidates.Count > 0;
-                        if (!amdAdrenalinFound) AppendLine("⏭️ Could not find AMD Software: Adrenalin Edition download link, skipping.");
-                        foreach (string candidate in adrenalinCandidates)
-                        {
-                            AppendLine($"🔗 Trying AMD Software: Adrenalin Edition from: {candidate}");
-                            try
-                            {
-                                if (await DownloadInstallerAsync(client, candidate, amdAdrenalinFilename, AmdReferer))
-                                {
-                                    amdAdrenalinDownloaded = true;
-                                    break;
-                                }
-                            }
-                            catch (Exception ex)
-                            {
-                                AppendLine($"⚠️ Download failed: {ex.Message}");
-                            }
-                        }
-                        if (!amdAdrenalinDownloaded && adrenalinCandidates.Count > 0) AppendLine("⚠️ Could not download AMD Software: Adrenalin Edition.");
-                    }
-                    catch (Exception ex)
-                    {
-                        AppendLine($"⚠️ Error downloading AMD Software: Adrenalin Edition: {ex.Message}");
-                    }
-                }
-                InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
-                if (!amdAdrenalinDownloaded)
-                {
-                    TrackResult("AMD Adrenalin", amdAdrenalinFound ? "Failed" : "Skipped");
-                    InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
-                }
-                else
-                {
-                    AppendLine("📦 Installing AMD Software: Adrenalin Edition, this downloads the driver so it can take a while...");
-                    int amdAdrenalinExitCode = -1;
-                    await Task.Run(() =>
-                    {
-                        ProcessStartInfo startInfo = new ProcessStartInfo
-                        {
-                            FileName = amdAdrenalinFilename,
-                            Arguments = "-install",
-                            UseShellExecute = true,
-                            Verb = "runas"
-                        };
-                        try
-                        {
-                            using (Process process = Process.Start(startInfo))
-                            {
-                                process.WaitForExit();
-                                amdAdrenalinExitCode = process.ExitCode;
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            AppendLine($"⚠️ Installation failed: {ex.Message}");
-                        }
-                    });
-                    if (amdAdrenalinExitCode == 0 || amdAdrenalinExitCode == 3010)
-                    {
-                        AppendLine("✅ Completed installation of AMD Software: Adrenalin Edition.");
-                        TrackResult("AMD Adrenalin", "Installed");
-                    }
-                    else
-                    {
-                        AppendLine($"⚠️ AMD Software: Adrenalin Edition installer exited with code: {amdAdrenalinExitCode}");
-                        TrackResult("AMD Adrenalin", "Failed");
-                    }
-                    InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
-                }
-            }
-
-            if (NvidiaAppCheck.IsChecked == true)
-            {
-                AppendLine("📌 Nvidia App is selected.");
-                AppendLine("🔄 Searching for latest Nvidia App installer...");
-                bool nvidiaDownloaded = false;
                 try
                 {
-                    using HttpClient client = CreateBrowserClient();
-                    string downloadUrl = await FindNvidiaAppDownloadUrlAsync(client);
-                    if (downloadUrl != null)
+                    using (RegistryKey registryKey = Registry.CurrentUser.CreateSubKey(taskbarRegPath, writable: true))
                     {
-                        AppendLine($"🔗 Found latest Nvidia installer: {downloadUrl}");
-                        using (HttpResponseMessage response = await client.GetAsync(downloadUrl, HttpCompletionOption.ResponseHeadersRead))
-                        {
-                            response.EnsureSuccessStatusCode();
-                            await using Stream source = await response.Content.ReadAsStreamAsync();
-                            await using FileStream target = new FileStream(nvidiaAppFilename, FileMode.Create, FileAccess.Write, FileShare.None);
-                            await source.CopyToAsync(target);
-                        }
-                        nvidiaDownloaded = true;
+                        registryKey.SetValue(taskbarReg, taskbarRegData, RegistryValueKind.DWord);
+                        Console.WriteLine($"Set '{taskbarReg}' to {taskbarRegData} in '{taskbarRegPath}'.");
                     }
-                    else
-                    {
-                        AppendLine("⚠️ Could not find Nvidia App download link.");
-                    }
+                    AppendLine("✅ Moved taskbar to the left.");
+                    TrackResult("Taskbar Alignment", "Applied");
                 }
                 catch (Exception ex)
                 {
-                    AppendLine($"⚠️ Error downloading Nvidia App: {ex.Message}");
+                    AppendLine($"❌ Failed to move the taskbar: {ex.Message}");
+                    TrackResult("Taskbar Alignment", "Failed");
                 }
-                InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
-                if (!nvidiaDownloaded)
-                {
-                    TrackResult("Nvidia App", "Failed");
-                    InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
-                }
-                else
-                {
-                    AppendLine("📦 Installing Nvidia App silently...");
-                    int nvidiaExitCode = -1;
-                    await Task.Run(() =>
-                    {
-                        ProcessStartInfo startInfo = new ProcessStartInfo
-                        {
-                            FileName = nvidiaAppFilename,
-                            Arguments = "/s",
-                            UseShellExecute = true,
-                            Verb = "runas"
-                        };
-                        try
-                        {
-                            using (Process process = Process.Start(startInfo))
-                            {
-                                process.WaitForExit();
-                                nvidiaExitCode = process.ExitCode;
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            AppendLine($"⚠️ Installation failed: {ex.Message}");
-                        }
-                    });
-                    if (nvidiaExitCode == 0 || nvidiaExitCode == 3010)
-                    {
-                        AppendLine("✅ Completed installation of Nvidia App.");
-                        TrackResult("Nvidia App", "Installed");
-                    }
-                    else
-                    {
-                        AppendLine($"⚠️ Nvidia App installer exited with code: {nvidiaExitCode}");
-                        TrackResult("Nvidia App", "Failed");
-                    }
-                    InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
-                }
+                StepProgress();
             }
 
-            if (MozillaFirefoxCheck.IsChecked == true)
+            foreach (AppDefinition app in selectedApps)
             {
-                AppendLine("📌 Mozilla Firefox is selected.");
-                if (File.Exists(mozillaFirefoxExePath))
+                try
                 {
-                    AppendLine("✅ Mozilla Firefox is already installed, skipping installation.");
-                    TrackResult("Mozilla Firefox", "Already Installed");
-                    InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 2, InstallProgressBar.Maximum);
+                    await InstallAppAsync(app, appsDir);
                 }
-                else
+                catch (Exception ex)
                 {
-                    bool wingetOk = await TryWingetInstallAsync("Mozilla.Firefox", "Mozilla Firefox");
-                    if (wingetOk)
-                    {
-                        TrackResult("Mozilla Firefox", "Installed");
-                        InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 2, InstallProgressBar.Maximum);
-                    }
-                    else
-                    {
-                        AppendLine("🔄 Downloading Mozilla Firefox...");
-                        await DownloadWithRetryAsync(mozillaFirefoxURL, mozillaFirefoxFilename);
-                        AppendLine("📦 Installing Mozilla Firefox...");
-                        await Task.Run(() =>
-                        {
-                            using (Process process = new Process())
-                            {
-                                process.StartInfo.FileName = firefoxIsExe ? mozillaFirefoxFilename : "msiexec";
-                                process.StartInfo.Arguments = firefoxIsExe ? "/S" : $"/package \"{mozillaFirefoxFilename}\" /passive";
-                                process.StartInfo.UseShellExecute = false;
-                                process.StartInfo.RedirectStandardOutput = true;
-                                process.StartInfo.RedirectStandardError = true;
-                                process.StartInfo.CreateNoWindow = true;
-                                try
-                                {
-                                    process.Start();
-                                    string output = process.StandardOutput.ReadToEnd();
-                                    string error = process.StandardError.ReadToEnd();
-                                    process.WaitForExit();
-                                    Console.WriteLine("Output: " + output);
-                                    if (!string.IsNullOrEmpty(error)) Console.WriteLine("Error: " + error);
-                                }
-                                catch (Exception ex)
-                                {
-                                    Console.WriteLine("An error occurred: " + ex.Message);
-                                }
-                            }
-                        });
-                        AppendLine("✅ Completed installation of Mozilla Firefox.");
-                        TrackResult("Mozilla Firefox", "Installed");
-                        InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
-                    }
+                    AppendLine($"❌ {app.Name} error: {ex.Message}");
+                    TrackResult(app.Name, "Failed");
                 }
-                RemoveFirefoxAutoLaunchEntry();
-            }
-
-            if (MozillaThunderbirdCheck.IsChecked == true)
-            {
-                AppendLine("📌 Mozilla Thunderbird is selected.");
-                if (File.Exists(mozillaThunderbirdExePath))
-                {
-                    AppendLine("✅ Mozilla Thunderbird is already installed, skipping installation.");
-                    TrackResult("Mozilla Thunderbird", "Already Installed");
-                    InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 2, InstallProgressBar.Maximum);
-                }
-                else
-                {
-                    bool wingetOk = await TryWingetInstallAsync("Mozilla.Thunderbird", "Mozilla Thunderbird");
-                    if (wingetOk)
-                    {
-                        TrackResult("Mozilla Thunderbird", "Installed");
-                        InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 2, InstallProgressBar.Maximum);
-                    }
-                    else
-                    {
-                        AppendLine("🔄 Downloading Mozilla Thunderbird...");
-                        await DownloadWithRetryAsync(mozillaThunderbirdURL, mozillaThunderbirdFilename);
-                        AppendLine("📦 Installing Mozilla Thunderbird...");
-                        await Task.Run(() =>
-                        {
-                            using (Process process = new Process())
-                            {
-                                process.StartInfo.FileName = "msiexec";
-                                process.StartInfo.Arguments = $"/package \"{mozillaThunderbirdFilename}\" /passive";
-                                process.StartInfo.UseShellExecute = false;
-                                process.StartInfo.RedirectStandardOutput = true;
-                                process.StartInfo.RedirectStandardError = true;
-                                process.StartInfo.CreateNoWindow = true;
-                                try
-                                {
-                                    process.Start();
-                                    string output = process.StandardOutput.ReadToEnd();
-                                    string error = process.StandardError.ReadToEnd();
-                                    process.WaitForExit();
-                                    Console.WriteLine("Output: " + output);
-                                    if (!string.IsNullOrEmpty(error)) Console.WriteLine("Error: " + error);
-                                }
-                                catch (Exception ex)
-                                {
-                                    Console.WriteLine("An error occurred: " + ex.Message);
-                                }
-                            }
-                        });
-                        AppendLine("✅ Completed installation of Mozilla Thunderbird.");
-                        TrackResult("Mozilla Thunderbird", "Installed");
-                        InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
-                    }
-                }
-            }
-
-            if (SteamCheck.IsChecked == true)
-            {
-                AppendLine("📌 Steam is selected.");
-                if (File.Exists(@"C:\Program Files (x86)\Steam\Steam.exe"))
-                {
-                    AppendLine("✅ Steam is already installed, skipping installation.");
-                    TrackResult("Steam", "Already Installed");
-                    InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 2, InstallProgressBar.Maximum);
-                }
-                else
-                {
-                    bool wingetOk = await TryWingetInstallAsync("Valve.Steam", "Steam");
-                    if (wingetOk)
-                    {
-                        TrackResult("Steam", "Installed");
-                        InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 2, InstallProgressBar.Maximum);
-                    }
-                    else
-                    {
-                        AppendLine("🔄 Downloading Steam...");
-                        await DownloadWithRetryAsync(steamURL, steamFilename);
-                        AppendLine("📦 Installing Steam...");
-                        await Task.Run(() =>
-                        {
-                            ProcessStartInfo startInfo = new ProcessStartInfo
-                            {
-                                FileName = steamFilename,
-                                Arguments = "/S",
-                                UseShellExecute = true,
-                                Verb = "runas"
-                            };
-                            try
-                            {
-                                using (Process process = Process.Start(startInfo))
-                                {
-                                    process.WaitForExit();
-                                    int exitCode = process.ExitCode;
-                                    Console.WriteLine(exitCode == 0 ? "Installation successful." : $"Installation exited with code: {exitCode}");
-                                }
-                            }
-                            catch (Exception ex)
-                            {
-                                Console.WriteLine($"An error occurred: {ex.Message}");
-                            }
-                        });
-                        AppendLine("✅ Completed installation of Steam.");
-                        TrackResult("Steam", "Installed");
-                        InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
-                    }
-                }
-            }
-
-            if (VlcMediaPlayerCheck.IsChecked == true)
-            {
-                AppendLine("📌 VLC Media Player is selected.");
-                if (File.Exists(@"C:\Program Files\VideoLAN\VLC\vlc.exe"))
-                {
-                    AppendLine("✅ VLC Media Player is already installed, skipping installation.");
-                    TrackResult("VLC Media Player", "Already Installed");
-                    InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 2, InstallProgressBar.Maximum);
-                }
-                else
-                {
-                    bool wingetOk = await TryWingetInstallAsync("VideoLAN.VLC", "VLC Media Player");
-                    if (wingetOk)
-                    {
-                        TrackResult("VLC Media Player", "Installed");
-                        InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 2, InstallProgressBar.Maximum);
-                    }
-                    else
-                    {
-                        AppendLine("🔄 Downloading VLC Media Player...");
-                        await DownloadWithRetryAsync(vlcMediaPlayerURL, vlcMediaPlayerFilename);
-                        AppendLine("📦 Installing VLC Media Player...");
-                        await Task.Run(() =>
-                        {
-                            using (Process process = new Process())
-                            {
-                                process.StartInfo.FileName = "msiexec";
-                                process.StartInfo.Arguments = $"/package \"{vlcMediaPlayerFilename}\" /passive";
-                                process.StartInfo.UseShellExecute = false;
-                                process.StartInfo.RedirectStandardOutput = true;
-                                process.StartInfo.RedirectStandardError = true;
-                                process.StartInfo.CreateNoWindow = true;
-                                try
-                                {
-                                    process.Start();
-                                    string output = process.StandardOutput.ReadToEnd();
-                                    string error = process.StandardError.ReadToEnd();
-                                    process.WaitForExit();
-                                    Console.WriteLine("Output: " + output);
-                                    if (!string.IsNullOrEmpty(error)) Console.WriteLine("Error: " + error);
-                                }
-                                catch (Exception ex)
-                                {
-                                    Console.WriteLine("An error occurred: " + ex.Message);
-                                }
-                            }
-                        });
-                        AppendLine("✅ Completed installation of VLC Media Player.");
-                        TrackResult("VLC Media Player", "Installed");
-                        InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
-                    }
-                }
-            }
-
-            if (Office2024Check.IsChecked == true)
-            {
-                AppendLine("📌 Microsoft Office 2024 is selected.");
-                if (IsOfficeInstalled())
-                {
-                    AppendLine("✅ Microsoft Office is already installed, skipping installation.");
-                    TrackResult("Microsoft Office 2024", "Already Installed");
-                    InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 2, InstallProgressBar.Maximum);
-                }
-                else
-                {
-                    bool officeToolReady = false;
-                    AppendLine("🔄 Downloading Microsoft Office 2024...");
-                    try
-                    {
-                        await DownloadWithRetryAsync(office2024URL, office2024Filename);
-                        await File.WriteAllTextAsync(office2024ConfigFilename, Office2024Config);
-                        officeToolReady = File.Exists(office2024Filename);
-                    }
-                    catch (Exception ex)
-                    {
-                        AppendLine($"⚠️ Couldn't download Microsoft Office 2024: {ex.Message}");
-                    }
-
-                    if (officeToolReady)
-                    {
-                        AppendLine("📦 Installing Microsoft Office 2024, this can take a while...");
-                        await Task.Run(() =>
-                        {
-                            using (Process process = new Process())
-                            {
-                                process.StartInfo.FileName = office2024Filename;
-                                process.StartInfo.Arguments = $"/configure \"{office2024ConfigFilename}\"";
-                                process.StartInfo.WorkingDirectory = appsDir;
-                                process.StartInfo.UseShellExecute = false;
-                                process.StartInfo.CreateNoWindow = true;
-                                try
-                                {
-                                    process.Start();
-                                    process.WaitForExit();
-                                    Console.WriteLine("Office setup exit code: " + process.ExitCode);
-                                }
-                                catch (Exception ex)
-                                {
-                                    Console.WriteLine("An error occurred: " + ex.Message);
-                                }
-                            }
-                        });
-                    }
-
-                    if (IsOfficeInstalled())
-                    {
-                        AppendLine("✅ Completed installation of Microsoft Office 2024.");
-                        TrackResult("Microsoft Office 2024", "Installed");
-                    }
-                    else
-                    {
-                        AppendLine("❌ Microsoft Office 2024 doesn't appear to have installed.");
-                        TrackResult("Microsoft Office 2024", "Failed");
-                    }
-                    InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
-                }
+                app.AfterInstall?.Invoke();
             }
 
             if (Office2024Check.IsChecked == true && IsOfficeInstalled())
@@ -2525,7 +1769,7 @@ namespace PlutoPoint_Installer.Views
                     AppendLine("❌ Failed to set taskbar layout: " + ex.Message);
                     TrackResult("Pin Apps to Taskbar", "Failed");
                 }
-                InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
+                StepProgress();
             }
 
             try
@@ -2544,46 +1788,46 @@ namespace PlutoPoint_Installer.Views
                                     AppendLine("✅ Disabling device encryption...");
                                     using (RegistryKey registryKey = Registry.LocalMachine.CreateSubKey(@"SYSTEM\CurrentControlSet\Control\BitLocker", writable: true))
                                         registryKey.SetValue("PreventDeviceEncryption", 1, RegistryValueKind.DWord);
-                                    InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
+                                    StepProgress();
                                 }
 
                                 AppendLine("✅ Setting explorer to open to This PC...");
                                 using (RegistryKey registryKey = Registry.CurrentUser.CreateSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced", writable: true))
                                     registryKey.SetValue("LaunchTo", 1, RegistryValueKind.DWord);
-                                InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
+                                StepProgress();
 
                                 AppendLine("✅ Disabling fastboot mode...");
                                 using (RegistryKey registryKey = Registry.LocalMachine.CreateSubKey(@"SYSTEM\CurrentControlSet\Control\Session Manager\Power", writable: true))
                                     registryKey.SetValue("HiberbootEnabled", 0, RegistryValueKind.DWord);
-                                InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
+                                StepProgress();
 
                                 AppendLine("✅ Disabling location tracking...");
                                 using (RegistryKey registryKey = Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Sensor\Overrides\{BFA794E4-F964-4FDB-90F6-51056BFE4B44}", writable: true))
                                     registryKey.SetValue("SensorPermissionState", 0, RegistryValueKind.DWord);
-                                InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
+                                StepProgress();
                                 using (RegistryKey registryKey = Registry.LocalMachine.CreateSubKey(@"SYSTEM\CurrentControlSet\Services\lfsvc\Service\Configuration", writable: true))
                                     registryKey.SetValue("Status", 0, RegistryValueKind.DWord);
-                                InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
+                                StepProgress();
 
                                 AppendLine("✅ Disabling People icon...");
                                 using (RegistryKey registryKey = Registry.CurrentUser.CreateSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People", writable: true)) { }
-                                InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
+                                StepProgress();
                                 using (RegistryKey registryKey = Registry.CurrentUser.CreateSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People", writable: true))
                                     registryKey.SetValue("PeopleBand", 0, RegistryValueKind.DWord);
-                                InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
+                                StepProgress();
 
                                 AppendLine("✅ Hiding recently used files and folders in File Explorer...");
                                 using (RegistryKey registryKey = Registry.CurrentUser.CreateSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer", writable: true))
                                     registryKey.SetValue("ShowRecent", 0, RegistryValueKind.DWord);
-                                InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
+                                StepProgress();
                                 using (RegistryKey registryKey = Registry.CurrentUser.CreateSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer", writable: true))
                                     registryKey.SetValue("ShowFrequent", 0, RegistryValueKind.DWord);
-                                InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
+                                StepProgress();
 
                                 AppendLine("✅ Resetting cursor size to default (20)...");
                                 using (RegistryKey registryKey = Registry.CurrentUser.CreateSubKey(@"Control Panel\Cursors", writable: true))
                                     registryKey.SetValue("CursorBaseSize", 32, RegistryValueKind.DWord);
-                                InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
+                                StepProgress();
                             }
                             else
                             {
@@ -2598,13 +1842,11 @@ namespace PlutoPoint_Installer.Views
                 AppendLine($"⚠️ Some Windows tweaks could not be applied: {ex.Message}");
             }
 
-            if (PowerCheck.IsChecked == true) { }
-            else
+            if (_sleepRestorePending)
             {
-                AppendLine("✅ Re-enabling sleep and screen timeout on AC power...");
-                RunSilentCommand("powercfg", "/change monitor-timeout-ac 5");
-                RunSilentCommand("powercfg", "/change standby-timeout-ac 5");
-                InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
+                AppendLine("✅ Restoring the original sleep and screen timeout settings on AC power...");
+                RestoreSleepSettings();
+                StepProgress();
             }
 
             AppendLine("✅ Cleaning up installation files...");
@@ -2624,7 +1866,7 @@ namespace PlutoPoint_Installer.Views
                 }
             }
             await deletionHelper.DeleteFilesAndDirectoryAsync(appsDir, launcherPaths, lock1, lock2);
-            InstallProgressBar.Value = Math.Min(InstallProgressBar.Value + 1, InstallProgressBar.Maximum);
+            StepProgress();
 
             if (RecycleBinCheck.IsChecked == true)
             {

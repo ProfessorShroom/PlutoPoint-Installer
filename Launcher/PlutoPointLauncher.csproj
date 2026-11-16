@@ -9,9 +9,9 @@
 		<RootNamespace>PlutoPoint_Launcher</RootNamespace>
 		<ApplicationIcon>Assets\computerRepairCentreIcon.ico</ApplicationIcon>
 		<ApplicationManifest>app.manifest</ApplicationManifest>
-		<AssemblyVersion>2026.11.11.2</AssemblyVersion>
-		<FileVersion>2026.11.11.2</FileVersion>
-		<Version>2026.11.11.2</Version>
+		<AssemblyVersion>2026.11.16.0</AssemblyVersion>
+		<FileVersion>2026.11.16.0</FileVersion>
+		<Version>2026.11.16.0</Version>
 		<Product>Computer Repair Centre Installer Launcher</Product>
 		<Company></Company>
 		<Copyright>Copyright © Charlie Howard 2026</Copyright>
@@ -19,8 +19,17 @@
 
 		<PlatformTarget>x64</PlatformTarget>
 		<Platforms>x64</Platforms>
-		<BaseOutputPath>bin\</BaseOutputPath>
-		<PublishDir>bin\$(Platform)\$(Configuration)\</PublishDir>
+		<Channel Condition="'$(Channel)' == ''">Stable</Channel>
+		<BaseOutputPath>bin\$(Channel)\</BaseOutputPath>
+		<IntermediateOutputPath>obj\$(Channel)\$(Configuration)\</IntermediateOutputPath>
+		<PublishDir>bin\$(Channel)\$(Platform)\$(Configuration)\</PublishDir>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Channel)' == 'Beta'">
+		<AssemblyName>PlutoPointLauncherBeta</AssemblyName>
+		<ApplicationIcon>Assets\computerRepairCentreIconBeta.ico</ApplicationIcon>
+		<Product>Computer Repair Centre Installer Launcher Beta</Product>
+		<DefineConstants>$(DefineConstants);BETA</DefineConstants>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Release'">

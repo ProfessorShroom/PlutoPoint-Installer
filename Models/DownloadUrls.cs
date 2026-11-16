@@ -18,6 +18,7 @@ namespace PlutoPoint_Installer.Models
         public string steam { get; set; } = null!;
         public string vlcMediaPlayer { get; set; } = null!;
         public string office2024 { get; set; } = null!;
+        public string? libreOfficeFallback { get; set; }
         public string? nvidiaAppFallback { get; set; }
         public string? amdChipsetFallback { get; set; }
         public Dictionary<string, string>? arm64 { get; set; }

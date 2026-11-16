@@ -7,7 +7,9 @@ using System.Threading.Tasks;
 using Avalonia.Collections;
 using Avalonia.Controls;
 using Avalonia.Controls.Shapes;
+using Avalonia;
 using Avalonia.Media;
+using Avalonia.Platform;
 using Avalonia.Threading;
 using PlutoPoint_Launcher.Services;
 
@@ -18,6 +20,12 @@ namespace PlutoPoint_Launcher;
 public partial class MainWindow : Window
 {
     private static readonly HttpClient Http = new();
+
+#if BETA
+    private static readonly bool IsBeta = true;
+#else
+    private static readonly bool IsBeta = false;
+#endif
 
     private const double RingDiameter = 64;
     private const double RingStrokeThickness = 6;
@@ -36,10 +44,12 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
+        if (IsBeta)
+            ApplyBetaTheme();
 
         Http.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64)");
         _updateService = new UpdateService(Http);
-        _releaseService = new ReleaseService(Http, includeBetas: false);
+        _releaseService = new ReleaseService(Http, includeBetas: IsBeta);
 
         _rootDir = System.IO.Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
@@ -82,7 +92,8 @@ public partial class MainWindow : Window
                 return;
             }
 
-            await DownloadAndRun(newest.DownloadUrl, _productInstallerPath, $"Downloading {newest.Tag}…");
+            var label = newest.IsBeta ? $"Downloading beta {newest.Tag}…" : $"Downloading {newest.Tag}…";
+            await DownloadAndRun(newest.DownloadUrl, _productInstallerPath, label);
         }
         catch (Exception ex)
         {
@@ -111,6 +122,23 @@ public partial class MainWindow : Window
             fileName = "PlutoPointLauncherUpdate.exe";
 
         return System.IO.Path.Combine(System.IO.Path.GetTempPath(), fileName);
+    }
+
+    private void ApplyBetaTheme()
+    {
+        string assemblyName = Assembly.GetExecutingAssembly().GetName().Name!;
+        Icon = new WindowIcon(AssetLoader.Open(new Uri($"avares://{assemblyName}/Assets/computerRepairCentreIconBeta.ico")));
+        Background = new LinearGradientBrush
+        {
+            StartPoint = new RelativePoint(0, 0, RelativeUnit.Relative),
+            EndPoint = new RelativePoint(0, 1, RelativeUnit.Relative),
+            GradientStops =
+            {
+                new GradientStop(Color.Parse("#ED8D28"), 0),
+                new GradientStop(Color.Parse("#E25E04"), 1)
+            }
+        };
+        ProgressRing.Stroke = new SolidColorBrush(Color.Parse("#122F52"));
     }
 
     private void BeginIndeterminate(string statusText)

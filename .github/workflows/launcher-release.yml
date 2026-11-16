@@ -31,39 +31,29 @@ jobs:
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Build Stable Launcher
-        run: dotnet build "Launcher/PlutoPointLauncher.csproj" --configuration Release
+        run: dotnet build "Launcher/PlutoPointLauncher.csproj" --configuration Release -p:Channel=Stable -p:PublishDir="${{ github.workspace }}/publish/Stable/"
 
       - name: Build Beta Launcher
-        run: dotnet build "LauncherBeta/PlutoPointLauncher.csproj" --configuration Release
+        run: dotnet build "Launcher/PlutoPointLauncher.csproj" --configuration Release -p:Channel=Beta -p:PublishDir="${{ github.workspace }}/publish/Beta/"
 
       - name: Stage Executables
         shell: powershell
         run: |
           New-Item -ItemType Directory -Force -Path "staging"
 
-          # Find and stage Stable Launcher
-          $exeStable = Get-ChildItem -Path "Launcher/bin" -Filter "PlutoPointLauncher.exe" -Recurse |
-              Sort-Object LastWriteTime -Descending |
-              Select-Object -First 1
-          if ($exeStable) {
-              Write-Host "Found stable launcher at: $($exeStable.FullName)"
-              Copy-Item -Path $exeStable.FullName -Destination "staging\Computer.Repair.Centre.Launcher.exe" -Force
-          } else {
-              Write-Error "Could not find 'PlutoPointLauncher.exe' in Launcher/bin directory."
+          $exeStable = "publish/Stable/PlutoPointLauncher.exe"
+          if (-not (Test-Path $exeStable)) {
+              Write-Error "Could not find $exeStable."
               exit 1
           }
+          Copy-Item -Path $exeStable -Destination "staging\Computer.Repair.Centre.Launcher.exe" -Force
 
-          # Find and stage Beta Launcher
-          $exeBeta = Get-ChildItem -Path "LauncherBeta/bin" -Filter "PlutoPointLauncherBeta.exe" -Recurse |
-              Sort-Object LastWriteTime -Descending |
-              Select-Object -First 1
-          if ($exeBeta) {
-              Write-Host "Found beta launcher at: $($exeBeta.FullName)"
-              Copy-Item -Path $exeBeta.FullName -Destination "staging\Computer.Repair.Centre.Launcher.Beta.exe" -Force
-          } else {
-              Write-Error "Could not find 'PlutoPointLauncherBeta.exe' in LauncherBeta/bin directory."
+          $exeBeta = "publish/Beta/PlutoPointLauncherBeta.exe"
+          if (-not (Test-Path $exeBeta)) {
+              Write-Error "Could not find $exeBeta."
               exit 1
           }
+          Copy-Item -Path $exeBeta -Destination "staging\Computer.Repair.Centre.Launcher.Beta.exe" -Force
 
       - name: Create Versioned Release
         uses: softprops/action-gh-release@v2.1.0
@@ -87,3 +77,36 @@ jobs:
           make_latest: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+
+  update-feeds:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v7
+        with:
+          ref: main
+
+      - name: Set launcher version in update feeds
+        shell: bash
+        run: |
+          VERSION="${{ needs.build.outputs.version }}"
+          if ! [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Unexpected version '$VERSION'"
+            exit 1
+          fi
+          sed -i -E "s#<version>[^<]*</version>#<version>$VERSION</version>#" update.xml updateBeta.xml
+
+      - name: Commit and push
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git add update.xml updateBeta.xml
+          git diff --staged --quiet && exit 0
+          git commit -m "Launcher feeds v${{ needs.build.outputs.version }}"
+          git push origin main

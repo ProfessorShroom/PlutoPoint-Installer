@@ -17,8 +17,13 @@ public sealed record UpdateInfo(
 
 public sealed class UpdateService
 {
+#if BETA
+    private const string FeedUrl =
+        "https://raw.githubusercontent.com/ProfessorShroom/PlutoPoint-Installer/refs/heads/main/updateBeta.xml";
+#else
     private const string FeedUrl =
         "https://raw.githubusercontent.com/ProfessorShroom/PlutoPoint-Installer/refs/heads/main/update.xml";
+#endif
 
     private readonly HttpClient _http;
 
