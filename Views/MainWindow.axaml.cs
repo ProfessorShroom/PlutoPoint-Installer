@@ -124,10 +124,12 @@ namespace PlutoPoint_Installer.Views
             WireCheckboxMutualExclusion();
             // Hover
             InstallButton.PointerEntered += (s, e) => AudioEffects.PlayHoverPop();
+            CancelInstallButton.PointerEntered += (s, e) => AudioEffects.PlayHoverPop();
             RestartButton.PointerEntered += (s, e) => AudioEffects.PlayHoverPop();
             CloseButton.PointerEntered += (s, e) => AudioEffects.PlayHoverPop();
             // Click
             InstallButton.Click += (s, e) => AudioEffects.PlayClickChime();
+            CancelInstallButton.Click += (s, e) => AudioEffects.PlayClickChime();
             RestartButton.Click += (s, e) => AudioEffects.PlayClickChime();
             CloseButton.Click += (s, e) => AudioEffects.PlayClickChime();
             // Background tasks only
@@ -149,6 +151,8 @@ namespace PlutoPoint_Installer.Views
                 var betaBrush = new SolidColorBrush(Color.Parse("#ED8D28"));
                 InstallButton.Background = betaBrush;
                 InstallButton.Foreground = new SolidColorBrush(Colors.White);
+                CancelInstallButton.Background = betaBrush;
+                CancelInstallButton.Foreground = new SolidColorBrush(Colors.White);
                 RestartButton.Background = betaBrush;
                 RestartButton.Foreground = new SolidColorBrush(Colors.White);
                 CloseButton.Background = betaBrush;
@@ -174,6 +178,8 @@ namespace PlutoPoint_Installer.Views
                     var foreBrush = new SolidColorBrush(foreColor);
                     InstallButton.Background = backBrush;
                     InstallButton.Foreground = foreBrush;
+                    CancelInstallButton.Background = backBrush;
+                    CancelInstallButton.Foreground = foreBrush;
                     RestartButton.Background = backBrush;
                     RestartButton.Foreground = foreBrush;
                     CloseButton.Background = backBrush;
