@@ -161,6 +161,9 @@
       <Grid Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" ColumnDefinitions="Auto,Auto,*,Auto,Auto">
         <Button x:Name="InstallButton" Grid.Column="0" Content="Install" Width="140" Height="40"
                 Theme="{StaticResource RoundedAccentButtonTheme}" Click="InstallButton_Click" />
+        <Button x:Name="CancelInstallButton" Grid.Column="0" Content="Cancel" Width="140" Height="40"
+                Theme="{StaticResource RoundedAccentButtonTheme}" Click="CancelInstallButton_Click"
+                IsVisible="False" />
         <Button x:Name="RestartButton" Grid.Column="1" Content="Restart"
                 Theme="{StaticResource RoundedAccentButtonTheme}" Click="RestartButton_Click"
                 Margin="8,0,0,0" />

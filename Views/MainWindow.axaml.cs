@@ -1550,13 +1550,43 @@ namespace PlutoPoint_Installer.Views
         }
 
         private bool _installRunning;
+        private bool _cancelRequested;
+
+        private void CancelInstallButton_Click(object sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            if (!_installRunning || _cancelRequested)
+                return;
+            _cancelRequested = true;
+            CancelInstallButton.IsEnabled = false;
+            CancelInstallButton.Content = "Cancelling...";
+            AppendLine("🛑 Cancel requested. The install will stop after the current step finishes...");
+        }
+
+        private bool StopIfCancelled(IEnumerable<AppDefinition> remainingApps = null)
+        {
+            if (!_cancelRequested)
+                return false;
+            if (remainingApps != null)
+            {
+                foreach (AppDefinition app in remainingApps)
+                    TrackResult(app.Name, "Skipped");
+            }
+            AppendLine("🛑 The installation was cancelled.");
+            AppendInstallSummary();
+            return true;
+        }
 
         private async void InstallButton_Click(object sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
             if (_installRunning)
                 return;
             _installRunning = true;
+            _cancelRequested = false;
             InstallButton.IsEnabled = false;
+            InstallButton.IsVisible = false;
+            CancelInstallButton.Content = "Cancel";
+            CancelInstallButton.IsEnabled = true;
+            CancelInstallButton.IsVisible = true;
             try
             {
                 await RunInstallAsync();
@@ -1573,8 +1603,11 @@ namespace PlutoPoint_Installer.Views
                     AppendLine("✅ Restoring the original sleep and screen timeout settings on AC power...");
                     RestoreSleepSettings();
                 }
+                CancelInstallButton.IsVisible = false;
+                InstallButton.IsVisible = true;
                 InstallButton.IsEnabled = true;
                 _installRunning = false;
+                _cancelRequested = false;
             }
         }
 
@@ -1597,6 +1630,9 @@ namespace PlutoPoint_Installer.Views
                 AppendLine("❌ Couldn't load the download links, so nothing can be installed. Check the internet connection and try again.");
                 return;
             }
+
+            if (StopIfCancelled())
+                return;
 
             InstallProgressBar.Value = 0;
             InstallProgressBar.Maximum = 0;
@@ -1670,6 +1706,9 @@ namespace PlutoPoint_Installer.Views
                 StepProgress();
             }
 
+            if (StopIfCancelled(selectedApps))
+                return;
+
             if (CrcCheck.IsChecked == true)
             {
                 AppendLine("📌 Computer Repair Centre OEM information is selected.");
@@ -1736,8 +1775,11 @@ namespace PlutoPoint_Installer.Views
                 StepProgress();
             }
 
-            foreach (AppDefinition app in selectedApps)
+            for (int i = 0; i < selectedApps.Count; i++)
             {
+                if (StopIfCancelled(selectedApps.Skip(i)))
+                    return;
+                AppDefinition app = selectedApps[i];
                 try
                 {
                     await InstallAppAsync(app, appsDir);
@@ -1749,6 +1791,9 @@ namespace PlutoPoint_Installer.Views
                 }
                 app.AfterInstall?.Invoke();
             }
+
+            if (StopIfCancelled())
+                return;
 
             if (Office2024Check.IsChecked == true && IsOfficeInstalled())
             {
