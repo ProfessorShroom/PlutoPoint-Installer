@@ -48,7 +48,6 @@ namespace PlutoPoint_Installer.Views
         private string romsey = null;
         private string chandlersFord = null;
         private string highcliffe = null;
-        private string charlieHome = null;
         private string locationLine = null;
         private string windows10 = null;
         private string windows11 = null;
@@ -793,7 +792,6 @@ namespace PlutoPoint_Installer.Views
             romsey = "0";
             chandlersFord = "0";
             highcliffe = "0";
-            charlieHome = "0";
             string publicIP = await GetPublicIPAddressAsync();
             LocationHashes hashes = null;
             if (string.IsNullOrWhiteSpace(publicIP))
@@ -801,7 +799,10 @@ namespace PlutoPoint_Installer.Views
             else
                 hashes = await GetLocationHashesAsync();
             string publicIPHash = hashes == null ? null : HashIP(publicIP);
-            if (publicIPHash != null && publicIPHash == hashes.romsey)
+            if (publicIPHash == null)
+            {
+            }
+            else if (publicIPHash == hashes.romsey)
             {
                 romsey = "1";
                 safeLocation = "1";
@@ -816,11 +817,6 @@ namespace PlutoPoint_Installer.Views
                 highcliffe = "1";
                 safeLocation = "1";
             }
-            else if (publicIPHash == hashes.charlieHome)
-            {
-                charlieHome = "1";
-                safeLocation = "1";
-            }
             AppendLocation();
             AppendLine(locationLine);
             UpdateLocation();
@@ -828,16 +824,27 @@ namespace PlutoPoint_Installer.Views
 
         private async Task<string> GetPublicIPAddressAsync()
         {
-            try
+            string[] services =
             {
-                using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(15));
-                string ip = await Http.GetStringAsync("https://api.ipify.org", timeout.Token);
-                return ip?.Trim();
-            }
-            catch
+                "https://api.ipify.org",
+                "https://ipv4.icanhazip.com",
+                "https://ifconfig.me/ip",
+                "https://checkip.amazonaws.com"
+            };
+            foreach (string service in services)
             {
-                return null;
+                try
+                {
+                    using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+                    string ip = (await Http.GetStringAsync(service, timeout.Token))?.Trim();
+                    if (System.Net.IPAddress.TryParse(ip, out _))
+                        return ip;
+                }
+                catch
+                {
+                }
             }
+            return null;
         }
 
         private static string HashIP(string ip)
@@ -890,8 +897,6 @@ namespace PlutoPoint_Installer.Views
                 locationLine = "📍 The installer is being run from the Chandlers Ford shop.";
             else if (highcliffe == "1")
                 locationLine = "📍 The installer is being run from the Highcliffe shop.";
-            else if (charlieHome == "1")
-                locationLine = "📍 The installer is being run from Charlie's house.";
             else
                 locationLine = "📍 Location unknown.";
         }
@@ -904,8 +909,6 @@ namespace PlutoPoint_Installer.Views
                 location = "Chandler's Ford";
             else if (highcliffe == "1")
                 location = "Highcliffe";
-            else if (charlieHome == "1")
-                location = "Charlie's House";
             else
                 location = "Unknown";
 

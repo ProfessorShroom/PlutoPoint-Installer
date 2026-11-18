@@ -7,6 +7,5 @@ namespace PlutoPoint_Installer.Models
         public string romsey { get; set; } = null!;
         public string chandlersFord { get; set; } = null!;
         public string highcliffe { get; set; } = null!;
-        public string charlieHome { get; set; } = null!;
     }
 }
