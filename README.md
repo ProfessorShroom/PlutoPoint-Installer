@@ -25,6 +25,12 @@ If run on Windows 11 it will also disable automatic device encryption.
 
 Disables sleep and screen timeout while on AC power during the install, then restores the original setting once it's finished, so the computer can't fall asleep mid-install. The "power" box lets you disable sleep on AC power permanently instead.
 
+### Screenshot
+
+<p align="center">
+  <img src="images/installer.png" alt="Computer Repair Centre Installer"/>
+</p>
+
 ### Changelog
 
 #### Latest Update
