@@ -1,10 +1,5 @@
 name: Screenshot
 
-# Renders the installer's main window off-screen (Avalonia headless) and
-# commits the result to images/installer.png whenever the UI changes.
-# Beta builds (informational version ending in b<number>, e.g. 8.1.1.0b1) are
-# skipped, so the screenshot only ever shows a released version.
-
 on:
   push:
     branches: [main]
@@ -14,7 +9,6 @@ on:
       - "App.axaml"
       - "Resources/**"
       - "PlutoPoint Installer.csproj"
-      # Version bumps, so going from a beta to the full release takes a screenshot.
       - "Properties/AssemblyInfo.cs"
       - "Tools/Screenshot/**"
       - ".github/workflows/screenshot.yml"
@@ -74,9 +68,6 @@ jobs:
           git push
           echo "changed=true" >> "$GITHUB_OUTPUT"
 
-      # Pushes made with GITHUB_TOKEN don't trigger notify-website.yml, so tell
-      # professorshroom.github.io directly to pull the new screenshot and redeploy.
-      # Uses the same WEBSITE_DISPATCH_TOKEN secret as notify-website.yml.
       - name: Notify website
         if: steps.commit.outputs.changed == 'true'
         shell: bash

@@ -26,7 +26,6 @@ namespace PlutoPoint_Installer.Tools.Screenshot
             var window = new Views.MainWindow();
             window.Show();
 
-            // Let layout, images and startup status text settle before capturing.
             for (int i = 0; i < 30; i++)
             {
                 Dispatcher.UIThread.RunJobs();
@@ -38,7 +37,6 @@ namespace PlutoPoint_Installer.Tools.Screenshot
             frame.Save(output);
             Console.WriteLine($"Saved {output}");
 
-            // MainWindow may start background work; don't wait on it.
             Environment.Exit(0);
             return 0;
         }

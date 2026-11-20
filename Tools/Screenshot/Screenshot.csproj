@@ -1,10 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <!--
-    Renders the installer's MainWindow off-screen (Avalonia headless + Skia)
-    and saves it as a PNG. Used by .github/workflows/screenshot.yml.
-    Usage: dotnet run with the output path as the argument, e.g. images/installer.png
-  -->
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net8.0</TargetFramework>
