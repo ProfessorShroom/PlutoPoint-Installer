@@ -21,8 +21,7 @@
                  FontSize="22" FontWeight="Bold"
                  Foreground="White"
                  Margin="0,0,0,16">
-        <Run Text="Computer Repair "
-             FontFamily="avares://Computer Repair Centre Installer/Resources/fonts/neoTechBold.otf#NeoTech" /><Run x:Name="TitleAccentRun" Text="Centre"
+        <Run x:Name="TitleAccentRun" Text="Computer Repair Centre"
              FontFamily="avares://Computer Repair Centre Installer/Resources/fonts/neoTechBold.otf#NeoTech">
           <Run.Foreground>
             <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
