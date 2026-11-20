@@ -18,10 +18,20 @@
     <Grid Margin="24" RowDefinitions="Auto,*,Auto,Auto" ColumnDefinitions="256,190,*">
 
       <TextBlock x:Name="TitleTextBlock" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3"
-                 Text="Computer Repair Centre Installer"
                  FontSize="22" FontWeight="Bold"
                  Foreground="White"
-                 Margin="0,0,0,16" />
+                 Margin="0,0,0,16">
+        <Run Text="Computer Repair "
+             FontFamily="avares://Computer Repair Centre Installer/Resources/fonts/neoTechBold.otf#NeoTech" /><Run x:Name="TitleAccentRun" Text="Centre"
+             FontFamily="avares://Computer Repair Centre Installer/Resources/fonts/neoTechBold.otf#NeoTech">
+          <Run.Foreground>
+            <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+              <GradientStop Offset="0" Color="#0A74D6" />
+              <GradientStop Offset="1" Color="#0040C8" />
+            </LinearGradientBrush>
+          </Run.Foreground>
+        </Run><Run x:Name="TitleSuffixRun" Text=" Installer" />
+      </TextBlock>
 
       <StackPanel Grid.Row="0" Grid.Column="2" HorizontalAlignment="Right" Spacing="4" Margin="0,0,0,16">
         <TextBlock Text="OEM Information Override" Foreground="White" Opacity="0.7" FontSize="12" HorizontalAlignment="Right" />
@@ -132,7 +142,6 @@
           <ScrollViewer x:Name="LogScrollViewer" VerticalScrollBarVisibility="Auto">
             <TextBlock x:Name="InstallerTextBox"
                        Foreground="White"
-                       FontFamily="Consolas,monospace"
                        FontSize="14"
                        TextWrapping="Wrap" />
           </ScrollViewer>

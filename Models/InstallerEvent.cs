@@ -22,5 +22,7 @@ namespace PlutoPoint_Installer.Models
         public float RotationDegrees { get; set; }
         public string? TitleSuffix { get; set; }
         public Color TextColor { get; set; } = Colors.White;
+        public Color AccentStart { get; set; } = Color.FromRgb(10, 116, 214);
+        public Color AccentEnd { get; set; } = Color.FromRgb(0, 64, 200);
     }
 }

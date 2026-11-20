@@ -15,6 +15,7 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Media;
@@ -189,13 +190,24 @@ namespace PlutoPoint_Installer.Views
                 (titleSuffix) =>
                 {
                     Title += $" - {titleSuffix}";
-                    TitleTextBlock.Text += $" - {titleSuffix}";
+                    TitleSuffixRun.Text += $" - {titleSuffix}";
                 }
             );
             _themeManager.ApplyTextColor(
                 (textColor) =>
                 {
                     TitleTextBlock.Foreground = new SolidColorBrush(textColor);
+                }
+            );
+            _themeManager.ApplyTitleAccent(
+                (start, end) =>
+                {
+                    TitleAccentRun.Foreground = new LinearGradientBrush
+                    {
+                        StartPoint = new RelativePoint(0, 0, RelativeUnit.Relative),
+                        EndPoint = new RelativePoint(1, 1, RelativeUnit.Relative),
+                        GradientStops = { new GradientStop(start, 0), new GradientStop(end, 1) }
+                    };
                 }
             );
             _themeManager.UpdateGUIEvent(this, SeasonalOverlayImage);
@@ -317,7 +329,7 @@ namespace PlutoPoint_Installer.Views
             _isBetaBuild = true;
 
             Title += " Beta";
-            TitleTextBlock.Text += " Beta";
+            TitleSuffixRun.Text += " Beta";
             try
             {
                 Icon = new WindowIcon(AssetLoader.Open(new Uri("avares://Computer Repair Centre Installer/Resources/icons/computerRepairCentreIconBeta.ico")));

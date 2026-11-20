@@ -8,6 +8,7 @@
       <ResourceDictionary.MergedDictionaries>
         <ResourceInclude Source="avares://Computer Repair Centre Installer/Styles/ControlThemes.axaml" />
       </ResourceDictionary.MergedDictionaries>
+      <FontFamily x:Key="ContentControlThemeFontFamily">avares://Computer Repair Centre Installer/Resources/fonts#Ubuntu</FontFamily>
     </ResourceDictionary>
   </Application.Resources>
 

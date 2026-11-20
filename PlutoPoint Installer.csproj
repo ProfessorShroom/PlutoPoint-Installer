@@ -56,8 +56,9 @@
   <ItemGroup>
     <AvaloniaResource Include="Resources\icons\**" />
     <AvaloniaResource Include="Resources\images\**" />
+    <AvaloniaResource Include="Resources\fonts\**" />
     <None Include="Data\**" CopyToOutputDirectory="PreserveNewest" />
-    <None Include="Resources\**" Exclude="Resources\icons\**;Resources\images\**" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="Resources\**" Exclude="Resources\icons\**;Resources\images\**;Resources\fonts\**" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <Target Name="AutoPublishSingleFile" AfterTargets="Build" Condition="'$(Configuration)'=='Release'">

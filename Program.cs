@@ -1,4 +1,5 @@
 using Avalonia;
+using Avalonia.Media;
 using System;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -37,6 +38,7 @@ namespace PlutoPoint_Installer
         public static AppBuilder BuildAvaloniaApp() => AppBuilder.Configure<App>()
             .UsePlatformDetect()
             .WithInterFont()
+            .With(new FontManagerOptions { DefaultFamilyName = "avares://Computer Repair Centre Installer/Resources/fonts#Ubuntu" })
             .LogToTrace();
     }
 }

@@ -35,7 +35,9 @@ namespace PlutoPoint_Installer.UI
                 Messages = new List<string> { "", "🥞 It's Pancake Day!", "Don't forget to have some pancakes you fat bastard!", "" },
                 OverlayImage = LoadImage("pancake"),
                 TitleSuffix = "Pancake Day!",
-                TextColor = Color.FromArgb(255, 95, 55, 25)
+                TextColor = Color.FromArgb(255, 95, 55, 25),
+                AccentStart = Color.FromArgb(255, 194, 65, 12),
+                AccentEnd = Color.FromArgb(255, 234, 138, 0)
             });
 
             var fixedEvents = new[]
@@ -46,6 +48,7 @@ namespace PlutoPoint_Installer.UI
                     M = 12, D = 31, M2 = 1, D2 = 5,
                     Top = Color.FromArgb(255, 255, 210, 90), Bot = Color.FromArgb(255, 198, 140, 35), Log = Color.FromArgb(255, 90, 65, 15),
                     Text = Color.FromArgb(255, 90, 65, 15),
+                    AccentA = Color.FromArgb(255, 74, 20, 140), AccentB = Color.FromArgb(255, 173, 20, 87),
                     Sound = (Action)AudioEffects.PlayCompleteNewYearsChime,
                     Msg = new List<string> { "", "🎉 Happy New Year!", "" },
                     Img = "newyear", Icon = (string)null, Rot = 0f
@@ -56,6 +59,7 @@ namespace PlutoPoint_Installer.UI
                     M = 12, D = 1, M2 = 12, D2 = 31,
                     Top = Color.FromArgb(255, 18, 110, 58), Bot = Color.FromArgb(255, 120, 18, 32), Log = Colors.White,
                     Text = Colors.White,
+                    AccentA = Color.FromArgb(255, 255, 90, 90), AccentB = Color.FromArgb(255, 255, 215, 0),
                     Sound = (Action)AudioEffects.PlayCompleteChristmasChime,
                     Msg = new List<string> { "", "🎄 Merry Christmas!", "" },
                     Img = "christmas", Icon = "computerRepairCentreIconChristmas", Rot = 0f
@@ -66,6 +70,7 @@ namespace PlutoPoint_Installer.UI
                     M = 10, D = 24, M2 = 10, D2 = 31,
                     Top = Color.FromArgb(255, 35, 35, 35), Bot = Color.FromArgb(255, 120, 45, 0), Log = Colors.White,
                     Text = Colors.White,
+                    AccentA = Color.FromArgb(255, 255, 122, 0), AccentB = Color.FromArgb(255, 255, 179, 71),
                     Sound = (Action)AudioEffects.PlayCompleteHalloweenChime,
                     Msg = new List<string> { "", "🎃 Boo! Happy Halloween!", "" },
                     Img = "pumpkin", Icon = "computerRepairCentreIconHalloween", Rot = 0f
@@ -76,6 +81,7 @@ namespace PlutoPoint_Installer.UI
                     M = 2, D = 14, M2 = 2, D2 = 14,
                     Top = Color.FromArgb(255, 245, 215, 225), Bot = Color.FromArgb(255, 214, 150, 175), Log = Color.FromArgb(255, 135, 20, 50),
                     Text = Color.FromArgb(255, 135, 20, 50),
+                    AccentA = Color.FromArgb(255, 176, 16, 58), AccentB = Color.FromArgb(255, 224, 36, 94),
                     Sound = (Action)AudioEffects.PlayCompleteValentinesChime,
                     Msg = new List<string> { "", "❤️ Happy Valentines Day!", "" },
                     Img = "heart", Icon = "computerRepairCentreIconValentines", Rot = 30f
@@ -86,6 +92,7 @@ namespace PlutoPoint_Installer.UI
                     M = 4, D = 14, M2 = 4, D2 = 14,
                     Top = Color.FromArgb(255, 35, 45, 70), Bot = Color.FromArgb(255, 90, 125, 160), Log = Colors.White,
                     Text = Colors.White,
+                    AccentA = Color.FromArgb(255, 255, 106, 19), AccentB = Color.FromArgb(255, 255, 176, 0),
                     Sound = (Action)null,
                     Msg = new List<string> { "", "🐧 Today is World Puffin day!", "" },
                     Img = "puffin", Icon = "computerRepairCentreIconPuffin", Rot = 0f
@@ -96,6 +103,7 @@ namespace PlutoPoint_Installer.UI
                     M = 4, D = 4, M2 = 4, D2 = 4,
                     Top = Color.FromArgb(255, 215, 185, 125), Bot = Color.FromArgb(255, 150, 120, 78), Log = Color.FromArgb(255, 76, 94, 64),
                     Text = Color.FromArgb(255, 76, 94, 64),
+                    AccentA = Color.FromArgb(255, 0, 105, 92), AccentB = Color.FromArgb(255, 21, 101, 192),
                     Sound = (Action)null,
                     Msg = new List<string> { "", "🦆 Today is National Duck day!", "Did someone say duck?", "" },
                     Img = "duck", Icon = (string)null, Rot = 0f
@@ -106,6 +114,7 @@ namespace PlutoPoint_Installer.UI
                     M = 6, D = 21, M2 = 6, D2 = 21,
                     Top = Color.FromArgb(255, 245, 228, 212), Bot = Color.FromArgb(255, 205, 170, 138), Log = Color.FromArgb(255, 110, 72, 45),
                     Text = Color.FromArgb(255, 110, 72, 45),
+                    AccentA = Color.FromArgb(255, 198, 40, 40), AccentB = Color.FromArgb(255, 224, 155, 0),
                     Sound = (Action)null,
                     Msg = new List<string> { "", "🌭 Today is National Dachshund day!", "" },
                     Img = "pluto", Icon = "plutoLogo", Rot = 0f
@@ -116,6 +125,7 @@ namespace PlutoPoint_Installer.UI
                     M = 3, D = 12, M2 = 3, D2 = 12,
                     Top = Color.FromArgb(255, 242, 225, 210), Bot = Color.FromArgb(255, 182, 132, 92), Log = Color.FromArgb(255, 108, 72, 48),
                     Text = Color.FromArgb(255, 108, 72, 48),
+                    AccentA = Color.FromArgb(255, 106, 27, 154), AccentB = Color.FromArgb(255, 216, 27, 96),
                     Sound = (Action)null,
                     Msg = new List<string> { "", "🪐🌭🎂 Today is Pluto's Birthday!", "" },
                     Img = "pluto", Icon = "plutoLogo", Rot = 0f
@@ -126,6 +136,7 @@ namespace PlutoPoint_Installer.UI
                     M = 2, D = 15, M2 = 2, D2 = 15,
                     Top = Color.FromArgb(255, 98, 98, 105), Bot = Color.FromArgb(255, 58, 58, 64), Log = Colors.White,
                     Text = Colors.White,
+                    AccentA = Color.FromArgb(255, 248, 165, 194), AccentB = Color.FromArgb(255, 214, 162, 232),
                     Sound = (Action)null,
                     Msg = new List<string> { "", "🦛 Today is World Hippo day!", "Don't get too excited Steve", "" },
                     Img = "hippo", Icon = (string)null, Rot = 0f
@@ -136,6 +147,7 @@ namespace PlutoPoint_Installer.UI
                     M = 9, D = 22, M2 = 9, D2 = 22,
                     Top = Color.FromArgb(255, 110, 110, 115), Bot = Color.FromArgb(255, 62, 62, 68), Log = Colors.White,
                     Text = Colors.White,
+                    AccentA = Color.FromArgb(255, 255, 183, 77), AccentB = Color.FromArgb(255, 255, 138, 101),
                     Sound = (Action)null,
                     Msg = new List<string> { "", "🦏 Today is World Rhino day!", "Don't get too excited Steve", "" },
                     Img = "rhino", Icon = (string)null, Rot = 0f
@@ -146,6 +158,7 @@ namespace PlutoPoint_Installer.UI
                     M = 5, D = 4, M2 = 5, D2 = 4,
                     Top = Color.FromArgb(255, 34, 34, 34), Bot = Color.FromArgb(255, 40, 40, 40), Log = Colors.White,
                     Text = Colors.White,
+                    AccentA = Color.FromArgb(255, 255, 232, 31), AccentB = Color.FromArgb(255, 255, 179, 0),
                     Sound = (Action)null,
                     Msg = new List<string> { "", "🌌 Today is Star Wars day!", "May the 4th be with you!", "" },
                     Img = "starwars", Icon = (string)null, Rot = 0f
@@ -172,7 +185,9 @@ namespace PlutoPoint_Installer.UI
                     OverlayIcon = e.Icon != null ? LoadIcon(e.Icon) : null,
                     RotationDegrees = e.Rot,
                     TitleSuffix = e.Title,
-                    TextColor = e.Text
+                    TextColor = e.Text,
+                    AccentStart = e.AccentA,
+                    AccentEnd = e.AccentB
                 });
             }
 
@@ -199,7 +214,9 @@ namespace PlutoPoint_Installer.UI
                 OverlayIcon = LoadIcon("computerRepairCentreIconBirthday"),
                 RotationDegrees = 0f,
                 TitleSuffix = $"{name}'s Birthday!",
-                TextColor = Color.FromArgb(255, 80, 60, 75)
+                TextColor = Color.FromArgb(255, 80, 60, 75),
+                AccentStart = Color.FromArgb(255, 216, 27, 96),
+                AccentEnd = Color.FromArgb(255, 142, 36, 170)
             });
         }
 
@@ -264,6 +281,15 @@ namespace PlutoPoint_Installer.UI
             if (currentEvent != null)
             {
                 applyTextColor(currentEvent.TextColor);
+            }
+        }
+
+        public void ApplyTitleAccent(Action<Color, Color> applyTitleAccent)
+        {
+            var currentEvent = GetCurrentEvent();
+            if (currentEvent != null)
+            {
+                applyTitleAccent(currentEvent.AccentStart, currentEvent.AccentEnd);
             }
         }
 
