@@ -29,6 +29,16 @@ Disables sleep and screen timeout while on AC power during the install, then res
 
 #### Latest Update
 
+**Version 8.1.1.0**
+
+- **_8.1.1.0_** Made the "Computer Repair Centre Installer" title larger.
+
+
+#### Older Updates
+
+<details markdown="1">
+<summary><strong>Version 8.x - The Reliability Update</strong></summary>
+
 **Version 8.1.0.0**
 
 - **_8.1.0.0_** "Computer Repair Centre" in the title now uses the Neo Tech font, the same as the Computer Repair Centre website.
@@ -37,12 +47,6 @@ Disables sleep and screen timeout while on AC power during the install, then res
 - **_8.1.0.0_** The Ubuntu and Neo Tech fonts are now built into the installer, so they show even if the computer doesn't have them installed.
 - **_8.1.0.0_** Redesigned the Software and Utilities boxes to match the install log, with see-through rounded backgrounds instead of outlines and the headings centred inside. The tops of all three boxes now line up.
 - **_8.1.0.0_** The Software and Utilities headings are now white, and change colour with holidays and birthdays like the title does.
-
-
-#### Older Updates
-
-<details markdown="1">
-<summary><strong>Version 8.x - The Reliability Update</strong></summary>
 
 **Version 8.0.0.0 - The Reliability Update**
 

@@ -1,0 +1,88 @@
+name: Screenshot
+
+# Renders the installer's main window off-screen (Avalonia headless) and
+# commits the result to images/installer.png whenever the UI changes.
+# Beta builds (informational version ending in b<number>, e.g. 8.1.1.0b1) are
+# skipped, so the screenshot only ever shows a released version.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "Views/**"
+      - "UI/**"
+      - "App.axaml"
+      - "Resources/**"
+      - "PlutoPoint Installer.csproj"
+      # Version bumps, so going from a beta to the full release takes a screenshot.
+      - "Properties/AssemblyInfo.cs"
+      - "Tools/Screenshot/**"
+      - ".github/workflows/screenshot.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: screenshot
+  cancel-in-progress: true
+
+jobs:
+  screenshot:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Check for beta build
+        id: version
+        shell: bash
+        run: |
+          version=$(sed -n 's/.*AssemblyInformationalVersion("\([^"]*\)").*/\1/p' Properties/AssemblyInfo.cs)
+          echo "Version: $version"
+          if [[ "$version" =~ b[0-9]+$ ]]; then
+            echo "Beta build - skipping screenshot."
+            echo "beta=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "beta=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Render screenshot
+        if: steps.version.outputs.beta != 'true'
+        run: dotnet run --project Tools/Screenshot/Screenshot.csproj --configuration Debug -- images/installer.png
+
+      - name: Commit screenshot
+        if: steps.version.outputs.beta != 'true'
+        id: commit
+        shell: bash
+        run: |
+          git add images/installer.png
+          if git diff --cached --quiet; then
+            echo "Screenshot unchanged."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Update installer screenshot"
+          git push
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+
+      # Pushes made with GITHUB_TOKEN don't trigger notify-website.yml, so tell
+      # professorshroom.github.io directly to pull the new screenshot and redeploy.
+      # Uses the same WEBSITE_DISPATCH_TOKEN secret as notify-website.yml.
+      - name: Notify website
+        if: steps.commit.outputs.changed == 'true'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.WEBSITE_DISPATCH_TOKEN }}
+        run: |
+          gh api repos/ProfessorShroom/professorshroom.github.io/dispatches \
+            -f event_type=readme-updated \
+            -f "client_payload[repo]=${{ github.repository }}"

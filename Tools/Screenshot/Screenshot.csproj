@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Renders the installer's MainWindow off-screen (Avalonia headless + Skia)
+    and saves it as a PNG. Used by .github/workflows/screenshot.yml.
+    Usage: dotnet run with the output path as the argument, e.g. images/installer.png
+  -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <PlatformTarget>x64</PlatformTarget>
+    <Platforms>x64</Platforms>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\PlutoPoint Installer.csproj" />
+    <PackageReference Include="Avalonia.Headless" Version="11.3.23" />
+    <PackageReference Include="Avalonia.Skia" Version="11.3.23" />
+  </ItemGroup>
+
+</Project>

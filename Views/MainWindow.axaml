@@ -18,7 +18,7 @@
     <Grid Margin="24" RowDefinitions="Auto,*,Auto,Auto" ColumnDefinitions="256,190,*">
 
       <TextBlock x:Name="TitleTextBlock" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3"
-                 FontSize="22" FontWeight="Bold"
+                 FontSize="28" FontWeight="Bold"
                  Foreground="White"
                  Margin="0,0,0,16">
         <Run x:Name="TitleAccentRun" Text="Computer Repair Centre"
