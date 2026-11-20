@@ -125,71 +125,25 @@
   </ControlTheme>
 
   <ControlTheme x:Key="RoundedGroupBoxTheme" TargetType="HeaderedContentControl">
-    <Setter Property="Padding" Value="12,2,12,10" />
+    <Setter Property="Background" Value="#19000000" />
+    <Setter Property="Padding" Value="10,8,10,8" />
     <Setter Property="Template">
       <ControlTemplate>
-        <Grid RowDefinitions="Auto,*" ColumnDefinitions="*,Auto,*">
-
-          <Border Grid.Row="0"
-                  Grid.RowSpan="2"
-                  Grid.Column="0"
-                  Grid.ColumnSpan="3"
-                  BorderThickness="2,0,2,2"
-                  CornerRadius="0,0,6,6"
-                  Margin="0,7,0,0">
-            <Border.BorderBrush>
-              <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
-                <GradientStop Offset="0" Color="#1A000000" />
-                <GradientStop Offset="1" Color="#4D000000" />
-              </LinearGradientBrush>
-            </Border.BorderBrush>
-          </Border>
-
-          <Border Grid.Row="0"
-                  Grid.Column="0"
-                  Width="14" Height="14"
-                  HorizontalAlignment="Left"
-                  VerticalAlignment="Top"
-                  Margin="0,7,0,0"
-                  BorderThickness="2,2,0,0"
-                  CornerRadius="6,0,0,0"
-                  BorderBrush="#1A000000" />
-
-          <Border Grid.Row="0"
-                  Grid.Column="0"
-                  Height="2"
-                  VerticalAlignment="Top"
-                  Margin="14,7,4,0"
-                  Background="#1A000000" />
-
-          <Border Grid.Row="0"
-                  Grid.Column="2"
-                  Height="2"
-                  VerticalAlignment="Top"
-                  Margin="4,7,14,0"
-                  Background="#1A000000" />
-
-          <Border Grid.Row="0"
-                  Grid.Column="2"
-                  Width="14" Height="14"
-                  HorizontalAlignment="Right"
-                  VerticalAlignment="Top"
-                  Margin="0,7,0,0"
-                  BorderThickness="0,2,2,0"
-                  CornerRadius="0,6,0,0"
-                  BorderBrush="#1A000000" />
-
-          <ContentPresenter Grid.Row="0"
-                             Grid.Column="1"
-                             Content="{TemplateBinding Header}"
-                             Foreground="{TemplateBinding Foreground}" />
-
-          <ContentPresenter Grid.Row="1"
-                             Grid.Column="0"
-                             Grid.ColumnSpan="3"
-                             Content="{TemplateBinding Content}"
-                             Margin="{TemplateBinding Padding}" />
-        </Grid>
+        <Border Background="{TemplateBinding Background}"
+                CornerRadius="6"
+                Padding="{TemplateBinding Padding}">
+          <DockPanel>
+            <ContentPresenter DockPanel.Dock="Top"
+                               Content="{TemplateBinding Header}"
+                               Foreground="{TemplateBinding Foreground}"
+                               FontSize="13"
+                               FontWeight="Bold"
+                               Opacity="0.75"
+                               HorizontalAlignment="Center"
+                               Margin="0,0,0,6" />
+            <ContentPresenter Content="{TemplateBinding Content}" />
+          </DockPanel>
+        </Border>
       </ControlTemplate>
     </Setter>
   </ControlTheme>
