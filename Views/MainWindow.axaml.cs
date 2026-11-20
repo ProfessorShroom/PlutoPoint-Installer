@@ -197,6 +197,8 @@ namespace PlutoPoint_Installer.Views
                 (textColor) =>
                 {
                     TitleTextBlock.Foreground = new SolidColorBrush(textColor);
+                    SoftwareGroup.Foreground = new SolidColorBrush(textColor);
+                    UtilitiesGroup.Foreground = new SolidColorBrush(textColor);
                 }
             );
             _themeManager.ApplyTitleAccent(

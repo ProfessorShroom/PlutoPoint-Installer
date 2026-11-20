@@ -41,7 +41,7 @@
         </ComboBox>
       </StackPanel>
 
-      <HeaderedContentControl Grid.Row="1" Grid.Column="0"
+      <HeaderedContentControl x:Name="SoftwareGroup" Grid.Row="1" Grid.Column="0"
                                Header="Software"
                                Theme="{StaticResource RoundedGroupBoxTheme}"
                                Foreground="White"
@@ -98,7 +98,7 @@
         </ScrollViewer>
       </HeaderedContentControl>
 
-      <HeaderedContentControl Grid.Row="1" Grid.Column="1"
+      <HeaderedContentControl x:Name="UtilitiesGroup" Grid.Row="1" Grid.Column="1"
                                Header="Utilities"
                                Theme="{StaticResource RoundedGroupBoxTheme}"
                                Foreground="White"

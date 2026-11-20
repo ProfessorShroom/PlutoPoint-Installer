@@ -138,7 +138,6 @@
                                Foreground="{TemplateBinding Foreground}"
                                FontSize="13"
                                FontWeight="Bold"
-                               Opacity="0.75"
                                HorizontalAlignment="Center"
                                Margin="0,0,0,6" />
             <ContentPresenter Content="{TemplateBinding Content}" />
