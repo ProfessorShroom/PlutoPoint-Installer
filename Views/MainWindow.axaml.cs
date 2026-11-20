@@ -157,6 +157,7 @@ namespace PlutoPoint_Installer.Views
                 RestartButton.Foreground = new SolidColorBrush(Colors.White);
                 CloseButton.Background = betaBrush;
                 CloseButton.Foreground = new SolidColorBrush(Colors.White);
+                ApplyProgressBarColour();
                 return;
             }
             _themeManager.ApplyThemeAndMessages(
@@ -213,6 +214,33 @@ namespace PlutoPoint_Installer.Views
                 }
             );
             _themeManager.UpdateGUIEvent(this, SeasonalOverlayImage);
+            ApplyProgressBarColour();
+        }
+
+        private void ApplyProgressBarColour()
+        {
+            if (Background is not LinearGradientBrush gradientBrush || gradientBrush.GradientStops.Count < 2)
+                return;
+
+            double position = 512.0 / 600.0;
+            var barCentre = InstallProgressBar.TranslatePoint(new Point(0, InstallProgressBar.Bounds.Height / 2), this);
+            if (barCentre.HasValue && Bounds.Height > 0)
+                position = Math.Clamp(barCentre.Value.Y / Bounds.Height, 0, 1);
+
+            Color top = gradientBrush.GradientStops[0].Color;
+            Color bottom = gradientBrush.GradientStops[1].Color;
+            var behindBar = Color.FromRgb(
+                (byte)Math.Round(top.R + (bottom.R - top.R) * position),
+                (byte)Math.Round(top.G + (bottom.G - top.G) * position),
+                (byte)Math.Round(top.B + (bottom.B - top.B) * position));
+
+            HslColor hsl = behindBar.ToHsl();
+            double hue = (hsl.H - 4 + 360) % 360;
+            double lightness = hsl.L * 0.68;
+            if (hsl.L - lightness < 0.12)
+                lightness = hsl.L + 0.18;
+            InstallProgressBar.Foreground = new SolidColorBrush(
+                HslColor.ToRgb(hue, Math.Clamp(hsl.S * 0.81, 0, 1), Math.Clamp(lightness, 0, 1)));
         }
 
         public void RunSilentCommand(string fileName, string arguments)

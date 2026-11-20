@@ -39,7 +39,7 @@
   <ControlTheme x:Key="RoundedGradientProgressBarTheme" TargetType="ProgressBar">
     <Setter Property="Height" Value="24" />
     <Setter Property="Background" Value="#19000000" />
-    <Setter Property="Foreground" Value="#80000000" />
+    <Setter Property="Foreground" Value="#4A12B0" />
     <Setter Property="Template">
       <ControlTemplate>
         <Border CornerRadius="6"
@@ -69,12 +69,12 @@
               <Border.Styles>
                 <Style Selector="Border#PART_Shine">
                   <Style.Animations>
-                    <Animation Duration="0:0:2" IterationCount="INFINITE">
+                    <Animation Duration="0:0:2.5" IterationCount="INFINITE">
                       <KeyFrame Cue="0%">
                         <Setter Property="Margin" Value="-70,0,0,0" />
                       </KeyFrame>
                       <KeyFrame Cue="100%">
-                        <Setter Property="Margin" Value="800,0,0,0" />
+                        <Setter Property="Margin" Value="1000,0,0,0" />
                       </KeyFrame>
                     </Animation>
                   </Style.Animations>

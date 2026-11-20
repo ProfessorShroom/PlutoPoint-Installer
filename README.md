@@ -35,8 +35,10 @@ Disables sleep and screen timeout while on AC power during the install, then res
 
 #### Latest Update
 
-**Version 8.1.1.0**
+**Version 8.1.1.1 / 8.1.1.0**
 
+- **_8.1.1.1_** The progress bar is now purple instead of see-through black, and matches the colours of each holiday and birthday.
+- **_8.1.1.1_** The shine on the progress bar now goes all the way across.
 - **_8.1.1.0_** Made the "Computer Repair Centre Installer" title larger.
 
 

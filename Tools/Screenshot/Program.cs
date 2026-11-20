@@ -29,6 +29,8 @@ namespace PlutoPoint_Installer.Tools.Screenshot
             for (int i = 0; i < 30; i++)
             {
                 Dispatcher.UIThread.RunJobs();
+                AvaloniaHeadlessPlatform.ForceRenderTimerTick(6);
+                Dispatcher.UIThread.RunJobs();
                 Thread.Sleep(100);
             }
 
