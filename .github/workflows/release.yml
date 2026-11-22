@@ -33,6 +33,25 @@ jobs:
             echo "beta=false" >> "$GITHUB_OUTPUT"
           fi
 
+      - name: Extract Release Notes from CHANGELOG.md
+        id: notes
+        shell: bash
+        run: |
+          # Use this version's "## <version>" section of CHANGELOG.md as the notes,
+          # or GitHub's generated notes if there isn't one
+          VERSION="${GITHUB_REF_NAME#v}"
+          awk -v v="$VERSION" '
+            /^## / { if (on) exit; h = substr($0, 4); sub(/ - .*/, "", h); if (h == v) { on = 1; next } }
+            on
+          ' CHANGELOG.md > release-notes.md
+          if grep -q '[^[:space:]]' release-notes.md; then
+            echo "found=true" >> "$GITHUB_OUTPUT"
+            cat release-notes.md
+          else
+            echo "found=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::No '## ${VERSION}' section in CHANGELOG.md, using generated notes"
+          fi
+
       - name: Build Installer
         run: dotnet build "PlutoPoint Installer.csproj" --configuration Release
 
@@ -54,6 +73,8 @@ jobs:
         with:
           name: "Computer Repair Centre Installer ${{ github.ref_name }}${{ steps.channel.outputs.beta == 'true' && ' Beta' || '' }}"
           files: staging/Computer-Repair-Centre-Installer.exe
+          body_path: ${{ steps.notes.outputs.found == 'true' && 'release-notes.md' || '' }}
+          generate_release_notes: ${{ steps.notes.outputs.found != 'true' }}
           prerelease: ${{ steps.channel.outputs.beta == 'true' }}
           make_latest: ${{ steps.channel.outputs.beta == 'true' && 'false' || 'true' }}
         env:
