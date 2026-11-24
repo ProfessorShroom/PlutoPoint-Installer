@@ -29,10 +29,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
 
-      - name: Setup .NET 8
+      - name: Setup .NET 10
         uses: actions/setup-dotnet@v5
         with:
-          dotnet-version: "8.0.x"
+          dotnet-version: "10.0.x"
 
       - name: Check for beta build
         id: version
@@ -74,6 +74,6 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.WEBSITE_DISPATCH_TOKEN }}
         run: |
-          gh api repos/ProfessorShroom/professorshroom.github.io/dispatches \
+          gh api repos/ProfessorShroom/professorshroom.com/dispatches \
             -f event_type=readme-updated \
             -f "client_payload[repo]=${{ github.repository }}"

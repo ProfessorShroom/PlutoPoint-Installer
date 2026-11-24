@@ -20,7 +20,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4.3.0
         with:
-          dotnet-version: '8.0.x'
+          dotnet-version: '10.0.x'
 
       - name: Read Version
         id: version
@@ -28,13 +28,35 @@ jobs:
         run: |
           VERSION="${GITHUB_REF_NAME#launcher-}"
           VERSION="${VERSION#v}"
+          if ! [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::Unexpected version '$VERSION'"
+            exit 1
+          fi
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
+      - name: Extract Release Notes from CHANGELOG.md
+        id: notes
+        shell: bash
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          awk -v v="$VERSION" '
+            { sub(/\r$/, "") }
+            /^## / { if (on) exit; h = substr($0, 4); sub(/ - .*/, "", h); if (h == v) { on = 1; next } }
+            on
+          ' Launcher/CHANGELOG.md > launcher-notes.md
+          if grep -q '[^[:space:]]' launcher-notes.md; then
+            echo "found=true" >> "$GITHUB_OUTPUT"
+            cat launcher-notes.md
+          else
+            echo "found=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::No '## ${VERSION}' section in Launcher/CHANGELOG.md"
+          fi
+
       - name: Build Stable Launcher
-        run: dotnet build "Launcher/PlutoPointLauncher.csproj" --configuration Release -p:Channel=Stable -p:PublishDir="${{ github.workspace }}/publish/Stable/"
+        run: dotnet build "Launcher/PlutoPointLauncher.csproj" --configuration Release -p:Channel=Stable -p:Version=${{ steps.version.outputs.version }} -p:AssemblyVersion=${{ steps.version.outputs.version }} -p:FileVersion=${{ steps.version.outputs.version }} -p:PublishDir="${{ github.workspace }}/publish/Stable/"
 
       - name: Build Beta Launcher
-        run: dotnet build "Launcher/PlutoPointLauncher.csproj" --configuration Release -p:Channel=Beta -p:PublishDir="${{ github.workspace }}/publish/Beta/"
+        run: dotnet build "Launcher/PlutoPointLauncher.csproj" --configuration Release -p:Channel=Beta -p:Version=${{ steps.version.outputs.version }} -p:AssemblyVersion=${{ steps.version.outputs.version }} -p:FileVersion=${{ steps.version.outputs.version }} -p:PublishDir="${{ github.workspace }}/publish/Beta/"
 
       - name: Stage Executables
         shell: powershell
@@ -62,6 +84,7 @@ jobs:
           files: |
             staging/Computer.Repair.Centre.Launcher.exe
             staging/Computer.Repair.Centre.Launcher.Beta.exe
+          body_path: ${{ steps.notes.outputs.found == 'true' && 'launcher-notes.md' || '' }}
           make_latest: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,0 +1,42 @@
+name: Check Download Links
+
+on:
+  schedule:
+    - cron: '0 7 * * 1'
+  push:
+    branches: [main]
+    paths:
+      - "Data/Downloads.json"
+      - ".github/workflows/check-links.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Check every link in Downloads.json
+        shell: bash
+        run: |
+          UA='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36'
+          failed=0
+          while IFS=$'\t' read -r name url; do
+            referer=()
+            [[ "$url" == *drivers.amd.com* ]] && referer=(-e 'https://www.amd.com/en/support/download/drivers.html')
+            result=$(curl -sL --retry 3 --retry-all-errors -m 60 -A "$UA" "${referer[@]}" -r 0-1023 -o /dev/null -w '%{http_code} %{content_type}' "$url")
+            code=${result%% *}
+            type=${result#* }
+            if [[ "$code" != 200 && "$code" != 206 ]] || [[ "$type" == text/* ]]; then
+              echo "::error::$name is broken ($result): $url"
+              failed=1
+            else
+              echo "OK $name ($result)"
+            fi
+          done < <(jq -r 'paths(strings) as $p | [($p | join(".")), getpath($p)] | @tsv' Data/Downloads.json)
+          exit $failed

@@ -14,10 +14,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
 
-      - name: Setup .NET 8
+      - name: Setup .NET 10
         uses: actions/setup-dotnet@v5
         with:
-          dotnet-version: "8.0.x"
+          dotnet-version: "10.0.x"
 
       - name: Restore
         run: dotnet restore "PlutoPoint Installer.csproj" -r win-x64
@@ -27,3 +27,12 @@ jobs:
 
       - name: Build (Release)
         run: dotnet build "PlutoPoint Installer.csproj" --configuration Release --no-restore -r win-x64
+
+      - name: Build Launcher (Stable)
+        run: dotnet build "Launcher/PlutoPointLauncher.csproj" --configuration Release -p:Channel=Stable
+
+      - name: Build Launcher (Beta)
+        run: dotnet build "Launcher/PlutoPointLauncher.csproj" --configuration Release -p:Channel=Beta
+
+      - name: Test
+        run: dotnet test Tests/Tests.csproj

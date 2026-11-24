@@ -21,7 +21,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v5
         with:
-          dotnet-version: '8.0.x'
+          dotnet-version: '10.0.x'
 
       - name: Detect Channel
         id: channel
@@ -33,17 +33,29 @@ jobs:
             echo "beta=false" >> "$GITHUB_OUTPUT"
           fi
 
+      - name: Check tag matches AssemblyInfo.cs
+        shell: bash
+        run: |
+          TAG="${GITHUB_REF_NAME#v}"
+          INFO=$(sed -n 's/.*AssemblyInformationalVersion("\([^"]*\)").*/\1/p' Properties/AssemblyInfo.cs)
+          FILE=$(sed -n 's/.*AssemblyFileVersion("\([^"]*\)").*/\1/p' Properties/AssemblyInfo.cs)
+          if [[ "$TAG" != "$INFO" || "${TAG%%b*}" != "$FILE" ]]; then
+            echo "::error::Tag $TAG doesn't match AssemblyInfo.cs ($INFO / $FILE)"
+            exit 1
+          fi
+
       - name: Extract Release Notes from CHANGELOG.md
         id: notes
         shell: bash
         run: |
-          # Use this version's "## <version>" section of CHANGELOG.md as the notes,
+          # Use this version's "## <version>" section of CHANGELOG.md (or CHANGELOG-BETA.md) as the notes,
           # or GitHub's generated notes if there isn't one
           VERSION="${GITHUB_REF_NAME#v}"
           awk -v v="$VERSION" '
+            { sub(/\r$/, "") }
             /^## / { if (on) exit; h = substr($0, 4); sub(/ - .*/, "", h); if (h == v) { on = 1; next } }
             on
-          ' CHANGELOG.md > release-notes.md
+          ' CHANGELOG.md CHANGELOG-BETA.md > release-notes.md
           if grep -q '[^[:space:]]' release-notes.md; then
             echo "found=true" >> "$GITHUB_OUTPUT"
             cat release-notes.md

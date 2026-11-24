@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Collections;
 using Avalonia.Controls;
@@ -39,13 +40,13 @@ public partial class MainWindow : Window
     private readonly string _rootDir;
     private readonly string _productInstallerPath;
 
-    private static readonly Uri StableInstallerUrl = new("http://crcinstaller.professorshroom.com");
+    private static readonly Uri StableInstallerUrl = new("https://crcinstaller.professorshroom.com");
 
     public MainWindow()
     {
         InitializeComponent();
         if (IsBeta)
-            ApplyBetaTheme();
+            ApplyBetaBranding();
 
         Http.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64)");
         _updateService = new UpdateService(Http);
@@ -65,15 +66,8 @@ public partial class MainWindow : Window
         {
             BeginIndeterminate("Checking for updates…");
 
-            var currentVersion = Assembly.GetExecutingAssembly().GetName().Version ?? new Version(0, 0, 0, 0);
-            var update = await _updateService.CheckForUpdateAsync(currentVersion);
-
-            if (update.IsAvailable && update.DownloadUrl is not null)
-            {
-                var updatePath = GetTempDownloadPath(update.DownloadUrl);
-                await DownloadAndRun(update.DownloadUrl, updatePath, "Downloading update…");
+            if (await TryUpdateAsync())
                 return;
-            }
 
             BeginIndeterminate("Finding newest installer…");
 
@@ -101,6 +95,25 @@ public partial class MainWindow : Window
         }
     }
 
+    private async Task<bool> TryUpdateAsync()
+    {
+        try
+        {
+            var currentVersion = Assembly.GetExecutingAssembly().GetName().Version ?? new Version(0, 0, 0, 0);
+            using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(15));
+            var update = await _updateService.CheckForUpdateAsync(currentVersion, timeout.Token);
+            if (!update.IsAvailable || update.DownloadUrl is null)
+                return false;
+
+            await DownloadAndRun(update.DownloadUrl, GetTempDownloadPath(update.DownloadUrl), "Downloading update…");
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
     private async Task DownloadAndRun(Uri url, string destinationPath, string statusText)
     {
         Directory.CreateDirectory(_rootDir);
@@ -124,21 +137,12 @@ public partial class MainWindow : Window
         return System.IO.Path.Combine(System.IO.Path.GetTempPath(), fileName);
     }
 
-    private void ApplyBetaTheme()
+    private void ApplyBetaBranding()
     {
         string assemblyName = Assembly.GetExecutingAssembly().GetName().Name!;
+        Title += " Beta";
         Icon = new WindowIcon(AssetLoader.Open(new Uri($"avares://{assemblyName}/Assets/computerRepairCentreIconBeta.ico")));
-        Background = new LinearGradientBrush
-        {
-            StartPoint = new RelativePoint(0, 0, RelativeUnit.Relative),
-            EndPoint = new RelativePoint(0, 1, RelativeUnit.Relative),
-            GradientStops =
-            {
-                new GradientStop(Color.Parse("#ED8D28"), 0),
-                new GradientStop(Color.Parse("#E25E04"), 1)
-            }
-        };
-        ProgressRing.Stroke = new SolidColorBrush(Color.Parse("#122F52"));
+        BetaBadge.IsVisible = true;
     }
 
     private void BeginIndeterminate(string statusText)

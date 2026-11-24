@@ -30,6 +30,17 @@
   </Window.Styles>
 
   <Grid RowDefinitions="*,Auto" Margin="24">
+    <Border x:Name="BetaBadge" Grid.Row="0" IsVisible="False" Width="32" Height="32" CornerRadius="16"
+            HorizontalAlignment="Right" VerticalAlignment="Top" BorderBrush="White" BorderThickness="2">
+      <Border.Background>
+        <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+          <GradientStop Offset="0" Color="#8C2FE6" />
+          <GradientStop Offset="1" Color="#5A00C8" />
+        </LinearGradientBrush>
+      </Border.Background>
+      <TextBlock Text="β" FontSize="18" FontWeight="Bold" Foreground="White"
+                 HorizontalAlignment="Center" VerticalAlignment="Center" />
+    </Border>
     <Grid Grid.Row="0" Width="72" Height="72" HorizontalAlignment="Center" VerticalAlignment="Center">
       <Ellipse Width="64" Height="64" StrokeThickness="6" Stroke="#33FFFFFF" />
       <Ellipse x:Name="ProgressRing"
