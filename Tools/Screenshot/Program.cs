@@ -19,6 +19,7 @@ namespace PlutoPoint_Installer.Tools.Screenshot
 
             AppBuilder.Configure<App>()
                 .UseSkia()
+                .UseHarfBuzz()
                 .UseHeadless(new AvaloniaHeadlessPlatformOptions { UseHeadlessDrawing = false })
                 .WithInterFont()
                 .SetupWithoutStarting();

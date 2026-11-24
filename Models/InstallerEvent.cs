@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Avalonia.Controls;
 using Avalonia.Media;
-using Avalonia.Media.Imaging;
 
 // Copyright © Charlie Howard 2016-2026 All rights reserved
 
@@ -17,8 +15,8 @@ namespace PlutoPoint_Installer.Models
         public Color LogColor { get; set; }
         public List<string> Messages { get; set; } = [];
         public Action? PlaySound { get; set; }
-        public Bitmap? OverlayImage { get; set; }
-        public WindowIcon? OverlayIcon { get; set; }
+        public string? OverlayImage { get; set; }
+        public string? OverlayIcon { get; set; }
         public float RotationDegrees { get; set; }
         public string? TitleSuffix { get; set; }
         public Color TextColor { get; set; } = Colors.White;

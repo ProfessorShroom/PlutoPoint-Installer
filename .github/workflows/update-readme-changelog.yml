@@ -1,0 +1,42 @@
+name: Update README Changelog
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "CHANGELOG.md"
+      - "Tools/readme_changelog.py"
+      - ".github/workflows/update-readme-changelog.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-readme-changelog
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          ref: main
+
+      - name: Update README.md
+        run: python3 Tools/readme_changelog.py
+
+      - name: Commit README.md
+        run: |
+          git add README.md
+          if git diff --cached --quiet; then
+            echo "README changelog unchanged."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Update README changelog"
+          git pull --rebase origin main
+          git push origin main

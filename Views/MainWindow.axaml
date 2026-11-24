@@ -17,20 +17,22 @@
 
     <Grid Margin="24" RowDefinitions="Auto,*,Auto,Auto" ColumnDefinitions="256,190,*">
 
-      <TextBlock x:Name="TitleTextBlock" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3"
-                 FontSize="28" FontWeight="Bold"
-                 Foreground="White"
-                 Margin="0,0,0,16">
-        <Run x:Name="TitleAccentRun" Text="Computer Repair Centre"
-             FontFamily="avares://Computer Repair Centre Installer/Resources/fonts/neoTechBold.otf#NeoTech">
-          <Run.Foreground>
-            <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
-              <GradientStop Offset="0" Color="#0A74D6" />
-              <GradientStop Offset="1" Color="#0040C8" />
-            </LinearGradientBrush>
-          </Run.Foreground>
-        </Run><Run x:Name="TitleSuffixRun" Text=" Installer" />
-      </TextBlock>
+      <Viewbox Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" MaxWidth="800" StretchDirection="DownOnly"
+               HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,0,0,16">
+        <TextBlock x:Name="TitleTextBlock"
+                   FontSize="28" FontWeight="Bold"
+                   Foreground="White">
+          <Run x:Name="TitleAccentRun" Text="Computer Repair Centre"
+               FontFamily="avares://Computer Repair Centre Installer/Resources/fonts/neoTechBold.otf#NeoTech">
+            <Run.Foreground>
+              <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                <GradientStop Offset="0" Color="#0A74D6" />
+                <GradientStop Offset="1" Color="#0040C8" />
+              </LinearGradientBrush>
+            </Run.Foreground>
+          </Run><Run x:Name="TitleSuffixRun" Text=" Installer" />
+        </TextBlock>
+      </Viewbox>
 
       <StackPanel Grid.Row="0" Grid.Column="2" HorizontalAlignment="Right" Spacing="4" Margin="0,0,0,16">
         <TextBlock Text="OEM Information Override" Foreground="White" Opacity="0.7" FontSize="12" HorizontalAlignment="Right" />
@@ -158,6 +160,20 @@
             </Image.RenderTransform>
           </Image>
         </Panel>
+      </Border>
+
+      <Border x:Name="BetaBadge" Grid.Row="1" Grid.Column="2" IsVisible="False"
+              Width="28" Height="28" CornerRadius="14" Margin="0,-7,-12,0"
+              HorizontalAlignment="Right" VerticalAlignment="Top"
+              BorderBrush="White" BorderThickness="2" ToolTip.Tip="Beta version">
+        <Border.Background>
+          <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+            <GradientStop Offset="0" Color="#8C2FE6" />
+            <GradientStop Offset="1" Color="#5A00C8" />
+          </LinearGradientBrush>
+        </Border.Background>
+        <TextBlock Text="β" FontSize="16" FontWeight="Bold" Foreground="White"
+                   HorizontalAlignment="Center" VerticalAlignment="Center" />
       </Border>
 
       <ProgressBar Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3"

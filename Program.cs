@@ -27,7 +27,7 @@ namespace PlutoPoint_Installer
             }
         }
 
-        private static void ReportCrash(Exception ex)
+        private static void ReportCrash(Exception? ex)
         {
             string text = ex?.ToString() ?? "Unknown error";
             string logPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "installerCrash.log");

@@ -8,7 +8,7 @@ namespace PlutoPoint_Installer.Views
 {
     public class PasswordDialog : Window
     {
-        public string EnteredPassword { get; private set; }
+        public string? EnteredPassword { get; private set; }
 
         private readonly TextBox _txtPassword;
 

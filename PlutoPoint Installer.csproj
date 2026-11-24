@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
     <ApplicationManifest>app.manifest</ApplicationManifest>
@@ -25,11 +25,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Avalonia" Version="11.3.23" />
-    <PackageReference Include="Avalonia.Desktop" Version="11.3.23" />
-    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.23" />
-    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.23" />
-    <PackageReference Include="Avalonia.Diagnostics" Version="11.3.23" Condition="'$(Configuration)' == 'Debug'" />
+    <PackageReference Include="Avalonia" Version="12.2.0" />
+    <PackageReference Include="Avalonia.Desktop" Version="12.2.0" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="12.2.0" />
+    <PackageReference Include="Avalonia.Fonts.Inter" Version="12.2.0" />
     <PackageReference Include="NAudio" Version="2.3.0" />
     <PackageReference Include="System.Management" Version="8.0.0" />
     <PackageReference Include="TaskScheduler" Version="2.12.2" />
@@ -45,12 +44,12 @@
     right before packing (see AvaloniaBuildTasks.targets: GenerateAvaloniaResources).
   -->
   <ItemGroup>
-    <Compile Remove="Launcher\**;LauncherBeta\**;Tools\**" />
-    <EmbeddedResource Remove="Launcher\**;LauncherBeta\**;Tools\**" />
-    <None Remove="Launcher\**;LauncherBeta\**;Tools\**" />
-    <AvaloniaResource Remove="Launcher\**;LauncherBeta\**;Tools\**" />
-    <AvaloniaXaml Remove="Launcher\**;LauncherBeta\**;Tools\**" />
-    <AdditionalFiles Remove="Launcher\**;LauncherBeta\**;Tools\**" />
+    <Compile Remove="Launcher\**;LauncherBeta\**;Tools\**;Tests\**" />
+    <EmbeddedResource Remove="Launcher\**;LauncherBeta\**;Tools\**;Tests\**" />
+    <None Remove="Launcher\**;LauncherBeta\**;Tools\**;Tests\**" />
+    <AvaloniaResource Remove="Launcher\**;LauncherBeta\**;Tools\**;Tests\**" />
+    <AvaloniaXaml Remove="Launcher\**;LauncherBeta\**;Tools\**;Tests\**" />
+    <AdditionalFiles Remove="Launcher\**;LauncherBeta\**;Tools\**;Tests\**" />
   </ItemGroup>
 
   <ItemGroup>

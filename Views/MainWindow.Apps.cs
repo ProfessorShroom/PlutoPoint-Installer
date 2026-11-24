@@ -2,10 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Microsoft.Win32;
+using PlutoPoint_Installer.Models;
+using PlutoPoint_Installer.Services;
 
 // Copyright © Charlie Howard 2016-2026 All rights reserved
 
@@ -28,6 +29,7 @@ namespace PlutoPoint_Installer.Views
             public Func<string?>? SkipReason { get; init; }
             public string? InstallingMessage { get; init; }
             public Action? AfterInstall { get; init; }
+            public TimeSpan Timeout { get; init; } = TimeSpan.FromMinutes(10);
         }
 
         private List<AppDefinition> BuildAppList(string appsDir)
@@ -44,7 +46,7 @@ namespace PlutoPoint_Installer.Views
                     Check = NanaZipCheck,
                     InstallerFileName = "nanaZip.msixbundle",
                     Url = () => nanaZipURL,
-                    IsInstalled = IsNanaZipInstalled
+                    IsInstalled = InstalledApps.IsNanaZipInstalled
                 },
                 new()
                 {
@@ -56,7 +58,7 @@ namespace PlutoPoint_Installer.Views
                     IsInstalled = () =>
                         File.Exists(@"C:\Program Files (x86)\AnyDeskMSI\AnyDeskMSI.exe") ||
                         File.Exists(@"C:\Program Files (x86)\AnyDesk\AnyDesk.exe") ||
-                        IsListedAsInstalled(n => n.StartsWith("AnyDesk", StringComparison.OrdinalIgnoreCase))
+                        InstalledApps.IsListed(n => n.StartsWith("AnyDesk", StringComparison.OrdinalIgnoreCase))
                 },
                 new()
                 {
@@ -66,7 +68,7 @@ namespace PlutoPoint_Installer.Views
                     Url = () => bingWallpapersURL,
                     IsInstalled = () =>
                         File.Exists(Path.Combine(localAppData, @"Microsoft\BingWallpaperApp\BingWallpaperApp.exe")) ||
-                        IsListedAsInstalled(n => n.StartsWith("Bing Wallpaper", StringComparison.OrdinalIgnoreCase))
+                        InstalledApps.IsListed(n => n.StartsWith("Bing Wallpaper", StringComparison.OrdinalIgnoreCase))
                 },
                 new()
                 {
@@ -75,10 +77,11 @@ namespace PlutoPoint_Installer.Views
                     InstallerFileName = "bitDefender.exe",
                     Url = () => bitDefenderURL,
                     Arguments = "/bdparams /silent",
+                    Timeout = TimeSpan.FromMinutes(20),
                     Elevate = true,
                     IsInstalled = () =>
                         File.Exists(@"C:\Program Files\Bitdefender\Bitdefender Security App\seccenter.exe") ||
-                        IsListedAsInstalled(n => n.StartsWith("Bitdefender", StringComparison.OrdinalIgnoreCase) &&
+                        InstalledApps.IsListed(n => n.StartsWith("Bitdefender", StringComparison.OrdinalIgnoreCase) &&
                             (n.Contains("Security", StringComparison.OrdinalIgnoreCase) || n.Contains("Antivirus", StringComparison.OrdinalIgnoreCase)))
                 },
                 new()
@@ -92,7 +95,7 @@ namespace PlutoPoint_Installer.Views
                     Elevate = true,
                     IsInstalled = () =>
                         File.Exists(Path.Combine(localAppData, @"Discord\Update.exe")) ||
-                        IsListedAsInstalled(n => n.Equals("Discord", StringComparison.OrdinalIgnoreCase))
+                        InstalledApps.IsListed(n => n.Equals("Discord", StringComparison.OrdinalIgnoreCase))
                 },
                 new()
                 {
@@ -103,14 +106,14 @@ namespace PlutoPoint_Installer.Views
                     WingetId = "Google.Chrome",
                     IsInstalled = () =>
                         File.Exists(@"C:\Program Files\Google\Chrome\Application\chrome.exe") ||
-                        IsListedAsInstalled(n => n.Equals("Google Chrome", StringComparison.OrdinalIgnoreCase))
+                        InstalledApps.IsListed(n => n.Equals("Google Chrome", StringComparison.OrdinalIgnoreCase))
                 },
                 new()
                 {
                     Name = "LibreOffice",
                     Check = LibreOfficeCheck,
                     InstallerFileName = "libreOffice.msi",
-                    Download = DownloadLibreOfficeAsync,
+                    Download = path => _vendorDownloads.LibreOfficeAsync(path, libreOfficeFallbackURL, _stop.Token),
                     WingetId = "TheDocumentFoundation.LibreOffice",
                     Arguments = "/norestart",
                     SkipReason = () => Office2024Check.IsChecked == true
@@ -118,17 +121,18 @@ namespace PlutoPoint_Installer.Views
                         : null,
                     IsInstalled = () =>
                         File.Exists(@"C:\Program Files\LibreOffice\program\soffice.exe") ||
-                        FindLibreOfficeProducts().Any(p => !p.Name.Contains("Pack", StringComparison.OrdinalIgnoreCase))
+                        InstalledApps.FindLibreOfficeProducts().Any(p => !p.Name.Contains("Pack", StringComparison.OrdinalIgnoreCase))
                 },
                 new()
                 {
                     Name = "AMD Chipset Drivers",
                     Check = AmdChipsetCheck,
                     InstallerFileName = "amdChipset.exe",
-                    Download = DownloadAmdChipsetAsync,
+                    Download = path => _vendorDownloads.AmdChipsetAsync(path, urls, _stop.Token),
+                    IsInstalled = InstalledApps.IsAmdChipsetInstalled,
                     Arguments = "/S",
                     Elevate = true,
-                    SkipReason = () => IsArm64 ? "AMD Chipset Drivers are not available for ARM64, skipping." : null,
+                    SkipReason = () => HardwareInfo.IsArm64 ? "AMD Chipset Drivers are not available for ARM64, skipping." : null,
                     InstallingMessage = "📦 Installing AMD Chipset Drivers silently..."
                 },
                 new()
@@ -136,10 +140,12 @@ namespace PlutoPoint_Installer.Views
                     Name = "AMD Software: Adrenalin Edition",
                     Check = AmdAdrenalinCheck,
                     InstallerFileName = "amdAdrenalin.exe",
-                    Download = DownloadAmdAdrenalinAsync,
+                    Download = path => _vendorDownloads.AmdAdrenalinAsync(path, _stop.Token),
+                    IsInstalled = InstalledApps.IsAmdAdrenalinInstalled,
+                    Timeout = TimeSpan.FromMinutes(20),
                     Arguments = "-install",
                     Elevate = true,
-                    SkipReason = () => IsArm64 ? "AMD Software: Adrenalin Edition is not available for ARM64, skipping." : null,
+                    SkipReason = () => HardwareInfo.IsArm64 ? "AMD Software: Adrenalin Edition is not available for ARM64, skipping." : null,
                     InstallingMessage = "📦 Installing AMD Software: Adrenalin Edition, this downloads the driver so it can take a while..."
                 },
                 new()
@@ -147,7 +153,8 @@ namespace PlutoPoint_Installer.Views
                     Name = "Nvidia App",
                     Check = NvidiaAppCheck,
                     InstallerFileName = "nvidiaApp.exe",
-                    Download = DownloadNvidiaAppAsync,
+                    Download = path => _vendorDownloads.NvidiaAppAsync(path, urls, _stop.Token),
+                    IsInstalled = InstalledApps.IsNvidiaAppInstalled,
                     Arguments = "/s",
                     Elevate = true,
                     InstallingMessage = "📦 Installing Nvidia App silently..."
@@ -162,7 +169,7 @@ namespace PlutoPoint_Installer.Views
                     Arguments = firefoxIsExe ? "/S" : "",
                     IsInstalled = () =>
                         File.Exists(@"C:\Program Files\Mozilla Firefox\firefox.exe") ||
-                        IsListedAsInstalled(n => n.StartsWith("Mozilla Firefox", StringComparison.OrdinalIgnoreCase)),
+                        InstalledApps.IsListed(n => n.StartsWith("Mozilla Firefox", StringComparison.OrdinalIgnoreCase)),
                     AfterInstall = RemoveFirefoxAutoLaunchEntry
                 },
                 new()
@@ -174,7 +181,7 @@ namespace PlutoPoint_Installer.Views
                     WingetId = "Mozilla.Thunderbird",
                     IsInstalled = () =>
                         File.Exists(@"C:\Program Files\Mozilla Thunderbird\thunderbird.exe") ||
-                        IsListedAsInstalled(n => n.StartsWith("Mozilla Thunderbird", StringComparison.OrdinalIgnoreCase))
+                        InstalledApps.IsListed(n => n.StartsWith("Mozilla Thunderbird", StringComparison.OrdinalIgnoreCase))
                 },
                 new()
                 {
@@ -187,7 +194,7 @@ namespace PlutoPoint_Installer.Views
                     Elevate = true,
                     IsInstalled = () =>
                         File.Exists(@"C:\Program Files (x86)\Steam\Steam.exe") ||
-                        IsListedAsInstalled(n => n.Equals("Steam", StringComparison.OrdinalIgnoreCase))
+                        InstalledApps.IsListed(n => n.Equals("Steam", StringComparison.OrdinalIgnoreCase))
                 },
                 new()
                 {
@@ -198,7 +205,7 @@ namespace PlutoPoint_Installer.Views
                     WingetId = "VideoLAN.VLC",
                     IsInstalled = () =>
                         File.Exists(@"C:\Program Files\VideoLAN\VLC\vlc.exe") ||
-                        IsListedAsInstalled(n => n.StartsWith("VLC media player", StringComparison.OrdinalIgnoreCase))
+                        InstalledApps.IsListed(n => n.StartsWith("VLC media player", StringComparison.OrdinalIgnoreCase))
                 },
                 new()
                 {
@@ -208,7 +215,8 @@ namespace PlutoPoint_Installer.Views
                     Download = path => DownloadOfficeAsync(path, officeConfigPath),
                     Arguments = $"/configure \"{officeConfigPath}\"",
                     RunInAppsDirectory = true,
-                    IsInstalled = IsOfficeInstalled,
+                    Timeout = TimeSpan.FromMinutes(20),
+                    IsInstalled = InstalledApps.IsOfficeInstalled,
                     InstallingMessage = "📦 Installing Microsoft Office 2024, this can take a while..."
                 }
             };
@@ -222,25 +230,27 @@ namespace PlutoPoint_Installer.Views
             if (skipReason != null)
             {
                 AppendLine($"⏭️ {skipReason}");
-                TrackResult(app.Name, "Skipped");
+                TrackResult(app.Name, InstallStatus.Skipped);
                 StepProgress(2);
                 return;
             }
 
-            if (app.IsInstalled?.Invoke() == true)
+            if (await CheckInstalledAsync(app) == true)
             {
                 AppendLine($"✅ {app.Name} is already installed, skipping installation.");
-                TrackResult(app.Name, "Already Installed");
+                TrackResult(app.Name, InstallStatus.AlreadyInstalled);
                 StepProgress(2);
                 return;
             }
 
-            if (app.WingetId != null && await TryWingetInstallAsync(app.WingetId, app.Name))
+            if (app.WingetId != null && await TryWingetAsync(app))
             {
-                TrackResult(app.Name, "Installed");
+                TrackResult(app.Name, InstallStatus.Installed);
                 StepProgress(2);
                 return;
             }
+
+            _stop.Token.ThrowIfCancellationRequested();
 
             string installerPath = Path.Combine(appsDir, app.InstallerFileName);
             bool? downloaded;
@@ -251,22 +261,58 @@ namespace PlutoPoint_Installer.Views
             else
             {
                 AppendLine($"🔄 Downloading {app.Name}...");
-                downloaded = await DownloadWithRetryAsync(app.Url!(), installerPath, app.Name);
+                downloaded = await _downloader.DownloadWithRetryAsync(app.Url!(), installerPath, app.Name, _stop.Token);
             }
             StepProgress();
 
             if (downloaded != true)
             {
-                TrackResult(app.Name, downloaded == null ? "Skipped" : "Failed");
+                TrackResult(app.Name, downloaded == null ? InstallStatus.Skipped : InstallStatus.Failed);
                 StepProgress();
                 return;
             }
 
             AppendLine(app.InstallingMessage ?? $"📦 Installing {app.Name}...");
             var (fileName, arguments) = GetInstallerCommand(app, installerPath);
-            int exitCode = await RunInstallerAsync(fileName, arguments, app.Elevate, app.RunInAppsDirectory ? appsDir : null);
-            ReportInstallOutcome(app.Name, app.IsInstalled?.Invoke(), exitCode);
+            InstallerResult result;
+            SetInstallerActive(true);
+            try
+            {
+                result = await ProcessRunner.RunInstallerAsync(fileName, arguments, app.Timeout, AppendLine, app.Elevate,
+                    app.RunInAppsDirectory ? appsDir : null, _kill.Token);
+            }
+            finally
+            {
+                SetInstallerActive(false);
+            }
+            ReportInstallOutcome(app, await ConfirmInstalledAsync(app, result), result);
             StepProgress();
+        }
+
+        private async Task<bool> TryWingetAsync(AppDefinition app)
+        {
+            SetInstallerActive(true);
+            try
+            {
+                return await _winget.TryInstallAsync(app.WingetId!, app.Name, _kill.Token);
+            }
+            finally
+            {
+                SetInstallerActive(false);
+            }
+        }
+
+        private static Task<bool?> CheckInstalledAsync(AppDefinition app) => Task.Run(() => app.IsInstalled?.Invoke());
+
+        private static async Task<bool?> ConfirmInstalledAsync(AppDefinition app, InstallerResult result)
+        {
+            bool? installed = await CheckInstalledAsync(app);
+            for (int i = 0; i < 5 && installed == false && result.Succeeded; i++)
+            {
+                await Task.Delay(2000);
+                installed = await CheckInstalledAsync(app);
+            }
+            return installed;
         }
 
         private static (string FileName, string Arguments) GetInstallerCommand(AppDefinition app, string installerPath)
@@ -282,150 +328,104 @@ namespace PlutoPoint_Installer.Views
             }
         }
 
-        private void ReportInstallOutcome(string label, bool? detected, int exitCode)
+        private void ReportInstallOutcome(AppDefinition app, bool? detected, InstallerResult result)
         {
-            bool exitOk = exitCode == 0 || exitCode == 3010;
-            if (detected == true || (detected == null && exitOk))
+            if (result.End == InstallerEnd.Stopped)
             {
-                AppendLine($"✅ Completed installation of {label}.");
-                TrackResult(label, "Installed");
+                AppendLine($"❌ {app.Name} was force stopped.");
+                TrackResult(app.Name, InstallStatus.Failed);
             }
-            else if (exitOk)
+            else if (result.End == InstallerEnd.TimedOut)
             {
-                AppendLine($"⚠️ The {label} installer finished, but {label} couldn't be found afterwards.");
-                TrackResult(label, "Unverified");
+                AppendLine($"❌ {app.Name} was still running after {app.Timeout.TotalMinutes:0} minutes, so it was stopped.");
+                TrackResult(app.Name, detected == true ? InstallStatus.Unverified : InstallStatus.Failed);
+            }
+            else if (detected == true || (detected == null && result.Succeeded))
+            {
+                AppendLine($"✅ Completed installation of {app.Name}.");
+                TrackResult(app.Name, InstallStatus.Installed);
+            }
+            else if (result.Succeeded)
+            {
+                AppendLine($"⚠️ The {app.Name} installer finished, but {app.Name} couldn't be found afterwards.");
+                TrackResult(app.Name, InstallStatus.Unverified);
             }
             else
             {
-                AppendLine($"❌ {label} failed to install (exit code {exitCode}).");
-                TrackResult(label, "Failed");
+                AppendLine($"❌ {app.Name} failed to install (exit code {result.ExitCode}).");
+                TrackResult(app.Name, InstallStatus.Failed);
             }
-        }
-
-        private static bool IsListedAsInstalled(Func<string, bool> matches)
-        {
-            var locations = new[]
-            {
-                (RegistryHive.LocalMachine, RegistryView.Registry64),
-                (RegistryHive.LocalMachine, RegistryView.Registry32),
-                (RegistryHive.CurrentUser, RegistryView.Default)
-            };
-            foreach (var (hive, view) in locations)
-            {
-                try
-                {
-                    using RegistryKey baseKey = RegistryKey.OpenBaseKey(hive, view);
-                    using RegistryKey? uninstall = baseKey.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall");
-                    if (uninstall == null)
-                        continue;
-                    foreach (string keyName in uninstall.GetSubKeyNames())
-                    {
-                        using RegistryKey? entry = uninstall.OpenSubKey(keyName);
-                        if (entry?.GetValue("DisplayName") is string name && matches(name))
-                            return true;
-                    }
-                }
-                catch
-                {
-                }
-            }
-            return false;
-        }
-
-        private static bool IsNanaZipInstalled()
-        {
-            string? output = RunAndCapture("powershell", "-NoProfile -NonInteractive -Command \"Get-AppxPackage -Name '*NanaZip*' | Select-Object -ExpandProperty Name\"");
-            if (output != null && output.Contains("NanaZip", StringComparison.OrdinalIgnoreCase))
-                return true;
-            try
-            {
-                return Directory.GetFiles(@"C:\Program Files\WindowsApps", "NanaZip.Modern.FileManager.exe", SearchOption.AllDirectories).Length > 0;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        private async Task<bool?> DownloadLibreOfficeAsync(string installerPath)
-        {
-            AppendLine("🔄 Finding the latest LibreOffice version...");
-            string version = await GetLibreOfficeVersionAsync();
-            if (string.IsNullOrEmpty(version))
-            {
-                AppendLine("⚠️ Could not determine the latest LibreOffice version from libreoffice.org.");
-            }
-            else
-            {
-                string url = IsArm64
-                    ? $"https://download.documentfoundation.org/libreoffice/stable/{version}/win/aarch64/LibreOffice_{version}_Win_aarch64.msi"
-                    : $"https://download.documentfoundation.org/libreoffice/stable/{version}/win/x86_64/LibreOffice_{version}_Win_x86-64.msi";
-                AppendLine($"🔄 Downloading LibreOffice {version}...");
-                if (await DownloadWithRetryAsync(new Uri(url), installerPath, "LibreOffice"))
-                    return true;
-            }
-            AppendLine("🔁 Using the fallback LibreOffice download...");
-            return await DownloadWithRetryAsync(libreOfficeFallbackURL, installerPath, "LibreOffice");
         }
 
         private async Task<bool?> DownloadOfficeAsync(string installerPath, string configPath)
         {
             AppendLine("🔄 Downloading Microsoft Office 2024...");
-            if (!await DownloadWithRetryAsync(office2024URL, installerPath, "Microsoft Office 2024"))
+            if (!await _downloader.DownloadWithRetryAsync(office2024URL, installerPath, "Microsoft Office 2024", _stop.Token))
                 return false;
             await File.WriteAllTextAsync(configPath, Office2024Config);
             return true;
         }
 
-        private async Task<bool?> DownloadFromCandidatesAsync(string label, List<string> candidates, string installerPath)
+        private async Task RemoveLibreOfficeAsync()
         {
-            foreach (string candidate in candidates)
+            var products = InstalledApps.FindLibreOfficeProducts();
+            if (products.Count == 0)
+                return;
+
+            AppendLine("🧹 Microsoft Office 2024 is installed, removing LibreOffice...");
+            SetInstallerActive(true);
+            try
             {
-                AppendLine($"🔗 Trying {label} from: {candidate}");
-                try
+                foreach (var (name, productCode) in products)
                 {
-                    if (await DownloadInstallerAsync(BrowserHttp, candidate, installerPath, AmdReferer))
-                        return true;
+                    AppendLine($"🗑️ Uninstalling {name}...");
+                    await ProcessRunner.RunInstallerAsync("msiexec", $"/x {productCode} /qn /norestart", TimeSpan.FromMinutes(10), AppendLine, kill: _kill.Token);
                 }
-                catch (Exception ex)
+            }
+            finally
+            {
+                SetInstallerActive(false);
+            }
+
+            if (InstalledApps.FindLibreOfficeProducts().Count == 0)
+            {
+                foreach (string desktop in new[] { Environment.GetFolderPath(Environment.SpecialFolder.Desktop), Environment.GetFolderPath(Environment.SpecialFolder.CommonDesktopDirectory) })
+                    foreach (string shortcut in new[] { "LibreOffice Writer.lnk", "LibreOffice Calc.lnk" })
+                        try { File.Delete(Path.Combine(desktop, shortcut)); } catch { }
+                AppendLine("✅ LibreOffice has been removed.");
+                TrackResult("LibreOffice", InstallStatus.Removed);
+            }
+            else
+            {
+                AppendLine("❌ LibreOffice couldn't be fully removed.");
+                TrackResult("LibreOffice", InstallStatus.Failed);
+            }
+        }
+
+        private void RemoveFirefoxAutoLaunchEntry()
+        {
+            try
+            {
+                using (RegistryKey? runKey = Registry.CurrentUser.OpenSubKey(
+                    @"Software\Microsoft\Windows\CurrentVersion\Run", writable: true))
                 {
-                    AppendLine($"⚠️ Download failed: {ex.Message}");
+                    if (runKey == null) return;
+                    foreach (string valueName in runKey.GetValueNames())
+                    {
+                        string? data = runKey.GetValue(valueName) as string;
+                        if (!string.IsNullOrEmpty(data) &&
+                            data.IndexOf("firefox.exe", StringComparison.OrdinalIgnoreCase) >= 0)
+                        {
+                            runKey.DeleteValue(valueName, throwOnMissingValue: false);
+                            AppendLine($"✅ Removed Firefox's \"open automatically at startup\" entry ({valueName}).");
+                        }
+                    }
                 }
             }
-            AppendLine($"⚠️ Could not download {label}.");
-            return false;
-        }
-
-        private async Task<bool?> DownloadAmdChipsetAsync(string installerPath)
-        {
-            AppendLine("🔄 Searching for latest AMD Chipset Drivers...");
-            List<string> candidates = await FindAmdChipsetDownloadUrlsAsync(BrowserHttp);
-            return await DownloadFromCandidatesAsync("AMD Chipset Drivers", candidates, installerPath);
-        }
-
-        private async Task<bool?> DownloadAmdAdrenalinAsync(string installerPath)
-        {
-            AppendLine("🔄 Searching for latest AMD Software: Adrenalin Edition...");
-            List<string> candidates = await FindAmdAdrenalinDownloadUrlsAsync(BrowserHttp);
-            if (candidates.Count == 0)
+            catch (Exception ex)
             {
-                AppendLine("⏭️ Could not find AMD Software: Adrenalin Edition download link, skipping.");
-                return null;
+                AppendLine($"⚠️ Could not check for a Firefox startup entry: {ex.Message}");
             }
-            return await DownloadFromCandidatesAsync("AMD Software: Adrenalin Edition", candidates, installerPath);
-        }
-
-        private async Task<bool?> DownloadNvidiaAppAsync(string installerPath)
-        {
-            AppendLine("🔄 Searching for latest Nvidia App installer...");
-            string downloadUrl = await FindNvidiaAppDownloadUrlAsync(BrowserHttp);
-            if (downloadUrl == null)
-            {
-                AppendLine("⚠️ Could not find Nvidia App download link.");
-                return false;
-            }
-            AppendLine($"🔗 Found latest Nvidia installer: {downloadUrl}");
-            return await DownloadWithRetryAsync(new Uri(downloadUrl), installerPath, "Nvidia App", BrowserHttp);
         }
     }
 }

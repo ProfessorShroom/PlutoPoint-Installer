@@ -9,7 +9,7 @@ namespace PlutoPoint_Installer.Models
 {
     public class FileDeletionHelper
     {
-        public async Task DeleteFilesAndDirectoryAsync(string appsDir, IEnumerable<string> launcherPaths, string lock1Path = null, string lock2Path = null)
+        public async Task DeleteFilesAndDirectoryAsync(string appsDir, IEnumerable<string> launcherPaths, string? lock1Path = null, string? lock2Path = null)
         {
             if (Directory.Exists(appsDir))
             {

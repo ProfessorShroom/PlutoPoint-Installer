@@ -5,7 +5,7 @@
 <p align="center"> 
   <a href="https://github.com/ProfessorShroom/PlutoPoint-Installer/releases"><img alt="Release" src="https://img.shields.io/github/v/release/ProfessorShroom/PlutoPoint-Installer?style=for-the-badge&label=release&color=8A2BE2&filter=v*"></a>
   <a href="https://github.com/ProfessorShroom/PlutoPoint-Installer/actions/workflows/build.yml"><img alt="Build" src="https://img.shields.io/github/actions/workflow/status/ProfessorShroom/PlutoPoint-Installer/build.yml?style=for-the-badge&label=build"></a>
-  <img alt=".NET 8" src="https://img.shields.io/badge/.NET-8.0-512BD4?style=for-the-badge"> 
+  <img alt=".NET 10" src="https://img.shields.io/badge/.NET-10.0-512BD4?style=for-the-badge"> 
   <img alt="Arch" src="https://img.shields.io/badge/Arch-x64%2FARM-blue?style=for-the-badge"> 
   <img alt="Platform" src="https://img.shields.io/badge/platform-Windows%2010%2F11-0078D4?style=for-the-badge&logo=windows&logoColor=white"> 
   <a href="https://github.com/ProfessorShroom/PlutoPoint-Installer/blob/main/LICENSE.md"><img alt="License" src="https://img.shields.io/badge/license-Proprietary-red?style=for-the-badge"></a> 
@@ -15,7 +15,7 @@
 
 **_Copyright © Charlie Howard 2016-2026 All rights reserved_**
 
-A C#-based GUI installer for Windows 10/11, built on .NET 8 with an Avalonia UI. It also runs on Windows 11 on ARM (x64 build under emulation) and installs native ARM64 versions of apps where they exist.
+A C#-based GUI installer for Windows 10/11, built on .NET 10 with an Avalonia UI. It also runs on Windows 11 on ARM (x64 build under emulation) and installs native ARM64 versions of apps where they exist.
 
 Gives you the option to install the Computer Repair Centre OEM (location based) information, Bing Wallpapers, AnyDesk, BitDefender, Discord, Google Chrome, LibreOffice, Microsoft Office 2024 (Requires Product Key), Mozilla Firefox, Mozilla Thunderbird, NanaZip, Nvidia App, Steam, and VLC.
 
@@ -66,14 +66,9 @@ Disables sleep and screen timeout while on AC power during the install, then res
 - **_8.0.0.0_** A failed download no longer crashes the installer. That app is marked as failed and the rest carry on.
 - **_8.0.0.0_** If the latest LibreOffice version can't be found, it now uses the backup download instead of stopping the whole install.
 - **_8.0.0.0_** The LibreOffice backup link now comes from Downloads.json (libreoffice.professorshroom.com) instead of an old hard-coded link.
-- **_8.0.0.0_** Fixed sleep not actually being turned off during the install. The original sleep and screen timeout settings are now saved and put back afterwards, even if the install stops early.
-- **_8.0.0.0_** Fixed the power button setting not taking effect.
-- **_8.0.0.0_** Fixed the password not being asked for if the location check failed or hadn't finished yet.
 - **_8.0.0.0_** The installer now waits for the download links to load, instead of crashing if Install was clicked too quickly.
-- **_8.0.0.0_** Fixed the location not showing in the log.
 - **_8.0.0.0_** The Install button is greyed out while installing, so it can't be run twice at once.
 - **_8.0.0.0_** While installing, the Install button becomes a Cancel button. Cancelling stops the install after the current step, marks the remaining apps as skipped and still puts the sleep settings back.
-- **_8.0.0.0_** Fixed Google Chrome sometimes being marked as both failed and installed.
 - **_8.0.0.0_** Google Chrome's install and the LibreOffice version check no longer freeze the window.
 - **_8.0.0.0_** If the OEM logo can't be downloaded, the shop details are still set.
 - **_8.0.0.0_** Moving the taskbar no longer crashes if its registry key is missing.
@@ -85,6 +80,11 @@ Disables sleep and screen timeout while on AC power during the install, then res
 - **_8.0.0.0_** The standard and beta launchers are now built from one project.
 - **_8.0.0.0_** update.xml and updateBeta.xml are now updated automatically when a new launcher is released.
 - **_8.0.0.0_** The installer release workflow now uses setup-dotnet v5.
+- **_8.0.0.0_** Fixed sleep not actually being turned off during the install. The original sleep and screen timeout settings are now saved and put back afterwards, even if the install stops early.
+- **_8.0.0.0_** Fixed the power button setting not taking effect.
+- **_8.0.0.0_** Fixed the password not being asked for if the location check failed or hadn't finished yet.
+- **_8.0.0.0_** Fixed the location not showing in the log.
+- **_8.0.0.0_** Fixed Google Chrome sometimes being marked as both failed and installed.
 
 </details>
 
@@ -110,8 +110,8 @@ Disables sleep and screen timeout while on AC power during the install, then res
 - **_7.0.8.2_** Fixed crash caused by .ico files instead of .png.
 - **_7.0.8.1_** Added a crash handler.
 - **_7.0.8.0_** Added AMD Chipset Drivers as an install option, ticked automatically when an AMD CPU is detected.
-- **_7.0.8.0_** AMD Chipset Drivers download the latest version from AMD, with backup links if it can't be found, and install silently.
 - **_7.0.8.0_** Added AMD Software: Adrenalin Edition as an install option, ticked automatically when an AMD GPU is detected (including Radeon graphics built into Ryzen CPUs).
+- **_7.0.8.0_** AMD Chipset Drivers download the latest version from AMD, with backup links if it can't be found, and install silently.
 - **_7.0.8.0_** AMD Software: Adrenalin Edition uses AMD's auto-detect installer, so it picks the right driver for the graphics card. It's skipped if the download link can't be found.
 - **_7.0.8.0_** AMD downloads now send the right headers so AMD's site allows them, and anything that isn't a real installer is rejected.
 - **_7.0.8.0_** AMD options are skipped on ARM devices.
@@ -119,21 +119,21 @@ Disables sleep and screen timeout while on AC power during the install, then res
 
 **Version 7.0.7.0**
 
-- **_7.0.7.0_** Fixed Nvidia GPUs not being detected on laptops and fresh installs without an Nvidia driver. Detection now uses PCI vendor IDs instead of adapter names.
-- **_7.0.7.0_** Intel and AMD GPU detection now use the same vendor ID check, so they no longer give false matches on names like "Core" or "Xe".
-- **_7.0.7.0_** Fixed "Could not find Nvidia App download link". The installer now looks like a browser to Nvidia's site and checks several Nvidia pages for the link.
 - **_7.0.7.0_** Added a backup Nvidia App download link to Downloads.json, so it can be updated without a new release.
+- **_7.0.7.0_** Intel and AMD GPU detection now use the same vendor ID check, so they no longer give false matches on names like "Core" or "Xe".
 - **_7.0.7.0_** The Nvidia App installer now downloads straight to disk instead of into memory.
 - **_7.0.7.0_** A failed Nvidia App download no longer stops the rest of the install. It's marked as failed and the other apps carry on.
 - **_7.0.7.0_** Nvidia App is only marked as installed if the installer finishes successfully.
+- **_7.0.7.0_** Fixed Nvidia GPUs not being detected on laptops and fresh installs without an Nvidia driver. Detection now uses PCI vendor IDs instead of adapter names.
+- **_7.0.7.0_** Fixed "Could not find Nvidia App download link". The installer now looks like a browser to Nvidia's site and checks several Nvidia pages for the link.
 
 **Version 7.0.6.3 / 7.0.6.2 / 7.0.6.1 / 7.0.6.0**
 
 - **_7.0.6.3_** Winget now puts two files on the Desktop, both .lock files, so the installer deletes them afterwards.
 - **_7.0.6.2_** Added Steam and Discord to taskbar if installed.
 - **_7.0.6.1_** Tweaked dialog during Microsoft Office 2024 install.
-- **_7.0.6.1_** Fixed Outlook not being placed on the desktop and taskbar due to it being called "Outlook (classic)".
 - **_7.0.6.1_** The Office installer is now silent.
+- **_7.0.6.1_** Fixed Outlook not being placed on the desktop and taskbar due to it being called "Outlook (classic)".
 - **_7.0.6.0_** Added Microsoft Office 2024 Pro Plus as an install option (requires product key).
 - **_7.0.6.0_** If Microsoft Office 2024 is selected it skips LibreOffice (if ticked) and uninstalls LibreOffice if it's already installed.
 - **_7.0.6.0_** If Microsoft Office 2024 is installed it will place desktop and taskbar icons.
@@ -149,19 +149,18 @@ Disables sleep and screen timeout while on AC power during the install, then res
 - **_7.0.4.1_** Corrected cursor size from 20 to 32 as it's being set in decimal not hex.
 - **_7.0.4.0_** If the power box is not checked the installer will now set the screen and sleep timeout back to Windows 11 defaults rather 10 and 20 minutes respectively.
 
-**Version 7.0.3.0 / 7.0.3.1**
+**Version 7.0.3.1 / 7.0.3.0**
 
 - **_7.0.3.1_** Corrected registry key used to change cursor size.
 - **_7.0.3.0_** Now resets the cursor size to the default 20, as someone keeps making cursors massive.
 
-
 **Version 7.0.2.1 / 7.0.2.0**
 
 - **_7.0.2.1_** Changed Romsey opening hours on Saturdays to prepare for upcoming change.
+- **_7.0.2.0_** Added a per-event text colour so button and title text stays readable against lighter holiday themes — fixes washed-out white text on Pluto's Birthday, Valentine's Day, Duck Day, Dachshund Day, Pancake Day, and birthdays.
 - **_7.0.2.0_** Gave Beta builds their own orange colour scheme (background gradient, buttons, and title) matched to the Beta logo, instead of the default blue/purple.
 - **_7.0.2.0_** Beta builds now skip seasonal/holiday theming entirely, so Beta branding and holiday colours never clash.
 - **_7.0.2.0_** Seasonal events can now update the window title too (e.g. "Merry Christmas!"), not just the install log.
-- **_7.0.2.0_** Added a per-event text colour so button and title text stays readable against lighter holiday themes — fixes washed-out white text on Pluto's Birthday, Valentine's Day, Duck Day, Dachshund Day, Pancake Day, and birthdays.
 
 **Version 7.0.1.4 / 7.0.1.3 / 7.0.1.2 / 7.0.1.1 / 7.0.1.0**
 
@@ -175,11 +174,11 @@ Disables sleep and screen timeout while on AC power during the install, then res
 
 **Version 7.0.0.0 - The .NET 8 / Avalonia Update**
 
+- **_7.0.0.0_** Added a dropdown to manually override which shop's OEM info gets installed, separate from the automatic IP-based location check — the automatic check still decides whether the password prompt is needed, the dropdown only affects which shop's info gets written.
+- **_7.0.0.0_** Added a label next to Location that tells you the OS the installer is being run on.
 - **_7.0.0.0_** Migrated the whole installer from .NET Framework 4.8 to .NET 8.
 - **_7.0.0.0_** Dropped support for Windows 7, 8, and 8.1 — .NET 8 doesn't run on them at all.
 - **_7.0.0.0_** Rewritten the entire GUI from WinForms to Avalonia.
-- **_7.0.0.0_** Added a dropdown to manually override which shop's OEM info gets installed, separate from the automatic IP-based location check — the automatic check still decides whether the password prompt is needed, the dropdown only affects which shop's info gets written.
-- **_7.0.0.0_** Added a label next to Location that tells you the OS the installer is being run on.
 - **_7.0.0.0_** The build date will now automatically be set whenever the installer is built.
 
 </details>
@@ -197,14 +196,14 @@ Disables sleep and screen timeout while on AC power during the install, then res
 
 **Version 6.8.0.0 - The Class Update 2**
 
-- **_6.8.0.0_** Taskbar layout applies cleanly on next reboot/sign-in with no visible console window, and cleans up after itself automatically.
 - **_6.8.0.0_** Added download retry (up to 3 attempts with backoff) for app installers, so a flaky connection no longer fails the whole install outright.
 - **_6.8.0.0_** Added an end-of-run summary showing what succeeded, what was skipped, and what failed.
 - **_6.8.0.0_** Added persistent install logging to disk (%LocalAppData%\ComputerRepairCentre\Logs) so a completed run can be reviewed after the fact.
+- **_6.8.0.0_** Taskbar layout applies cleanly on next reboot/sign-in with no visible console window, and cleans up after itself automatically.
 - **_6.8.0.0_** Centralised Computer Repair Centre OEM info into a single shared method — shop logo and manufacturer name no longer duplicated per location.
+- **_6.8.0.0_** Moved PasswordHashes, LocationHashes, DownloadUrls, FileDeletionHelper, and PasswordForm out of the main form file into their own classes under Models/ and UI/.
 - **_6.8.0.0_** Fixed AnyDesk detection incorrectly reporting as not installed, causing unnecessary reinstalls.
 - **_6.8.0.0_** Removed a redundant LibreOffice version check that ran on startup and blocked the UI.
-- **_6.8.0.0_** Moved PasswordHashes, LocationHashes, DownloadUrls, FileDeletionHelper, and PasswordForm out of the main form file into their own classes under Models/ and UI/.
 
 **Version 6.7.4.3 / 6.7.4.2 / 6.7.4.1 / 6.7.4.0**
 
@@ -265,12 +264,12 @@ Disables sleep and screen timeout while on AC power during the install, then res
 - **_6.6.3.1_** Small cleanup of code.
 - **_6.6.3.1_** Tweaked GUI for neater layout.
 - **_6.6.3.0_** Added custom rounded buttons.
-- **_6.6.3.0_** Removed shutdown button as it wasn't very useful.
 - **_6.6.3.0_** Resized buttons for a more modern look.
 - **_6.6.3.0_** Rewritten IP hash check with HttpClient instead of WebClient.
 - **_6.6.3.0_** Moved password hash check to a json file for easier access.
 - **_6.6.3.0_** Reworked the text box slightly to allow redrawing when GUI is resized.
 - **_6.6.3.0_** Moved download URL's to a json to allow for easier changing of URL's if needed.
+- **_6.6.3.0_** Removed shutdown button as it wasn't very useful.
 
 **Version 6.6.2.0**
 
@@ -283,10 +282,10 @@ Disables sleep and screen timeout while on AC power during the install, then res
 **Version 6.6.0.0 - The Gradient Update**
 
 - **_6.6.0.0_** Added gradient background.
+- **_6.6.0.0_** Added a custom rounded progress bar with gradient support.
 - **_6.6.0.0_** Changed RichTextBox to a label within a panel to allow transparency.
 - **_6.6.0.0_** Made all objects transparent.
 - **_6.6.0.0_** Reconfigured AppendText to support label and panel.
-- **_6.6.0.0_** Added a custom rounded progress bar with gradient support.
 - **_6.6.0.0_** Moved the rounded group box to its own cs file.
 
 **Version 6.5.4.1 / 6.5.4.0**
@@ -302,14 +301,14 @@ Disables sleep and screen timeout while on AC power during the install, then res
 
 **Version 6.5.2.0**
 
-- **_6.5.2.0_** Removed taskbar pinning feature as it just wasn't reliable.
 - **_6.5.2.0_** Slightly increased Install button size.
+- **_6.5.2.0_** Removed taskbar pinning feature as it just wasn't reliable.
 
 **Version 6.5.1.0**
 
+- **_6.5.1.0_** Added test button for easier testing of new features.
 - **_6.5.1.0_** The installer will now pin Google Chrome, Mozilla Firefox and Mozilla Thunderbird to the taskbar if installed.
 - **_6.5.1.0_** If Google Chrome or Mozilla Firefox are installed then Microsoft Edge will be unpinned from the taskbar.
-- **_6.5.1.0_** Added test button for easier testing of new features.
 
 **Version 6.5.0.0**
 
@@ -326,8 +325,8 @@ Disables sleep and screen timeout while on AC power during the install, then res
 
 - **_6.4.7.2_** Added a logic check to shutdown and restart check boxes so they both can't selected at the same time.
 - **_6.4.7.2_** Fixed a few more lines missing emojis.
-- **_6.4.7.1_** Fixed a few lines missing emojis.
 - **_6.4.7.1_** Added line to let you know that copilot is being removed.
+- **_6.4.7.1_** Fixed a few lines missing emojis.
 - **_6.4.7.0_** Copilot should now be removed with the rest of the Windows AI components.
 - **_6.4.7.0_** Fixed Ubuntu font not applying to every line.
 
@@ -359,8 +358,8 @@ Disables sleep and screen timeout while on AC power during the install, then res
 **Version 6.4.1.2 / 6.4.1.1 / 6.4.1.0**
 
 - **_6.4.1.2_** Added New Year sound.
-- **_6.4.1.1_** Corrected version number.
 - **_6.4.1.1_** Added New Year colours and image.
+- **_6.4.1.1_** Corrected version number.
 - **_6.4.1.0_** Re-enabled Windows AI Removal.
 - **_6.4.1.0_** Rewritten how the holiday themed image is drawn to reduce CPU usage and lag.
 
@@ -388,13 +387,13 @@ Disables sleep and screen timeout while on AC power during the install, then res
 **Version 6.2.0.1 / 6.2.0.0**
 
 - **_6.2.0.1_** Fixed Nvidia silent install.
-- **_6.2.0.0_** Removed AMD check box as the way AMD design thier installer makes it impossible download and install silently. I might readd later, all the detection code is there still.
 - **_6.2.0.0_** Slightly redesigned the GUI to make it a bit nicer and more organised.
+- **_6.2.0.0_** Removed AMD check box as the way AMD design thier installer makes it impossible download and install silently. I might readd later, all the detection code is there still.
 
 **Version 6.1.18.1 / 6.1.18.0**
 
-- **_6.1.18.1_** Fixed AMD software URL.
 - **_6.1.18.1_** Changed Nvidia downloader to match AMD.
+- **_6.1.18.1_** Fixed AMD software URL.
 - **_6.1.18.0_** Added Intel CPU and GPU checker just incase I want to add those in the future, if ARC becomes more mainstream.
 - **_6.1.18.0_** Moved Windows version check to before you click install, like the hardware checks are.
 - **_6.1.18.0_** Removed some unused flags.
@@ -410,8 +409,8 @@ Disables sleep and screen timeout while on AC power during the install, then res
 
 - **_6.1.16.1_** I never updated app.manifest to include support OS', so I added Windows 10 and 11.
 - **_6.1.16.1_** Removed click sound, as I don't like it.
-- **_6.1.16.0_** Fixed last updated line. It now shows the day the installer was updated rather than just the current day.
 - **_6.1.16.0_** Added custom update date attribute.
+- **_6.1.16.0_** Fixed last updated line. It now shows the day the installer was updated rather than just the current day.
 
 **Version 6.1.15.0**
 
@@ -421,8 +420,8 @@ Disables sleep and screen timeout while on AC power during the install, then res
 **Version 6.1.14.1 / 6.1.14.0**
 
 - **_6.1.14.1_** Added multiple password support for IP check, this will allow temporary usaged by multiple different people if needed.
-- **_6.1.14.0_** IP addresses are now encrypted.
 - **_6.1.14.0_** Added password protection if the installer is run from a different IP address from one of the listed safe IP's.
+- **_6.1.14.0_** IP addresses are now encrypted.
 
 **Version 6.1.13.0**
 
@@ -507,9 +506,9 @@ Disables sleep and screen timeout while on AC power during the install, then res
 - **_6.1.2.5_** Fixed BitDefender crash.
 - **_6.1.2.4_** Fixed BitDefender URL being incorrect so not installing.
 - **_6.1.2.4_** Fixed AnyDesk installation check, the MSI installer installs to a different location than the EXE for some reason.
+- **_6.1.2.3_** Added line to state the last date the installer was updated.
 - **_6.1.2.3_** Updated power icon.
 - **_6.1.2.3_** Tried another fix for auto arrange Desktop icons.
-- **_6.1.2.3_** Added line to state the last date the installer was updated.
 - **_6.1.2.2_** Fixed a typo in the launcherPath causing the launcher not to delete on the Desktop.
 - **_6.1.2.1_** Attempted to fix deleting the launcher on the Desktop.
 - **_6.1.2.1_** Attempted to fix auto arrange Desktop icons.
@@ -519,23 +518,23 @@ Disables sleep and screen timeout while on AC power during the install, then res
 **Version 6.1.1.2 / 6.1.1.1 / 6.1.1.0**
 
 - **_6.1.1.2_** Changed how the progress bar works to prevent crashes in the future.
-- **_6.1.1.1_** Fixed crash caused by HP Hotkey Support progress bar.
 - **_6.1.1.1_** Made NanaZip installation async.
+- **_6.1.1.1_** Fixed crash caused by HP Hotkey Support progress bar.
 - **_6.1.1.0_** Added HP Hotkey Support.
 
 **Version 6.1.0.0**
 
-- **_6.1.0.0_** First full release of version 6 — the entire installer has been rewritten in C#, carrying over the majority of features from the previous version.
-- **_6.1.0.0_** LibreOffice installs now default file associations to Office 2007-2021 formats (docx, xlsx, etc.).
 - **_6.1.0.0_** Added AnyDesk, BitDefender, Discord, Mozilla Thunderbird, and Steam.
 - **_6.1.0.0_** Added Microsoft Office 2007, which extracts to the Desktop only (it isn't installed).
 - **_6.1.0.0_** Added NanaZip; it's optional via a checkbox, unless Microsoft Office 2007 is selected, in which case it's installed regardless of the tickbox state.
 - **_6.1.0.0_** Added Bing Wallpapers.
 - **_6.1.0.0_** Added an IP checker to detect where the installer is being run from, along with OEM information for Romsey, Chandlers Ford, and Highcliffe.
-- **_6.1.0.0_** Ported over all the Windows 10 and Windows 11 registry tweaks from the previous installer.
 - **_6.1.0.0_** Added holiday messages and colours.
 - **_6.1.0.0_** Added an option to disable sleep and screen timeout while on AC power.
 - **_6.1.0.0_** Added a restart checkbox, left unticked by default.
+- **_6.1.0.0_** First full release of version 6 — the entire installer has been rewritten in C#, carrying over the majority of features from the previous version.
+- **_6.1.0.0_** LibreOffice installs now default file associations to Office 2007-2021 formats (docx, xlsx, etc.).
+- **_6.1.0.0_** Ported over all the Windows 10 and Windows 11 registry tweaks from the previous installer.
 - **_6.1.0.0_** Checks if Firefox is already installed before installing it and skips if so — the same check applies across the rest of the software.
 - **_6.1.0.0_** Cleans up installation files once the install finishes.
 - **_6.1.0.0_** Displays the version number in the readme.
@@ -558,11 +557,11 @@ Disables sleep and screen timeout while on AC power during the install, then res
 - **_5.2024.11.02.2_** Fixed a couple of broken icons.
 - **_5.2024.11.02.2_** Removed Teams as doesn't seem needed now.
 - **_5.2024.11.02.1_** Fixed issue with folders not being created.
-- **_5.2024.11.02.0_** Removed Windows 7 games, as I don't think anyones ever used it.
 - **_5.2024.11.02.0_** Added BitDefender as the world is being silly about Kaspersky.
-- **_5.2024.11.02.0_** Fixed Office 2007 URL typo.
-- **_5.2024.11.02.0_** Updated all the icons.
 - **_5.2024.11.02.0_** Added subfolders to 'C:\Computer Repair Centre' to tidy up installation folder.
+- **_5.2024.11.02.0_** Updated all the icons.
+- **_5.2024.11.02.0_** Fixed Office 2007 URL typo.
+- **_5.2024.11.02.0_** Removed Windows 7 games, as I don't think anyones ever used it.
 - **_5.2024.11.02.0_** Removed TeamViewer.
 
 **Version 5.2024.10.31.0**
@@ -604,9 +603,9 @@ Disables sleep and screen timeout while on AC power during the install, then res
 - **_5.2024.10.07.3_** Renamed LibreOffice installation file.
 - **_5.2024.10.07.2_** Fixed NanaZip as they changed the exe name.
 - **_5.2024.10.07.1_** Updated NanaZip.
-- **_5.2024.10.07.1_** Removed all old Office assets.
 - **_5.2024.10.07.1_** Updated version number on installer exe.
 - **_5.2024.10.07.1_** Updated LibreOffice msi to newer version.
+- **_5.2024.10.07.1_** Removed all old Office assets.
 - **_5.2024.10.07.0_** Removed Office 2007 and moved CF to LibreOffice.
 
 **Version 5.2024.08.09.0**
@@ -633,8 +632,8 @@ Disables sleep and screen timeout while on AC power during the install, then res
 
 **Version 5.2024.04.15.0**
 
-- **_5.2024.04.15.0_** Updated Chandlers Ford IP.
 - **_5.2024.04.15.0_** Added manual check for IP in CF and Romsey if the hardlinks aren't working.
+- **_5.2024.04.15.0_** Updated Chandlers Ford IP.
 
 **Version 5.2024.04.02.0**
 
@@ -732,8 +731,8 @@ Disables sleep and screen timeout while on AC power during the install, then res
 **Version 5.2023.10.03.1 / 5.2023.10.03.0**
 
 - **_5.2023.10.03.1_** Stopped the installer being orange for the whole of October.
-- **_5.2023.10.03.0_** Increased Halloween to a week before Halloween.
 - **_5.2023.10.03.0_** Added more Christmas songs.
+- **_5.2023.10.03.0_** Increased Halloween to a week before Halloween.
 
 **Version 5.2023.09.18.2 / 5.2023.09.18.1 / 5.2023.09.18.0**
 
@@ -745,12 +744,12 @@ Disables sleep and screen timeout while on AC power during the install, then res
 
 **Version 5.2023.09.11.2 / 5.2023.09.11.1 / 5.2023.09.11.0**
 
-- **_5.2023.09.11.2_** Fixed Discord icon.
 - **_5.2023.09.11.2_** Changed VLC to only install on Windows 10.
+- **_5.2023.09.11.2_** Fixed Discord icon.
 - **_5.2023.09.11.1_** Added some missing progress bar additions.
-- **_5.2023.09.11.0_** Kaspersky will no longer be installed in Romsey or Highcliffe due to no longer having the option for a trial.
 - **_5.2023.09.11.0_** Added Discord.
 - **_5.2023.09.11.0_** Added Steam.
+- **_5.2023.09.11.0_** Kaspersky will no longer be installed in Romsey or Highcliffe due to no longer having the option for a trial.
 
 **Version 5.2023.07.21.2 / 5.2023.07.21.1 / 5.2023.07.21.0**
 
@@ -815,23 +814,23 @@ Disables sleep and screen timeout while on AC power during the install, then res
 
 - **_5.2023.01.23.9_** Fixed typo in kaspersky download URL. It's too cold to type tonight.
 - **_5.2023.01.23.8_** Forgot to add Kaspersky move command.
+- **_5.2023.01.23.7_** Added Kaspersky Standard exe temporarily until I figure out how to enable a silent install. This must be run manually after the install is complete.
 - **_5.2023.01.23.7_** Updated deleteFiles.ps1.
 - **_5.2023.01.23.7_** Re-enabled Kaspersky.
-- **_5.2023.01.23.7_** Added Kaspersky Standard exe temporarily until I figure out how to enable a silent install. This must be run manually after the install is complete.
 - **_5.2023.01.23.6_** Corrected typo stopping winget package from downloading.
 - **_5.2023.01.23.5_** Fixed issue with Microsoft .NET Windows Desktop Runtime 3.1.
-- **_5.2023.01.23.4_** If run on Windows 10 it will install winget and the prerequisites.
 - **_5.2023.01.23.4_** Added Microsoft .NET Windows Desktop Runtime 3.1.
+- **_5.2023.01.23.4_** If run on Windows 10 it will install winget and the prerequisites.
 - **_5.2023.01.23.4_** Fixed hanging issue.
-- **_5.2023.01.23.3_** Removed Microsoft .NET Windows Desktop Runtime 3.1.
 - **_5.2023.01.23.3_** Cleaned up checkboxes.
+- **_5.2023.01.23.3_** Removed Microsoft .NET Windows Desktop Runtime 3.1.
 - **_5.2023.01.23.2_** Changed the way winget installs.
 - **_5.2023.01.23.1_** Added winget installation for Windows 10.
 - **_5.2023.01.23.0_** Moved from chocolatey from to winget.
+- **_5.2023.01.23.0_** Disabled Kaspersky for now until I can work out a silent install.
 - **_5.2023.01.23.0_** Removed Microsoft Office 2019 and 2021.
 - **_5.2023.01.23.0_** Removed HashTab.
 - **_5.2023.01.23.0_** Removed uBlock Origin.
-- **_5.2023.01.23.0_** Disabled Kaspersky for now until I can work out a silent install.
 
 </details>
 
@@ -866,10 +865,10 @@ Disables sleep and screen timeout while on AC power during the install, then res
 **Version 4.2022.10.15.2 / 4.2022.10.15.1 / 4.2022.10.15.0**
 
 - **_4.2022.10.15.2_** Fixed Office path typo.
-- **_4.2022.10.15.1_** Fixed Office 2021 download error.
 - **_4.2022.10.15.1_** Added progress steps for each part of Office 2021.
-- **_4.2022.10.15.0_** Split Office 2021 into 3 zips as it's so big.
+- **_4.2022.10.15.1_** Fixed Office 2021 download error.
 - **_4.2022.10.15.0_** Added Office 2021 folder to the cleanup script.
+- **_4.2022.10.15.0_** Split Office 2021 into 3 zips as it's so big.
 
 **Version 4.2022.10.11.0**
 
@@ -877,8 +876,8 @@ Disables sleep and screen timeout while on AC power during the install, then res
 
 **Version 4.2022.10.05.0**
 
-- **_4.2022.10.05.0_** Stopped Office 2019 from installing on Windows 11.
 - **_4.2022.10.05.0_** Added Office 2021.
+- **_4.2022.10.05.0_** Stopped Office 2019 from installing on Windows 11.
 
 **Version 4.2022.09.24.0**
 
@@ -907,9 +906,9 @@ Disables sleep and screen timeout while on AC power during the install, then res
 **Version 4.2022.09.07.1 / 4.2022.09.07.0**
 
 - **_4.2022.09.07.1_** Installer will now sing happy birthday.
-- **_4.2022.09.07.0_** Improved way of getting the IP.
 - **_4.2022.09.07.0_** Added Highcliffe.
 - **_4.2022.09.07.0_** Added Callum's birthday.
+- **_4.2022.09.07.0_** Improved way of getting the IP.
 
 **Version 4.2022.08.04.0**
 
@@ -937,9 +936,9 @@ Disables sleep and screen timeout while on AC power during the install, then res
 **Version 4.2022.07.07.1 / 4.2022.07.07.0**
 
 - **_4.2022.07.07.1_** Added dark mode.
-- **_4.2022.07.07.1_** Modernised the GUI slightly.
 - **_4.2022.07.07.1_** Added check boxes for all branches that can be checked and unchecked if ever needed.
 - **_4.2022.07.07.1_** Added Highcliffe location but disabled until branch is opened.
+- **_4.2022.07.07.1_** Modernised the GUI slightly.
 - **_4.2022.07.07.0_** Updated EXE to run first time every time.
 
 </details>
@@ -959,9 +958,9 @@ Disables sleep and screen timeout while on AC power during the install, then res
 
 **Version 3.2022.07.01.0**
 
+- **_3.2022.07.01.0_** Added Desktop icons for Office 2007 and 2019 installs.
 - **_3.2022.07.01.0_** The installer will now check if a program is already installed before running the install command to speed up the installs on machines it has been run on previously.
 - **_3.2022.07.01.0_** Cleaned up Office 2019 install.
-- **_3.2022.07.01.0_** Added Desktop icons for Office 2007 and 2019 installs.
 - **_3.2022.07.01.0_** Attemped to fix progress bar but it might need some further tweaks to get the progress point correct.
 
 **Version 3.2022.05.22.0**
@@ -979,8 +978,8 @@ Disables sleep and screen timeout while on AC power during the install, then res
 - **_3.2022.05.07.0_** Updated download link for Kaspersky.
 - **_3.2022.05.07.0_** Updated the readme to include new features I previously forgot to add.
 - **_3.2022.05.07.0_** Corrected some typos.
-- **_3.2022.05.07.0_** Removed taskbar pin as this currently doesn't work on Windows 11.
 - **_3.2022.05.07.0_** uBlock Origin is now disabled by default due to some customer complaints about removing it.
+- **_3.2022.05.07.0_** Removed taskbar pin as this currently doesn't work on Windows 11.
 
 **Version 3.2021.12.13.1 / 3.2021.12.13.0**
 
@@ -993,8 +992,8 @@ Disables sleep and screen timeout while on AC power during the install, then res
 
 **Version 3.2021.10.25.0**
 
-- **_3.2021.10.25.0_** Changed version format to keep track of when it was updated easier.
 - **_3.2021.10.25.0_** Added 4K support to Bing Wallpapers.
+- **_3.2021.10.25.0_** Changed version format to keep track of when it was updated easier.
 
 **Version 3.10.12.9 / 3.10.12.8 / 3.10.12.7 / 3.10.12.6 / 3.10.12.5 / 3.10.12.4 / 3.10.12.3 / 3.10.12.2 / 3.10.12.1 / 3.10.12.0**
 
@@ -1020,13 +1019,13 @@ Disables sleep and screen timeout while on AC power during the install, then res
 
 **Version 3.10.10.0**
 
-- **_3.10.10.0_** Fixed Kaspersky mailing list issue.
-- **_3.10.10.0_** Installer will now check software MD5 checksums before installation.
 - **_3.10.10.0_** Added initial support for Windows 11.
-- **_3.10.10.0_** Installer now installs Microsoft Visual C++ Redistributable as part of the prerequisites.
 - **_3.10.10.0_** Added Teams as an install option.
-- **_3.10.10.0_** Removed some Windows 10 tweaks to make it run nicer for the end user.
 - **_3.10.10.0_** Added Windows 11 tweaks to match Windows 10. More to come later on release.
+- **_3.10.10.0_** Installer will now check software MD5 checksums before installation.
+- **_3.10.10.0_** Installer now installs Microsoft Visual C++ Redistributable as part of the prerequisites.
+- **_3.10.10.0_** Fixed Kaspersky mailing list issue.
+- **_3.10.10.0_** Removed some Windows 10 tweaks to make it run nicer for the end user.
 
 **Version 3.10.9.0**
 
@@ -1087,8 +1086,8 @@ Disables sleep and screen timeout while on AC power during the install, then res
 - **_3.9.0.2_** Fixed Bing Wallpaper resetting task every time it runs.
 - **_3.9.0.1_** Fixed issue with Bing wallpaper task not knowing what app to use.
 - **_3.9.0.0_** Updated Chandler's Ford IP address.
-- **_3.9.0.0_** Removed custom wallpaper and theme installation.
 - **_3.9.0.0_** Wallpaper option has been replaced with the option to install Bing wallpaper that will grab a new wallpaper everyday.
+- **_3.9.0.0_** Removed custom wallpaper and theme installation.
 - **_3.9.0.0_** Removed wallpaper support on Windows 7.
 
 **Version 3.8.1.1 / 3.8.1.0**
@@ -1164,9 +1163,9 @@ Disables sleep and screen timeout while on AC power during the install, then res
 - **_3.5.0.3_** Updated download URLs from legacy to current.
 - **_3.5.0.2_** Installer now installs Microsoft .NET 3.5 and .NET 4.6.2 as a prerequisite.
 - **_3.5.0.1_** When installing prerequisites the installer will now show what is being installed.
+- **_3.5.0.0_** Default browser will change to Google Chrome if installed, Mozilla Firefox if installed or Mozilla Firefox is both Chrome and Firefox are installed.
 - **_3.5.0.0_** Removed most of the support for Windows 7, no future features will come to 7 but programs will continue to install and wallpapers will continue to be set.
 - **_3.5.0.0_** Removed official support for Windows 8 & 8.1 but basic programs will continue to install.
-- **_3.5.0.0_** Default browser will change to Google Chrome if installed, Mozilla Firefox if installed or Mozilla Firefox is both Chrome and Firefox are installed.
 
 **Version 3.4.1.1 / 3.4.1.0**
 
@@ -1207,16 +1206,16 @@ Disables sleep and screen timeout while on AC power during the install, then res
 
 **Version 3.3.0.0**
 
-- **_3.3.0.0_** Fixed Google Chrome and Mozilla Firefox uBlock Origin installs with the new version of Windows 1903.
 - **_3.3.0.0_** Temporarily disabled taskbar pining until a new solution is found for Windows 1903.
 - **_3.3.0.0_** Moved night mode to its own check box so it can be disabled. Fixed theme for Windows 1903.
+- **_3.3.0.0_** Fixed Google Chrome and Mozilla Firefox uBlock Origin installs with the new version of Windows 1903.
 
 **Version 3.2.2.2 / 3.2.2.1 / 3.2.2.0**
 
 - **_3.2.2.2_** Removed old installer leftover files and cleaned up sleep functions.
 - **_3.2.2.1_** Removed left over code.
-- **_3.2.2.0_** Birthday feature now says the name of whose birthday it is.
 - **_3.2.2.0_** Added close button.
+- **_3.2.2.0_** Birthday feature now says the name of whose birthday it is.
 
 **Version 3.2.1.0**
 
@@ -1290,8 +1289,8 @@ Disables sleep and screen timeout while on AC power during the install, then res
 
 - **_3.0.4.2_** Improved the way uBlock Origin is installed on Firefox.
 - **_3.0.4.1_** Fixed problem with uBlock Origin icon.
-- **_3.0.4.0_** Updated UI and made interface smaller.
 - **_3.0.4.0_** Added option for uBlock Origin to be installed on Mozilla Firefox and Google Chrome.
+- **_3.0.4.0_** Updated UI and made interface smaller.
 
 **Version 3.0.3.0**
 
@@ -1444,4 +1443,3 @@ Disables sleep and screen timeout while on AC power during the install, then res
 - **_1.1.0_** Programs now install in alphabetical order and added an exit button than cleans up temporary files.
 
 </details>
-

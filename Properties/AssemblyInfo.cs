@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
 
 // Copyright © Charlie Howard 2016-2026 All rights reserved
 
@@ -13,7 +14,8 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTrademark("Charlie Howard")]
 [assembly: AssemblyCulture("")]
 [assembly: ComVisible(false)]
+[assembly: SupportedOSPlatform("windows")]
 [assembly: Guid("be5f5489-1412-42da-8d0c-4022fdcb8446")]
-[assembly: AssemblyVersion("8.1.1.1")]
-[assembly: AssemblyFileVersion("8.1.1.1")]
-[assembly: AssemblyInformationalVersion("8.1.1.1")]
+[assembly: AssemblyVersion("9.0.0.0")]
+[assembly: AssemblyFileVersion("9.0.0.0")]
+[assembly: AssemblyInformationalVersion("9.0.0.0b1")]
