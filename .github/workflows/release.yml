@@ -64,6 +64,24 @@ jobs:
             echo "::warning::No '## ${VERSION}' section in CHANGELOG.md, using generated notes"
           fi
 
+      - name: Check for a newer stable version
+        id: newest
+        if: ${{ steps.channel.outputs.beta != 'true' }}
+        shell: bash
+        run: |
+          set -o pipefail
+          VERSION="${GITHUB_REF_NAME#v}"
+          NEWEST=$(git ls-remote --tags --refs origin \
+            | sed 's#.*refs/tags/##' \
+            | grep -E '^v?[0-9]{1,3}(\.[0-9]+){3}$' \
+            | sed 's/^v//' | sort -V | tail -n 1)
+          if [[ "$VERSION" == "$NEWEST" ]]; then
+            echo "newest=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "newest=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::${VERSION} is older than ${NEWEST}, so the stable download won't be replaced"
+          fi
+
       - name: Build Installer
         run: dotnet build "PlutoPoint Installer.csproj" --configuration Release
 
@@ -88,12 +106,12 @@ jobs:
           body_path: ${{ steps.notes.outputs.found == 'true' && 'release-notes.md' || '' }}
           generate_release_notes: ${{ steps.notes.outputs.found != 'true' }}
           prerelease: ${{ steps.channel.outputs.beta == 'true' }}
-          make_latest: ${{ steps.channel.outputs.beta == 'true' && 'false' || 'true' }}
+          make_latest: ${{ steps.newest.outputs.newest == 'true' && 'true' || 'false' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Update Floating Latest Pointer
-        if: ${{ steps.channel.outputs.beta != 'true' }}
+        if: ${{ steps.newest.outputs.newest == 'true' }}
         uses: softprops/action-gh-release@v2.1.0
         with:
           tag_name: installer-latest
