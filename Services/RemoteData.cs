@@ -1,7 +1,6 @@
 using System;
+using System.Linq;
 using System.Net;
-using System.Security.Cryptography;
-using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -27,7 +26,7 @@ namespace PlutoPoint_Installer.Services
 
         public static Task<DownloadUrls?> GetDownloadUrlsAsync(Action<string> log) => LoadAsync<DownloadUrls>("Downloads.json", "URLs", log);
 
-        public static Task<PasswordHashes?> GetPasswordHashesAsync(Action<string> log) => LoadAsync<PasswordHashes>("Passwords.json", "hashes", log);
+        public static Task<PasswordHashes?> GetPasswordHashesAsync(Action<string> log) => LoadAsync<PasswordHashes>("PasswordsV2.json", "hashes", log);
 
         public static async Task<Shop> DetectShopAsync(Action<string> log)
         {
@@ -37,20 +36,20 @@ namespace PlutoPoint_Installer.Services
                 log("⚠️ Couldn't get this computer's public IP address.");
                 return Shop.Unknown;
             }
-            LocationHashes? hashes = await LoadAsync<LocationHashes>("IPs.json", "hashes", log);
-            return hashes == null ? Shop.Unknown : MatchShop(Sha256(ip), hashes);
+            LocationHashes? hashes = await LoadAsync<LocationHashes>("IPsV2.json", "hashes", log);
+            return hashes == null ? Shop.Unknown : await Task.Run(() => MatchShop(ip, hashes));
         }
 
-        public static Shop MatchShop(string ipHash, LocationHashes hashes)
+        public static Shop MatchShop(string ip, LocationHashes hashes)
         {
-            if (ipHash == hashes.romsey) return Shop.Romsey;
-            if (ipHash == hashes.chandlersFord) return Shop.ChandlersFord;
-            if (ipHash == hashes.highcliffe) return Shop.Highcliffe;
+            if (SecretHasher.Verify(ip, hashes.romsey)) return Shop.Romsey;
+            if (SecretHasher.Verify(ip, hashes.chandlersFord)) return Shop.ChandlersFord;
+            if (SecretHasher.Verify(ip, hashes.highcliffe)) return Shop.Highcliffe;
             return Shop.Unknown;
         }
 
-        public static string Sha256(string text) =>
-            Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(text))).ToLowerInvariant();
+        public static Task<bool> IsPasswordAllowedAsync(string password, PasswordHashes hashes) =>
+            Task.Run(() => hashes.allowedHashes.Any(hash => SecretHasher.Verify(password, hash)));
 
         private static async Task<T?> LoadAsync<T>(string file, string what, Action<string> log) where T : class
         {

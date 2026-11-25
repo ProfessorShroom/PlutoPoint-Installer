@@ -100,10 +100,29 @@ namespace PlutoPoint_Installer.Tests
         [Fact]
         public void ShopFromHash()
         {
-            var hashes = new LocationHashes { romsey = "a", chandlersFord = "b", highcliffe = "c" };
-            Assert.Equal(Shop.ChandlersFord, RemoteData.MatchShop("b", hashes));
-            Assert.Equal(Shop.Unknown, RemoteData.MatchShop("d", hashes));
+            var hashes = new LocationHashes
+            {
+                romsey = "pbkdf2-sha512$600000$1b62684f85ae9a70a695e77d02f1a61e$c45d854525e7355b60c8833f75e455d85cf25dd553ec73c13b29c93c055bcca4",
+                chandlersFord = "pbkdf2-sha512$600000$69c2946a9b94d548ee230b75443c0d23$1273fb14751477e6fe510860445c8abc27097c4eaa09dc92de7af7088c939a07",
+                highcliffe = "pbkdf2-sha512$600000$ad764178c380842f923873660b2ba097$c443b4406c5c08f8791af11aae1aae5ad7b1c01f702e2ec0a7a03b46f05f36ce"
+            };
+            Assert.Equal(Shop.ChandlersFord, RemoteData.MatchShop("192.0.2.2", hashes));
+            Assert.Equal(Shop.Unknown, RemoteData.MatchShop("192.0.2.4", hashes));
         }
+
+        private const string SecretHash = "pbkdf2-sha512$600000$ff60c17873d158a657517ceb38d3a6de$3000f2723e291c5a23327957d1290dad0ed5271674473bf12bbef719bbbaf539";
+
+        [Theory]
+        [InlineData("test-sécret", SecretHash, true)]
+        [InlineData("wrong", SecretHash, false)]
+        [InlineData("", SecretHash, false)]
+        [InlineData("x", null, false)]
+        [InlineData("x", "", false)]
+        [InlineData("x", "pbkdf2-sha512$600000$zz$zz", false)]
+        [InlineData("x", "pbkdf2-sha512$1$$", false)]
+        [InlineData("x", "2d711642b726b04401627ca9fbac32f5c8530fb1903cc4db02258717921a4881", false)]
+        public void SecretHashing(string secret, string? hash, bool expected) =>
+            Assert.Equal(expected, SecretHasher.Verify(secret, hash));
 
         [Fact]
         public void PowerSettingReadsAcValue() => Assert.Equal(1800u, PowerSettings.ParseAcSetting(

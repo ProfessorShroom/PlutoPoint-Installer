@@ -2,6 +2,11 @@
 
 Release notes for beta versions. Full releases are in [CHANGELOG.md](CHANGELOG.md).
 
+## 9.0.0.0b2 - The .NET 10 Update
+
+### Changed
+- Passwords and shop IP addresses are now checked using salted PBKDF2-SHA512 hashes instead of plain SHA-256.
+
 ## 9.0.0.0b1 - The .NET 10 Update
 
 ### Added

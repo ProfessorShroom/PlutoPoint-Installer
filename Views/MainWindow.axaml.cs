@@ -451,8 +451,7 @@ namespace PlutoPoint_Installer.Views
             bool? result = await dialog.ShowDialog<bool?>(this);
             if (result == true)
             {
-                string enteredHash = RemoteData.Sha256(dialog.EnteredPassword ?? "");
-                if (!hashes.allowedHashes.Contains(enteredHash))
+                if (!await RemoteData.IsPasswordAllowedAsync(dialog.EnteredPassword ?? "", hashes))
                 {
                     AppendLine("❌ Incorrect password. Exiting.");
                     _afterStop = AfterStop.Close;
