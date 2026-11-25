@@ -132,4 +132,8 @@ jobs:
           git add update.xml updateBeta.xml
           git diff --staged --quiet && exit 0
           git commit -m "Launcher v${{ needs.build.outputs.version }}"
-          git push origin main
+          for attempt in 1 2 3 4 5; do
+            git pull --rebase --autostash origin main && git push origin main && break
+            [ "$attempt" -lt 5 ] || exit 1
+            sleep 5
+          done

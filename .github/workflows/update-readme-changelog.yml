@@ -38,5 +38,8 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git commit -m "Update README changelog"
-          git pull --rebase origin main
-          git push origin main
+          for attempt in 1 2 3 4 5; do
+            git pull --rebase --autostash origin main && git push origin main && break
+            [ "$attempt" -lt 5 ] || exit 1
+            sleep 5
+          done
