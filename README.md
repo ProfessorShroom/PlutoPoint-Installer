@@ -35,17 +35,41 @@ Disables sleep and screen timeout while on AC power during the install, then res
 
 #### Latest Update
 
-**Version 8.1.1.1 / 8.1.1.0**
+**Version 9.0.0.0 - The .NET 10 Update**
 
-- **_8.1.1.1_** The progress bar is now purple instead of see-through black, and matches the colours of each holiday and birthday.
-- **_8.1.1.1_** The shine on the progress bar now goes all the way across.
-- **_8.1.1.0_** Made the "Computer Repair Centre Installer" title larger.
+- **_9.0.0.0_** AMD Chipset Drivers, AMD Software: Adrenalin Edition and Nvidia App are now skipped if they're already installed.
+- **_9.0.0.0_** Installers that get stuck are now stopped after 10 minutes, or 20 minutes for BitDefender, Microsoft Office 2024 and AMD Software: Adrenalin Edition.
+- **_9.0.0.0_** Downloads that receive nothing for 60 seconds now fail and retry instead of waiting forever.
+- **_9.0.0.0_** Cancel now stops downloads straight away. While an app is installing it becomes Force Stop, which ends that installer.
+- **_9.0.0.0_** Beta builds now have a β badge.
+- **_9.0.0.0_** Updated to .NET 10 and Avalonia 12.2.0.
+- **_9.0.0.0_** Passwords and shop IP addresses are now checked using salted PBKDF2-SHA512 hashes instead of plain SHA-256.
+- **_9.0.0.0_** Beta builds no longer use orange, and now show holidays and birthdays.
+- **_9.0.0.0_** Long titles now shrink to fit instead of running into the OEM dropdown.
+- **_9.0.0.0_** Windows settings are now applied separately, so one failing no longer skips the rest.
+- **_9.0.0.0_** Closing or restarting during an install now stops it, puts the sleep settings back and deletes the downloaded files first.
+- **_9.0.0.0_** The launcher now carries on to the installer if it can't check for or download its own update.
+- **_9.0.0.0_** The launcher's backup download link now uses HTTPS.
+- **_9.0.0.0_** Split the main window's code into smaller files, and added tests.
+- **_9.0.0.0_** The changelog in the README is now made from CHANGELOG.md automatically.
+- **_9.0.0.0_** The launcher now gets its version from its release tag.
+- **_9.0.0.0_** Download links are now checked every week.
+- **_9.0.0.0_** Fixed the window freezing during winget checks.
+- **_9.0.0.0_** Fixed Empty Recycle Bin always saying it worked.
+- **_9.0.0.0_** Fixed Close cancelling shutdowns the installer didn't schedule.
+- **_9.0.0.0_** Fixed the year range in the copyright workflow's commit message.
 
 
 #### Older Updates
 
 <details markdown="1">
 <summary><strong>Version 8.x - The Reliability Update</strong></summary>
+
+**Version 8.1.1.1 / 8.1.1.0**
+
+- **_8.1.1.1_** The progress bar is now purple instead of see-through black, and matches the colours of each holiday and birthday.
+- **_8.1.1.1_** The shine on the progress bar now goes all the way across.
+- **_8.1.1.0_** Made the "Computer Repair Centre Installer" title larger.
 
 **Version 8.1.0.0**
 
